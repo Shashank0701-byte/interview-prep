@@ -13,13 +13,13 @@ const QuestionCard = ({
   const contentRef = useRef(null);
 
   useEffect(() => {
-    if (isExpanded && contentRef.current) {
+    if (isExpanded) {
       const contentHeight = contentRef.current.scrollHeight;
       setHeight(contentHeight + 20); // Add some padding
     } else {
       setHeight(0);
     }
-  }, [isExpanded, answer]);
+  }, [isExpanded]);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -27,25 +27,28 @@ const QuestionCard = ({
 
   return (
     <div className="bg-white rounded-lg mb-4 overflow-hidden py-4 px-5 shadow-xl shadow-gray-100/70 border border-gray-100/60 group">
-      <div className="flex items-start justify-between cursor-pointer" onClick={toggleExpand}>
+      <div className="flex items-start justify-between cursor-pointer">
         <div className="flex items-start gap-3.5">
           <span className="text-xs md:text-[15px] font-semibold text-gray-400 leading-[18px]">
             Q
           </span>
-          <h3 className="text-xs md:text-[14px] font-medium text-gray-800 mr-0 md:mr-20">
+          <h3 
+            className="text-xs md:text-[14px] font-medium text-gray-800 mr-0 md:mr-20"
+            onClick={toggleExpand}   
+        >
             {question}
           </h3>
         </div>
 
         <div className="flex items-center justify-end ml-4 relative">
           <div
-            className={`flex items-center transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 ${
-              isExpanded ? "!opacity-100" : ""
+            className={`flex ${
+              isExpanded ? "md:flex" : "md:hidden group-hover:flex"
             }`}
           >
             <button
               className="flex items-center gap-2 text-xs text-indigo-800 font-medium bg-indigo-50 px-3 py-1 mr-2 rounded text-nowrap border border-indigo-50 hover:border-indigo-200 cursor-pointer transition-transform duration-200 hover:scale-105" // Updated this line
-              onClick={(e) => { e.stopPropagation(); onTogglePin(); }}
+              onClick={onTogglePin}
             >
               {isPinned ? (
                 <LuPinOff className="text-xs" />
@@ -55,14 +58,20 @@ const QuestionCard = ({
             </button>
             <button
               className="flex items-center gap-2 text-xs text-cyan-800 font-medium bg-cyan-50 px-3 py-1 mr-2 rounded text-nowrap border border-cyan-50 hover:border-cyan-200 cursor-pointer transition-transform duration-200 hover:scale-105" // Updated this line
-              onClick={(e) => { e.stopPropagation(); onLearnMore(); }}
+              onClick={() => { 
+                setIsExpanded(true);
+                onLearnMore();
+              }}
             >
               <LuSparkles />
               <span className="hidden md:block">Learn More</span>
             </button>
           </div>
 
-          <button className="text-gray-400 hover:text-gray-500">
+          <button 
+            className="text-gray-400 hover:text-gray-500"
+            onClick={toggleExpand}
+        >
             <LuChevronDown
               size={20}
               className={`transform transition-transform duration-300 ${
