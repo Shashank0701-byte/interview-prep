@@ -7,7 +7,7 @@ import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const AIResponsePreview = ({ content }) => {
     if (!content) return null;
-
+    content = content.replace(/\\n/g, '\n');
     return (
         <div className='max-w-4xl mx-auto'>
             <div className='text-[14px] prose prose-slate dark:prose-invert max-w-none'>
