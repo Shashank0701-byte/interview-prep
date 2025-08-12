@@ -27,5 +27,7 @@ export const API_PATHS = {
     ADD_TO_SESSION: "/api/questions/add", // Add more questions to a session
     PIN: (id) => `/api/questions/${id}/pin`, // Pin or Unpin a question
     UPDATE_NOTE: (id) => `/api/questions/${id}/note`, // Update/Add a note to a question
+    ADD_NOTE: (id) => `api/questions/${id}/note`,
+    TOGGLE_MASTERED: (id) => `api/questions/${id}/master`,
   },
 };

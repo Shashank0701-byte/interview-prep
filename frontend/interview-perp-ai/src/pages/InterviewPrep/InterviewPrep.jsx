@@ -28,6 +28,24 @@ const InterviewPrep = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdateLoader, setIsUpdateLoader] = useState(false);
 
+      const handleSaveNote = async (questionId, note) => {
+        try {
+            setIsUpdateLoader(true); // Indicate that an update is in progress
+            const response = await axiosInstance.put(API_PATHS.QUESTION.ADD_NOTE(questionId), { note });
+
+            if (response.data) {
+                toast.success("Note saved successfully!");
+                // Refresh the session data to show the updated note
+                fetchSessionDetailsById();
+            }
+        } catch (error) {
+            toast.error("Failed to save note.");
+            console.error("Error saving note:", error);
+        } finally {
+            setIsUpdateLoader(false);
+        }
+    };
+
   // Fetch session data by session id
   const fetchSessionDetailsById = async () => {
     try{
@@ -48,7 +66,7 @@ const generateConceptExplanation = async (question) => {
   try {
     setErrorMsg("");
     setExplanation(null);
-    setIsLoading(true);
+    setIsUpdateLoader(true);
 
     setOpenLearnMoreDrawer(true);
 
@@ -66,7 +84,7 @@ const generateConceptExplanation = async (question) => {
     setErrorMsg("Failed to generate explanation. Try again later");
     console.error("Error:" ,error);
   }finally{
-    setIsLoading(false);
+    setIsUpdateLoader(false);
   }
 }
 
@@ -88,6 +106,18 @@ const toggleQuestionPinStatus = async (questionId) => {
     console.error("Error:", error);
   }
 };
+
+// Toggle for Marked as Mastered
+const handleToggleMastered = async (questionId) => {
+        try {
+            await axiosInstance.put(API_PATHS.QUESTION.TOGGLE_MASTERED(questionId));
+            // Re-fetch the session data to update the UI
+            fetchSessionDetailsById();
+        } catch (error) {
+            toast.error("Failed to update status.");
+            console.error("Error toggling mastered status:", error);
+        }
+    };
 
 // Add more questions to a session
 // In your InterviewPrep.jsx file
@@ -146,6 +176,15 @@ useEffect(() => {
   return () => {};
 }, [] );
 
+ // --- CONDITIONAL RENDERING ---
+    if (isLoading) {
+        return <DashboardLayout><div className="flex-center h-screen"><SpinnerLoader /></div></DashboardLayout>;
+    }
+
+    if (!sessionData) {
+        return <DashboardLayout><div className="flex-center h-screen"><p>Session not found.</p></div></DashboardLayout>;
+    }
+
 return (
   <DashboardLayout>
     <RoleInfoHeader
@@ -188,8 +227,14 @@ return (
                   >
                     <>
                       <QuestionCard
+                        questionId={data._id}
                         question={data?.question}
                         answer={data?.answer}
+                        userNote={data.userNote}
+                        onSaveNote={handleSaveNote}
+                        isMastered={data.isMastered}
+                        onToggleMastered={() => 
+                          handleToggleMastered(data._id)}
                         onLearnMore={() =>
                           generateConceptExplanation(data.question)
                         }
@@ -238,7 +283,8 @@ return (
               )}
                 {isLoading && <SkeletonLoader />}
               {!isLoading && explanation && (
-                <AIResponsePreview content={explanation?.explanation} />
+                <AIResponsePreview content={explanation?.explanation || explanation} />
+
               )}
             </Drawer>
           </div>

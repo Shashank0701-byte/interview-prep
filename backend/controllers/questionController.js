@@ -82,8 +82,65 @@ const updateQuestionNote = async (req, res) => {
   }
 };
 
+const toggleMasteredStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user._id;
+
+        const question = await Question.findById(id);
+
+        if (!question) {
+            return res.status(404).json({ message: "Question not found" });
+        }
+
+        const session = await Session.findById(question.session);
+        if (session.user.toString() !== userId.toString()) {
+            return res.status(401).json({ message: "Not authorized" });
+        }
+
+        // Toggle the boolean value
+        question.isMastered = !question.isMastered;
+        await question.save();
+
+        res.status(200).json({ message: "Status updated successfully", question });
+    } catch (error) {
+        console.error("Error toggling mastered status:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+const addNoteToQuestion = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { note } = req.body;
+        const userId = req.user._id;
+
+        const question = await Question.findById(id);
+
+        if (!question) {
+            return res.status(404).json({ message: "Question not found" });
+        }
+        
+        // Find the parent session to verify ownership
+        const session = await Session.findById(question.session);
+        if (session.user.toString() !== userId.toString()) {
+            return res.status(401).json({ message: "Not authorized" });
+        }
+
+        question.userNote = note;
+        await question.save();
+
+        res.status(200).json({ message: "Note updated successfully", question });
+    } catch (error) {
+        console.error("Error adding note:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
 module.exports ={
     addQuestionsToSession,
     togglePinQuestion,
-    updateQuestionNote
+    updateQuestionNote,
+    addNoteToQuestion,
+    toggleMasteredStatus,
 };
