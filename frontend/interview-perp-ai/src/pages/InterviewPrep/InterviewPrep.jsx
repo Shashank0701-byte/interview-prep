@@ -50,7 +50,7 @@ const InterviewPrep = () => {
   const fetchSessionDetailsById = async () => {
     try{
       const response = await axiosInstance.get(
-        API_PATHS.SESSION.GET_ONE(sessionId)
+        API_PATHS.SESSIONS.GET_ONE(sessionId)
       );
       if(response.data && response.data.session){
         setSessionData(response.data.session);

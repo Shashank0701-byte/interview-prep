@@ -137,10 +137,50 @@ const addNoteToQuestion = async (req, res) => {
     }
 };
 
+// Updates Review Section
+const reviewQuestion = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { quality } = req.body; // e.g., 'hard', 'good', 'easy'
+        const userId = req.user._id;
+
+        const question = await Question.findById(id);
+        if (!question) return res.status(404).json({ message: "Question not found" });
+
+        // Authorization check
+        const session = await Session.findById(question.session);
+        if (session.user.toString() !== userId.toString()) {
+            return res.status(401).json({ message: "Not authorized" });
+        }
+
+        let { reviewInterval } = question;
+        
+        if (quality === 'hard') {
+            reviewInterval = 1; // Reset to 1 day
+        } else if (quality === 'good') {
+            reviewInterval = Math.ceil(reviewInterval * 1.5); // Increase by 50%
+        } else if (quality === 'easy') {
+            reviewInterval = Math.ceil(reviewInterval * 2.5); // Increase by 150%
+        }
+
+        question.reviewInterval = reviewInterval;
+        // Set the next due date by adding the interval (in milliseconds)
+        question.dueDate = new Date(Date.now() + reviewInterval * 24 * 60 * 60 * 1000);
+
+        await question.save();
+        res.status(200).json({ message: "Review recorded", question });
+
+    } catch (error) {
+        console.error("Error reviewing question:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
 module.exports ={
     addQuestionsToSession,
     togglePinQuestion,
     updateQuestionNote,
     addNoteToQuestion,
     toggleMasteredStatus,
+    reviewQuestion,
 };
