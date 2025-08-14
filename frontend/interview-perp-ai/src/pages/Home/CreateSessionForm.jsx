@@ -47,7 +47,7 @@ const CreateSessionForm = () => {
         } );
         // Should be array like [(question, answer), ...]
         const generatedQuestions = aiResponse.data;
-        const response = await axiosInstance.post(API_PATHS.SESSION.CREATE, {
+        const response = await axiosInstance.post(API_PATHS.SESSIONS.CREATE, {
             ...formData,
             questions: generatedQuestions,
         });

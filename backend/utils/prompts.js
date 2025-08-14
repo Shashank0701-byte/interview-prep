@@ -39,4 +39,29 @@ const conceptExplainPrompt = (question) => (
   Important: Do NOT add any extra text outside the JSON format. Only return valid JSON.`
 );
 
-module.exports = { questionAnswerPrompt, conceptExplainPrompt };
+const practiceFeedbackPrompt = (question, idealAnswer, userTranscript) => {
+    return `
+        You are an expert interview coach providing feedback on a user's spoken answer.
+        Your task is to analyze their answer and provide a structured critique in JSON format.
+
+        **Interview Question:**
+        "${question}"
+
+        **Ideal Answer for Reference:**
+        "${idealAnswer}"
+
+        **User's Spoken Answer (Transcript):**
+        "${userTranscript}"
+
+        Please provide your feedback as a JSON object. The JSON object must contain the following keys: "contentAccuracy", "keywordAnalysis", "clarityConciseness", and "suggestedImprovement".
+
+        - "contentAccuracy": An object with a "score" (an integer out of 10) and a "feedback" string.
+        - "keywordAnalysis": An object with a "feedback" string analyzing the use of key terms.
+        - "clarityConciseness": An object with a "score" (an integer out of 10) and a "feedback" string, mentioning any filler words if found.
+        - "suggestedImprovement": A string with a concrete suggestion for how the user can improve their answer.
+
+        Do not include any text, markdown, or formatting outside of the final JSON object.
+    `;
+};
+
+module.exports = { questionAnswerPrompt, conceptExplainPrompt, practiceFeedbackPrompt };
