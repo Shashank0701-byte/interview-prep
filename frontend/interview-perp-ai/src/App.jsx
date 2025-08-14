@@ -13,6 +13,8 @@ import Dashboard from './pages/Home/Dashboard';
 import InterviewPrep from './pages/InterviewPrep/InterviewPrep';
 import UserProvider from './context/userContext';
 import ReviewPage from './pages/Review/ReviewPage';
+import SignUp from './pages/Auth/Signup';
+import Login from './pages/Auth/Login';
 
 // ✅ ADD THIS COMPONENT DEFINITION
 // This component checks for a token and protects routes.
@@ -30,7 +32,9 @@ const App = () => {
         <Router>
           <Routes>
             <Route path='/' element={<LandingPage />} />
-            
+             <Route path="/signUp" element={<SignUp />} /> 
+             <Route path="/login" element={<Login />} /> 
+
             {/* These routes should also be protected */}
             <Route
               path='/dashboard'

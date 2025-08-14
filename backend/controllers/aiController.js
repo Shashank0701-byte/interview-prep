@@ -1,5 +1,5 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { conceptExplainPrompt, questionAnswerPrompt } = require("../utils/prompts");
+const { conceptExplainPrompt, questionAnswerPrompt, practiceFeedbackPrompt } = require("../utils/prompts");
 
 // ✅ FIX: Correctly initialize the client with the API key as a string
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -48,6 +48,50 @@ const generateInterviewQuestions = async (req, res) => {
   }
 };
 
+
+// @desc    Analyzes a user's spoken answer and provides feedback
+// @route   POST /api/ai/practice-feedback
+// @access  Private
+const getPracticeFeedback = async (req, res) => {
+    try {
+        const { question, idealAnswer } = req.body;
+        
+        // --- Step 1: Speech-to-Text (Placeholder) ---
+        // In a real application, you would send the audio file (req.file)
+        // to a service like Google Cloud Speech-to-Text or OpenAI's Whisper.
+        // For this example, we'll use a placeholder transcript.
+        // const userTranscript = await transcribeAudio(req.file);
+        const userTranscript = "Uh, findOne returns, like, just the first document it sees. But find... it returns a cursor, so you can loop through all of them. I think that's right.";
+
+        if (!question || !idealAnswer || !userTranscript) {
+            return res.status(400).json({ message: "Missing required fields for feedback." });
+        }
+
+        // --- Step 2: Get Structured Feedback from Gemini ---
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash-latest",
+            generationConfig: {
+                responseMimeType: "application/json",
+            },
+        });
+
+        const prompt = practiceFeedbackPrompt(question, idealAnswer, userTranscript);
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const feedbackData = JSON.parse(response.text());
+
+        res.status(200).json({ success: true, feedback: feedbackData });
+
+    } catch (error) {
+        console.error("AI Feedback Generation Error:", error);
+        res.status(500).json({
+            message: "Failed to generate feedback.",
+            error: error.message,
+        });
+    }
+};
+
 // @desc    Generate explanation for a concept
 // @route   POST /api/ai/generate-explanation
 // @access  Private
@@ -86,4 +130,4 @@ const generateConceptExplanation = async (req, res) => {
   }
 };
 
-module.exports = { generateInterviewQuestions, generateConceptExplanation };
+module.exports = { generateInterviewQuestions, generateConceptExplanation, getPracticeFeedback };

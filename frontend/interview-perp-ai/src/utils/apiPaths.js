@@ -12,6 +12,7 @@ export const API_PATHS = {
     AI: {
         GENERATE_QUESTIONS: "/api/ai/generate-questions",
         GENERATE_EXPLANATION: "/api/ai/generate-explanation",
+        PRACTICE_FEEDBACK: "/api/ai/practice-feedback", 
     },
     // ✅ FIX: Renamed to SESSIONS for consistency
     SESSIONS: { 
