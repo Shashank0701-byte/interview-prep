@@ -70,6 +70,14 @@ const Dashboard = () => {
                             Start Review ({reviewCount} {reviewCount === 1 ? 'card' : 'cards'} due)
                         </Link>
                     )}
+                    <Link 
+  to="/progress" 
+  className="inline-flex items-center gap-2 bg-gradient-to-r from-[#6EE7B7] via-[#3B82F6] to-[#9333EA] 
+             text-white font-semibold px-5 py-2.5 rounded-full shadow-lg 
+             hover:scale-105 transition-transform duration-300"
+>
+  <span>📈 My Progress</span>
+</Link>
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-7 pt-1 pb-6 px-4 md:px-0'>
                     {isLoading ? (
