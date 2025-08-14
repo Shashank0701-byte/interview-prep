@@ -5,7 +5,7 @@ const path = require("path");
 const { connect } = require("http2");
 const connectDB = require("./config/db");
 const aiRoutes = require("./routes/aiRotes");
-
+const analyticsRoutes = require('./routes/analyticsRoutes');
 const authRoutes = require("./routes/authRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
 const questionRoutes = require("./routes/questionRoutes");
@@ -32,7 +32,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/questions", questionRoutes);
-
+app.use('/api/analytics', analyticsRoutes);
 app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
 app.use("/api/ai/generate-explanation", protect, generateConceptExplanation);
 app.use("/api/ai", aiRoutes);

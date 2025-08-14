@@ -29,4 +29,11 @@ export const API_PATHS = {
         TOGGLE_MASTERED: (id) => `/api/questions/${id}/master`,
         REVIEW: (id) => `/api/questions/${id}/review`, // ✅ FIX: Added the missing REVIEW path
     },
+    ANALYTICS: {
+        GET_PERFORMANCE_OVER_TIME: "/api/analytics/performance-over-time",
+        GET_PERFORMANCE_BY_TOPIC: "/api/analytics/performance-by-topic",
+        GET_FILLER_WORDS: "/api/analytics/filler-words",
+        GET_DAILY_ACTIVITY: "/api/analytics/daily-activity",
+        GET_MASTERY_RATIO: "/api/analytics/mastery-ratio",
+    },
 };
