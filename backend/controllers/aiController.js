@@ -1,5 +1,5 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { conceptExplainPrompt, questionAnswerPrompt, practiceFeedbackPrompt } = require("../utils/prompts");
+const { questionAnswerPrompt, practiceFeedbackPrompt, followUpQuestionPrompt } = require("../utils/prompts");
 
 // ✅ FIX: Correctly initialize the client with the API key as a string
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -92,42 +92,31 @@ const getPracticeFeedback = async (req, res) => {
     }
 };
 
-// @desc    Generate explanation for a concept
-// @route   POST /api/ai/generate-explanation
+// @desc    Handle follow-up questions
+// @route   POST /api/ai/follow-up
 // @access  Private
-const generateConceptExplanation = async (req, res) => {
-  try {
-    const { question } = req.body;
-
-    if (!question) {
-      return res.status(400).json({ message: "Question is required." });
-    }
-
-    // ✅ FIX: Get the model WITHOUT forcing a JSON response, but with a higher token limit
-    const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash-latest",
-        generationConfig: {
-            maxOutputTokens: 8192,
+const generateFollowUpQuestion = async (req, res) => {
+    try {
+        const { originalQuestion, originalAnswer } = req.body;
+        if (!originalQuestion || !originalAnswer) {
+            return res.status(400).json({ message: "Original question and answer are required." });
         }
-    });
 
-    const prompt = conceptExplainPrompt(question);
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash-latest",
+            generationConfig: { responseMimeType: "application/json" },
+        });
+        const prompt = followUpQuestionPrompt(originalQuestion, originalAnswer);
 
-    // Get the plain text directly from the response
-    const explanationText = response.text();
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const followUpData = JSON.parse(response.text());
 
-    // Send the text back to the frontend (no JSON.parse needed here)
-    res.status(200).json({ explanation: explanationText });
-
-  } catch (error) {
-    console.error("AI Explanation Error:", error);
-    res.status(500).json({
-      message: "Failed to generate explanation",
-      error: error.message,
-    });
-  }
+        res.status(200).json({ success: true, followUp: followUpData });
+    } catch (error) {
+        console.error("AI Follow-up Generation Error:", error);
+        res.status(500).json({ message: "Failed to generate follow-up question." });
+    }
 };
 
-module.exports = { generateInterviewQuestions, generateConceptExplanation, getPracticeFeedback };
+module.exports = { generateInterviewQuestions, generateFollowUpQuestion, getPracticeFeedback, };
