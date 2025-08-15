@@ -1,27 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
-import { LuChevronDown, LuPin, LuPinOff, LuSparkles, LuCheck } from "react-icons/lu";
+import { LuChevronDown, LuPin, LuPinOff, LuMessageSquarePlus, LuCheck } from "react-icons/lu";
 import AIResponsePreview from "../../pages/InterviewPrep/components/AIResponsePreview";
 
 const QuestionCard = ({
-    questionId, // New prop to identify the question
+    questionId,
     question,
     answer,
-    userNote,   // New prop for the saved note
-    onLearnMore,
-    isMastered, // New Prop for the Marked status
-    onToggleMastered,  // New Prop for the Marked status
+    userNote,
+    onAskFollowUp, // <-- New prop
+    isMastered,
+    onToggleMastered,
     isPinned,
     onTogglePin,
-    onSaveNote, // New prop to handle saving the note
+    onSaveNote,
 }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [height, setHeight] = useState(0);
     const contentRef = useRef(null);
-
-    // New state to manage the note input field
     const [note, setNote] = useState(userNote || "");
 
-    // This effect syncs the local note state if the prop changes
     useEffect(() => {
         setNote(userNote || "");
     }, [userNote]);
@@ -33,7 +30,7 @@ const QuestionCard = ({
         } else {
             setHeight(0);
         }
-    }, [isExpanded, answer, userNote]); // Rerun if note changes
+    }, [isExpanded, answer, userNote]);
 
     const toggleExpand = () => {
         setIsExpanded(!isExpanded);
@@ -52,15 +49,15 @@ const QuestionCard = ({
                 <div className="flex items-center justify-end ml-4 relative">
                     <div className={`flex items-center transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 ${isExpanded ? "!opacity-100" : ""}`}>
                         <button
-                          className={`flex items-center gap-2 text-xs font-medium px-3 py-1 mr-2 rounded border  cursor-pointer ${
-                          isMastered
-                            ? 'bg-green-100 text-green-800 border-green-100 hover:border-green-300'
-                            : 'bg-slate-100 text-slate-600 border-slate-100 hover:border-slate-300'
-                        }`}
+                            className={`flex items-center gap-2 text-xs font-medium px-3 py-1 mr-2 rounded border cursor-pointer ${
+                                isMastered
+                                ? 'bg-green-100 text-green-800 border-green-100 hover:border-green-300'
+                                : 'bg-slate-100 text-slate-600 border-slate-100 hover:border-slate-300'
+                            }`}
                             onClick={(e) => { e.stopPropagation(); onToggleMastered(); }}
                         >
-                          <LuCheck className="text-xs" />
-                              {isMastered ? "Mastered" : "Mark as Mastered"}
+                            <LuCheck className="text-xs" />
+                            {isMastered ? "Mastered" : "Mark as Mastered"}
                         </button>
                         
                         <button
@@ -69,12 +66,14 @@ const QuestionCard = ({
                         >
                             {isPinned ? <LuPinOff className="text-xs" /> : <LuPin className="text-xs" />}
                         </button>
+                        
+                        {/* --- NEW "Ask a Follow-up" Button --- */}
                         <button
                             className="flex items-center gap-2 text-xs text-cyan-800 font-medium bg-cyan-50 px-3 py-1 mr-2 rounded text-nowrap border border-cyan-50 hover:border-cyan-200 cursor-pointer transition-transform duration-200 hover:scale-105"
-                            onClick={(e) => { e.stopPropagation(); onLearnMore(); }}
+                            onClick={(e) => { e.stopPropagation(); onAskFollowUp(); }}
                         >
-                            <LuSparkles />
-                            <span className="hidden md:block">Learn More</span>
+                            <LuMessageSquarePlus />
+                            <span className="hidden md:block">Ask a Follow-up</span>
                         </button>
                     </div>
 
@@ -95,8 +94,6 @@ const QuestionCard = ({
                     <div className="text-sm text-gray-700 bg-gray-50 px-5 py-3 rounded-lg">
                         <AIResponsePreview content={answer} />
                     </div>
-
-                    {/* --- ADDED THIS NEW NOTES SECTION --- */}
                     <div className="border-t pt-3">
                         <h4 className="text-xs font-semibold text-slate-500 mb-2">My Notes</h4>
                         <textarea
@@ -104,20 +101,19 @@ const QuestionCard = ({
                             onChange={(e) => setNote(e.target.value)}
                             placeholder="Write your personal notes here..."
                             className="w-full h-24 p-2 text-sm border rounded bg-white focus:ring-2 focus:ring-orange-300 outline-none"
-                            onClick={(e) => e.stopPropagation()} // Prevent card from collapsing when clicking
+                            onClick={(e) => e.stopPropagation()}
                         />
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
                                 onSaveNote(questionId, note);
                             }}
-                            disabled={note === (userNote || "")} // Disable if note hasn't changed
+                            disabled={note === (userNote || "")}
                             className="btn-primary text-xs px-3 py-1 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Save Note
                         </button>
                     </div>
-                    {/* --- END OF NEW SECTION --- */}
                 </div>
             </div>
         </div>

@@ -31,7 +31,7 @@ const AIResponsePreview = ({ content }) => {
                             );
                         },
                         p({ children }) {
-                            return <p className='mb-4 leading-5'>{children}</p>; // tighter spacing
+                            return <p className='mb-4 leading-5'>{children}</p>;
                         },
                         strong({ children }) {
                             return <strong>{children}</strong>;
