@@ -8,12 +8,16 @@ const questionAnswerPrompt = (role, experience, topicsToFocus, numberOfQuestions
   - Write ${numberOfQuestions} interview questions.
   - For each question, generate a detailed but beginner-friendly answer.
   - If the answer needs a code example, add a small code block inside.
+  
+  - **For each question, add a 'companyTags' array containing 1 to 3 names of well-known tech companies where this question is likely to be asked.**
+  
   - Keep formatting very clean.
   - Return a pure JSON array like:
   [
     {
       "question": "Question here?",
-      "answer": "Answer here."
+      "answer": "Answer here.",
+      "companyTags": ["Google", "Meta"]
     },
     ...
   ]
@@ -32,9 +36,9 @@ const conceptExplainPrompt = (question) => (
   - Keep the formatting very clean and clear.
   - Return the result as a valid JSON object in the following format:
   {
-    "title": "Short title here?",
-    "explanation": "Explanation here."
-  }
+      "explanation": "Explanation here.",
+      "title": "Title here"
+    }
 
   Important: Do NOT add any extra text outside the JSON format. Only return valid JSON.`
 );
@@ -64,4 +68,23 @@ const practiceFeedbackPrompt = (question, idealAnswer, userTranscript) => {
     `;
 };
 
-module.exports = { questionAnswerPrompt, conceptExplainPrompt, practiceFeedbackPrompt };
+    const followUpQuestionPrompt = (originalQuestion, originalAnswer) => (
+  `You are an AI trained to generate a relevant follow-up interview question.
+
+  Task:
+  - Based on the original question and its ideal answer, generate one logical follow-up question.
+  - The follow-up question should dig deeper into a concept mentioned in the original answer.
+  - Provide a detailed, beginner-friendly answer for the new follow-up question.
+  - Return a pure JSON object like:
+  {
+    "question": "Follow-up question here?",
+    "answer": "Detailed answer to the follow-up here."
+  }
+
+  Original Question: "${originalQuestion}"
+  Original Answer: "${originalAnswer}"
+
+  Important: Do NOT add any extra text. Only return valid JSON.`
+);
+
+module.exports = { questionAnswerPrompt, conceptExplainPrompt, practiceFeedbackPrompt, followUpQuestionPrompt };

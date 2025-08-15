@@ -68,16 +68,22 @@ const updateQuestionNote = async (req, res) => {
         const question = await Question.findById(req.params.id);
 
         if (!question) {
-            return res
-                .status(404)
-                .json({ success: false, message: "Question not found" });
+            return res.status(404).json({ success: false, message: "Question not found" });
         }
 
+        // Ensure the user owns this question's session
+        const session = await Session.findById(question.session);
+        if (session.user.toString() !== req.user._id.toString()) {
+            return res.status(401).json({ message: "Not authorized" });
+        }
+
+        // Use the 'note' field to be consistent
         question.note = note || "";
         await question.save();
 
         res.status(200).json({ success: true, question });
     } catch (error) {
+        console.error("Error updating note:", error);
         res.status(500).json({ message: "Server Error" });
     }
 };
@@ -165,6 +171,44 @@ const reviewQuestion = async (req, res) => {
     }
 };
 
+const addCompanyTag = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { tagName } = req.body;
+        const question = await Question.findById(id);
+        if (!question) {
+            return res.status(404).json({ message: "Question not found" });
+        }
+        if (tagName && !question.companyTags.includes(tagName)) {
+            question.companyTags.push(tagName);
+            await question.save();
+        }
+        res.status(200).json({ success: true, question });
+    } catch (error) {
+        console.error("Error adding company tag:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+const getQuestionsByCompany = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const userSessions = await Session.find({ user: userId }).select('_id');
+        const sessionIds = userSessions.map(s => s._id);
+        const questionsByCompany = await Question.aggregate([
+            { $match: { session: { $in: sessionIds }, 'companyTags.0': { $exists: true } } },
+            { $unwind: "$companyTags" },
+            { $group: { _id: "$companyTags", questions: { $push: "$$ROOT" }, count: { $sum: 1 } } },
+            { $project: { _id: 0, company: "$_id", questions: 1, count: 1 } },
+            { $sort: { company: 1 } }
+        ]);
+        res.status(200).json({ success: true, data: questionsByCompany });
+    } catch (error) {
+        console.error("Error fetching questions by company:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
 
 module.exports = {
     addQuestionsToSession,
@@ -172,4 +216,6 @@ module.exports = {
     updateQuestionNote,
     toggleMasteredStatus,
     reviewQuestion,
+    getQuestionsByCompany,
+    addCompanyTag,
 };

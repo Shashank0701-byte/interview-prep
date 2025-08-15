@@ -17,6 +17,7 @@ import SignUp from './pages/Auth/Signup';
 import Login from './pages/Auth/Login';
 import AnalyticsDashboard from './pages/Analytics/AnalyticsDashboard';
 
+
 // ✅ ADD THIS COMPONENT DEFINITION
 // This component checks for a token and protects routes.
 const ProtectedRoute = ({ children }) => {
@@ -45,7 +46,7 @@ const App = () => {
               path='/interview-prep/:sessionId'
               element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>}
             />
-            
+            {/* <Route path="/companies" element={<ProtectedRoute><CompaniesPage /></ProtectedRoute>} /> */}
             {/* Now this route will work correctly */}
             <Route
               path="/review"

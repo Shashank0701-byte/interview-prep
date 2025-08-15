@@ -25,6 +25,7 @@ const questionSchema = new mongoose.Schema({
     isPinned: { type: Boolean, default: false },
     note: { type: String, default: "" },
     isMastered: { type: Boolean, default: false },
+    userNote: { type: String, default: "" },
 
 }, { timestamps: true });
 
