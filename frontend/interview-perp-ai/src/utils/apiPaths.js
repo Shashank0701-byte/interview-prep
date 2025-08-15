@@ -12,6 +12,8 @@ export const API_PATHS = {
     AI: {
         GENERATE_QUESTIONS: "/api/ai/generate-questions",
         GENERATE_EXPLANATION: "/api/ai/generate-explanation",
+        PRACTICE_FEEDBACK: "/api/ai/practice-feedback", 
+        COMPANY_TAGS: "/api/ai/company-tags",
     },
     // ✅ FIX: Renamed to SESSIONS for consistency
     SESSIONS: { 
@@ -26,6 +28,14 @@ export const API_PATHS = {
         PIN: (id) => `/api/questions/${id}/pin`,
         UPDATE_NOTE: (id) => `/api/questions/${id}/note`, // ✅ FIX: Using one consistent name
         TOGGLE_MASTERED: (id) => `/api/questions/${id}/master`,
+        GET_QUESTIONS_BY_COMPANY: "/api/questions/by-company",
         REVIEW: (id) => `/api/questions/${id}/review`, // ✅ FIX: Added the missing REVIEW path
+    },
+    ANALYTICS: {
+        GET_PERFORMANCE_OVER_TIME: "/api/analytics/performance-over-time",
+        GET_PERFORMANCE_BY_TOPIC: "/api/analytics/performance-by-topic",
+        GET_FILLER_WORDS: "/api/analytics/filler-words",
+        GET_DAILY_ACTIVITY: "/api/analytics/daily-activity",
+        GET_MASTERY_RATIO: "/api/analytics/mastery-ratio",
     },
 };

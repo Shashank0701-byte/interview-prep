@@ -7,6 +7,7 @@ import { UserContext } from '../../context/userContext';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import uploadImage from '../../utils/uploadImage';
+// import AuthLayout from '../../components/layouts/AuthLayout';
 
 const SignUp = ({ setCurrentPage }) => {
     const [profilePic, setProfilePic] = useState(null);
@@ -72,67 +73,69 @@ const SignUp = ({ setCurrentPage }) => {
     };
 
     return (
-        <div className="w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center">
-            <h3 className="text-lg font-semibold text-black text-center">Create an Account</h3>
-            <p className="text-xs text-slate-700 mt-[5px] text-center">
-                Join us today by entering your details below.
-            </p>
+        
+          <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-300">
+        <div className="w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center bg-white rounded-lg shadow-lg">
+      <h3 className="text-lg font-semibold text-black text-center">Create an Account</h3>
+      <p className="text-xs text-slate-700 mt-[5px] text-center">
+        Join us today by entering your details below.
+      </p>
 
-            <form onSubmit={handleSignUp} className="mt-6">
-                <ProfilePhotoSelector
-                    image={profilePic}
-                    setImage={setProfilePic}
-                    preview={preview}
-                    setPreview={setPreview}
-                />
+      <form onSubmit={handleSignUp} className="mt-6">
+        <ProfilePhotoSelector
+          image={profilePic}
+          setImage={setProfilePic}
+          preview={preview}
+          setPreview={setPreview}
+        />
 
-                <Input
-                    value={fullName}
-                    onChange={({ target }) => setFullName(target.value)}
-                    label="Full Name"
-                    placeholder="John Doe"
-                    type="text"
-                />
+        <Input
+          value={fullName}
+          onChange={({ target }) => setFullName(target.value)}
+          label="Full Name"
+          placeholder="John Doe"
+          type="text"
+        />
 
-                <Input
-                    value={email}
-                    onChange={({ target }) => setEmail(target.value)}
-                    label="Email Address"
-                    placeholder="john@example.com"
-                    type="text"
-                />
+        <Input
+          value={email}
+          onChange={({ target }) => setEmail(target.value)}
+          label="Email Address"
+          placeholder="john@example.com"
+          type="text"
+        />
 
-                <Input
-                    value={password}
-                    onChange={({ target }) => setPassword(target.value)}
-                    label="Password"
-                    placeholder="Min 8 Characters"
-                    type="password"
-                />
+        <Input
+          value={password}
+          onChange={({ target }) => setPassword(target.value)}
+          label="Password"
+          placeholder="Min 8 Characters"
+          type="password"
+        />
 
-                {/* This will display the error message */}
-                {error && <p className="text-red-500 text-xs text-center pb-2">{error}</p>}
+        {error && <p className="text-red-500 text-xs text-center pb-2">{error}</p>}
 
-                {/* Added `relative` and `z-10` to make the button clickable */}
-                <button
-                    type="submit"
-                    className="w-full bg-black text-white p-3 rounded-lg font-semibold mt-1 cursor-pointer relative z-10"
-                >
-                    Sign Up
-                </button>
+        <button
+          type="submit"
+          className="w-full bg-black text-white p-3 rounded-lg font-semibold mt-1 cursor-pointer"
+        >
+          Sign Up
+        </button>
 
-                <p className="text-sm text-center mt-6">
-                    Already have an account?{" "}
-                    <span
-                        className="font-medium text-orange-600 underline cursor-pointer"
-                        onClick={() => setCurrentPage("login")}
-                    >
-                        Login
-                    </span>
-                </p>
-            </form>
-        </div>
-    );
+        <p className="text-sm text-center mt-6">
+          Already have an account?{" "}
+          <span
+            className="font-medium text-orange-600 underline cursor-pointer"
+            onClick={() => setCurrentPage("login")}
+          >
+            Login
+          </span>
+        </p>
+      </form>
+    </div>
+  </div>
+  
+);
 };
 
 export default SignUp;
