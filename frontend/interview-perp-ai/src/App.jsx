@@ -16,6 +16,7 @@ import ReviewPage from './pages/Review/ReviewPage';
 import SignUp from './pages/Auth/Signup';
 import Login from './pages/Auth/Login';
 import AnalyticsDashboard from './pages/Analytics/AnalyticsDashboard';
+import PracticePage from './pages/PracticePage';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -46,6 +47,10 @@ const App = () => {
               path='/interview-prep/:sessionId'
               element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>}
             />
+            <Route
+                    path="/practice"
+                    element={<ProtectedRoute><PracticePage /></ProtectedRoute>}
+                />
             {/* <Route path="/companies" element={<ProtectedRoute><CompaniesPage /></ProtectedRoute>} /> */}
             {/* Now this route will work correctly */}
             <Route

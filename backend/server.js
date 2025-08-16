@@ -11,7 +11,7 @@ const sessionRoutes = require("./routes/sessionRoutes");
 const questionRoutes = require("./routes/questionRoutes");
 const {protect} = require("./middlewares/authMiddleware");
 const { generateInterviewQuestions, generateConceptExplanation } = require("./controllers/aiController");
-
+const feedbackRoutes = require('./routes/feedbackRoutes');
 const app = express();
 
 // Middleware to handle CORS
@@ -34,7 +34,7 @@ app.use("/api/sessions", sessionRoutes);
 app.use("/api/questions", questionRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
-
+app.use('/api/feedback', feedbackRoutes);
 app.use("/api/ai", aiRoutes);
 
 // Serve uploads folder
