@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 
 const ReviewPage = () => {
     const [queue, setQueue] = useState([]);
+    const [initialCount, setInitialCount] = useState(0); // For progress tracking
     const [isLoading, setIsLoading] = useState(true);
     const [showAnswer, setShowAnswer] = useState(false);
 
@@ -14,7 +15,9 @@ const ReviewPage = () => {
         const fetchQueue = async () => {
             try {
                 const response = await axiosInstance.get(API_PATHS.SESSIONS.GET_REVIEW_QUEUE);
-                setQueue(response.data.reviewQueue || []);
+                const reviewQueue = response.data.reviewQueue || [];
+                setQueue(reviewQueue);
+                setInitialCount(reviewQueue.length); // Store the initial total number of cards
             } catch (error) {
                 console.error("Failed to fetch review queue", error);
             } finally {
@@ -28,7 +31,7 @@ const ReviewPage = () => {
         try {
             await axiosInstance.put(API_PATHS.QUESTION.REVIEW(questionId), { quality });
             setQueue(prevQueue => prevQueue.slice(1));
-            setShowAnswer(false);
+            setShowAnswer(false); // Hide answer for the next card
         } catch (error) {
             console.error("Failed to submit review", error);
         }
@@ -39,32 +42,50 @@ const ReviewPage = () => {
     }
     
     const currentQuestion = queue[0];
+    const currentCardNumber = initialCount > 0 ? initialCount - queue.length + 1 : 0;
 
     return (
         <DashboardLayout>
-            <div className="container mx-auto p-8">
-                <h1 className="text-2xl font-bold mb-6">Review Session</h1>
-                {currentQuestion ? (
-                    <div className="bg-white p-6 rounded-lg shadow-md">
-                        <p className="font-semibold text-lg">{currentQuestion.question}</p>
-                        {showAnswer ? (
-                            <div className="mt-4 pt-4 border-t">
-                                <div className="prose prose-sm max-w-none">
-                                    <ReactMarkdown>{currentQuestion.answer}</ReactMarkdown>
-                                </div>
-                                <div className="flex justify-center gap-4 mt-6">
-                                    <button onClick={() => handleReview(currentQuestion._id, 'hard')} className="btn-secondary bg-red-100 text-red-700">Hard</button>
-                                    <button onClick={() => handleReview(currentQuestion._id, 'good')} className="btn-secondary bg-blue-100 text-blue-700">Good</button>
-                                    <button onClick={() => handleReview(currentQuestion._id, 'easy')} className="btn-secondary bg-green-100 text-green-700">Easy</button>
-                                </div>
+            <div className="container mx-auto p-4 md:p-8 flex flex-col items-center">
+                <div className="w-full max-w-2xl">
+                    <h1 className="text-2xl font-bold mb-4">Review Session</h1>
+                    {currentQuestion ? (
+                        <div className="bg-white p-6 rounded-lg shadow-lg">
+                            <p className="text-right text-sm text-gray-500 mb-2">Card {currentCardNumber} of {initialCount}</p>
+                            {/* Progress Bar */}
+                            <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+                                <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${initialCount > 0 ? (currentCardNumber / initialCount) * 100 : 0}%` }}></div>
                             </div>
-                        ) : (
-                            <button onClick={() => setShowAnswer(true)} className="btn-primary mt-4">Show Answer</button>
-                        )}
-                    </div>
-                ) : (
-                    <p className="text-center text-gray-500">You have no questions due for review. Great job!</p>
-                )}
+
+                            <div className="min-h-[80px] flex items-center">
+                                <p className="font-semibold text-lg">{currentQuestion.question}</p>
+                            </div>
+                            
+                            {showAnswer ? (
+                                <div className="mt-4 pt-4 border-t">
+                                    <div className="prose prose-sm max-w-none mb-6">
+                                        <ReactMarkdown>{currentQuestion.answer}</ReactMarkdown>
+                                    </div>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+                                        {/* Updated buttons to match the desired UI */}
+                                        <button onClick={() => handleReview(currentQuestion._id, 'again')} className="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition-colors">Again</button>
+                                        <button onClick={() => handleReview(currentQuestion._id, 'hard')} className="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition-colors">Hard</button>
+                                        <button onClick={() => handleReview(currentQuestion._id, 'good')} className="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition-colors">Good</button>
+                                        <button onClick={() => handleReview(currentQuestion._id, 'easy')} className="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition-colors">Easy</button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-center mt-6">
+                                    <button onClick={() => setShowAnswer(true)} className="bg-blue-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors">Show Answer</button>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="text-center bg-white p-8 rounded-lg shadow-lg">
+                            <p className="text-gray-600 text-lg">You have no questions due for review. Great job! 🎉</p>
+                        </div>
+                    )}
+                </div>
             </div>
         </DashboardLayout>
     );

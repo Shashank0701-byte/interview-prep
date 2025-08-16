@@ -18,6 +18,6 @@ router.post('/:id/pin', protect, togglePinQuestion);
 router.put('/:id/note', protect, updateQuestionNote);  
 router.put('/:id/master', protect, toggleMasteredStatus);
 router.put('/:id/review', protect, reviewQuestion);
-router.get('/by-company', protect, getQuestionsByCompany);
+
 
 module.exports = router;

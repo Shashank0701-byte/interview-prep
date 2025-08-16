@@ -114,56 +114,63 @@ const toggleMasteredStatus = async (req, res) => {
     }
 };
 
-// @desc    Review a question and record performance
+// @desc    Review a question and update its spaced repetition data
 // @route   PUT /api/questions/:id/review
 // @access  Private
 const reviewQuestion = async (req, res) => {
     try {
         const { id } = req.params;
-        const { quality } = req.body; // e.g., 'forgot', 'hard', 'good'
+        const { quality } = req.body; // Expects 'again', 'hard', 'good', or 'easy'
         const userId = req.user._id;
 
-        const question = await Question.findById(id);
-        if (!question) return res.status(404).json({ message: "Question not found" });
+        // Validate the quality input
+        if (!['again', 'hard', 'good', 'easy'].includes(quality)) {
+            return res.status(400).json({ message: "Invalid quality value provided." });
+        }
 
+        const question = await Question.findById(id);
+        if (!question) {
+            return res.status(404).json({ message: "Question not found" });
+        }
+
+        // Verify the question belongs to the user
         const session = await Session.findById(question.session);
         if (session.user.toString() !== userId.toString()) {
             return res.status(401).json({ message: "Not authorized" });
         }
 
-        // --- ✅ 1. RECORD PERFORMANCE SCORE ---
-        // We convert the quality rating into a number for the charts.
+        // --- 1. RECORD PERFORMANCE SCORE ---
         let performanceScore = 0;
         if (quality === 'hard') {
-            performanceScore = 0.5; // Remembered, but with difficulty
-        } else if (quality === 'good') {
-            performanceScore = 1.0; // Remembered well
+            performanceScore = 0.5;
+        } else if (quality === 'good' || quality === 'easy') {
+            performanceScore = 1.0;
         }
-        // 'forgot' will have a score of 0
+        // For 'again', the performanceScore remains 0
 
-        // Add the new review to the question's history
         question.performanceHistory.push({
             reviewDate: new Date(),
             performanceScore: performanceScore,
         });
 
-
-        // --- ✅ 2. UPDATE SPACED REPETITION (Existing Logic) ---
-        let { reviewInterval = 1 } = question; // Default to 1 day if undefined
+        // --- 2. UPDATE SPACED REPETITION INTERVAL ---
+        let { reviewInterval = 1 } = question;
         
-        if (quality === 'forgot') {
-            reviewInterval = 1; // Reset to 1 day
+        if (quality === 'again') {
+            reviewInterval = 1; // Reset progress, show again in 1 day
         } else if (quality === 'hard') {
             reviewInterval = Math.ceil(reviewInterval * 1.2); // Increase slowly
         } else if (quality === 'good') {
-            reviewInterval = Math.ceil(reviewInterval * 2.0); // Increase faster
+            reviewInterval = Math.ceil(reviewInterval * 2.0); // Standard increase
+        } else if (quality === 'easy') {
+            reviewInterval = Math.ceil(reviewInterval * 3.0); // Larger increase
         }
 
         question.reviewInterval = reviewInterval;
         question.dueDate = new Date(Date.now() + reviewInterval * 24 * 60 * 60 * 1000);
 
         await question.save();
-        res.status(200).json({ message: "Review recorded", question });
+        res.status(200).json({ message: "Review recorded successfully", question });
 
     } catch (error) {
         console.error("Error reviewing question:", error);
@@ -171,43 +178,8 @@ const reviewQuestion = async (req, res) => {
     }
 };
 
-const addCompanyTag = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { tagName } = req.body;
-        const question = await Question.findById(id);
-        if (!question) {
-            return res.status(404).json({ message: "Question not found" });
-        }
-        if (tagName && !question.companyTags.includes(tagName)) {
-            question.companyTags.push(tagName);
-            await question.save();
-        }
-        res.status(200).json({ success: true, question });
-    } catch (error) {
-        console.error("Error adding company tag:", error);
-        res.status(500).json({ message: "Server Error" });
-    }
-};
 
-const getQuestionsByCompany = async (req, res) => {
-    try {
-        const userId = req.user._id;
-        const userSessions = await Session.find({ user: userId }).select('_id');
-        const sessionIds = userSessions.map(s => s._id);
-        const questionsByCompany = await Question.aggregate([
-            { $match: { session: { $in: sessionIds }, 'companyTags.0': { $exists: true } } },
-            { $unwind: "$companyTags" },
-            { $group: { _id: "$companyTags", questions: { $push: "$$ROOT" }, count: { $sum: 1 } } },
-            { $project: { _id: 0, company: "$_id", questions: 1, count: 1 } },
-            { $sort: { company: 1 } }
-        ]);
-        res.status(200).json({ success: true, data: questionsByCompany });
-    } catch (error) {
-        console.error("Error fetching questions by company:", error);
-        res.status(500).json({ message: "Server Error" });
-    }
-};
+
 
 
 module.exports = {
@@ -216,6 +188,4 @@ module.exports = {
     updateQuestionNote,
     toggleMasteredStatus,
     reviewQuestion,
-    getQuestionsByCompany,
-    addCompanyTag,
 };
