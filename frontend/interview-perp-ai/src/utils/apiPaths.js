@@ -38,4 +38,7 @@ export const API_PATHS = {
         GET_DAILY_ACTIVITY: "/api/analytics/daily-activity",
         GET_MASTERY_RATIO: "/api/analytics/mastery-ratio",
     },
+    FEEDBACK: {
+        GENERATE: 'api/feedback', // Add this new path
+    },
 };
