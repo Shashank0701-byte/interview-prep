@@ -28,6 +28,11 @@ const ProtectedRoute = ({ children }) => {
   return token ? children : <Navigate to="/" replace />;
 };
 
+const RedirectIfAuth = ({ children }) => {
+    const token = localStorage.getItem('token');
+    return token ? <Navigate to="/dashboard" replace /> : children;
+};
+
 const App = () => {
   return (
     <UserProvider>
@@ -35,9 +40,15 @@ const App = () => {
         <Router>
           <Routes>
             <Route path='/' element={<LandingPage />} />
-             <Route path="/signUp" element={<SignUp />} /> 
-             <Route path="/login" element={<Login />} /> 
-            <Route path="/progress" element={<AnalyticsDashboard />} />
+             <Route 
+            path="/signUp" 
+            element={<RedirectIfAuth><SignUp /></RedirectIfAuth>} 
+          /> 
+          <Route 
+            path="/login" 
+            element={<RedirectIfAuth><Login /></RedirectIfAuth>} 
+          /> 
+            <Route path="/progress" element={<ProtectedRoute><AnalyticsDashboard /></ProtectedRoute>} />
             {/* These routes should also be protected */}
             <Route
               path='/dashboard'
