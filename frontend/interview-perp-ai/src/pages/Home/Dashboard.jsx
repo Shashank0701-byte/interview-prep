@@ -52,6 +52,9 @@ const Dashboard = () => {
             toast.success("Session Deleted Successfully");
             setOpenDeleteAlert({ open: false, data: null });
             fetchDashboardData();
+            
+            // Trigger analytics refresh after deleting session
+            window.dispatchEvent(new Event('analytics-refresh'));
         } catch (error) {
             toast.error("Failed to delete session.");
         }
@@ -103,6 +106,9 @@ const Dashboard = () => {
                 <CreateSessionForm onSuccess={() => {
                     setOpenCreateModal(false);
                     fetchDashboardData();
+                    
+                    // Trigger analytics refresh after creating session
+                    window.dispatchEvent(new Event('analytics-refresh'));
                 }} />
             </Modal>
             <Modal isOpen={openDeleteAlert.open} onClose={() => setOpenDeleteAlert({ open: false, data: null })} title="Delete Session">

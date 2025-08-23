@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const { getPracticeFeedback, generateFollowUpQuestion } = require('../controllers/aiController');
+const { getPracticeFeedback, generateFollowUpQuestion, generateCompanyQuestions } = require('../controllers/aiController');
 // console.log("handleFollowUp:", handleFollowUp);
 const { protect } = require('../middlewares/authMiddleware');
 
@@ -13,4 +13,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 router.post('/practice-feedback', protect, upload.single('audio'), getPracticeFeedback);
 
 router.post('/follow-up', protect, generateFollowUpQuestion);
+
+// Company-specific questions route
+router.post('/company-questions', protect, generateCompanyQuestions);
+
 module.exports = router;

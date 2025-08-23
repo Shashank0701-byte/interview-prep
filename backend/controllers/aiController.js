@@ -119,4 +119,71 @@ const generateFollowUpQuestion = async (req, res) => {
     }
 };
 
-module.exports = { generateInterviewQuestions, generateFollowUpQuestion, getPracticeFeedback, };
+// @desc    Generate company-specific interview questions
+// @route   POST /api/ai/company-questions
+// @access  Private
+const generateCompanyQuestions = async (req, res) => {
+    try {
+        const { companyName, role, experience, topicsToFocus, numberOfQuestions } = req.body;
+        
+        if (!companyName || !role || !experience || !topicsToFocus || !numberOfQuestions) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash-latest",
+            generationConfig: {
+                maxOutputTokens: 8192,
+                responseMimeType: "application/json",
+            },
+        });
+
+        const prompt = `You are an AI trained to generate company-specific interview questions.
+
+        Task:
+        - Company: ${companyName}
+        - Role: ${role}
+        - Candidate Experience: ${experience} years
+        - Focus Topics: ${topicsToFocus}
+        - Write ${numberOfQuestions} interview questions that are specifically asked at ${companyName}
+        
+        Requirements:
+        1. Questions should reflect ${companyName}'s interview style and culture
+        2. Focus on topics that ${companyName} specifically emphasizes
+        3. Include both technical and behavioral questions
+        4. Make questions realistic and current (2024-2025)
+        5. For each question, provide a detailed, beginner-friendly answer
+        
+        Return a pure JSON array like:
+        [
+            {
+                "question": "Question here?",
+                "answer": "Detailed answer here.",
+                "category": "Technical/Behavioral/System Design",
+                "difficulty": "Easy/Medium/Hard"
+            }
+        ]
+        
+        Important: Do NOT add any extra text. Only return valid JSON.`;
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const data = JSON.parse(response.text());
+
+        res.status(200).json(data);
+
+    } catch (error) {
+        console.error("AI Company Questions Generation Error:", error);
+        res.status(500).json({
+            message: "Failed to generate company-specific questions.",
+            error: error.message,
+        });
+    }
+};
+
+module.exports = { 
+    generateInterviewQuestions, 
+    generateFollowUpQuestion, 
+    getPracticeFeedback,
+    generateCompanyQuestions
+};

@@ -34,6 +34,9 @@ const ReviewPage = () => {
             await axiosInstance.put(API_PATHS.QUESTION.REVIEW(questionId), { quality });
             setQueue(prevQueue => prevQueue.slice(1));
             setShowAnswer(false);
+            
+            // Trigger analytics refresh after review
+            window.dispatchEvent(new Event('analytics-refresh'));
         } catch (error) {
             console.error("Failed to submit review", error);
         }
@@ -76,15 +79,15 @@ const ReviewPage = () => {
                                             <ReactMarkdown>{currentQuestion.answer}</ReactMarkdown>
                                         </div>
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
-                                            <button onClick={() => handleReview(currentQuestion._id, 'again')} className="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition-colors">Again</button>
-                                            <button onClick={() => handleReview(currentQuestion._id, 'hard')} className="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition-colors">Hard</button>
-                                            <button onClick={() => handleReview(currentQuestion._id, 'good')} className="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition-colors">Good</button>
-                                            <button onClick={() => handleReview(currentQuestion._id, 'easy')} className="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition-colors">Easy</button>
+                                            <button onClick={() => handleReview(currentQuestion._id, 'again')} className="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition-colors cursor-pointer">Again</button>
+                                            <button onClick={() => handleReview(currentQuestion._id, 'hard')} className="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition-colors cursor-pointer">Hard</button>
+                                            <button onClick={() => handleReview(currentQuestion._id, 'good')} className="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition-colors cursor-pointer">Good</button>
+                                            <button onClick={() => handleReview(currentQuestion._id, 'easy')} className="w-full bg-black text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition-colors cursor-pointer">Easy</button>
                                         </div>
                                     </div>
                                 ) : (
                                     <div className="text-center mt-6">
-                                        <button onClick={() => setShowAnswer(true)} className="w-full bg-black text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors">Show Answer</button>
+                                        <button onClick={() => setShowAnswer(true)} className="w-full bg-black text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer">Show Answer</button>
                                     </div>
                                 )}
                             </div>
@@ -92,7 +95,7 @@ const ReviewPage = () => {
                             <div className="text-center mt-4">
                                 <button
                                     onClick={() => handlePractice(currentQuestion)}
-                                    className="bg-blue-600 text-white font-bold py-2 px-8 rounded-lg hover:bg-blue-700 transition-colors shadow-md"
+                                    className="bg-blue-600 text-white font-bold py-2 px-8 rounded-lg hover:bg-blue-700 transition-colors shadow-md cursor-pointer"
                                 >
                                     Practice Now
                                 </button>

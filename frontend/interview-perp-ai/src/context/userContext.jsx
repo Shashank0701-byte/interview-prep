@@ -16,21 +16,21 @@ const UserProvider = ({ children }) => {
       setLoading(false);
       return;
     }
-  // The dependency array was missing but is required for useEffect
 
-  const fetchUser = async () => {
-  try {
-    const response = await axiosInstance.get(API_PATHS.AUTH.GET_PROFILE);
-    setUser(response.data);
-  } catch (error) {
-    console.error("User not authenticated", error);
-    clearUser();
-  } finally {
-    setLoading(false);
-  }
-};
+    const fetchUser = async () => {
+      try {
+        const response = await axiosInstance.get(API_PATHS.AUTH.GET_PROFILE);
+        setUser(response.data);
+      } catch (error) {
+        console.error("User not authenticated", error);
+        clearUser();
+      } finally {
+        setLoading(false);
+      }
+    };
+    
     fetchUser();
-},[]);
+  }, [user]);
   // The definitions for updateUser and clearUser are missing in the screenshot
   // but are used in the provider's value.
   const updateUser = (userData) => {

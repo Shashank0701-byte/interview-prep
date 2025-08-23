@@ -38,64 +38,106 @@ const AnalyticsDashboard = () => {
     const [activeTab, setActiveTab] = useState('performance'); // 'performance' or 'activity'
 
     // --- Data Fetching & Transformation ---
-    useEffect(() => {
-        const fetchAnalyticsData = async () => {
-            setIsLoading(true);
-            try {
-                // Fetch data for all four charts at the same time
-                const [progressRes, performanceRes, activityRes, masteryRes] = await Promise.all([
-                    axiosInstance.get(API_PATHS.ANALYTICS.GET_PERFORMANCE_OVER_TIME),
-                    axiosInstance.get(API_PATHS.ANALYTICS.GET_PERFORMANCE_BY_TOPIC),
-                    axiosInstance.get(API_PATHS.ANALYTICS.GET_DAILY_ACTIVITY),
-                    axiosInstance.get(API_PATHS.ANALYTICS.GET_MASTERY_RATIO),
-                ]);
+    const fetchAnalyticsData = async () => {
+        setIsLoading(true);
+        try {
+            // Fetch data for all four charts at the same time
+            const [progressRes, performanceRes, activityRes, masteryRes] = await Promise.all([
+                axiosInstance.get(API_PATHS.ANALYTICS.GET_PERFORMANCE_OVER_TIME),
+                axiosInstance.get(API_PATHS.ANALYTICS.GET_PERFORMANCE_BY_TOPIC),
+                axiosInstance.get(API_PATHS.ANALYTICS.GET_DAILY_ACTIVITY),
+                axiosInstance.get(API_PATHS.ANALYTICS.GET_MASTERY_RATIO),
+            ]);
 
-                // --- Transform Performance Charts Data ---
-                if (progressRes.data?.data) {
-                    const labels = progressRes.data.data.map(d => `Week ${d.week.split('-')[1]}`);
-                    const data = progressRes.data.data.map(d => d.accuracy);
-                    setProgressData({
-                        labels,
-                        datasets: [{ label: 'Content Accuracy', data, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.4 }],
-                    });
-                }
-                if (performanceRes.data?.data) {
-                    const labels = performanceRes.data.data.map(d => d.topic);
-                    const data = performanceRes.data.data.map(d => d.performance);
-                    setPerformanceData({
-                        labels,
-                        datasets: [{ label: 'Performance', data, backgroundColor: '#818cf8', borderColor: '#6366f1', borderWidth: 1 }],
-                    });
-                }
-
-                // --- Transform Activity Charts Data ---
-                if (activityRes.data?.data) {
-                    const labels = activityRes.data.data.map(d => new Date(d._id).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-                    const data = activityRes.data.data.map(d => d.count);
-                    setDailyActivityData({
-                        labels,
-                        datasets: [{ label: 'Cards Reviewed', data, backgroundColor: '#34d399', borderColor: '#10b981', borderWidth: 1 }],
-                    });
-                }
-                if (masteryRes.data?.data) {
-                    setMasteryRatioData({
-                        labels: ['Mastered', 'Unmastered'],
-                        datasets: [{
-                            data: [masteryRes.data.data.mastered, masteryRes.data.data.unmastered],
-                            backgroundColor: ['#60a5fa', '#f87171'],
-                            hoverOffset: 4,
-                        }],
-                    });
-                }
-
-            } catch (error) {
-                toast.error("Failed to load analytics data.");
-                console.error("Error fetching analytics data:", error);
-            } finally {
-                setIsLoading(false);
+            // --- Transform Performance Charts Data ---
+            if (progressRes.data?.data && progressRes.data.data.length > 0) {
+                const labels = progressRes.data.data.map(d => `Week ${d.week.split('-')[1]}`);
+                const data = progressRes.data.data.map(d => d.accuracy);
+                setProgressData({
+                    labels,
+                    datasets: [{ label: 'Content Accuracy', data, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.4 }],
+                });
+            } else {
+                setProgressData({
+                    labels: ['This Week'],
+                    datasets: [{ label: 'Content Accuracy', data: [0], borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.4 }],
+                });
             }
-        };
+            if (performanceRes.data?.data && performanceRes.data.data.length > 0) {
+                const labels = performanceRes.data.data.map(d => d.topic);
+                const data = performanceRes.data.data.map(d => d.performance);
+                setPerformanceData({
+                    labels,
+                    datasets: [{ label: 'Performance', data, backgroundColor: '#818cf8', borderColor: '#6366f1', borderWidth: 1 }],
+                });
+            } else {
+                setPerformanceData({
+                    labels: ['No Data Yet'],
+                    datasets: [{ label: 'Performance', data: [0], backgroundColor: '#818cf8', borderColor: '#6366f1', borderWidth: 1 }],
+                });
+            }
+
+            // --- Transform Activity Charts Data ---
+            if (activityRes.data?.data && activityRes.data.data.length > 0) {
+                const labels = activityRes.data.data.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                const data = activityRes.data.data.map(d => d.count);
+                setDailyActivityData({
+                    labels,
+                    datasets: [{ label: 'Cards Reviewed', data, backgroundColor: '#34d399', borderColor: '#10b981', borderWidth: 1 }],
+                });
+            } else {
+                // If no data, show empty chart with today's date
+                const today = new Date();
+                setDailyActivityData({
+                    labels: [today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })],
+                    datasets: [{ label: 'Cards Reviewed', data: [0], backgroundColor: '#34d399', borderColor: '#10b981', borderWidth: 1 }],
+                });
+            }
+            if (masteryRes.data?.data) {
+                setMasteryRatioData({
+                    labels: ['Mastered', 'Unmastered'],
+                    datasets: [{
+                        data: [masteryRes.data.data.mastered || 0, masteryRes.data.data.unmastered || 0],
+                        backgroundColor: ['#60a5fa', '#f87171'],
+                        hoverOffset: 4,
+                    }],
+                });
+            } else {
+                setMasteryRatioData({
+                    labels: ['Mastered', 'Unmastered'],
+                    datasets: [{
+                        data: [0, 0],
+                        backgroundColor: ['#60a5fa', '#f87171'],
+                        hoverOffset: 4,
+                    }],
+                });
+            }
+
+        } catch (error) {
+            toast.error("Failed to load analytics data.");
+            console.error("Error fetching analytics data:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchAnalyticsData();
+    }, []);
+
+    // Expose refresh function for other components
+    useEffect(() => {
+        // Add event listener for analytics refresh
+        const handleAnalyticsRefresh = () => {
+            fetchAnalyticsData();
+            toast.success("Progress data updated!");
+        };
+
+        window.addEventListener('analytics-refresh', handleAnalyticsRefresh);
+        
+        return () => {
+            window.removeEventListener('analytics-refresh', handleAnalyticsRefresh);
+        };
     }, []);
 
     // --- Chart Options ---
@@ -108,8 +150,22 @@ const AnalyticsDashboard = () => {
         <DashboardLayout>
             <div className="container mx-auto p-4 sm:p-6 lg:p-8">
                 <header className="mb-8 px-4 md:px-0">
-                    <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">My Progress Dashboard</h1>
-                    <p className="text-slate-500 mt-2 text-base sm:text-lg">Visualizing your learning journey and key performance trends.</p>
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">My Progress Dashboard</h1>
+                            <p className="text-slate-500 mt-2 text-base sm:text-lg">Visualizing your learning journey and key performance trends.</p>
+                        </div>
+                        <button 
+                            onClick={fetchAnalyticsData}
+                            disabled={isLoading}
+                            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            Refresh
+                        </button>
+                    </div>
                 </header>
 
                 {/* --- Main Tab Navigation --- */}
@@ -144,8 +200,8 @@ const AnalyticsDashboard = () => {
 
                         {/* --- Activity Tab Content --- */}
                         {activeTab === 'activity' && (
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                <div className="lg:col-span-2 bg-white p-4 sm:p-6 rounded-2xl shadow-lg shadow-slate-200/50">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-lg shadow-slate-200/50">
                                     <h2 className="text-xl font-bold text-slate-900 mb-4">Cards Reviewed Per Day</h2>
                                     <div className="h-80 w-full">
                                         <Bar options={activityBarOptions} data={dailyActivityData} />

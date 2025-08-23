@@ -82,6 +82,9 @@ const InterviewPrep = () => {
             if (response.data) {
                 toast.success("Note saved successfully!");
                 fetchSessionDetailsById();
+                
+                // Trigger analytics refresh after saving note
+                window.dispatchEvent(new Event('analytics-refresh'));
             }
         } catch (error) {
             toast.error("Failed to save note.");
@@ -112,6 +115,9 @@ const InterviewPrep = () => {
         try {
             await axiosInstance.post(API_PATHS.QUESTION.PIN(questionId));
             fetchSessionDetailsById();
+            
+            // Trigger analytics refresh after pinning/unpinning
+            window.dispatchEvent(new Event('analytics-refresh'));
         } catch (error) {
             console.error("Error pinning question:", error);
         }
@@ -121,6 +127,9 @@ const InterviewPrep = () => {
         try {
             await axiosInstance.put(API_PATHS.QUESTION.TOGGLE_MASTERED(questionId));
             fetchSessionDetailsById();
+            
+            // Trigger analytics refresh after mastering/unmastering
+            window.dispatchEvent(new Event('analytics-refresh'));
         } catch (error) {
             toast.error("Failed to update status.");
         }
@@ -141,6 +150,9 @@ const InterviewPrep = () => {
             });
             toast.success("Added More Q&A!");
             fetchSessionDetailsById();
+            
+            // Trigger analytics refresh after adding more questions
+            window.dispatchEvent(new Event('analytics-refresh'));
         } catch (error) {
             setErrorMsg("Something went wrong while loading more questions.");
         } finally {

@@ -118,7 +118,7 @@ const PracticePage = () => {
     return (
         <DashboardLayout>
             <div className="container mx-auto p-4 md:p-8 max-w-4xl">
-                <button onClick={() => navigate(-1)} className="text-blue-500 hover:underline mb-4">&larr; Back to Review</button>
+                <button onClick={() => navigate(-1)} className="text-blue-500 hover:underline mb-4 cursor-pointer">&larr; Back to Review</button>
                 <div className="bg-white p-6 rounded-lg shadow-lg" ref={topRef}>
                     <h1 className="text-xl font-bold mb-2">Practice Session</h1>
                     <p className="text-lg font-semibold text-gray-800 mb-4">{question.question}</p>
@@ -138,14 +138,14 @@ const PracticePage = () => {
                         <div className="flex items-center justify-center gap-4">
                             <button 
                                 onClick={isRecording ? stopRecording : startRecording}
-                                className={`flex items-center gap-2 px-6 py-3 font-semibold rounded-lg text-white transition-colors ${isRecording ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'}`}
+                                className={`flex items-center gap-2 px-6 py-3 cursor-pointer font-semibold rounded-lg text-white transition-colors ${isRecording ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'}`}
                             >
                                 {isRecording ? <><FaStopCircle /> Stop Recording</> : <><FaMicrophone /> Start Recording</>}
                             </button>
                             <button 
                                 onClick={handleGetFeedback}
                                 disabled={isRecording || isLoading}
-                                className="px-6 py-3 font-semibold rounded-lg text-white bg-green-500 hover:bg-green-600 disabled:bg-gray-400"
+                                className="px-6 py-3 font-semibold rounded-lg text-white bg-green-500 hover:bg-green-600 disabled:bg-gray-400 cursor-pointer"
                             >
                                 Get Feedback
                             </button>
@@ -165,7 +165,7 @@ const PracticePage = () => {
                             <div className="mt-6 text-center">
                                 <button
                                     onClick={handlePracticeAgain}
-                                    className="flex items-center gap-2 mx-auto px-8 py-3 font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-md"
+                                    className="flex items-center gap-2 mx-auto px-8 py-3 font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-md cursor-pointer"
                                 >
                                     <FaRedo /> Practice Again
                                 </button>

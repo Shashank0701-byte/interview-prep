@@ -14,6 +14,7 @@ export const API_PATHS = {
         GENERATE_EXPLANATION: "/api/ai/generate-explanation",
         PRACTICE_FEEDBACK: "/api/ai/practice-feedback", 
         COMPANY_TAGS: "/api/ai/company-tags",
+        COMPANY_QUESTIONS: "/api/ai/company-questions",
     },
     // ✅ FIX: Renamed to SESSIONS for consistency
     SESSIONS: { 
@@ -40,5 +41,32 @@ export const API_PATHS = {
     },
     FEEDBACK: {
         GENERATE: 'api/feedback', // Add this new path
+    },
+    COMPANIES: {
+        GET_ALL: "/api/companies",
+        GET_ONE: (id) => `/api/companies/${id}`,
+        SEARCH: "/api/companies/search",
+        GET_QUESTIONS: (id) => `/api/companies/${id}/questions`,
+        ADD_QUESTION: (id) => `/api/companies/${id}/questions`,
+        GET_STATS: (id) => `/api/companies/${id}/stats`,
+    },
+    AI_INTERVIEW: {
+        START: "/api/ai-interview/start",
+        SUBMIT_ANSWER: (sessionId) => `/api/ai-interview/${sessionId}/answer`,
+        COMPLETE: (sessionId) => `/api/ai-interview/${sessionId}/complete`,
+        GET_SESSION: (sessionId) => `/api/ai-interview/${sessionId}`,
+    },
+    RECRUITER: {
+        DASHBOARD: "/api/recruiter/dashboard",
+        CANDIDATES: "/api/recruiter/candidates",
+        CANDIDATE_PROFILE: (candidateId) => `/api/recruiter/candidates/${candidateId}`,
+        ANALYTICS: "/api/recruiter/analytics",
+    },
+    LEARNING_PATH: {
+        CREATE: "/api/learning-path/create",
+        GET: "/api/learning-path",
+        UPDATE_SKILL: (skillName) => `/api/learning-path/skill/${skillName}`,
+        RECOMMENDATIONS: "/api/learning-path/recommendations",
+        COMPLETE_ITEM: "/api/learning-path/complete-item",
     },
 };

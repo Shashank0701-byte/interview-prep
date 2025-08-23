@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Assuming import path
 import Input from '../../components/Inputs/Input';
 import SpinnerLoader from '../../components/Loader/SpinnerLoader';
+import CompanySelector from '../../components/CompanySelector';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 
@@ -12,6 +13,7 @@ const CreateSessionForm = () => {
     topicsToFocus: "",
     description: "",
   });
+  const [selectedCompany, setSelectedCompany] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -39,19 +41,35 @@ const CreateSessionForm = () => {
 
     try{
         // Call AI API to generate questions
-        const aiResponse = await axiosInstance.post(API_PATHS.AI.GENERATE_QUESTIONS,{
-            role,
-            experience,
-            topicsToFocus,
-            numberOfQuestions: 10,
-        } );
+        let aiResponse;
+        
+        if (selectedCompany) {
+            // Generate company-specific questions
+            aiResponse = await axiosInstance.post(API_PATHS.AI.COMPANY_QUESTIONS, {
+                companyName: selectedCompany.name,
+                role,
+                experience,
+                topicsToFocus,
+                numberOfQuestions: 10,
+            });
+        } else {
+            // Generate general questions
+            aiResponse = await axiosInstance.post(API_PATHS.AI.GENERATE_QUESTIONS, {
+                role,
+                experience,
+                topicsToFocus,
+                numberOfQuestions: 10,
+            });
+        }
         // Should be array like [(question, answer), ...]
         const generatedQuestions = aiResponse.data;
-        const response = await axiosInstance.post(API_PATHS.SESSION.CREATE, {
+        const response = await axiosInstance.post(API_PATHS.SESSIONS.CREATE, {
             ...formData,
             questions: generatedQuestions,
         });
         if (response.data?.session?._id){
+            // Trigger analytics refresh after creating new session
+            window.dispatchEvent(new Event('analytics-refresh'));
             navigate(`/interview-prep/${response.data?.session?._id}`);
         }
         } catch(error){
@@ -96,6 +114,11 @@ const CreateSessionForm = () => {
         label="Topics to Focus On"
         placeholder="Comma-separated, e.g., React, Node.js, MongoDB"
         type="text"
+      />
+
+      <CompanySelector 
+        onCompanySelect={setSelectedCompany}
+        selectedCompany={selectedCompany}
       />
 
         <Input  
