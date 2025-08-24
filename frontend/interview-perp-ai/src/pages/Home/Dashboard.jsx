@@ -11,6 +11,7 @@ import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import moment from "moment";
 import { CARD_BG } from "../../utils/data";
+import CollaborativeNav from '../../components/Collaborative/CollaborativeNav';
 
 
 const Dashboard = () => {
@@ -73,6 +74,10 @@ const Dashboard = () => {
                             Start Review ({reviewCount} {reviewCount === 1 ? 'card' : 'cards'} due)
                         </Link>
                     )}
+                </div>
+                
+                <div className="px-4 md:px-0">
+                    <CollaborativeNav />
                 </div>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-7 pt-1 pb-6 px-4 md:px-0'>
                     {isLoading ? (
