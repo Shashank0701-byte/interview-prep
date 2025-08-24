@@ -45,6 +45,17 @@ app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
 app.use('/api/feedback', feedbackRoutes);
 app.use("/api/ai", aiRoutes);
 
+// Collaborative feature routes
+const studyGroupRoutes = require('./routes/studyGroupRoutes');
+const peerReviewRoutes = require('./routes/peerReviewRoutes');
+const mentorshipRoutes = require('./routes/mentorshipRoutes');
+const forumRoutes = require('./routes/forumRoutes');
+
+app.use('/api/study-groups', studyGroupRoutes);
+app.use('/api/peer-reviews', peerReviewRoutes);
+app.use('/api/mentorships', mentorshipRoutes);
+app.use('/api/forums', forumRoutes);
+
 // Serve uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads"), {}));
 

@@ -18,6 +18,14 @@ import Login from './pages/Auth/Login';
 import AnalyticsDashboard from './pages/Analytics/AnalyticsDashboard';
 import PracticePage from './pages/PracticePage';
 
+// Import collaborative feature components
+import StudyGroups from './pages/Collaborative/StudyGroups';
+import StudyGroupDetail from './pages/Collaborative/StudyGroupDetail';
+import PeerReview from './pages/Collaborative/PeerReview';
+import Mentorship from './pages/Collaborative/Mentorship';
+import Forum from './pages/Collaborative/Forum';
+import ForumDetail from './pages/Collaborative/ForumDetail';
+
 
 // ✅ ADD THIS COMPONENT DEFINITION
 // This component checks for a token and protects routes.
@@ -67,6 +75,32 @@ const App = () => {
             <Route
               path="/review"
               element={<ProtectedRoute><ReviewPage /></ProtectedRoute>}
+            />
+            
+            {/* Collaborative Features Routes */}
+            <Route
+              path="/study-groups"
+              element={<ProtectedRoute><StudyGroups /></ProtectedRoute>}
+            />
+            <Route
+              path="/peer-reviews"
+              element={<ProtectedRoute><PeerReview /></ProtectedRoute>}
+            />
+            <Route
+              path="/mentorships"
+              element={<ProtectedRoute><Mentorship /></ProtectedRoute>}
+            />
+            <Route
+              path="/forums"
+              element={<ProtectedRoute><Forum /></ProtectedRoute>}
+            />
+            <Route
+              path="/forums/:forumId"
+              element={<ProtectedRoute><ForumDetail /></ProtectedRoute>}
+            />
+            <Route
+              path="/study-groups/:groupId"
+              element={<ProtectedRoute><StudyGroupDetail /></ProtectedRoute>}
             />
           </Routes>
         </Router>
