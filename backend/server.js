@@ -24,6 +24,7 @@ app.use(
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
   })
 );
 
@@ -46,18 +47,37 @@ app.use('/api/feedback', feedbackRoutes);
 app.use("/api/ai", aiRoutes);
 
 // Collaborative feature routes
-const studyGroupRoutes = require('./routes/studyGroupRoutes');
-const peerReviewRoutes = require('./routes/peerReviewRoutes');
-const mentorshipRoutes = require('./routes/mentorshipRoutes');
-const forumRoutes = require('./routes/forumRoutes');
+const studyGroupRoutes = require('./routes/collaborative/studyGroupRoutes');
+const forumRoutes = require('./routes/collaborative/forumRoutes');
+const mentorshipRoutes = require('./routes/collaborative/mentorshipRoutes');
+const peerReviewRoutes = require('./routes/collaborative/peerReviewRoutes');
 
-app.use('/api/study-groups', studyGroupRoutes);
-app.use('/api/peer-reviews', peerReviewRoutes);
-app.use('/api/mentorships', mentorshipRoutes);
-app.use('/api/forums', forumRoutes);
+// Register collaborative routes
+app.use('/api/collaborative/study-groups', studyGroupRoutes);
+app.use('/api/collaborative/forums', forumRoutes);
+app.use('/api/collaborative/mentorships', mentorshipRoutes);
+app.use('/api/collaborative/peer-reviews', peerReviewRoutes);
+
+// Debug route to test API connectivity
+app.get('/api/test', (req, res) => {
+    console.log('Test API endpoint hit');
+    res.status(200).json({ message: 'API is working' });
+});
 
 // Serve uploads folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads"), {}));
+
+// Debugging middleware - logs all requests but doesn't interfere with routing
+app.use((req, res, next) => {
+    console.log('Request received for:', req.originalUrl);
+    next();
+});
+
+// This 404 handler should only run after all other routes have been checked
+app.use((req, res) => {
+    console.log('No route found for:', req.originalUrl);
+    res.status(404).json({ message: 'Route not found', path: req.originalUrl });
+});
 
 // Start Server
 const PORT = process.env.PORT || 8000;

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import moment from "moment";
 import { AnimatePresence, motion } from "framer-motion";
 import { LuCircleAlert, LuListCollapse } from "react-icons/lu";
-import SpinnerLoader from "../../components/Loader/SpinnerLoader";
+import SpinnerLoader from "../../components/Loader/SpinnerLoader.jsx";
 import { toast } from "react-hot-toast";
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import RoleInfoHeader from './components/RoleInfoHeader';

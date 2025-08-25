@@ -1,19 +1,19 @@
-const Mentorship = require('../models/Mentorship');
-const User = require('../models/User');
+const Mentorship = require('../../models/collaborative/Mentorship');
+const User = require('../../models/User');
 
 // Request a mentorship
 exports.requestMentorship = async (req, res) => {
     try {
-        const { mentorId, topics, goals } = req.body;
+        const { mentorId, focusAreas, requestMessage } = req.body;
         const menteeId = req.user.id;
 
-        // Validate that the mentor exists
+        // Check if mentor exists
         const mentor = await User.findById(mentorId);
         if (!mentor) {
             return res.status(404).json({ message: 'Mentor not found' });
         }
 
-        // Check if there's already an active mentorship between these users
+        // Check if a mentorship already exists between these users
         const existingMentorship = await Mentorship.findOne({
             mentor: mentorId,
             mentee: menteeId,
@@ -22,17 +22,17 @@ exports.requestMentorship = async (req, res) => {
 
         if (existingMentorship) {
             return res.status(400).json({ 
-                message: 'You already have a pending or active mentorship with this mentor' 
+                message: `A mentorship between you and this mentor is already ${existingMentorship.status}` 
             });
         }
 
-        // Create the mentorship request
+        // Create new mentorship request
         const newMentorship = new Mentorship({
             mentor: mentorId,
             mentee: menteeId,
-            status: 'pending',
-            topics: topics || [],
-            goals: goals || []
+            focusAreas: focusAreas || [],
+            requestMessage,
+            status: 'pending'
         });
 
         await newMentorship.save();
@@ -43,10 +43,10 @@ exports.requestMentorship = async (req, res) => {
     }
 };
 
-// Accept or reject a mentorship request
+// Respond to a mentorship request (accept or reject)
 exports.respondToMentorshipRequest = async (req, res) => {
     try {
-        const { action } = req.body;
+        const { response, responseMessage } = req.body;
         const mentorshipId = req.params.id;
         const userId = req.user.id;
 
@@ -61,27 +61,23 @@ exports.respondToMentorshipRequest = async (req, res) => {
             return res.status(403).json({ message: 'Only the mentor can respond to this request' });
         }
 
-        // Check if the request is still pending
+        // Check if the mentorship is still pending
         if (mentorship.status !== 'pending') {
-            return res.status(400).json({ message: 'This request has already been processed' });
+            return res.status(400).json({ message: `This request has already been ${mentorship.status}` });
         }
 
-        if (action === 'accept') {
-            mentorship.status = 'active';
+        // Update the mentorship
+        mentorship.status = response === 'accept' ? 'active' : 'rejected';
+        mentorship.responseMessage = responseMessage;
+        
+        if (response === 'accept') {
             mentorship.startDate = new Date();
-            // Set default end date to 3 months from now
-            const endDate = new Date();
-            endDate.setMonth(endDate.getMonth() + 3);
-            mentorship.endDate = endDate;
-        } else if (action === 'reject') {
-            mentorship.status = 'rejected';
-        } else {
-            return res.status(400).json({ message: 'Invalid action. Use "accept" or "reject"' });
         }
 
         await mentorship.save();
-        res.status(200).json({ 
-            message: `Mentorship request ${action}ed successfully`,
+
+        res.status(200).json({
+            message: response === 'accept' ? 'Mentorship accepted' : 'Mentorship rejected',
             mentorship
         });
     } catch (error) {
@@ -94,34 +90,21 @@ exports.respondToMentorshipRequest = async (req, res) => {
 exports.getUserMentorships = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { role, status } = req.query;
 
-        const query = {};
-
-        // Filter by role if specified
-        if (role === 'mentor') {
-            query.mentor = userId;
-        } else if (role === 'mentee') {
-            query.mentee = userId;
-        } else {
-            // If no role specified, get all mentorships where user is either mentor or mentee
-            query.$or = [{ mentor: userId }, { mentee: userId }];
-        }
-
-        // Filter by status if specified
-        if (status) {
-            query.status = status;
-        }
-
-        const mentorships = await Mentorship.find(query)
-            .populate('mentor', 'name email profileImageUrl')
-            .populate('mentee', 'name email profileImageUrl')
-            .sort({ createdAt: -1 });
+        const mentorships = await Mentorship.find({
+            $or: [
+                { mentor: userId },
+                { mentee: userId }
+            ]
+        })
+        .populate('mentor', 'name email profileImageUrl')
+        .populate('mentee', 'name email profileImageUrl')
+        .sort({ updatedAt: -1 });
 
         res.status(200).json(mentorships);
     } catch (error) {
         console.error('Error fetching user mentorships:', error);
-        res.status(500).json({ message: 'Failed to fetch user mentorships' });
+        res.status(500).json({ message: 'Failed to fetch mentorships' });
     }
 };
 
@@ -133,18 +116,16 @@ exports.getMentorshipById = async (req, res) => {
 
         const mentorship = await Mentorship.findById(mentorshipId)
             .populate('mentor', 'name email profileImageUrl')
-            .populate('mentee', 'name email profileImageUrl');
+            .populate('mentee', 'name email profileImageUrl')
+            .populate('notes.author', 'name email profileImageUrl');
 
         if (!mentorship) {
             return res.status(404).json({ message: 'Mentorship not found' });
         }
 
-        // Check if the user is either the mentor or the mentee
-        if (
-            mentorship.mentor._id.toString() !== userId &&
-            mentorship.mentee._id.toString() !== userId
-        ) {
-            return res.status(403).json({ message: 'You do not have permission to view this mentorship' });
+        // Check if the user is part of this mentorship
+        if (mentorship.mentor.toString() !== userId && mentorship.mentee.toString() !== userId) {
+            return res.status(403).json({ message: 'You do not have access to this mentorship' });
         }
 
         res.status(200).json(mentorship);
@@ -157,7 +138,7 @@ exports.getMentorshipById = async (req, res) => {
 // Add a note to a mentorship
 exports.addMentorshipNote = async (req, res) => {
     try {
-        const { content } = req.body;
+        const { content, isPrivate } = req.body;
         const mentorshipId = req.params.id;
         const userId = req.user.id;
 
@@ -167,35 +148,41 @@ exports.addMentorshipNote = async (req, res) => {
             return res.status(404).json({ message: 'Mentorship not found' });
         }
 
-        // Check if the user is either the mentor or the mentee
-        if (
-            mentorship.mentor.toString() !== userId &&
-            mentorship.mentee.toString() !== userId
-        ) {
-            return res.status(403).json({ message: 'You do not have permission to add notes to this mentorship' });
+        // Check if the user is part of this mentorship
+        if (mentorship.mentor.toString() !== userId && mentorship.mentee.toString() !== userId) {
+            return res.status(403).json({ message: 'You do not have access to this mentorship' });
         }
 
         // Add the note
         const newNote = {
             content,
             author: userId,
-            createdAt: new Date()
+            isPrivate: isPrivate || false
         };
 
         mentorship.notes.push(newNote);
         await mentorship.save();
 
-        res.status(201).json(newNote);
+        // Populate the author field before sending response
+        await Mentorship.populate(mentorship, { 
+            path: 'notes.author', 
+            select: 'name email profileImageUrl',
+            match: { _id: userId }
+        });
+
+        const addedNote = mentorship.notes[mentorship.notes.length - 1];
+
+        res.status(201).json(addedNote);
     } catch (error) {
         console.error('Error adding mentorship note:', error);
-        res.status(500).json({ message: 'Failed to add mentorship note' });
+        res.status(500).json({ message: 'Failed to add note' });
     }
 };
 
 // Schedule a meeting for a mentorship
 exports.scheduleMeeting = async (req, res) => {
     try {
-        const { title, date, duration, location, description } = req.body;
+        const { scheduledDate, duration, topic, meetingLink } = req.body;
         const mentorshipId = req.params.id;
         const userId = req.user.id;
 
@@ -205,24 +192,22 @@ exports.scheduleMeeting = async (req, res) => {
             return res.status(404).json({ message: 'Mentorship not found' });
         }
 
-        // Check if the user is either the mentor or the mentee
-        if (
-            mentorship.mentor.toString() !== userId &&
-            mentorship.mentee.toString() !== userId
-        ) {
-            return res.status(403).json({ 
-                message: 'You do not have permission to schedule meetings for this mentorship' 
-            });
+        // Check if the user is part of this mentorship
+        if (mentorship.mentor.toString() !== userId && mentorship.mentee.toString() !== userId) {
+            return res.status(403).json({ message: 'You do not have access to this mentorship' });
+        }
+
+        // Check if the mentorship is active
+        if (mentorship.status !== 'active') {
+            return res.status(400).json({ message: 'Cannot schedule meetings for inactive mentorships' });
         }
 
         // Add the meeting
         const newMeeting = {
-            title,
-            date,
+            scheduledDate,
             duration,
-            location,
-            description,
-            scheduledBy: userId,
+            topic,
+            meetingLink,
             status: 'scheduled'
         };
 
@@ -239,7 +224,7 @@ exports.scheduleMeeting = async (req, res) => {
 // Update meeting status (confirm, cancel, complete)
 exports.updateMeetingStatus = async (req, res) => {
     try {
-        const { meetingId, status } = req.body;
+        const { meetingId, status, notes } = req.body;
         const mentorshipId = req.params.id;
         const userId = req.user.id;
 
@@ -249,38 +234,26 @@ exports.updateMeetingStatus = async (req, res) => {
             return res.status(404).json({ message: 'Mentorship not found' });
         }
 
-        // Check if the user is either the mentor or the mentee
-        if (
-            mentorship.mentor.toString() !== userId &&
-            mentorship.mentee.toString() !== userId
-        ) {
-            return res.status(403).json({ 
-                message: 'You do not have permission to update meetings for this mentorship' 
-            });
+        // Check if the user is part of this mentorship
+        if (mentorship.mentor.toString() !== userId && mentorship.mentee.toString() !== userId) {
+            return res.status(403).json({ message: 'You do not have access to this mentorship' });
         }
 
         // Find the meeting
-        const meetingIndex = mentorship.meetings.findIndex(
-            meeting => meeting._id.toString() === meetingId
-        );
-
+        const meetingIndex = mentorship.meetings.findIndex(m => m._id.toString() === meetingId);
+        
         if (meetingIndex === -1) {
             return res.status(404).json({ message: 'Meeting not found' });
         }
 
-        // Update the meeting status
-        if (['confirmed', 'cancelled', 'completed'].includes(status)) {
-            mentorship.meetings[meetingIndex].status = status;
-            if (status === 'completed') {
-                mentorship.meetings[meetingIndex].completedAt = new Date();
-            }
-        } else {
-            return res.status(400).json({ 
-                message: 'Invalid status. Use "confirmed", "cancelled", or "completed"' 
-            });
+        // Update the meeting
+        mentorship.meetings[meetingIndex].status = status;
+        if (notes) {
+            mentorship.meetings[meetingIndex].notes = notes;
         }
 
         await mentorship.save();
+
         res.status(200).json(mentorship.meetings[meetingIndex]);
     } catch (error) {
         console.error('Error updating meeting status:', error);
@@ -291,7 +264,7 @@ exports.updateMeetingStatus = async (req, res) => {
 // Update mentorship progress
 exports.updateProgress = async (req, res) => {
     try {
-        const { progressUpdate } = req.body;
+        const { progress, goals } = req.body;
         const mentorshipId = req.params.id;
         const userId = req.user.id;
 
@@ -301,37 +274,36 @@ exports.updateProgress = async (req, res) => {
             return res.status(404).json({ message: 'Mentorship not found' });
         }
 
-        // Check if the user is either the mentor or the mentee
-        if (
-            mentorship.mentor.toString() !== userId &&
-            mentorship.mentee.toString() !== userId
-        ) {
-            return res.status(403).json({ 
-                message: 'You do not have permission to update progress for this mentorship' 
-            });
+        // Check if the user is part of this mentorship
+        if (mentorship.mentor.toString() !== userId && mentorship.mentee.toString() !== userId) {
+            return res.status(403).json({ message: 'You do not have access to this mentorship' });
         }
 
-        // Add the progress update
-        const newProgress = {
-            update: progressUpdate,
-            updatedBy: userId,
-            date: new Date()
-        };
+        // Update progress
+        if (progress !== undefined) {
+            mentorship.progress = Math.min(Math.max(progress, 0), 100); // Ensure between 0-100
+        }
 
-        mentorship.progress.push(newProgress);
+        // Update goals if provided
+        if (goals) {
+            mentorship.goals = goals;
+        }
+
         await mentorship.save();
 
-        res.status(201).json(newProgress);
+        res.status(200).json({
+            progress: mentorship.progress,
+            goals: mentorship.goals
+        });
     } catch (error) {
         console.error('Error updating mentorship progress:', error);
-        res.status(500).json({ message: 'Failed to update mentorship progress' });
+        res.status(500).json({ message: 'Failed to update progress' });
     }
 };
 
 // End a mentorship (can be done by either mentor or mentee)
 exports.endMentorship = async (req, res) => {
     try {
-        const { feedback } = req.body;
         const mentorshipId = req.params.id;
         const userId = req.user.id;
 
@@ -341,33 +313,22 @@ exports.endMentorship = async (req, res) => {
             return res.status(404).json({ message: 'Mentorship not found' });
         }
 
-        // Check if the user is either the mentor or the mentee
-        if (
-            mentorship.mentor.toString() !== userId &&
-            mentorship.mentee.toString() !== userId
-        ) {
-            return res.status(403).json({ message: 'You do not have permission to end this mentorship' });
+        // Check if the user is part of this mentorship
+        if (mentorship.mentor.toString() !== userId && mentorship.mentee.toString() !== userId) {
+            return res.status(403).json({ message: 'You do not have access to this mentorship' });
         }
 
         // Check if the mentorship is active
         if (mentorship.status !== 'active') {
-            return res.status(400).json({ message: 'This mentorship is not currently active' });
+            return res.status(400).json({ message: `This mentorship is already ${mentorship.status}` });
         }
 
         // End the mentorship
         mentorship.status = 'completed';
         mentorship.endDate = new Date();
-        
-        // Add feedback if provided
-        if (feedback) {
-            mentorship.endFeedback = {
-                content: feedback,
-                providedBy: userId,
-                date: new Date()
-            };
-        }
 
         await mentorship.save();
+
         res.status(200).json({ message: 'Mentorship ended successfully', mentorship });
     } catch (error) {
         console.error('Error ending mentorship:', error);
@@ -378,17 +339,17 @@ exports.endMentorship = async (req, res) => {
 // Get available mentors
 exports.getAvailableMentors = async (req, res) => {
     try {
-        // In a real application, you would have a way to identify users who are available as mentors
-        // For now, we'll just return all users except the current user
+        // In a real application, you would have a way to identify users who are mentors
+        // For this example, we'll just return all users except the current user
         const userId = req.user.id;
-        const { topic } = req.query;
 
-        // This is a placeholder implementation
-        // In a real app, you would have a field in the User model to indicate mentor status
-        // and possibly a separate MentorProfile model with additional details
-        const mentors = await User.find({ _id: { $ne: userId } })
-            .select('name email profileImageUrl')
-            .limit(20);
+        const mentors = await User.find({ 
+            _id: { $ne: userId },
+            // You might have additional criteria here, like:
+            // isMentor: true,
+            // availableForMentoring: true,
+        })
+        .select('name email profileImageUrl bio skills');
 
         res.status(200).json(mentors);
     } catch (error) {

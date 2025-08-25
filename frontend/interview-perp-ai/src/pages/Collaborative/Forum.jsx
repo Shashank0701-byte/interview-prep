@@ -3,299 +3,441 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
-import SpinnerLoader from '../../components/Loader/SpinnerLoader';
+import SpinnerLoader from '../../components/Loader/SpinnerLoader.jsx';
+import CollaborativeNav from '../../components/Collaborative/CollaborativeNav.jsx';
+import { FaPlus, FaSearch, FaTag, FaComment, FaThumbsUp, FaEye, FaCalendarAlt, FaUser } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
 
 const Forum = () => {
   const navigate = useNavigate();
-  const [forums, setForums] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [popularTags, setPopularTags] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    category: 'general',
-    tags: ''
-  });
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-
-  const categories = [
-    'general',
-    'algorithms',
-    'system-design',
-    'frontend',
-    'backend',
-    'database',
-    'behavioral',
-    'career'
-  ];
+  const [activeTag, setActiveTag] = useState('');
+  const [newPost, setNewPost] = useState({
+    title: '',
+    content: '',
+    category: '',
+    tags: []
+  });
+  const [tagInput, setTagInput] = useState('');
 
   useEffect(() => {
-    fetchForums();
-  }, []);
+    fetchPosts();
+    fetchCategories();
+    fetchPopularTags();
+  }, [activeCategory, activeTag]);
 
-  const fetchForums = async () => {
+  const fetchPosts = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await axiosInstance.get(API_PATHS.FORUMS.GET_ALL);
-      setForums(response.data);
+      let endpoint = API_PATHS.COLLABORATIVE.FORUMS.GET_ALL;
+      
+      // Add query parameters instead of using non-existent endpoints
+      const params = {};
+      if (activeCategory !== 'all') {
+        params.category = activeCategory;
+      }
+      if (activeTag) {
+        params.tag = activeTag;
+      }
+      
+      const response = await axiosInstance.get(endpoint, { params });
+      setPosts(response.data);
     } catch (error) {
-      console.error('Error fetching forums:', error);
-      toast.error('Failed to load forums');
+      console.error('Error fetching forum posts:', error);
+      toast.error('Failed to load forum posts');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosInstance.get(API_PATHS.COLLABORATIVE.FORUMS.GET_CATEGORIES);
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching forum categories:', error);
+      toast.error('Failed to load categories: ' + (error.response?.data?.message || error.message || 'Unknown error'));
+      // Set default categories to prevent undefined errors
+      setCategories([]);
+    }
+  };
+
+  const fetchPopularTags = async () => {
+    try {
+      const response = await axiosInstance.get(API_PATHS.COLLABORATIVE.FORUMS.GET_POPULAR_TAGS);
+      setPopularTags(response.data);
+    } catch (error) {
+      console.error('Error fetching popular tags:', error);
+      toast.error('Failed to load tags: ' + (error.response?.data?.message || error.message || 'Unknown error'));
+      // Set empty array to prevent undefined errors
+      setPopularTags([]);
+    }
+  };
+
+  const handleCreatePost = async (e) => {
+    e.preventDefault();
+    try {
+      await axiosInstance.post(API_PATHS.COLLABORATIVE.FORUMS.CREATE, newPost);
+      toast.success('Forum post created successfully');
+      setCreateModalOpen(false);
+      setNewPost({
+        title: '',
+        content: '',
+        category: '',
+        tags: []
+      });
+      fetchPosts();
+    } catch (error) {
+      console.error('Error creating forum post:', error);
+      toast.error(error.response?.data?.message || 'Failed to create forum post');
+    }
+  };
+
+  const handleViewPost = (postId) => {
+    navigate(`/forum/${postId}`);
+  };
+
+  const handleAddTag = () => {
+    if (tagInput.trim() && !newPost.tags.includes(tagInput.trim())) {
+      setNewPost({
+        ...newPost,
+        tags: [...newPost.tags, tagInput.trim()]
+      });
+      setTagInput('');
+    }
+  };
+
+  const handleRemoveTag = (index) => {
+    const updatedTags = [...newPost.tags];
+    updatedTags.splice(index, 1);
+    setNewPost({
+      ...newPost,
+      tags: updatedTags
     });
   };
 
-  const handleCreateForum = async (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
-    try {
+    if (searchQuery.trim()) {
       setLoading(true);
-      const tagsArray = formData.tags.split(',').map(tag => tag.trim());
-      const payload = {
-        ...formData,
-        tags: tagsArray
-      };
-      
-      const response = await axiosInstance.post(API_PATHS.FORUMS.CREATE, payload);
-      toast.success('Forum created successfully!');
-      setShowCreateModal(false);
-      fetchForums();
-      setFormData({
-        title: '',
-        description: '',
-        category: 'general',
-        tags: ''
-      });
-      
-      // Navigate to the newly created forum
-      navigate(`/forums/${response.data._id}`);
-    } catch (error) {
-      console.error('Error creating forum:', error);
-      toast.error('Failed to create forum');
-    } finally {
-      setLoading(false);
+      axiosInstance.get(API_PATHS.COLLABORATIVE.FORUMS.SEARCH(searchQuery))
+        .then(response => {
+          setPosts(response.data);
+          setActiveCategory('all');
+          setActiveTag('');
+        })
+        .catch(error => {
+          console.error('Error searching forum posts:', error);
+          toast.error('Failed to search forum posts');
+        })
+        .finally(() => setLoading(false));
     }
   };
 
-  const handleViewForum = (forumId) => {
-    navigate(`/forums/${forumId}`);
+  const handleCategoryClick = (category) => {
+    setActiveCategory(category);
+    setActiveTag('');
+    setSearchQuery('');
+  };
+
+  const handleTagClick = (tag) => {
+    setActiveTag(tag);
+    setActiveCategory('all');
+    setSearchQuery('');
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
-  const getFilteredForums = () => {
-    return forums.filter(forum => {
-      const matchesSearch = searchQuery === '' || 
-        forum.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        forum.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        forum.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-      
-      const matchesCategory = selectedCategory === 'all' || forum.category === selectedCategory;
-      
-      return matchesSearch && matchesCategory;
-    });
+  const renderPosts = () => {
+    if (posts.length === 0) {
+      return (
+        <div className="text-center py-10">
+          <p className="text-gray-500">No forum posts found.</p>
+          <button 
+            onClick={() => setCreateModalOpen(true)} 
+            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+          >
+            Create a Post
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        {posts.map((post) => (
+          <div 
+            key={post._id} 
+            className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow cursor-pointer"
+            onClick={() => handleViewPost(post._id)}
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-xl font-semibold text-gray-800">{post.title}</h3>
+                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                  {post.category}
+                </span>
+              </div>
+              
+              <p className="text-gray-600 mb-4 line-clamp-2">{post.content}</p>
+              
+              {post.tags && post.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {post.tags.map((tag, index) => (
+                    <span 
+                      key={index} 
+                      className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded flex items-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleTagClick(tag);
+                      }}
+                    >
+                      <FaTag className="mr-1" size={10} /> {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+              
+              <div className="flex items-center justify-between text-sm text-gray-500">
+                <div className="flex items-center">
+                  <div className="flex items-center mr-4">
+                    <FaUser className="mr-1" />
+                    <span>{post.author?.name || 'Anonymous'}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <FaCalendarAlt className="mr-1" />
+                    <span>{formatDate(post.createdAt)}</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center">
+                    <FaComment className="mr-1" />
+                    <span>{post.replyCount || 0}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <FaThumbsUp className="mr-1" />
+                    <span>{post.upvotes?.length || 0}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <FaEye className="mr-1" />
+                    <span>{post.viewCount || 0}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   return (
     <DashboardLayout>
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold">Discussion Forums</h1>
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-md"
-          >
-            Create New Forum
-          </button>
-        </div>
-
-        <div className="mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="relative flex-grow">
-              <input
-                type="text"
-                placeholder="Search forums..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-              />
-              <svg
-                className="absolute right-3 top-2.5 h-5 w-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+        <h1 className="text-3xl font-bold mb-6">Discussion Forum</h1>
+        
+        <CollaborativeNav activeTab="forum" />
+        
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-6">
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <button 
+                onClick={() => setCreateModalOpen(true)} 
+                className="w-full bg-blue-600 text-white px-4 py-2 rounded flex items-center justify-center hover:bg-blue-700 transition-colors mb-6"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                ></path>
-              </svg>
-            </div>
-            <div className="flex-shrink-0">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-              >
-                <option value="all">All Categories</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <SpinnerLoader />
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-6">
-            {getFilteredForums().length === 0 ? (
-              <p className="text-gray-500 text-center py-8">
-                No forums found. {searchQuery || selectedCategory !== 'all' ? 'Try adjusting your filters.' : 'Create one to get started!'}
-              </p>
-            ) : (
-              getFilteredForums().map((forum) => (
-                <div
-                  key={forum._id}
-                  className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow cursor-pointer"
-                  onClick={() => handleViewForum(forum._id)}
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-semibold">{forum.title}</h3>
-                    <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
-                      {forum.category.charAt(0).toUpperCase() + forum.category.slice(1)}
-                    </span>
+                <FaPlus className="mr-2" /> Create Post
+              </button>
+              
+              <div className="mb-6">
+                <h3 className="font-semibold text-gray-700 mb-3">Categories</h3>
+                <ul className="space-y-2">
+                  <li>
+                    <button 
+                      onClick={() => handleCategoryClick('all')} 
+                      className={`w-full text-left px-3 py-2 rounded ${activeCategory === 'all' ? 'bg-blue-100 text-blue-800' : 'hover:bg-gray-100'}`}
+                    >
+                      All Categories
+                    </button>
+                  </li>
+                  {categories.map((category) => (
+                    <li key={category}>
+                      <button 
+                        onClick={() => handleCategoryClick(category)} 
+                        className={`w-full text-left px-3 py-2 rounded ${activeCategory === category ? 'bg-blue-100 text-blue-800' : 'hover:bg-gray-100'}`}
+                      >
+                        {category}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              {popularTags.length > 0 && (
+                <div>
+                  <h3 className="font-semibold text-gray-700 mb-3">Popular Tags</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {popularTags.map((tag) => (
+                      <button 
+                        key={tag.name} 
+                        onClick={() => handleTagClick(tag.name)} 
+                        className={`flex items-center text-xs px-2 py-1 rounded ${activeTag === tag.name ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                      >
+                        <FaTag className="mr-1" size={10} /> {tag.name} ({tag.count})
+                      </button>
+                    ))}
                   </div>
-                  <p className="text-gray-600 mb-4">{forum.description}</p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {forum.tags.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full"
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Main Content */}
+          <div className="lg:col-span-3">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <form onSubmit={handleSearch} className="flex mb-6">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 border border-gray-300 rounded-l px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Search forum posts..."
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700 transition-colors"
+                >
+                  <FaSearch />
+                </button>
+              </form>
+              
+              {loading ? (
+                <div className="flex justify-center py-10">
+                  <SpinnerLoader />
+                </div>
+              ) : (
+                renderPosts()
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Create Post Modal */}
+      {createModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
+            <h2 className="text-xl font-semibold mb-4">Create New Forum Post</h2>
+            
+            <form onSubmit={handleCreatePost}>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <input
+                  type="text"
+                  value={newPost.title}
+                  onChange={(e) => setNewPost({...newPost, title: e.target.value})}
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter a descriptive title"
+                  required
+                />
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select
+                  value={newPost.category}
+                  onChange={(e) => setNewPost({...newPost, category: e.target.value})}
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((category) => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+                <div className="flex">
+                  <input
+                    type="text"
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    className="flex-1 border border-gray-300 rounded-l px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Add tags (press + to add)"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddTag}
+                    className="bg-blue-600 text-white px-3 py-2 rounded-r hover:bg-blue-700 transition-colors"
+                  >
+                    <FaPlus />
+                  </button>
+                </div>
+                
+                {newPost.tags.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {newPost.tags.map((tag, index) => (
+                      <span 
+                        key={index} 
+                        className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded flex items-center"
                       >
                         {tag}
+                        <button 
+                          type="button" 
+                          onClick={() => handleRemoveTag(index)} 
+                          className="ml-1 text-blue-800 hover:text-blue-900"
+                        >
+                          ×
+                        </button>
                       </span>
                     ))}
                   </div>
-                  <div className="flex justify-between items-center text-sm text-gray-500">
-                    <div>
-                      <span>{forum.posts.length} posts</span>
-                      <span className="mx-2">•</span>
-                      <span>{forum.viewCount} views</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span>Created by {forum.creator.name}</span>
-                      <span className="mx-2">•</span>
-                      <span>Last active {formatDate(forum.lastActivity || forum.createdAt)}</span>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
+                )}
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                <textarea
+                  value={newPost.content}
+                  onChange={(e) => setNewPost({...newPost, content: e.target.value})}
+                  className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows="8"
+                  placeholder="Write your post content here..."
+                  required
+                ></textarea>
+              </div>
+              
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCreateModalOpen(false)}
+                  className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-100 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                >
+                  Create Post
+                </button>
+              </div>
+            </form>
           </div>
-        )}
-
-        {/* Create Forum Modal */}
-        {showCreateModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-8 max-w-md w-full">
-              <h2 className="text-xl font-semibold mb-4">Create New Forum</h2>
-              <form onSubmit={handleCreateForum}>
-                <div className="mb-4">
-                  <label className="block text-gray-700 mb-2">Title</label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 mb-2">Description</label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    rows="3"
-                    required
-                  ></textarea>
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 mb-2">Category</label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    required
-                  >
-                    {categories.map((category) => (
-                      <option key={category} value={category}>
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-6">
-                  <label className="block text-gray-700 mb-2">Tags (comma separated)</label>
-                  <input
-                    type="text"
-                    name="tags"
-                    value={formData.tags}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    placeholder="react, javascript, interview"
-                    required
-                  />
-                </div>
-                <div className="flex justify-end space-x-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowCreateModal(false)}
-                    className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600"
-                    disabled={loading}
-                  >
-                    {loading ? 'Creating...' : 'Create Forum'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 };

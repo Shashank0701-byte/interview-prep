@@ -3,409 +3,465 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
-import SpinnerLoader from '../../components/Loader/SpinnerLoader';
-import { toast } from 'react-hot-toast';
+import SpinnerLoader from '../../components/Loader/SpinnerLoader.jsx';
+import CollaborativeNav from '../../components/Collaborative/CollaborativeNav.jsx';
+import { FaPlus, FaCheck, FaHourglassHalf, FaTimes, FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 
 const PeerReview = () => {
   const navigate = useNavigate();
-  const [receivedReviews, setReceivedReviews] = useState([]);
-  const [givenReviews, setGivenReviews] = useState([]);
-  const [openRequests, setOpenRequests] = useState([]);
+  const [activeTab, setActiveTab] = useState('myRequests');
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('received');
-  const [showRequestModal, setShowRequestModal] = useState(false);
-  const [requestData, setRequestData] = useState({
-    sessionId: '',
-    questionId: '',
-    note: ''
+  const [stats, setStats] = useState(null);
+  const [myRequests, setMyRequests] = useState([]);
+  const [assignedRequests, setAssignedRequests] = useState([]);
+  const [receivedReviews, setReceivedReviews] = useState([]);
+  const [submittedReviews, setSubmittedReviews] = useState([]);
+  const [showNewRequestForm, setShowNewRequestForm] = useState(false);
+  const [newRequest, setNewRequest] = useState({
+    questionContent: '',
+    answerContent: '',
+    additionalContext: ''
   });
-  const [sessions, setSessions] = useState([]);
-  const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Fetch user stats
+        const statsResponse = await axiosInstance.get(API_PATHS.COLLABORATIVE.PEER_REVIEWS.GET_USER_STATS);
+        setStats(statsResponse.data);
+
+        // Fetch data based on active tab
+        switch (activeTab) {
+          case 'myRequests':
+            const requestsResponse = await axiosInstance.get(API_PATHS.COLLABORATIVE.PEER_REVIEWS.GET_USER_REQUESTS);
+            setMyRequests(requestsResponse.data);
+            break;
+          case 'assignedRequests':
+            const assignedResponse = await axiosInstance.get(API_PATHS.COLLABORATIVE.PEER_REVIEWS.GET_ASSIGNED_REQUESTS);
+            setAssignedRequests(assignedResponse.data);
+            break;
+          case 'receivedReviews':
+            const receivedResponse = await axiosInstance.get(API_PATHS.COLLABORATIVE.PEER_REVIEWS.GET_RECEIVED_REVIEWS);
+            setReceivedReviews(receivedResponse.data);
+            break;
+          case 'submittedReviews':
+            const submittedResponse = await axiosInstance.get(API_PATHS.COLLABORATIVE.PEER_REVIEWS.GET_SUBMITTED_REVIEWS);
+            setSubmittedReviews(submittedResponse.data);
+            break;
+          default:
+            break;
+        }
+      } catch (error) {
+        console.error('Error fetching peer review data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchData();
-    fetchSessions();
-  }, []);
+  }, [activeTab]);
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const [receivedRes, givenRes, requestsRes] = await Promise.all([
-        axiosInstance.get(API_PATHS.PEER_REVIEWS.GET_RECEIVED),
-        axiosInstance.get(API_PATHS.PEER_REVIEWS.GET_GIVEN),
-        axiosInstance.get(API_PATHS.PEER_REVIEWS.GET_OPEN_REQUESTS)
-      ]);
-
-      setReceivedReviews(receivedRes.data);
-      setGivenReviews(givenRes.data);
-      setOpenRequests(requestsRes.data);
-    } catch (error) {
-      console.error('Error fetching peer reviews:', error);
-      toast.error('Failed to load peer reviews');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchSessions = async () => {
-    try {
-      const response = await axiosInstance.get(API_PATHS.SESSIONS.GET_MY_SESSIONS);
-      setSessions(response.data);
-    } catch (error) {
-      console.error('Error fetching sessions:', error);
-      toast.error('Failed to load sessions');
-    }
-  };
-
-  const fetchQuestions = async (sessionId) => {
-    try {
-      const response = await axiosInstance.get(API_PATHS.SESSIONS.GET_ONE(sessionId));
-      setQuestions(response.data.questions || []);
-    } catch (error) {
-      console.error('Error fetching questions:', error);
-      toast.error('Failed to load questions');
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setRequestData({
-      ...requestData,
-      [name]: value
-    });
-
-    // If session changed, fetch questions for that session
-    if (name === 'sessionId' && value) {
-      fetchQuestions(value);
-    }
-  };
-
-  const handleRequestReview = async (e) => {
+  const handleCreateRequest = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
-      await axiosInstance.post(API_PATHS.PEER_REVIEWS.REQUEST, requestData);
-      toast.success('Peer review request sent successfully!');
-      setShowRequestModal(false);
-      fetchData();
-      setRequestData({
-        sessionId: '',
-        questionId: '',
-        note: ''
+      await axiosInstance.post(API_PATHS.COLLABORATIVE.PEER_REVIEWS.CREATE_REQUEST, newRequest);
+      setNewRequest({
+        questionContent: '',
+        answerContent: '',
+        additionalContext: ''
       });
+      setShowNewRequestForm(false);
+      
+      // Refresh my requests
+      const requestsResponse = await axiosInstance.get(API_PATHS.COLLABORATIVE.PEER_REVIEWS.GET_USER_REQUESTS);
+      setMyRequests(requestsResponse.data);
+      
+      // Update stats
+      const statsResponse = await axiosInstance.get(API_PATHS.COLLABORATIVE.PEER_REVIEWS.GET_USER_STATS);
+      setStats(statsResponse.data);
     } catch (error) {
-      console.error('Error requesting peer review:', error);
-      toast.error('Failed to request peer review');
-    } finally {
-      setLoading(false);
+      console.error('Error creating peer review request:', error);
+      alert('Failed to create peer review request. Please try again.');
     }
   };
 
-  const handleAcceptRequest = async (requestId) => {
-    try {
-      await axiosInstance.post(API_PATHS.PEER_REVIEWS.ACCEPT_REQUEST(requestId));
-      toast.success('Request accepted!');
-      fetchData();
-    } catch (error) {
-      console.error('Error accepting request:', error);
-      toast.error('Failed to accept request');
+  const handleCancelRequest = async (requestId) => {
+    if (window.confirm('Are you sure you want to cancel this peer review request?')) {
+      try {
+        await axiosInstance.post(API_PATHS.COLLABORATIVE.PEER_REVIEWS.CANCEL_REQUEST(requestId));
+        
+        // Refresh my requests
+        const requestsResponse = await axiosInstance.get(API_PATHS.COLLABORATIVE.PEER_REVIEWS.GET_USER_REQUESTS);
+        setMyRequests(requestsResponse.data);
+        
+        // Update stats
+        const statsResponse = await axiosInstance.get(API_PATHS.COLLABORATIVE.PEER_REVIEWS.GET_USER_STATS);
+        setStats(statsResponse.data);
+      } catch (error) {
+        console.error('Error cancelling peer review request:', error);
+        alert('Failed to cancel peer review request. Please try again.');
+      }
     }
   };
 
-  const handleViewReview = (reviewId) => {
-    navigate(`/peer-reviews/${reviewId}`);
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  const renderTabContent = () => {
-    if (loading) {
-      return (
-        <div className="flex justify-center items-center h-64">
-          <SpinnerLoader />
-        </div>
-      );
+  const renderStarRating = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    
+    for (let i = 1; i <= 5; i++) {
+      if (i <= fullStars) {
+        stars.push(<FaStar key={i} className="text-yellow-500" />);
+      } else if (i === fullStars + 1 && hasHalfStar) {
+        stars.push(<FaStarHalfAlt key={i} className="text-yellow-500" />);
+      } else {
+        stars.push(<FaRegStar key={i} className="text-yellow-500" />);
+      }
     }
+    
+    return <div className="flex">{stars}</div>;
+  };
 
-    switch (activeTab) {
-      case 'received':
-        return (
-          <div>
-            {receivedReviews.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">You haven't received any peer reviews yet.</p>
-            ) : (
-              <div className="grid grid-cols-1 gap-4">
-                {receivedReviews.map((review) => (
-                  <div
-                    key={review._id}
-                    className="bg-white rounded-lg shadow-md p-6 border border-gray-200"
-                  >
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-lg font-semibold">{review.question?.question || 'Question not available'}</h3>
-                        <p className="text-sm text-gray-500">Reviewed by: {review.isAnonymous ? 'Anonymous' : review.reviewer?.name}</p>
-                      </div>
-                      <span className="text-sm text-gray-500">{formatDate(review.createdAt)}</span>
-                    </div>
-                    <div className="mb-4">
-                      <div className="flex items-center mb-2">
-                        <span className="text-sm font-medium mr-2">Rating:</span>
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <svg
-                              key={i}
-                              className={`w-5 h-5 ${i < review.rating ? 'text-yellow-400' : 'text-gray-300'}`}
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mb-4">
-                      <h4 className="text-sm font-medium mb-2">Feedback:</h4>
-                      <p className="text-gray-700">{review.feedback}</p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <h4 className="text-sm font-medium mb-2">Strengths:</h4>
-                        <p className="text-gray-700">{review.strengths}</p>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium mb-2">Areas for Improvement:</h4>
-                        <p className="text-gray-700">{review.improvements}</p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleViewReview(review._id)}
-                      className="text-amber-500 hover:text-amber-700 text-sm font-medium"
-                    >
-                      View Full Review
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        );
-
-      case 'given':
-        return (
-          <div>
-            {givenReviews.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">You haven't given any peer reviews yet.</p>
-            ) : (
-              <div className="grid grid-cols-1 gap-4">
-                {givenReviews.map((review) => (
-                  <div
-                    key={review._id}
-                    className="bg-white rounded-lg shadow-md p-6 border border-gray-200"
-                  >
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-lg font-semibold">{review.question?.question || 'Question not available'}</h3>
-                        <p className="text-sm text-gray-500">Reviewed for: {review.interviewee?.name}</p>
-                      </div>
-                      <span className="text-sm text-gray-500">{formatDate(review.createdAt)}</span>
-                    </div>
-                    <div className="mb-4">
-                      <div className="flex items-center mb-2">
-                        <span className="text-sm font-medium mr-2">Your Rating:</span>
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <svg
-                              key={i}
-                              className={`w-5 h-5 ${i < review.rating ? 'text-yellow-400' : 'text-gray-300'}`}
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleViewReview(review._id)}
-                      className="text-amber-500 hover:text-amber-700 text-sm font-medium"
-                    >
-                      View Full Review
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        );
-
-      case 'requests':
-        return (
-          <div>
-            {openRequests.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">There are no open peer review requests.</p>
-            ) : (
-              <div className="grid grid-cols-1 gap-4">
-                {openRequests.map((request) => (
-                  <div
-                    key={request._id}
-                    className="bg-white rounded-lg shadow-md p-6 border border-gray-200"
-                  >
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-lg font-semibold">{request.question?.question || 'Question not available'}</h3>
-                        <p className="text-sm text-gray-500">Requested by: {request.interviewee?.name}</p>
-                      </div>
-                      <span className="text-sm text-gray-500">{formatDate(request.createdAt)}</span>
-                    </div>
-                    {request.note && (
-                      <div className="mb-4">
-                        <h4 className="text-sm font-medium mb-2">Note from requester:</h4>
-                        <p className="text-gray-700">{request.note}</p>
-                      </div>
-                    )}
-                    <button
-                      onClick={() => handleAcceptRequest(request._id)}
-                      className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-md text-sm font-medium"
-                    >
-                      Accept Request
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        );
-
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case 'open':
+        return <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Open</span>;
+      case 'assigned':
+        return <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Assigned</span>;
+      case 'completed':
+        return <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Completed</span>;
+      case 'cancelled':
+        return <span className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">Cancelled</span>;
       default:
-        return null;
+        return <span className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded">{status}</span>;
     }
   };
 
   return (
     <DashboardLayout>
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold">Peer Reviews</h1>
-          <button
-            onClick={() => setShowRequestModal(true)}
-            className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-md"
-          >
-            Request Review
-          </button>
-        </div>
-
-        <div className="mb-6">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
-              <button
-                onClick={() => setActiveTab('received')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'received' ? 'border-amber-500 text-amber-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
-              >
-                Reviews Received
-              </button>
-              <button
-                onClick={() => setActiveTab('given')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'given' ? 'border-amber-500 text-amber-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
-              >
-                Reviews Given
-              </button>
-              <button
-                onClick={() => setActiveTab('requests')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'requests' ? 'border-amber-500 text-amber-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
-              >
-                Open Requests
-                {openRequests.length > 0 && (
-                  <span className="ml-2 bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full">
-                    {openRequests.length}
-                  </span>
-                )}
-              </button>
-            </nav>
-          </div>
-        </div>
-
-        {renderTabContent()}
-
-        {/* Request Review Modal */}
-        {showRequestModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-8 max-w-md w-full">
-              <h2 className="text-xl font-semibold mb-4">Request Peer Review</h2>
-              <form onSubmit={handleRequestReview}>
-                <div className="mb-4">
-                  <label className="block text-gray-700 mb-2">Select Session</label>
-                  <select
-                    name="sessionId"
-                    value={requestData.sessionId}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    required
-                  >
-                    <option value="">Select a session</option>
-                    {sessions.map((session) => (
-                      <option key={session._id} value={session._id}>
-                        {session.role} - {session.experience} ({new Date(session.createdAt).toLocaleDateString()})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 mb-2">Select Question</label>
-                  <select
-                    name="questionId"
-                    value={requestData.questionId}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    required
-                    disabled={!requestData.sessionId}
-                  >
-                    <option value="">Select a question</option>
-                    {questions.map((question) => (
-                      <option key={question._id} value={question._id}>
-                        {question.question}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-6">
-                  <label className="block text-gray-700 mb-2">Note (optional)</label>
-                  <textarea
-                    name="note"
-                    value={requestData.note}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    rows="3"
-                    placeholder="Add any specific areas you'd like feedback on"
-                  ></textarea>
-                </div>
-                <div className="flex justify-end space-x-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowRequestModal(false)}
-                    className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600"
-                    disabled={loading}
-                  >
-                    {loading ? 'Submitting...' : 'Request Review'}
-                  </button>
-                </div>
-              </form>
+        <h1 className="text-2xl font-bold mb-6">Peer Reviews</h1>
+        
+        <CollaborativeNav activeItem="peer-reviews" />
+        
+        {/* Stats Cards */}
+        {stats && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 mt-6">
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <h3 className="text-gray-500 text-sm">Requests Made</h3>
+              <p className="text-2xl font-bold">{stats.requestsMade}</p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <h3 className="text-gray-500 text-sm">Reviews Received</h3>
+              <p className="text-2xl font-bold">{stats.reviewsReceived}</p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <h3 className="text-gray-500 text-sm">Reviews Submitted</h3>
+              <p className="text-2xl font-bold">{stats.reviewsSubmitted}</p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <h3 className="text-gray-500 text-sm">Average Rating</h3>
+              <div className="flex items-center">
+                <p className="text-2xl font-bold mr-2">{stats.averageRating.toFixed(1)}</p>
+                {renderStarRating(stats.averageRating)}
+              </div>
             </div>
           </div>
         )}
+        
+        {/* Tabs */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+          <div className="flex border-b border-gray-200">
+            <button 
+              className={`py-3 px-4 ${activeTab === 'myRequests' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+              onClick={() => setActiveTab('myRequests')}
+            >
+              My Requests
+            </button>
+            <button 
+              className={`py-3 px-4 ${activeTab === 'assignedRequests' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+              onClick={() => setActiveTab('assignedRequests')}
+            >
+              Assigned to Me
+            </button>
+            <button 
+              className={`py-3 px-4 ${activeTab === 'receivedReviews' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+              onClick={() => setActiveTab('receivedReviews')}
+            >
+              Received Reviews
+            </button>
+            <button 
+              className={`py-3 px-4 ${activeTab === 'submittedReviews' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+              onClick={() => setActiveTab('submittedReviews')}
+            >
+              Submitted Reviews
+            </button>
+          </div>
+          
+          <div className="p-6">
+            {loading ? (
+              <div className="flex justify-center items-center h-64">
+                <SpinnerLoader />
+              </div>
+            ) : (
+              <>
+                {activeTab === 'myRequests' && (
+                  <div>
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-lg font-semibold">My Peer Review Requests</h2>
+                      <button 
+                        onClick={() => setShowNewRequestForm(!showNewRequestForm)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md flex items-center"
+                      >
+                        <FaPlus className="mr-2" /> New Request
+                      </button>
+                    </div>
+                    
+                    {showNewRequestForm && (
+                      <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                        <h3 className="text-lg font-semibold mb-3">Create New Peer Review Request</h3>
+                        <form onSubmit={handleCreateRequest}>
+                          <div className="mb-4">
+                            <label className="block text-gray-700 text-sm font-medium mb-2">
+                              Question Content
+                            </label>
+                            <textarea
+                              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              rows="3"
+                              placeholder="Enter the interview question or problem statement"
+                              value={newRequest.questionContent}
+                              onChange={(e) => setNewRequest({...newRequest, questionContent: e.target.value})}
+                              required
+                            ></textarea>
+                          </div>
+                          <div className="mb-4">
+                            <label className="block text-gray-700 text-sm font-medium mb-2">
+                              Your Answer
+                            </label>
+                            <textarea
+                              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              rows="5"
+                              placeholder="Enter your solution or answer that you want reviewed"
+                              value={newRequest.answerContent}
+                              onChange={(e) => setNewRequest({...newRequest, answerContent: e.target.value})}
+                              required
+                            ></textarea>
+                          </div>
+                          <div className="mb-4">
+                            <label className="block text-gray-700 text-sm font-medium mb-2">
+                              Additional Context (Optional)
+                            </label>
+                            <textarea
+                              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              rows="2"
+                              placeholder="Any additional information that might help the reviewer"
+                              value={newRequest.additionalContext}
+                              onChange={(e) => setNewRequest({...newRequest, additionalContext: e.target.value})}
+                            ></textarea>
+                          </div>
+                          <div className="flex justify-end space-x-3">
+                            <button 
+                              type="button"
+                              onClick={() => setShowNewRequestForm(false)}
+                              className="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-md"
+                            >
+                              Cancel
+                            </button>
+                            <button 
+                              type="submit"
+                              className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
+                            >
+                              Submit Request
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    )}
+                    
+                    {myRequests.length > 0 ? (
+                      <div className="space-y-4">
+                        {myRequests.map(request => (
+                          <div key={request._id} className="border border-gray-200 rounded-lg p-4">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h3 className="font-medium text-lg mb-1">
+                                  {request.questionContent.length > 50 
+                                    ? `${request.questionContent.substring(0, 50)}...` 
+                                    : request.questionContent}
+                                </h3>
+                                <div className="flex items-center space-x-3 text-sm text-gray-500">
+                                  <span>Created: {new Date(request.createdAt).toLocaleDateString()}</span>
+                                  <span>{getStatusBadge(request.status)}</span>
+                                </div>
+                              </div>
+                              <div className="flex space-x-2">
+                                {request.status === 'open' && (
+                                  <button 
+                                    onClick={() => handleCancelRequest(request._id)}
+                                    className="text-red-600 hover:text-red-800 text-sm"
+                                  >
+                                    Cancel
+                                  </button>
+                                )}
+                                <button 
+                                  onClick={() => navigate(`/peer-review/${request._id}`)}
+                                  className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded-md text-sm"
+                                >
+                                  View
+                                </button>
+                              </div>
+                            </div>
+                            
+                            {request.assignedTo && (
+                              <div className="mt-3 text-sm">
+                                <span className="text-gray-600">Assigned to: </span>
+                                <span className="font-medium">{request.assignedTo.name}</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-gray-500 mb-4">You haven't created any peer review requests yet.</p>
+                        <button 
+                          onClick={() => setShowNewRequestForm(true)}
+                          className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
+                        >
+                          Create Your First Request
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {activeTab === 'assignedRequests' && (
+                  <div>
+                    <h2 className="text-lg font-semibold mb-4">Requests Assigned to Me</h2>
+                    
+                    {assignedRequests.length > 0 ? (
+                      <div className="space-y-4">
+                        {assignedRequests.map(request => (
+                          <div key={request._id} className="border border-gray-200 rounded-lg p-4">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h3 className="font-medium text-lg mb-1">
+                                  {request.questionContent.length > 50 
+                                    ? `${request.questionContent.substring(0, 50)}...` 
+                                    : request.questionContent}
+                                </h3>
+                                <div className="flex items-center space-x-3 text-sm text-gray-500">
+                                  <span>From: {request.requester.name}</span>
+                                  <span>Assigned: {new Date(request.assignedAt).toLocaleDateString()}</span>
+                                  <span>{getStatusBadge(request.status)}</span>
+                                </div>
+                              </div>
+                              <button 
+                                onClick={() => navigate(`/peer-review/${request._id}/review`)}
+                                className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded-md text-sm"
+                              >
+                                {request.status === 'completed' ? 'View' : 'Review'}
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-gray-500">You don't have any assigned peer review requests.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {activeTab === 'receivedReviews' && (
+                  <div>
+                    <h2 className="text-lg font-semibold mb-4">Reviews You've Received</h2>
+                    
+                    {receivedReviews.length > 0 ? (
+                      <div className="space-y-4">
+                        {receivedReviews.map(review => (
+                          <div key={review._id} className="border border-gray-200 rounded-lg p-4">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h3 className="font-medium text-lg mb-1">
+                                  {review.questionContent.length > 50 
+                                    ? `${review.questionContent.substring(0, 50)}...` 
+                                    : review.questionContent}
+                                </h3>
+                                <div className="flex items-center space-x-3 text-sm text-gray-500">
+                                  <span>From: {review.reviewer.name || 'Anonymous Reviewer'}</span>
+                                  <span>Received: {new Date(review.createdAt).toLocaleDateString()}</span>
+                                  <div className="flex items-center">
+                                    <span className="mr-1">Rating:</span>
+                                    {renderStarRating(review.overallRating)}
+                                  </div>
+                                </div>
+                              </div>
+                              <button 
+                                onClick={() => navigate(`/peer-review/${review._id}/feedback`)}
+                                className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded-md text-sm"
+                              >
+                                View Feedback
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-gray-500">You haven't received any peer reviews yet.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {activeTab === 'submittedReviews' && (
+                  <div>
+                    <h2 className="text-lg font-semibold mb-4">Reviews You've Submitted</h2>
+                    
+                    {submittedReviews.length > 0 ? (
+                      <div className="space-y-4">
+                        {submittedReviews.map(review => (
+                          <div key={review._id} className="border border-gray-200 rounded-lg p-4">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h3 className="font-medium text-lg mb-1">
+                                  {review.questionContent.length > 50 
+                                    ? `${review.questionContent.substring(0, 50)}...` 
+                                    : review.questionContent}
+                                </h3>
+                                <div className="flex items-center space-x-3 text-sm text-gray-500">
+                                  <span>For: {review.reviewee.name}</span>
+                                  <span>Submitted: {new Date(review.createdAt).toLocaleDateString()}</span>
+                                  <div className="flex items-center">
+                                    <span className="mr-1">Rating:</span>
+                                    {renderStarRating(review.overallRating)}
+                                  </div>
+                                </div>
+                              </div>
+                              <button 
+                                onClick={() => navigate(`/peer-review/${review._id}`)}
+                                className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded-md text-sm"
+                              >
+                                View
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-gray-500">You haven't submitted any peer reviews yet.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );

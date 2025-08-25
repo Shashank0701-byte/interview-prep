@@ -34,12 +34,21 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       if (error.response.status === 401) {
         // Redirect to login page
+        console.error("Authentication error:", error.response.data);
         window.location.href = "/";
       } else if (error.response.status === 500) {
-        console.error("Server error. Please try again later.");
+        console.error("Server error:", error.response.data);
+      } else if (error.response.status === 404) {
+        console.error("Resource not found:", error.response.config.url);
+      } else {
+        console.error(`API Error (${error.response.status}):`, error.response.data);
       }
     } else if (error.code === "ECONNABORTED") {
       console.error("Request timeout. Please try again.");
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+    } else {
+      console.error("Request error:", error.message);
     }
     return Promise.reject(error);
   }
