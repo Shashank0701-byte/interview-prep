@@ -1,5 +1,5 @@
-const { Forum, Post } = require('../models/Forum');
-const User = require('../models/User');
+const { Forum, Post } = require('../../models/collaborative/Forum');
+const User = require('../../models/User');
 
 // Create a new forum
 exports.createForum = async (req, res) => {
@@ -247,8 +247,6 @@ exports.updatePost = async (req, res) => {
         // Update the post
         if (content !== undefined) post.content = content;
         if (attachments !== undefined) post.attachments = attachments;
-        post.isEdited = true;
-        post.lastEditedAt = new Date();
 
         await post.save();
 
@@ -372,5 +370,148 @@ exports.getUserPosts = async (req, res) => {
     } catch (error) {
         console.error('Error fetching user posts:', error);
         res.status(500).json({ message: 'Failed to fetch user posts' });
+    }
+};
+
+// Create a reply to a post
+exports.createReply = async (req, res) => {
+    try {
+        const { content, attachments } = req.body;
+        const { forumId, postId } = req.params;
+        const userId = req.user.id;
+
+        // Check if the parent post exists
+        const parentPost = await Post.findById(postId);
+        if (!parentPost) {
+            return res.status(404).json({ message: 'Parent post not found' });
+        }
+
+        // Check if the forum exists
+        const forum = await Forum.findById(forumId);
+        if (!forum) {
+            return res.status(404).json({ message: 'Forum not found' });
+        }
+
+        // Create the reply
+        const newReply = new Post({
+            content,
+            author: userId,
+            forum: forumId,
+            parentPost: postId,
+            attachments: attachments || []
+        });
+
+        await newReply.save();
+
+        // Update the forum's lastActivity
+        forum.lastActivity = new Date();
+        await forum.save();
+
+        // Populate author details before sending response
+        await newReply.populate('author', 'name email profileImageUrl');
+
+        res.status(201).json(newReply);
+    } catch (error) {
+        console.error('Error creating reply:', error);
+        res.status(500).json({ message: 'Failed to create reply' });
+    }
+};
+
+// Toggle upvote on a post
+exports.toggleUpvote = async (req, res) => {
+    try {
+        const { forumId, postId } = req.params;
+        const userId = req.user.id;
+
+        // Check if the post exists
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        // Check if user has already upvoted
+        const upvoteIndex = post.upvotes.findIndex(id => id.toString() === userId);
+        
+        if (upvoteIndex !== -1) {
+            // Remove upvote
+            post.upvotes.splice(upvoteIndex, 1);
+        } else {
+            // Add upvote
+            post.upvotes.push(userId);
+        }
+
+        await post.save();
+        res.status(200).json({ 
+            upvoted: upvoteIndex === -1,
+            upvoteCount: post.upvotes.length 
+        });
+    } catch (error) {
+        console.error('Error toggling upvote:', error);
+        res.status(500).json({ message: 'Failed to toggle upvote' });
+    }
+};
+
+// Get forum categories
+exports.getForumCategories = async (req, res) => {
+    try {
+        // Get distinct categories from all forums
+        const categories = await Forum.distinct('category');
+        res.status(200).json(categories);
+    } catch (error) {
+        console.error('Error fetching forum categories:', error);
+        res.status(500).json({ message: 'Failed to fetch forum categories' });
+    }
+};
+
+// Get popular tags
+exports.getPopularTags = async (req, res) => {
+    try {
+        // Aggregate to find most used tags
+        const popularTags = await Forum.aggregate([
+            { $unwind: '$tags' },
+            { $group: { _id: '$tags', count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+            { $limit: 10 }
+        ]);
+        
+        res.status(200).json(popularTags.map(tag => ({
+            name: tag._id,
+            count: tag.count
+        })));
+    } catch (error) {
+        console.error('Error fetching popular tags:', error);
+        res.status(500).json({ message: 'Failed to fetch popular tags' });
+    }
+};
+
+// Get user's forum activity
+exports.getUserForumActivity = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Get user's posts and comments
+        const posts = await Post.find({ author: userId })
+            .populate('forum', 'title')
+            .sort({ createdAt: -1 });
+
+        // Get forums created by user
+        const forumsCreated = await Forum.find({ creator: userId })
+            .sort({ createdAt: -1 });
+
+        // Get forums where user has participated (posted or commented)
+        const participatedForumIds = [...new Set(posts.map(post => post.forum._id.toString()))];
+        const participatedForums = await Forum.find({ 
+            _id: { $in: participatedForumIds },
+            creator: { $ne: userId } // Exclude forums created by the user
+        });
+
+        res.status(200).json({
+            posts,
+            forumsCreated,
+            participatedForums
+        });
+    } catch (error) {
+        console.error('Error fetching user forum activity:', error);
+        res.status(500).json({ message: 'Failed to fetch user forum activity' });
     }
 };

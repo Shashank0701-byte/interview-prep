@@ -19,12 +19,12 @@ import AnalyticsDashboard from './pages/Analytics/AnalyticsDashboard';
 import PracticePage from './pages/PracticePage';
 
 // Import collaborative feature components
-import StudyGroups from './pages/Collaborative/StudyGroups';
-import StudyGroupDetail from './pages/Collaborative/StudyGroupDetail';
-import PeerReview from './pages/Collaborative/PeerReview';
-import Mentorship from './pages/Collaborative/Mentorship';
-import Forum from './pages/Collaborative/Forum';
-import ForumDetail from './pages/Collaborative/ForumDetail';
+import StudyGroups from './pages/Collaborative/StudyGroups.jsx';
+import StudyGroupDetail from './pages/Collaborative/StudyGroupDetail.jsx';
+import PeerReview from './pages/Collaborative/PeerReview.jsx';
+import Mentorship from './pages/Collaborative/Mentorship.jsx';
+import Forum from './pages/Collaborative/Forum.jsx';
+import ForumDetail from './pages/Collaborative/ForumDetail.jsx';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION

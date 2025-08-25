@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
-import SpinnerLoader from '../../components/Loader/SpinnerLoader';
+import SpinnerLoader from '../../components/Loader/SpinnerLoader.jsx';
 import ReactMarkdown from 'react-markdown';
 
 const ReviewPage = () => {
