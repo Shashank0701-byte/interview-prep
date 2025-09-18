@@ -23,6 +23,8 @@ export const API_PATHS = {
         GET_ONE: (id) => `/api/sessions/${id}`,
         DELETE: (id) => `/api/sessions/${id}`,
         GET_REVIEW_QUEUE: "/api/sessions/review-queue",
+        UPDATE_RATING: (id) => `/api/sessions/${id}/rating`,
+        UPDATE_PROGRESS: (id) => `/api/sessions/${id}/progress`,
     },
     QUESTION: {
         ADD_TO_SESSION: "/api/questions/add",
@@ -31,6 +33,8 @@ export const API_PATHS = {
         TOGGLE_MASTERED: (id) => `/api/questions/${id}/master`,
         GET_QUESTIONS_BY_COMPANY: "/api/questions/by-company",
         REVIEW: (id) => `/api/questions/${id}/review`, // ✅ FIX: Added the missing REVIEW path
+        UPDATE_JUSTIFICATION: (id) => `/api/questions/${id}/justification`,
+        FILTER: "/api/questions/filter",
     },
     ANALYTICS: {
         GET_PERFORMANCE_OVER_TIME: "/api/analytics/performance-over-time",

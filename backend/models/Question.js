@@ -20,6 +20,20 @@ const questionSchema = new mongoose.Schema({
         }
     ],
 
+    // --- NEW FEATURES ---
+    // Justification for why this question is relevant in real interviews
+    justification: {
+        probability: { type: String, enum: ['Very High', 'High', 'Medium', 'Low'], default: 'Medium' },
+        reasoning: { type: String, default: '' },
+        commonCompanies: [{ type: String }],
+        interviewType: { type: String, enum: ['Technical', 'Behavioral', 'System Design', 'Coding', 'General'], default: 'Technical' }
+    },
+    
+    // Additional metadata for filtering
+    tags: [{ type: String }],
+    difficulty: { type: String, enum: ['Easy', 'Medium', 'Hard'], default: 'Medium' },
+    category: { type: String, default: 'General' },
+
     // --- EXISTING SPACED REPETITION FIELDS ---
     dueDate: { type: Date, default: () => new Date() },
     isPinned: { type: Boolean, default: false },

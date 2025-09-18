@@ -182,10 +182,94 @@ const reviewQuestion = async (req, res) => {
 
 
 
+// Removed updateQuestionRating - ratings are now only for sessions
+
+// @desc    Update question justification (admin only for now)
+// @route   PUT /api/questions/:id/justification
+// @access  Private
+const updateQuestionJustification = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { probability, reasoning, commonCompanies, interviewType } = req.body;
+
+        const question = await Question.findById(id);
+        if (!question) {
+            return res.status(404).json({ message: "Question not found" });
+        }
+
+        // Update justification fields
+        if (probability !== undefined) question.justification.probability = probability;
+        if (reasoning !== undefined) question.justification.reasoning = reasoning;
+        if (commonCompanies !== undefined) question.justification.commonCompanies = commonCompanies;
+        if (interviewType !== undefined) question.justification.interviewType = interviewType;
+
+        await question.save();
+        res.status(200).json({ message: "Justification updated successfully", question });
+
+    } catch (error) {
+        console.error("Error updating question justification:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+// @desc    Get questions with filtering options
+// @route   GET /api/questions/filter
+// @access  Private
+const getFilteredQuestions = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { 
+            difficulty, 
+            category, 
+            interviewType, 
+            probability, 
+            isPinned, 
+            isMastered,
+            minRating,
+            tags 
+        } = req.query;
+
+        // Build filter object
+        let filter = {};
+        
+        // Get user's sessions first
+        const sessions = await Session.find({ user: userId });
+        const sessionIds = sessions.map(session => session._id);
+        filter.session = { $in: sessionIds };
+
+        if (difficulty) filter.difficulty = difficulty;
+        if (category) filter.category = category;
+        if (interviewType) filter['justification.interviewType'] = interviewType;
+        if (probability) filter['justification.probability'] = probability;
+        if (isPinned !== undefined) filter.isPinned = isPinned === 'true';
+        if (isMastered !== undefined) filter.isMastered = isMastered === 'true';
+        if (tags) filter.tags = { $in: tags.split(',') };
+
+        let questions = await Question.find(filter).populate('session');
+
+        // Filter by minimum rating if specified
+        if (minRating) {
+            const minRatingNum = parseFloat(minRating);
+            questions = questions.filter(q => {
+                const avgRating = (q.userRating.difficulty + q.userRating.usefulness + q.userRating.clarity) / 3;
+                return avgRating >= minRatingNum;
+            });
+        }
+
+        res.status(200).json({ questions });
+
+    } catch (error) {
+        console.error("Error filtering questions:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
 module.exports = {
     addQuestionsToSession,
     togglePinQuestion,
     updateQuestionNote,
     toggleMasteredStatus,
     reviewQuestion,
+    updateQuestionJustification,
+    getFilteredQuestions,
 };

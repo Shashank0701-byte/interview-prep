@@ -12,6 +12,9 @@ import QuestionCard from '../../components/Cards/QuestionCard';
 import Drawer from '../../components/Drawer';
 import SkeletonLoader from '../../components/Loader/SkeletonLoader';
 import AIResponsePreview from './components/AIResponsePreview';
+// Removed QuestionFilter - moved to Dashboard
+// import QuestionFilter from '../../components/QuestionFilter';
+// import useQuestionFilter from '../../hooks/useQuestionFilter';
 
 // ✅ FIX: Added the missing API path for the follow-up feature
 const API_PATHS = {
@@ -57,6 +60,8 @@ const InterviewPrep = () => {
     const [followUpContent, setFollowUpContent] = useState(null);
     const [isFollowUpLoading, setIsFollowUpLoading] = useState(false);
     const [followUpError, setFollowUpError] = useState("");
+    
+    // Filter functionality removed - moved to Dashboard
 
     const fetchSessionDetailsById = async () => {
         try {
@@ -134,6 +139,8 @@ const InterviewPrep = () => {
             toast.error("Failed to update status.");
         }
     };
+    
+    // Removed handleRatingUpdate - ratings are now only for sessions
 
     const uploadMoreQuestions = async () => {
         setIsUpdateLoader(true);

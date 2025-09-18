@@ -1,5 +1,5 @@
 import React from 'react'
-import { LuTrash2 } from 'react-icons/lu';
+import { LuTrash2, LuStar } from 'react-icons/lu';
 import { getInitials } from '../../utils/helper';
 
 const SummaryCard = ({
@@ -11,12 +11,32 @@ const SummaryCard = ({
     description,
     lastUpdated,
     onSelect,
-    onDelete
+    onDelete,
+    // New props for enhanced features
+    userRating = { overall: 3, difficulty: 3, usefulness: 3 },
+    status = 'Active',
+    completionPercentage = 0,
+    masteredQuestions = 0,
+    onRateClick,
+    sessionId
 }) => {
-  return <div 
-            className='bg-white border border-gray-300/40 rounded-xl p-2 overflow:hidden cursor-pointer hover:shadow-xl shadow-gray-100 relative group'
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'Active': return 'text-green-700 bg-green-100 border-green-200';
+            case 'Completed': return 'text-blue-700 bg-blue-100 border-blue-200';
+            case 'Paused': return 'text-yellow-700 bg-yellow-100 border-yellow-200';
+            default: return 'text-gray-700 bg-gray-100 border-gray-200';
+        }
+    };
+    
+    
+    const avgRating = (userRating.overall + userRating.difficulty + userRating.usefulness) / 3;
+    
+    return (
+        <div 
+            className='bg-white border border-gray-100 rounded-2xl overflow-hidden cursor-pointer hover:shadow-2xl hover:shadow-blue-100/50 shadow-lg shadow-gray-100/50 relative group transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02]'
             onClick={onSelect}
-            >
+        >
                 <div 
                     className='rounded-lg p-4 cursor-pointer relative'
                     style={{
@@ -42,40 +62,104 @@ const SummaryCard = ({
                 </div>
             </div>
 
-            <button
-                className='hidden group-hover:flex items-center gap-2 text-xs text-rose-500 font-medium bg-rose px-3 py-1 rounded text-nowrap border border-rose-200 cursor-pointer absolute top-0 right-0'
-                onClick={(e) =>{
-                    e.stopPropagation();
-                    onDelete();
-                }}
-            >
-                <LuTrash2 />
-            </button>
+            {/* Enhanced Header with Status and Rating */}
+            <div className="absolute top-3 right-3 flex items-center gap-2">
+                <span className={`px-3 py-1.5 text-xs font-semibold rounded-full border backdrop-blur-sm ${getStatusColor(status)}`}>
+                    {status}
+                </span>
+                <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onRateClick();
+                        }}
+                        className="flex items-center gap-1 text-xs text-yellow-600 hover:text-yellow-700 bg-yellow-50 hover:bg-yellow-100 px-2 py-1 rounded-full transition-colors duration-200"
+                    >
+                        <LuStar className="w-3 h-3" />
+                        Rate Session
+                    </button>
+                    <button
+                        className='flex items-center gap-1.5 text-xs text-rose-700 font-medium bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full border border-rose-200/50 cursor-pointer hover:bg-rose-50 hover:border-rose-300 transition-all duration-200 transform hover:scale-105 shadow-sm'
+                        onClick={(e) =>{
+                            e.stopPropagation();
+                            onDelete();
+                        }}
+                        title="Delete session"
+                    >
+                        <LuTrash2 className="w-3.5 h-3.5" />
+                    </button>
+                </div>
+            </div>
     </div>
 
-    <div className='px-3 pb-3'>
-        <div className='flex items-center gap-3 mt-4'>
-            <div className='text-[10px] font-medium text-black px-3 py-1 border-[0.5px] border-gray-900 rounded-full'>
-                Experience: {experience} {experience == 1 ? "Year" : "Years"}
+    <div className='px-5 pb-5 pt-3'>
+        {/* Rating Display */}
+        <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+                <div className="flex items-center gap-0.5">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                        <LuStar
+                            key={star}
+                            className={`w-4 h-4 ${
+                                star <= Math.round(avgRating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                            }`}
+                        />
+                    ))}
+                </div>
+                <span className="text-sm font-medium text-gray-700">({avgRating.toFixed(1)})</span>
             </div>
-
-            <div className='text-[10px] font-medium text-black px-3 py-1 border-[0.5px] border-gray-900 rounded-full'>
-                {questions} Q&A
+            
+            {completionPercentage > 0 && (
+                <div className="flex items-center gap-2">
+                    <div className="w-16 bg-gray-200 rounded-full h-1.5">
+                        <div 
+                            className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-1.5 rounded-full transition-all duration-500"
+                            style={{ width: `${completionPercentage}%` }}
+                        ></div>
+                    </div>
+                    <span className="text-xs font-medium text-emerald-600">{completionPercentage}%</span>
+                </div>
+            )}
+        </div>
+        
+        {/* Enhanced Stats */}
+        <div className='grid grid-cols-2 gap-3 mb-4'>
+            <div className='bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-100/50'>
+                <div className='text-xs font-medium text-blue-700 mb-1'>Experience</div>
+                <div className='text-sm font-bold text-blue-900'>{experience} {experience == 1 ? "Year" : "Years"}</div>
             </div>
-
-            <div className='text-[10px] font-medium text-black px-3 py-1 border-[0.5px] border-gray-900 rounded-full'>
-                Last Updated: {lastUpdated}
+            
+            <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-3 border border-purple-100/50'>
+                <div className='text-xs font-medium text-purple-700 mb-1'>Questions</div>
+                <div className='text-sm font-bold text-purple-900'>{questions} Q&A</div>
             </div>
+            
+            {masteredQuestions > 0 && (
+                <div className='bg-gradient-to-br from-emerald-50 to-green-50 rounded-lg p-3 border border-emerald-100/50 col-span-2'>
+                    <div className='text-xs font-medium text-emerald-700 mb-1'>Mastered Questions</div>
+                    <div className='text-sm font-bold text-emerald-900'>{masteredQuestions} completed</div>
+                </div>
+            )}
         </div>
 
-        <p className='text-[12px] text-gray-500 font-medium line-clamp-2 mt-3'>
-            {description}
-        </p>
+        {/* Description */}
+        {description && (
+            <p className='text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed'>
+                {description}
+            </p>
+        )}
+        
+        {/* Last Updated */}
+        <div className='flex items-center gap-2 text-xs text-gray-500'>
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Updated {lastUpdated}
+        </div>
     </div>
-    </div>
-
     
-
-}
+        </div>
+    );
+};
 
 export default SummaryCard;

@@ -108,10 +108,94 @@ const getReviewQueue = async (req, res) => {
     }
 };
 
+// @desc    Update session rating
+// @route   PUT /api/sessions/:id/rating
+// @access  Private
+const updateSessionRating = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { overall, difficulty, usefulness } = req.body;
+        const userId = req.user._id;
+
+        // Validate rating values
+        const ratings = { overall, difficulty, usefulness };
+        for (const [key, value] of Object.entries(ratings)) {
+            if (value !== undefined && (value < 1 || value > 5)) {
+                return res.status(400).json({ message: `${key} rating must be between 1 and 5` });
+            }
+        }
+
+        const session = await Session.findById(id);
+        if (!session) {
+            return res.status(404).json({ message: "Session not found" });
+        }
+
+        // Verify the session belongs to the user
+        if (session.user.toString() !== userId.toString()) {
+            return res.status(401).json({ message: "Not authorized" });
+        }
+
+        // Update ratings
+        if (overall !== undefined) session.userRating.overall = overall;
+        if (difficulty !== undefined) session.userRating.difficulty = difficulty;
+        if (usefulness !== undefined) session.userRating.usefulness = usefulness;
+
+        await session.save();
+        res.status(200).json({ message: "Rating updated successfully", session });
+
+    } catch (error) {
+        console.error("Error updating session rating:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+// @desc    Update session progress
+// @route   PUT /api/sessions/:id/progress
+// @access  Private
+const updateSessionProgress = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user._id;
+
+        const session = await Session.findById(id).populate('questions');
+        if (!session) {
+            return res.status(404).json({ message: "Session not found" });
+        }
+
+        if (session.user.toString() !== userId.toString()) {
+            return res.status(401).json({ message: "Not authorized" });
+        }
+
+        // Calculate progress based on mastered questions
+        const totalQuestions = session.questions.length;
+        const masteredQuestions = session.questions.filter(q => q.isMastered).length;
+        const completionPercentage = totalQuestions > 0 ? Math.round((masteredQuestions / totalQuestions) * 100) : 0;
+
+        session.masteredQuestions = masteredQuestions;
+        session.completionPercentage = completionPercentage;
+
+        // Auto-update status based on progress
+        if (completionPercentage === 100) {
+            session.status = 'Completed';
+        } else if (completionPercentage > 0) {
+            session.status = 'Active';
+        }
+
+        await session.save();
+        res.status(200).json({ message: "Progress updated successfully", session });
+
+    } catch (error) {
+        console.error("Error updating session progress:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
 module.exports = {
     createSession,
     getMySessions,
     getSessionById,
     deleteSession,
     getReviewQueue,
+    updateSessionRating,
+    updateSessionProgress,
 };

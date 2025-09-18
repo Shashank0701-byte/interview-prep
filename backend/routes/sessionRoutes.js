@@ -4,7 +4,9 @@ const {
     getSessionById, 
     getMySessions, 
     deleteSession, 
-    getReviewQueue 
+    getReviewQueue,
+    updateSessionRating,
+    updateSessionProgress
 } = require('../controllers/sessionController');
 const { protect } = require('../middlewares/authMiddleware');
 
@@ -32,6 +34,14 @@ router.get('/:id', protect, getSessionById);
 // DELETE /api/sessions/:id
 // Deletes a single session by its unique ID.
 router.delete('/:id', protect, deleteSession);
+
+// PUT /api/sessions/:id/rating
+// Updates the rating for a session.
+router.put('/:id/rating', protect, updateSessionRating);
+
+// PUT /api/sessions/:id/progress
+// Updates the progress for a session.
+router.put('/:id/progress', protect, updateSessionProgress);
 
 // Export the router to be used in the main server file
 module.exports = router;

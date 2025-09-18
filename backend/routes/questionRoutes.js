@@ -5,7 +5,8 @@ const {
     addQuestionsToSession, 
     toggleMasteredStatus, 
     reviewQuestion,
-    getQuestionsByCompany
+    updateQuestionJustification,
+    getFilteredQuestions
 } = require('../controllers/questionController');
 const { protect } = require('../middlewares/authMiddleware');
 
@@ -19,5 +20,8 @@ router.put('/:id/note', protect, updateQuestionNote);
 router.put('/:id/master', protect, toggleMasteredStatus);
 router.put('/:id/review', protect, reviewQuestion);
 
+// New routes for justifications and filtering (removed rating route)
+router.put('/:id/justification', protect, updateQuestionJustification);
+router.get('/filter', protect, getFilteredQuestions);
 
 module.exports = router;
