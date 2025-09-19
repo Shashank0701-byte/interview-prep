@@ -3,50 +3,16 @@ import { useParams } from "react-router-dom";
 import moment from "moment";
 import { AnimatePresence, motion } from "framer-motion";
 import { LuCircleAlert, LuListCollapse } from "react-icons/lu";
-import SpinnerLoader from "../../components/Loader/SpinnerLoader";
+import SpinnerLoader from "../../components/Loader/SpinnerLoader.jsx";
 import { toast } from "react-hot-toast";
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import RoleInfoHeader from './components/RoleInfoHeader';
 import axiosInstance from '../../utils/axiosInstance';
-import QuestionCard from '../../components/Cards/QuestionCard';
+import { API_PATHS } from '../../utils/apiPaths';
+import QuestionCard from '../../components/Cards/QuestionCard_enhanced';
 import Drawer from '../../components/Drawer';
 import SkeletonLoader from '../../components/Loader/SkeletonLoader';
 import AIResponsePreview from './components/AIResponsePreview';
-// Removed QuestionFilter - moved to Dashboard
-// import QuestionFilter from '../../components/QuestionFilter';
-// import useQuestionFilter from '../../hooks/useQuestionFilter';
-
-// ✅ FIX: Added the missing API path for the follow-up feature
-const API_PATHS = {
-    AUTH: {
-        REGISTER: "/api/auth/register",
-        LOGIN: "/api/auth/login",
-        GET_PROFILE: "/api/auth/profile",
-    },
-    IMAGE: {
-        UPLOAD_IMAGE: "/api/auth/upload-image",
-    },
-    AI: {
-        GENERATE_QUESTIONS: "/api/ai/generate-questions",
-        GENERATE_EXPLANATION: "/api/ai/generate-explanation",
-        PRACTICE_FEEDBACK: "/api/ai/practice-feedback",
-        GENERATE_FOLLOW_UP: "/api/ai/follow-up", // <-- This was missing
-    },
-    SESSIONS: { 
-        CREATE: "/api/sessions/create",
-        GET_MY_SESSIONS: "/api/sessions/my-sessions",
-        GET_ONE: (id) => `/api/sessions/${id}`,
-        DELETE: (id) => `/api/sessions/${id}`,
-        GET_REVIEW_QUEUE: "/api/sessions/review-queue",
-    },
-    QUESTION: {
-        ADD_TO_SESSION: "/api/questions/add",
-        PIN: (id) => `/api/questions/${id}/pin`,
-        UPDATE_NOTE: (id) => `/api/questions/${id}/note`,
-        TOGGLE_MASTERED: (id) => `/api/questions/${id}/master`,
-        REVIEW: (id) => `/api/questions/${id}/review`,
-    },
-};
 
 const InterviewPrep = () => {
     const { sessionId } = useParams();
@@ -139,6 +105,19 @@ const InterviewPrep = () => {
             toast.error("Failed to update status.");
         }
     };
+
+    const handleUpdateRating = async (questionId, rating) => {
+        try {
+            await axiosInstance.put(API_PATHS.QUESTION.UPDATE_RATING(questionId), { userRating: rating });
+            toast.success("Rating updated successfully!");
+            fetchSessionDetailsById();
+            
+            // Trigger analytics refresh after rating update
+            window.dispatchEvent(new Event('analytics-refresh'));
+        } catch (error) {
+            toast.error("Failed to update rating.");
+        }
+    };
     
     // Removed handleRatingUpdate - ratings are now only for sessions
 
@@ -211,6 +190,13 @@ const InterviewPrep = () => {
                                         isPinned={data.isPinned}
                                         onTogglePin={() => toggleQuestionPinStatus(data._id)}
                                         onAskFollowUp={() => handleAskFollowUp(data.question, data.answer)}
+                                        // Enhanced props
+                                        justification={data.justification}
+                                        userRating={data.userRating}
+                                        onUpdateRating={handleUpdateRating}
+                                        difficulty={data.difficulty}
+                                        tags={data.tags}
+                                        category={data.category}
                                     />
                                 </motion.div>
                             ))}

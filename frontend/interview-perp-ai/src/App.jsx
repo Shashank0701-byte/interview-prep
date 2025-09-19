@@ -13,7 +13,7 @@ import Dashboard from './pages/Home/Dashboard';
 import InterviewPrep from './pages/InterviewPrep/InterviewPrep';
 import UserProvider from './context/userContext';
 import ReviewPage from './pages/Review/ReviewPage';
-import SignUp from './pages/Auth/Signup';
+import SignUp from './pages/Auth/SignUp.jsx';
 import Login from './pages/Auth/Login';
 import AnalyticsDashboard from './pages/Analytics/AnalyticsDashboard';
 import PracticePage from './pages/PracticePage';

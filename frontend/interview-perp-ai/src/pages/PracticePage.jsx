@@ -4,7 +4,7 @@ import DashboardLayout from '../components/layouts/DashboardLayout';
 import axiosInstance from '../utils/axiosInstance';
 import { API_PATHS } from '../utils/apiPaths';
 import ReactMarkdown from 'react-markdown';
-import SpinnerLoader from '../components/Loader/SpinnerLoader';
+import SpinnerLoader from '../components/Loader/SpinnerLoader.jsx';
 import { FaMicrophone, FaStopCircle, FaRedo } from 'react-icons/fa';
 
 // Hook for Speech Recognition

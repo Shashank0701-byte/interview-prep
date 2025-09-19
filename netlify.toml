@@ -1,0 +1,11 @@
+# Netlify Build Settings
+[build]
+  # Directory to change to before starting a build.
+  # Make sure this is your project's correct folder name.
+  base = "frontend/interview-perp-ai"
+
+  # The command to build your site for production.
+  command = "npm run build"
+
+  # The directory that contains the deploy-ready HTML files and assets.
+  publish = "dist"

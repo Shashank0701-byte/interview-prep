@@ -9,7 +9,10 @@ const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true); // New state to track loading
 
   useEffect(() => {
-    if (user) return;
+    if (user) {
+      setLoading(false);
+      return;
+    }
 
     const accessToken = localStorage.getItem("token");
     if (!accessToken) {
@@ -23,14 +26,16 @@ const UserProvider = ({ children }) => {
         setUser(response.data);
       } catch (error) {
         console.error("User not authenticated", error);
-        clearUser();
+        // Clear invalid token
+        localStorage.removeItem("token");
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
     
     fetchUser();
-  }, [user]);
+  }, []);
   // The definitions for updateUser and clearUser are missing in the screenshot
   // but are used in the provider's value.
   const updateUser = (userData) => {

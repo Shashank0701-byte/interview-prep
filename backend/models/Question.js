@@ -29,6 +29,13 @@ const questionSchema = new mongoose.Schema({
         interviewType: { type: String, enum: ['Technical', 'Behavioral', 'System Design', 'Coding', 'General'], default: 'Technical' }
     },
     
+    // User rating system
+    userRating: {
+        difficulty: { type: Number, min: 1, max: 5, default: 3 },
+        usefulness: { type: Number, min: 1, max: 5, default: 3 },
+        clarity: { type: Number, min: 1, max: 5, default: 3 }
+    },
+    
     // Additional metadata for filtering
     tags: [{ type: String }],
     difficulty: { type: String, enum: ['Easy', 'Medium', 'Hard'], default: 'Medium' },

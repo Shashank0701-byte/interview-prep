@@ -33,13 +33,24 @@ axiosInstance.interceptors.response.use(
     // Handle common errors globally
     if (error.response) {
       if (error.response.status === 401) {
-        // Redirect to login page
-        window.location.href = "/";
+        // Only redirect if not on auth pages
+        if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signUp')) {
+          console.log("Authentication required, redirecting to login");
+          window.location.href = "/";
+        }
       } else if (error.response.status === 500) {
-        console.error("Server error. Please try again later.");
+        console.error("Server error:", error.response.data);
+      } else if (error.response.status === 404) {
+        console.log("Resource not found:", error.response.config.url);
+      } else {
+        console.error(`API Error (${error.response.status}):`, error.response.data);
       }
     } else if (error.code === "ECONNABORTED") {
       console.error("Request timeout. Please try again.");
+    } else if (error.request) {
+      console.error("Network error - server may be down");
+    } else {
+      console.error("Request error:", error.message);
     }
     return Promise.reject(error);
   }

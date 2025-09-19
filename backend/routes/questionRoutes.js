@@ -5,6 +5,7 @@ const {
     addQuestionsToSession, 
     toggleMasteredStatus, 
     reviewQuestion,
+    updateQuestionRating,
     updateQuestionJustification,
     getFilteredQuestions
 } = require('../controllers/questionController');
@@ -19,8 +20,9 @@ router.post('/:id/pin', protect, togglePinQuestion);
 router.put('/:id/note', protect, updateQuestionNote);  
 router.put('/:id/master', protect, toggleMasteredStatus);
 router.put('/:id/review', protect, reviewQuestion);
+router.put('/:id/rating', protect, updateQuestionRating);
 
-// New routes for justifications and filtering (removed rating route)
+// New routes for justifications and filtering
 router.put('/:id/justification', protect, updateQuestionJustification);
 router.get('/filter', protect, getFilteredQuestions);
 

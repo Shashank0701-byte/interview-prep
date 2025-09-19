@@ -21,9 +21,20 @@ const app = express();
 // Middleware to handle CORS
 app.use(
   cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: [
+      "http://localhost:5173", 
+      "http://localhost:5174", 
+      "http://localhost:5175", 
+      "http://localhost:5176", 
+      "http://localhost:3000", 
+      "http://127.0.0.1:5173",
+      "http://127.0.0.1:5174",
+      "http://127.0.0.1:5175",
+      "http://127.0.0.1:5176"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
   })
 );
 
@@ -31,6 +42,21 @@ connectDB()
 
 // Middleware
 app.use(express.json());
+
+// Debugging middleware - logs all requests but doesn't interfere with routing
+app.use((req, res, next) => {
+    console.log('Request received for:', req.method, req.originalUrl);
+    next();
+});
+
+// Serve uploads folder
+app.use("/uploads", express.static(path.join(__dirname, "uploads"), {}));
+
+// Debug route to test API connectivity
+app.get('/api/test', (req, res) => {
+    console.log('Test API endpoint hit');
+    res.status(200).json({ message: 'API is working' });
+});
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -45,8 +71,11 @@ app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
 app.use('/api/feedback', feedbackRoutes);
 app.use("/api/ai", aiRoutes);
 
-// Serve uploads folder
-app.use("/uploads", express.static(path.join(__dirname, "uploads"), {}));
+// This 404 handler should only run after all other routes have been checked
+app.use((req, res) => {
+    console.log('No route found for:', req.originalUrl);
+    res.status(404).json({ message: 'Route not found', path: req.originalUrl });
+});
 
 // Start Server
 const PORT = process.env.PORT || 8000;

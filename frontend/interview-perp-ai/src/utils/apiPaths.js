@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:8000";
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 export const API_PATHS = {
     AUTH: {
@@ -15,6 +15,7 @@ export const API_PATHS = {
         PRACTICE_FEEDBACK: "/api/ai/practice-feedback", 
         COMPANY_TAGS: "/api/ai/company-tags",
         COMPANY_QUESTIONS: "/api/ai/company-questions",
+        GENERATE_FOLLOW_UP: "/api/ai/follow-up",
     },
     // ✅ FIX: Renamed to SESSIONS for consistency
     SESSIONS: { 
@@ -34,6 +35,7 @@ export const API_PATHS = {
         GET_QUESTIONS_BY_COMPANY: "/api/questions/by-company",
         REVIEW: (id) => `/api/questions/${id}/review`, // ✅ FIX: Added the missing REVIEW path
         UPDATE_JUSTIFICATION: (id) => `/api/questions/${id}/justification`,
+        UPDATE_RATING: (id) => `/api/questions/${id}/rating`,
         FILTER: "/api/questions/filter",
     },
     ANALYTICS: {
@@ -73,4 +75,5 @@ export const API_PATHS = {
         RECOMMENDATIONS: "/api/learning-path/recommendations",
         COMPLETE_ITEM: "/api/learning-path/complete-item",
     },
+   
 };

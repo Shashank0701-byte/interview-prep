@@ -182,7 +182,41 @@ const reviewQuestion = async (req, res) => {
 
 
 
-// Removed updateQuestionRating - ratings are now only for sessions
+// @desc    Update question rating
+// @route   PUT /api/questions/:id/rating
+// @access  Private
+const updateQuestionRating = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { userRating } = req.body;
+        const userId = req.user._id;
+
+        const question = await Question.findById(id);
+        if (!question) {
+            return res.status(404).json({ message: "Question not found" });
+        }
+
+        // Verify the question belongs to the user
+        const session = await Session.findById(question.session);
+        if (session.user.toString() !== userId.toString()) {
+            return res.status(401).json({ message: "Not authorized" });
+        }
+
+        // Update the user rating
+        question.userRating = {
+            difficulty: userRating.difficulty || 3,
+            usefulness: userRating.usefulness || 3,
+            clarity: userRating.clarity || 3
+        };
+
+        await question.save();
+        res.status(200).json({ message: "Rating updated successfully", question });
+
+    } catch (error) {
+        console.error("Error updating question rating:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
 
 // @desc    Update question justification (admin only for now)
 // @route   PUT /api/questions/:id/justification
@@ -270,6 +304,7 @@ module.exports = {
     updateQuestionNote,
     toggleMasteredStatus,
     reviewQuestion,
+    updateQuestionRating,
     updateQuestionJustification,
     getFilteredQuestions,
 };

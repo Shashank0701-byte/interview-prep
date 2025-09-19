@@ -34,7 +34,7 @@ const SummaryCard = ({
     
     return (
         <div 
-            className='bg-white border border-gray-100 rounded-2xl overflow-hidden cursor-pointer hover:shadow-2xl hover:shadow-blue-100/50 shadow-lg shadow-gray-100/50 relative group transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02]'
+            className='bg-white border border-gray-100 rounded-3xl overflow-hidden cursor-pointer hover:shadow-2xl hover:shadow-blue-100/50 shadow-lg shadow-gray-100/50 relative group transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.03] hover:rotate-1'
             onClick={onSelect}
         >
                 <div 
@@ -44,8 +44,8 @@ const SummaryCard = ({
                     }}
                 >
             <div className='flex items-start'>
-                <div className='flex-shrink-0 w-12 h-12 bg-white rounded-md flex items-center justify-center mr-4'>
-                    <span className='text-lg font-semibold text-black'>
+                <div className='flex-shrink-0 w-14 h-14 bg-white/90 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110'>
+                    <span className='text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-300'>
                         {getInitials(role)}
                     </span>
                 </div>
@@ -53,8 +53,8 @@ const SummaryCard = ({
                 <div className='flex-grow'>
                     <div className='flex justify-between items-start'>
                         <div>
-                            <h2 className='text-[17px] font-medium'>{role}</h2>
-                            <p className='text-xs text-medium text-gray-900'>
+                            <h2 className='text-lg font-semibold text-gray-900 group-hover:text-blue-800 transition-colors duration-300'>{role}</h2>
+                            <p className='text-sm text-gray-700 mt-1 leading-relaxed'>
                                 {topicsToFocus}
                             </p>
                         </div>
@@ -67,26 +67,27 @@ const SummaryCard = ({
                 <span className={`px-3 py-1.5 text-xs font-semibold rounded-full border backdrop-blur-sm ${getStatusColor(status)}`}>
                     {status}
                 </span>
-                <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2">
+                <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center gap-3">
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
                             onRateClick();
                         }}
-                        className="flex items-center gap-1 text-xs text-yellow-600 hover:text-yellow-700 bg-yellow-50 hover:bg-yellow-100 px-2 py-1 rounded-full transition-colors duration-200"
+                        className="flex items-center gap-2 text-xs text-yellow-600 hover:text-yellow-700 bg-yellow-50/90 hover:bg-yellow-100 backdrop-blur-sm px-3 py-2 rounded-xl transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-xl border border-yellow-200/50"
                     >
-                        <LuStar className="w-3 h-3" />
-                        Rate Session
+                        <LuStar className="w-4 h-4" />
+                        <span className="font-medium">Rate</span>
                     </button>
                     <button
-                        className='flex items-center gap-1.5 text-xs text-rose-700 font-medium bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full border border-rose-200/50 cursor-pointer hover:bg-rose-50 hover:border-rose-300 transition-all duration-200 transform hover:scale-105 shadow-sm'
+                        className='flex items-center gap-2 text-xs text-rose-700 font-medium bg-white/90 backdrop-blur-sm px-3 py-2 rounded-xl border border-rose-200/50 cursor-pointer hover:bg-rose-50 hover:border-rose-300 transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-xl'
                         onClick={(e) =>{
                             e.stopPropagation();
                             onDelete();
                         }}
                         title="Delete session"
                     >
-                        <LuTrash2 className="w-3.5 h-3.5" />
+                        <LuTrash2 className="w-4 h-4" />
+                        <span className="font-medium">Delete</span>
                     </button>
                 </div>
             </div>
