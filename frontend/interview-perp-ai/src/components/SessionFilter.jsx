@@ -106,7 +106,13 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
 
             {/* Filter Panel */}
             {isOpen && (
-                <div className="absolute top-full left-0 mt-2 w-full max-w-4xl bg-white border border-gray-200 rounded-xl shadow-lg z-50 p-6">
+                <>
+                    {/* Backdrop */}
+                    <div 
+                        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[9998]"
+                        onClick={() => setIsOpen(false)}
+                    />
+                    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] p-6 mx-4">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold text-gray-800">Filter Interview Sessions</h3>
                         <button
@@ -213,6 +219,7 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                         </div>
                     )}
                 </div>
+                </>
             )}
         </div>
     );

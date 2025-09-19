@@ -57,9 +57,14 @@ const SummaryCard = ({
 
                 <div className='flex-grow'>
                     <div className='flex justify-between items-start'>
-                        <div>
-                            <h2 className='text-lg font-semibold text-gray-900 group-hover:text-blue-800 transition-colors duration-300'>{role}</h2>
-                            <p className='text-sm text-gray-700 mt-1 leading-relaxed'>
+                        <div className='flex-1 pr-4'>
+                            <div className='flex items-center gap-2 mb-1'>
+                                <h2 className='text-lg font-semibold text-gray-900 group-hover:text-blue-800 transition-colors duration-300'>{role}</h2>
+                                <span className={`px-2 py-0.5 text-xs font-medium rounded-md border ${getStatusColor(status)}`}>
+                                    {status}
+                                </span>
+                            </div>
+                            <p className='text-sm text-gray-700 leading-relaxed'>
                                 {topicsToFocus}
                             </p>
                         </div>
@@ -67,11 +72,8 @@ const SummaryCard = ({
                 </div>
             </div>
 
-            {/* Enhanced Header with Status and Rating */}
-            <div className="absolute top-3 right-3 flex items-center gap-2">
-                <span className={`px-3 py-1.5 text-xs font-semibold rounded-full border backdrop-blur-sm ${getStatusColor(status)}`}>
-                    {status}
-                </span>
+            {/* Enhanced Header with Action Buttons */}
+            <div className="absolute top-2 right-2 flex items-center gap-2">
                 <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center gap-3">
                     <button
                         onClick={(e) => {
