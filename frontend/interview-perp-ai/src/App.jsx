@@ -48,11 +48,11 @@ const App = () => {
             path="/login" 
             element={<RedirectIfAuth><Login /></RedirectIfAuth>} 
           /> 
-            <Route path="/progress" element={<ProtectedRoute><AnalyticsDashboard /></ProtectedRoute>} />
+            <Route path="/progress" element={<ProtectedRoute><AnalyticsDashboard key="analytics" /></ProtectedRoute>} />
             {/* These routes should also be protected */}
             <Route
               path='/dashboard'
-              element={<ProtectedRoute><Dashboard /></ProtectedRoute>}
+              element={<ProtectedRoute><Dashboard key="dashboard" /></ProtectedRoute>}
             />
             <Route
               path='/interview-prep/:sessionId'

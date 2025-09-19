@@ -1,6 +1,7 @@
 // File: frontend/src/pages/Analytics/AnalyticsDashboard.jsx
 
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Bar, Line, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -187,9 +188,16 @@ const AnalyticsDashboard = () => {
         }
     };
 
+    const location = useLocation();
+    
     useEffect(() => {
         fetchAnalyticsData();
-    }, []);
+        
+        // Cleanup function to reset state when component unmounts
+        return () => {
+            setIsLoading(false);
+        };
+    }, [location.pathname]); // Re-fetch when route changes
 
     // Expose refresh function for other components
     useEffect(() => {

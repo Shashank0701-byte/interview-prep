@@ -108,6 +108,27 @@ const Dashboard = () => {
         fetchDashboardData();
     }, [fetchDashboardData]);
 
+    // Listen for various refresh events to update dashboard
+    useEffect(() => {
+        const handleRefresh = () => {
+            console.log('Dashboard refresh triggered');
+            fetchDashboardData();
+        };
+
+        // Listen to multiple events
+        window.addEventListener('analytics-refresh', handleRefresh);
+        window.addEventListener('dashboard-refresh', handleRefresh);
+        window.addEventListener('session-updated', handleRefresh);
+        window.addEventListener('force-dashboard-refresh', handleRefresh);
+        
+        return () => {
+            window.removeEventListener('analytics-refresh', handleRefresh);
+            window.removeEventListener('dashboard-refresh', handleRefresh);
+            window.removeEventListener('session-updated', handleRefresh);
+            window.removeEventListener('force-dashboard-refresh', handleRefresh);
+        };
+    }, [fetchDashboardData]);
+
     return (
         <DashboardLayout>
             <div className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20'>

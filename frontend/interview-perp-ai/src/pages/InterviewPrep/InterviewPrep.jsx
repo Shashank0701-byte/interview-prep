@@ -130,15 +130,33 @@ const InterviewPrep = () => {
                 topicsToFocus: sessionData?.topicsToFocus,
                 numberOfQuestions: 10,
             });
-            await axiosInstance.post(API_PATHS.QUESTION.ADD_TO_SESSION, {
+            const addQuestionsResponse = await axiosInstance.post(API_PATHS.QUESTION.ADD_TO_SESSION, {
                 sessionId,
                 questions: aiResponse.data,
             });
-            toast.success("Added More Q&A!");
-            fetchSessionDetailsById();
             
-            // Trigger analytics refresh after adding more questions
+            console.log('Questions added, session updated:', addQuestionsResponse.data.session);
+            toast.success("Added More Q&A!");
+            
+            // Wait a bit for backend to fully process, then refresh
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Refresh session data
+            await fetchSessionDetailsById();
+            
+            // Wait another moment, then trigger dashboard refresh
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
+            // Trigger refresh events with proper sequencing
             window.dispatchEvent(new Event('analytics-refresh'));
+            window.dispatchEvent(new Event('dashboard-refresh'));
+            window.dispatchEvent(new Event('session-updated'));
+            
+            // Final refresh with longer delay to ensure everything is updated
+            setTimeout(() => {
+                window.dispatchEvent(new Event('force-dashboard-refresh'));
+                console.log('Final refresh triggered after adding questions');
+            }, 1500);
         } catch (error) {
             setErrorMsg("Something went wrong while loading more questions.");
         } finally {

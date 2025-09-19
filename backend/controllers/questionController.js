@@ -30,7 +30,54 @@ const addQuestionsToSession = async (req, res) => {
         
         session.questions.push(...createdQuestions.map((q) => q._id));
         await session.save();
-        res.status(201).json(createdQuestions);
+        
+        // Add a small delay to ensure database consistency
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Recalculate session progress after adding new questions
+        const sessionWithQuestions = await Session.findById(sessionId).populate('questions');
+        const totalQuestions = sessionWithQuestions.questions.length;
+        const masteredQuestions = sessionWithQuestions.questions.filter(q => q.isMastered).length;
+        const completionPercentage = totalQuestions > 0 ? Math.round((masteredQuestions / totalQuestions) * 100) : 0;
+
+        console.log(`Session ${sessionId} progress update:`, {
+            totalQuestions,
+            masteredQuestions,
+            completionPercentage,
+            previousStatus: sessionWithQuestions.status
+        });
+
+        sessionWithQuestions.masteredQuestions = masteredQuestions;
+        sessionWithQuestions.completionPercentage = completionPercentage;
+
+        // Update status based on new progress
+        if (completionPercentage === 100) {
+            sessionWithQuestions.status = 'Completed';
+        } else if (completionPercentage > 0) {
+            sessionWithQuestions.status = 'Active';
+        } else {
+            sessionWithQuestions.status = 'Active'; // Default for sessions with questions
+        }
+
+        await sessionWithQuestions.save();
+        
+        console.log(`Session ${sessionId} updated:`, {
+            newStatus: sessionWithQuestions.status,
+            masteredQuestions: sessionWithQuestions.masteredQuestions,
+            completionPercentage: sessionWithQuestions.completionPercentage
+        });
+        
+        // Return both created questions and updated session info
+        res.status(201).json({
+            questions: createdQuestions,
+            session: {
+                id: sessionWithQuestions._id,
+                masteredQuestions: sessionWithQuestions.masteredQuestions,
+                completionPercentage: sessionWithQuestions.completionPercentage,
+                status: sessionWithQuestions.status,
+                totalQuestions: sessionWithQuestions.questions.length
+            }
+        });
 
     } catch (error) {
         res.status(500).json({ message: "Server Error" });
