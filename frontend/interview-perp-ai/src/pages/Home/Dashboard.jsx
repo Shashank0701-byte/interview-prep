@@ -45,7 +45,16 @@ const Dashboard = () => {
             ]);
             
             if (sessionsRes.data?.sessions) {
-                setSessions(sessionsRes.data.sessions);
+                // Calculate real progress data for each session
+                const sessionsWithProgress = sessionsRes.data.sessions.map(session => {
+                    // Use the actual progress data from the session model
+                    return {
+                        ...session,
+                        completionPercentage: session.completionPercentage || 0,
+                        masteredQuestions: session.masteredQuestions || 0
+                    };
+                });
+                setSessions(sessionsWithProgress);
             }
             if (reviewRes.data?.reviewQueue) {
                 setReviewCount(reviewRes.data.reviewQueue.length);
@@ -215,7 +224,7 @@ const Dashboard = () => {
                                 lastUpdated={moment(data.updatedAt).format("Do MMM YYYY")}
                                 onSelect={() => navigate(`/interview-prep/${data._id}`)}
                                 onDelete={() => setOpenDeleteAlert({ open: true, data })}
-                                // Enhanced props
+                                // Enhanced props with real data
                                 userRating={data.userRating || { overall: 3, difficulty: 3, usefulness: 3 }}
                                 status={data.status || 'Active'}
                                 completionPercentage={data.completionPercentage || 0}

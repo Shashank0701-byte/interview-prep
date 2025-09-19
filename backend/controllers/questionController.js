@@ -107,6 +107,26 @@ const toggleMasteredStatus = async (req, res) => {
         question.isMastered = !question.isMastered;
         await question.save();
 
+        // Auto-update session progress when mastery status changes
+        const sessionWithQuestions = await Session.findById(question.session).populate('questions');
+        if (sessionWithQuestions) {
+            const totalQuestions = sessionWithQuestions.questions.length;
+            const masteredQuestions = sessionWithQuestions.questions.filter(q => q.isMastered).length;
+            const completionPercentage = totalQuestions > 0 ? Math.round((masteredQuestions / totalQuestions) * 100) : 0;
+
+            sessionWithQuestions.masteredQuestions = masteredQuestions;
+            sessionWithQuestions.completionPercentage = completionPercentage;
+
+            // Auto-update status based on progress
+            if (completionPercentage === 100) {
+                sessionWithQuestions.status = 'Completed';
+            } else if (completionPercentage > 0) {
+                sessionWithQuestions.status = 'Active';
+            }
+
+            await sessionWithQuestions.save();
+        }
+
         res.status(200).json({ message: "Status updated successfully", question });
     } catch (error) {
         console.error("Error toggling mastered status:", error);

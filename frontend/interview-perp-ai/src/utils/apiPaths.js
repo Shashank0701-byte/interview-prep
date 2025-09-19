@@ -44,6 +44,8 @@ export const API_PATHS = {
         GET_FILLER_WORDS: "/api/analytics/filler-words",
         GET_DAILY_ACTIVITY: "/api/analytics/daily-activity",
         GET_MASTERY_RATIO: "/api/analytics/mastery-ratio",
+        GET_PROGRESS_STATS: "/api/analytics/progress-stats",
+        GET_STREAK_DATA: "/api/analytics/streak-data",
     },
     FEEDBACK: {
         GENERATE: 'api/feedback', // Add this new path

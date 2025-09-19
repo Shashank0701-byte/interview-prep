@@ -7,6 +7,8 @@ const {
     getPerformanceByTopic,
     getDailyActivity,
     getMasteryRatio,
+    getProgressStats,
+    getStreakData,
 } = require('../controllers/analyticsController');
 
 const router = express.Router();
@@ -17,5 +19,7 @@ router.get('/performance-over-time', protect, getPerformanceOverTime);
 router.get('/performance-by-topic', protect, getPerformanceByTopic);
 router.get('/daily-activity', protect, getDailyActivity);
 router.get('/mastery-ratio', protect, getMasteryRatio);
+router.get('/progress-stats', protect, getProgressStats);
+router.get('/streak-data', protect, getStreakData);
 
 module.exports = router;

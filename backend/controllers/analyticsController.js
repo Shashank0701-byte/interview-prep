@@ -230,9 +230,168 @@ const getMasteryRatio = asyncHandler(async (req, res) => {
 });
 
 
+/**
+ * @desc    Get comprehensive progress statistics for the user
+ * @route   GET /api/analytics/progress-stats
+ * @access  Private
+ */
+const getProgressStats = asyncHandler(async (req, res) => {
+    if (!req.user || !req.user._id) {
+        return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const userId = req.user._id;
+
+    try {
+        // Get all user sessions
+        const userSessions = await Session.find({ user: userId });
+        const sessionIds = userSessions.map(s => s._id);
+
+        // Get all questions for user's sessions
+        const allQuestions = await Question.find({ session: { $in: sessionIds } });
+
+        // Calculate overall statistics
+        const totalSessions = userSessions.length;
+        const completedSessions = userSessions.filter(s => s.status === 'Completed').length;
+        const totalQuestions = allQuestions.length;
+        const masteredQuestions = allQuestions.filter(q => q.isMastered).length;
+        
+        // Calculate average session rating
+        const sessionsWithRatings = userSessions.filter(s => s.userRating && s.userRating.overall);
+        const averageRating = sessionsWithRatings.length > 0 
+            ? sessionsWithRatings.reduce((sum, s) => sum + s.userRating.overall, 0) / sessionsWithRatings.length
+            : 0;
+
+        // Calculate overall progress based on mastery and completion
+        const masteryProgress = totalQuestions > 0 ? (masteredQuestions / totalQuestions) * 100 : 0;
+        const sessionProgress = totalSessions > 0 ? (completedSessions / totalSessions) * 100 : 0;
+        const overallProgress = Math.round((masteryProgress + sessionProgress) / 2);
+
+        // Calculate weekly progress (compare this week vs last week)
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        
+        const thisWeekQuestions = allQuestions.filter(q => 
+            q.performanceHistory.some(p => p.reviewDate >= oneWeekAgo)
+        );
+        const thisWeekMastered = thisWeekQuestions.filter(q => q.isMastered).length;
+        const thisWeekProgress = thisWeekQuestions.length > 0 ? (thisWeekMastered / thisWeekQuestions.length) * 100 : 0;
+        
+        const twoWeeksAgo = new Date();
+        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+        
+        const lastWeekQuestions = allQuestions.filter(q => 
+            q.performanceHistory.some(p => p.reviewDate >= twoWeeksAgo && p.reviewDate < oneWeekAgo)
+        );
+        const lastWeekMastered = lastWeekQuestions.filter(q => q.isMastered).length;
+        const lastWeekProgress = lastWeekQuestions.length > 0 ? (lastWeekMastered / lastWeekQuestions.length) * 100 : 0;
+        
+        const weeklyProgress = Math.round(thisWeekProgress - lastWeekProgress);
+
+        const result = {
+            overallProgress,
+            totalSessions,
+            completedSessions,
+            totalQuestions,
+            masteredQuestions,
+            averageRating: Math.round(averageRating * 10) / 10,
+            weeklyProgress,
+            streakDays: 0 // Will be calculated in getStreakData
+        };
+
+        res.status(200).json({
+            success: true,
+            data: result,
+        });
+    } catch (error) {
+        console.error("Error in getProgressStats:", error);
+        res.status(500).json({
+            success: false,
+            message: "Server Error fetching progress stats",
+        });
+    }
+});
+
+/**
+ * @desc    Get user's learning streak data
+ * @route   GET /api/analytics/streak-data
+ * @access  Private
+ */
+const getStreakData = asyncHandler(async (req, res) => {
+    if (!req.user || !req.user._id) {
+        return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const userId = req.user._id;
+
+    try {
+        // Get all user sessions
+        const userSessions = await Session.find({ user: userId });
+        const sessionIds = userSessions.map(s => s._id);
+
+        // Get all performance history entries, sorted by date
+        const performanceEntries = await Question.aggregate([
+            { $match: { session: { $in: sessionIds } } },
+            { $unwind: '$performanceHistory' },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$performanceHistory.reviewDate" } },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { _id: -1 } }
+        ]);
+
+        // Calculate current streak
+        let streakDays = 0;
+        const today = new Date();
+        const todayString = today.toISOString().split('T')[0];
+        
+        // Create a set of active dates for faster lookup
+        const activeDates = new Set(performanceEntries.map(entry => entry._id));
+        
+        // Start from today and go backwards
+        let currentDate = new Date(today);
+        
+        // Check each day going backwards
+        for (let i = 0; i < 365; i++) { // Max 365 days to prevent infinite loop
+            const dateString = currentDate.toISOString().split('T')[0];
+            
+            if (activeDates.has(dateString)) {
+                streakDays++;
+                currentDate.setDate(currentDate.getDate() - 1);
+            } else {
+                // If we haven't started counting yet (no activity today), keep looking
+                if (streakDays === 0 && dateString !== todayString) {
+                    currentDate.setDate(currentDate.getDate() - 1);
+                    continue;
+                }
+                // If we've started counting and hit a gap, break
+                break;
+            }
+        }
+
+        res.status(200).json({
+            success: true,
+            data: {
+                streakDays,
+                totalActiveDays: performanceEntries.length
+            },
+        });
+    } catch (error) {
+        console.error("Error in getStreakData:", error);
+        res.status(500).json({
+            success: false,
+            message: "Server Error fetching streak data",
+        });
+    }
+});
+
 module.exports = {
     getPerformanceOverTime,
     getPerformanceByTopic,
     getDailyActivity,
     getMasteryRatio,
+    getProgressStats,
+    getStreakData,
 };

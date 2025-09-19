@@ -34,8 +34,13 @@ const SummaryCard = ({
     
     return (
         <div 
-            className='bg-white border border-gray-100 rounded-3xl overflow-hidden cursor-pointer hover:shadow-2xl hover:shadow-blue-100/50 shadow-lg shadow-gray-100/50 relative group transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.03] hover:rotate-1'
+            className='bg-white border border-gray-100 rounded-3xl overflow-hidden cursor-pointer hover:shadow-2xl hover:shadow-blue-100/50 shadow-lg shadow-gray-100/50 relative group transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02] hover:rotate-0.5'
             onClick={onSelect}
+            style={{
+                background: completionPercentage === 100 
+                    ? 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%)' 
+                    : 'white'
+            }}
         >
                 <div 
                     className='rounded-lg p-4 cursor-pointer relative'
@@ -112,33 +117,61 @@ const SummaryCard = ({
             
             {completionPercentage > 0 && (
                 <div className="flex items-center gap-2">
-                    <div className="w-16 bg-gray-200 rounded-full h-1.5">
+                    <div className="relative w-16 bg-gray-100 rounded-full h-2 overflow-hidden">
                         <div 
-                            className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-1.5 rounded-full transition-all duration-500"
+                            className="bg-gradient-to-r from-emerald-400 via-emerald-500 to-green-500 h-2 rounded-full transition-all duration-1000 ease-out relative"
                             style={{ width: `${completionPercentage}%` }}
-                        ></div>
+                        >
+                            {/* Gentle shimmer effect */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
+                        </div>
                     </div>
-                    <span className="text-xs font-medium text-emerald-600">{completionPercentage}%</span>
+                    <div className="flex items-center gap-1">
+                        <span className="text-xs font-medium text-emerald-600">{completionPercentage}%</span>
+                        {completionPercentage === 100 && <span className="text-xs">🎉</span>}
+                    </div>
                 </div>
             )}
         </div>
         
-        {/* Enhanced Stats */}
+        {/* Enhanced Stats with Gentle Progress Indicators */}
         <div className='grid grid-cols-2 gap-3 mb-4'>
-            <div className='bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-100/50'>
-                <div className='text-xs font-medium text-blue-700 mb-1'>Experience</div>
+            <div className='bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 border border-blue-100/50 hover:shadow-md hover:scale-105 transition-all duration-300'>
+                <div className='flex items-center gap-2 mb-2'>
+                    <span className='text-blue-500'>💼</span>
+                    <div className='text-xs font-medium text-blue-700'>Experience</div>
+                </div>
                 <div className='text-sm font-bold text-blue-900'>{experience} {experience == 1 ? "Year" : "Years"}</div>
             </div>
             
-            <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-3 border border-purple-100/50'>
-                <div className='text-xs font-medium text-purple-700 mb-1'>Questions</div>
+            <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-3 border border-purple-100/50 hover:shadow-md hover:scale-105 transition-all duration-300'>
+                <div className='flex items-center gap-2 mb-2'>
+                    <span className='text-purple-500'>❓</span>
+                    <div className='text-xs font-medium text-purple-700'>Questions</div>
+                </div>
                 <div className='text-sm font-bold text-purple-900'>{questions} Q&A</div>
             </div>
             
             {masteredQuestions > 0 && (
-                <div className='bg-gradient-to-br from-emerald-50 to-green-50 rounded-lg p-3 border border-emerald-100/50 col-span-2'>
-                    <div className='text-xs font-medium text-emerald-700 mb-1'>Mastered Questions</div>
-                    <div className='text-sm font-bold text-emerald-900'>{masteredQuestions} completed</div>
+                <div className='bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-3 border border-emerald-100/50 col-span-2 hover:shadow-md hover:scale-105 transition-all duration-300'>
+                    <div className='flex items-center justify-between mb-2'>
+                        <div className='flex items-center gap-2'>
+                            <span className='text-emerald-500'>✨</span>
+                            <div className='text-xs font-medium text-emerald-700'>Mastered Questions</div>
+                        </div>
+                        <div className='text-xs text-emerald-600 font-medium'>
+                            {questions > 0 ? Math.round((masteredQuestions / questions) * 100) : 0}% complete
+                        </div>
+                    </div>
+                    <div className='flex items-center justify-between'>
+                        <div className='text-sm font-bold text-emerald-900'>{masteredQuestions} of {questions}</div>
+                        <div className='w-12 bg-emerald-100 rounded-full h-1.5'>
+                            <div 
+                                className='bg-gradient-to-r from-emerald-400 to-green-500 h-1.5 rounded-full transition-all duration-700'
+                                style={{ width: `${questions > 0 ? (masteredQuestions / questions) * 100 : 0}%` }}
+                            ></div>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
@@ -150,12 +183,40 @@ const SummaryCard = ({
             </p>
         )}
         
-        {/* Last Updated */}
-        <div className='flex items-center gap-2 text-xs text-gray-500'>
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Updated {lastUpdated}
+        {/* Last Updated with Encouraging Message */}
+        <div className='space-y-2'>
+            <div className='flex items-center gap-2 text-xs text-gray-500'>
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Updated {lastUpdated}
+            </div>
+            
+            {/* Gentle Encouragement Based on Progress */}
+            {completionPercentage === 0 && (
+                <div className='flex items-center gap-2 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-lg'>
+                    <span>🌱</span>
+                    <span className='font-medium'>Ready to start your journey?</span>
+                </div>
+            )}
+            {completionPercentage > 0 && completionPercentage < 50 && (
+                <div className='flex items-center gap-2 text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg'>
+                    <span>💪</span>
+                    <span className='font-medium'>Great start! Keep building momentum</span>
+                </div>
+            )}
+            {completionPercentage >= 50 && completionPercentage < 100 && (
+                <div className='flex items-center gap-2 text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg'>
+                    <span>🚀</span>
+                    <span className='font-medium'>You're doing amazing! Almost there</span>
+                </div>
+            )}
+            {completionPercentage === 100 && (
+                <div className='flex items-center gap-2 text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded-lg'>
+                    <span>🎉</span>
+                    <span className='font-medium'>Congratulations! Session completed</span>
+                </div>
+            )}
         </div>
     </div>
     
