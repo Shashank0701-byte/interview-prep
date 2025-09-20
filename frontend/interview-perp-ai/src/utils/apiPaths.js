@@ -77,5 +77,10 @@ export const API_PATHS = {
         RECOMMENDATIONS: "/api/learning-path/recommendations",
         COMPLETE_ITEM: "/api/learning-path/complete-item",
     },
+    ROADMAP: {
+        GET_ROLES: "/api/roadmap/roles",
+        GET_PROGRESS: "/api/roadmap/progress",
+        GENERATE: (role) => `/api/roadmap/${encodeURIComponent(role)}`,
+    },
    
 };

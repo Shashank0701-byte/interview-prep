@@ -35,6 +35,13 @@ const Navbar = () => {
                         >
                             My Progress
                         </NavLink>
+                        <NavLink 
+                            to="/roadmap" 
+                            className="text-sm text-slate-600 hover:text-indigo-600 transition-colors"
+                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                        >
+                            Learning Roadmap
+                        </NavLink>
                         
                     </nav>
                 </div>

@@ -17,6 +17,7 @@ import SignUp from './pages/Auth/SignUp.jsx';
 import Login from './pages/Auth/Login';
 import AnalyticsDashboard from './pages/Analytics/AnalyticsDashboard';
 import PracticePage from './pages/PracticePage';
+import RoadmapPage from './pages/Roadmap/RoadmapPage';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -49,6 +50,7 @@ const App = () => {
             element={<RedirectIfAuth><Login /></RedirectIfAuth>} 
           /> 
             <Route path="/progress" element={<ProtectedRoute><AnalyticsDashboard key="analytics" /></ProtectedRoute>} />
+            <Route path="/roadmap" element={<ProtectedRoute><RoadmapPage key="roadmap" /></ProtectedRoute>} />
             {/* These routes should also be protected */}
             <Route
               path='/dashboard'
