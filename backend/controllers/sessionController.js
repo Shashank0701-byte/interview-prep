@@ -4,7 +4,7 @@ const Question = require("../models/Question");
 // Define all your controller functions as constants
 const createSession = async (req, res) => {
     try {
-        const { role, experience, topicsToFocus, description, questions } = req.body;
+        const { role, experience, topicsToFocus, description, questions, numberOfQuestions } = req.body;
         const userId = req.user._id;
 
         const session = await Session.create({
@@ -15,16 +15,38 @@ const createSession = async (req, res) => {
             description,
         });
 
-        const questionDocs = await Promise.all(
-            questions.map(async (q) => {
+        let questionDocs = [];
+        
+        // Handle numberOfQuestions parameter
+        if (numberOfQuestions && parseInt(numberOfQuestions) > 0) {
+            const numQuestions = parseInt(numberOfQuestions);
+            const topicsArray = topicsToFocus ? topicsToFocus.split(',').map(topic => topic.trim()).filter(topic => topic) : [];
+            
+            // Generate placeholder questions based on topics and role
+            for (let i = 0; i < numQuestions; i++) {
                 const question = await Question.create({
                     session: session._id,
-                    question: q.question,
-                    answer: q.answer,
+                    question: generateQuestion(role, experience, topicsArray, i),
+                    answer: generateAnswer(role, experience, topicsArray, i),
+                    difficulty: getDifficultyLevel(experience),
+                    category: topicsArray.length > 0 ? topicsArray[i % topicsArray.length] : 'General'
                 });
-                return question._id;
-            })
-        );
+                questionDocs.push(question._id);
+            }
+        }
+        // Fallback to original questions array if provided
+        else if (questions && questions.length > 0) {
+            questionDocs = await Promise.all(
+                questions.map(async (q) => {
+                    const question = await Question.create({
+                        session: session._id,
+                        question: q.question,
+                        answer: q.answer,
+                    });
+                    return question._id;
+                })
+            );
+        }
 
         session.questions = questionDocs;
         await session.save();
@@ -34,6 +56,53 @@ const createSession = async (req, res) => {
         console.error("ERROR IN createSession:", error);
         res.status(500).json({ success: false, message: "Server Error" });
     }
+};
+
+// Helper function to generate questions based on role and topics
+const generateQuestion = (role, experience, topics, index) => {
+    const questionTemplates = {
+        'Software Engineer': [
+            `Explain the concept of ${topics[index % topics.length] || 'data structures'} and provide a real-world example.`,
+            `How would you optimize a solution involving ${topics[index % topics.length] || 'algorithms'}?`,
+            `What are the trade-offs when implementing ${topics[index % topics.length] || 'system design'}?`
+        ],
+        'Frontend Developer': [
+            `How would you implement ${topics[index % topics.length] || 'React components'} for optimal performance?`,
+            `Explain the best practices for ${topics[index % topics.length] || 'CSS styling'} in modern web applications.`,
+            `What are the challenges with ${topics[index % topics.length] || 'state management'} and how do you solve them?`
+        ],
+        'Backend Developer': [
+            `How would you design a database schema for ${topics[index % topics.length] || 'user management'}?`,
+            `Explain the security considerations for ${topics[index % topics.length] || 'API development'}.`,
+            `What scaling strategies would you use for ${topics[index % topics.length] || 'backend services'}?`
+        ],
+        'Full Stack Developer': [
+            `How would you architect a full-stack application for ${topics[index % topics.length] || 'e-commerce'}?`,
+            `Explain the integration between frontend and backend for ${topics[index % topics.length] || 'data handling'}.`,
+            `What are the best practices for ${topics[index % topics.length] || 'full-stack development'}?`
+        ],
+        'DevOps Engineer': [
+            `How would you set up CI/CD pipeline for ${topics[index % topics.length] || 'deployment automation'}?`,
+            `Explain the monitoring strategy for ${topics[index % topics.length] || 'infrastructure'}.`,
+            `What are the security best practices for ${topics[index % topics.length] || 'DevOps processes'}?`
+        ]
+    };
+    
+    const templates = questionTemplates[role] || questionTemplates['Software Engineer'];
+    return templates[index % templates.length];
+};
+
+// Helper function to generate answers
+const generateAnswer = (role, experience, topics, index) => {
+    return `This is a comprehensive answer related to ${topics[index % topics.length] || 'the topic'} for a ${role} with ${experience} years of experience. The answer would include detailed explanations, code examples, and best practices specific to the role and experience level.`;
+};
+
+// Helper function to determine difficulty level
+const getDifficultyLevel = (experience) => {
+    const exp = parseInt(experience);
+    if (exp <= 2) return 'Easy';
+    if (exp <= 4) return 'Medium';
+    return 'Hard';
 };
 
 const getMySessions = async (req, res) => {

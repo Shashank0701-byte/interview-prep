@@ -18,6 +18,10 @@ import Login from './pages/Auth/Login';
 import AnalyticsDashboard from './pages/Analytics/AnalyticsDashboard';
 import PracticePage from './pages/PracticePage';
 import RoadmapPage from './pages/Roadmap/RoadmapPage';
+import PhaseOverviewPage from './pages/Roadmap/PhaseOverviewPage';
+import PhaseQuizPage from './pages/Roadmap/PhaseQuizPage';
+import PhaseSessionLibrary from './pages/Roadmap/PhaseSessionLibrary';
+import CreateSessionPage from './pages/Roadmap/CreateSessionPage';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -51,6 +55,10 @@ const App = () => {
           /> 
             <Route path="/progress" element={<ProtectedRoute><AnalyticsDashboard key="analytics" /></ProtectedRoute>} />
             <Route path="/roadmap" element={<ProtectedRoute><RoadmapPage key="roadmap" /></ProtectedRoute>} />
+            <Route path="/phase/:role/:phaseId" element={<ProtectedRoute><PhaseOverviewPage key="phase-overview" /></ProtectedRoute>} />
+            <Route path="/phase-quiz/:role/:phaseId" element={<ProtectedRoute><PhaseQuizPage key="phase-quiz" /></ProtectedRoute>} />
+            <Route path="/phase-sessions/:role/:phaseId" element={<ProtectedRoute><PhaseSessionLibrary key="phase-sessions" /></ProtectedRoute>} />
+            <Route path="/create-session/:role/:phaseId" element={<ProtectedRoute><CreateSessionPage key="create-session" /></ProtectedRoute>} />
             {/* These routes should also be protected */}
             <Route
               path='/dashboard'

@@ -342,23 +342,19 @@ const RoadmapPage = () => {
                                                 <div className="mt-6 text-center">
                                                     <button
                                                         onClick={() => {
-                                                            if (phase.sessions.length > 0) {
-                                                                navigate(`/interview-prep/${phase.sessions[0].id}`);
-                                                            } else {
-                                                                navigate('/dashboard');
-                                                            }
+                                                            navigate(`/phase/${encodeURIComponent(selectedRole)}/${phase.id}`);
                                                         }}
                                                         className={`group flex items-center gap-2 mx-auto px-6 py-3 font-semibold rounded-2xl text-white bg-gradient-to-r ${getStatusColor(phase.status)} hover:shadow-lg transition-all duration-300 transform hover:scale-105`}
                                                     >
                                                         {phase.status === 'completed' ? (
                                                             <>
                                                                 <LuCheck className="w-4 h-4" />
-                                                                <span>Phase Complete</span>
+                                                                <span>Review Phase</span>
                                                             </>
                                                         ) : phase.status === 'in_progress' ? (
                                                             <>
                                                                 <LuPlay className="w-4 h-4 group-hover:animate-pulse" />
-                                                                <span>Continue Learning</span>
+                                                                <span>Continue Phase</span>
                                                             </>
                                                         ) : (
                                                             <>
