@@ -22,6 +22,7 @@ import PhaseOverviewPage from './pages/Roadmap/PhaseOverviewPage';
 import PhaseQuizPage from './pages/Roadmap/PhaseQuizPage';
 import PhaseSessionLibrary from './pages/Roadmap/PhaseSessionLibrary';
 import CreateSessionPage from './pages/Roadmap/CreateSessionPage';
+import RoadmapSessionPractice from './pages/Roadmap/RoadmapSessionPractice';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -59,6 +60,7 @@ const App = () => {
             <Route path="/phase-quiz/:role/:phaseId" element={<ProtectedRoute><PhaseQuizPage key="phase-quiz" /></ProtectedRoute>} />
             <Route path="/phase-sessions/:role/:phaseId" element={<ProtectedRoute><PhaseSessionLibrary key="phase-sessions" /></ProtectedRoute>} />
             <Route path="/create-session/:role/:phaseId" element={<ProtectedRoute><CreateSessionPage key="create-session" /></ProtectedRoute>} />
+            <Route path="/roadmap-session/:sessionId" element={<ProtectedRoute><RoadmapSessionPractice key="roadmap-session" /></ProtectedRoute>} />
             {/* These routes should also be protected */}
             <Route
               path='/dashboard'

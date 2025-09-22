@@ -1,29 +1,88 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import DashboardLayout from '../../components/layouts/DashboardLayout';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
-import SpinnerLoader from '../../components/Loader/SpinnerLoader.jsx';
+import DashboardLayout from '../../components/layouts/DashboardLayout';
+import SpinnerLoader from '../../components/Loader/SpinnerLoader';
 import { 
     LuSearch, 
     LuFilter, 
-    LuPlay, 
-    LuCheck, 
-    LuClock, 
-    LuTarget, 
-    LuStar,
-    LuChevronRight,
-    LuArrowLeft,
+    LuChevronRight, 
+    LuArrowLeft, 
     LuBookOpen,
-    LuBrain,
     LuCode,
-    LuMessageSquare,
     LuSettings,
+    LuMessageSquare,
+    LuBrain,
+    LuCheck,
+    LuPlay,
+    LuTarget,
     LuTrendingUp,
-    LuUsers,
     LuCalendar,
+    LuClock,
+    LuUsers,
+    LuStar,
     LuRocket
 } from 'react-icons/lu';
+
+// Helper functions outside component
+const getPhaseColor = (color) => {
+    const colors = {
+        blue: 'from-blue-500 to-cyan-500',
+        purple: 'from-purple-500 to-indigo-500',
+        emerald: 'from-emerald-500 to-teal-500',
+        orange: 'from-orange-500 to-red-500',
+    };
+    return colors[color] || 'from-gray-500 to-gray-600';
+};
+
+const getStatusIcon = (completionPercentage) => {
+    if (completionPercentage >= 100) {
+        return <LuCheck className="w-4 h-4 text-emerald-500" />;
+    } else if (completionPercentage > 0) {
+        return <LuPlay className="w-4 h-4 text-blue-500" />;
+    } else {
+        return <LuTarget className="w-4 h-4 text-gray-400" />;
+    }
+};
+
+const getStatusBadge = (completionPercentage) => {
+    if (completionPercentage >= 100) {
+        return <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Completed</span>;
+    } else if (completionPercentage > 0) {
+        return <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">In Progress</span>;
+    } else {
+        return <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">Not Started</span>;
+    }
+};
+
+const getDifficultyBadge = (experience) => {
+    if (experience <= 2) {
+        return <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Easy</span>;
+    } else if (experience <= 5) {
+        return <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">Medium</span>;
+    } else {
+        return <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">Hard</span>;
+    }
+};
+
+const getTypeIcon = (topics) => {
+    let topicStr = '';
+    if (topics && Array.isArray(topics)) {
+        topicStr = topics.join(' ').toLowerCase();
+    } else if (typeof topics === 'string') {
+        topicStr = topics.toLowerCase();
+    }
+    
+    if (topicStr.includes('algorithm') || topicStr.includes('data structure') || topicStr.includes('coding')) {
+        return <LuCode className="w-4 h-4 text-blue-500" />;
+    } else if (topicStr.includes('system') || topicStr.includes('design')) {
+        return <LuSettings className="w-4 h-4 text-purple-500" />;
+    } else if (topicStr.includes('behavioral') || topicStr.includes('leadership')) {
+        return <LuMessageSquare className="w-4 h-4 text-emerald-500" />;
+    }
+    return <LuBrain className="w-4 h-4 text-gray-500" />;
+};
 
 const PhaseSessionLibrary = () => {
     const { role, phaseId } = useParams();
@@ -41,6 +100,37 @@ const PhaseSessionLibrary = () => {
     const [selectedDifficulty, setSelectedDifficulty] = useState('all');
     const [selectedType, setSelectedType] = useState('all');
     const [selectedStatus, setSelectedStatus] = useState('all');
+
+    const handleStartTemplate = async (template) => {
+        try {
+            setIsLoading(true);
+            
+            // Create a roadmap session from the template
+            const sessionData = {
+                role: template.role,
+                experience: template.experience,
+                topicsToFocus: template.topicsToFocus.join(', '),
+                description: template.description,
+                phaseId: phaseId,
+                phaseName: currentPhase?.name,
+                phaseColor: currentPhase?.color,
+                roadmapRole: role
+            };
+            
+            const response = await axiosInstance.post(API_PATHS.ROADMAP_SESSIONS.CREATE, sessionData);
+            
+            if (response.data.success) {
+                // Navigate directly to the practice session
+                navigate(`/roadmap-session/${response.data.session._id}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`);
+            }
+        } catch (error) {
+            console.error("Failed to start template session:", error);
+            // Refresh the page to show updated sessions
+            fetchPhaseAndSessions();
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     // Generate phase-specific session templates
     const generatePhaseSessionTemplates = (phase, role) => {
@@ -222,30 +312,16 @@ const PhaseSessionLibrary = () => {
                 }
             ]
         };
-
         return sessionTemplates[phase.name] || [];
     };
 
-    const handleCreateSession = (template) => {
-        // Navigate to create session page with template data
-        const params = new URLSearchParams({
-            template: template._id,
-            name: template.role,
-            topics: template.topicsToFocus.join(','),
-            experience: template.experience.toString(),
-            description: template.description
-        });
-        
-        navigate(`/create-session/${encodeURIComponent(role)}/${phaseId}?${params.toString()}`);
-    };
+    useEffect(() => {
+        applyFilters();
+    }, [allSessions, searchTerm, selectedTopic, selectedDifficulty, selectedType, selectedStatus, currentPhase]);
 
     useEffect(() => {
         fetchPhaseAndSessions();
     }, [role, phaseId]);
-
-    useEffect(() => {
-        applyFilters();
-    }, [allSessions, searchTerm, selectedTopic, selectedDifficulty, selectedType, selectedStatus]);
 
     const fetchPhaseAndSessions = async () => {
         try {
@@ -254,9 +330,20 @@ const PhaseSessionLibrary = () => {
             const phase = roadmapResponse.data.phases.find(p => p.id === phaseId);
             setCurrentPhase(phase);
 
-            // Fetch all user sessions and filter for this phase
-            const sessionsResponse = await axiosInstance.get(API_PATHS.SESSIONS.GET_MY_SESSIONS);
-            console.log('Sessions response:', sessionsResponse.data);
+            // Fetch roadmap sessions for this specific phase
+            const sessionUrl = API_PATHS.ROADMAP_SESSIONS.GET_PHASE_SESSIONS(role, phaseId);
+            console.log('Calling roadmap sessions API:', sessionUrl);
+            console.log('Role:', role, 'PhaseId:', phaseId);
+            
+            let sessionsResponse;
+            try {
+                sessionsResponse = await axiosInstance.get(sessionUrl);
+                console.log('Roadmap sessions response:', sessionsResponse.data);
+            } catch (sessionError) {
+                console.error('Error fetching roadmap sessions:', sessionError);
+                console.error('Session URL that failed:', sessionUrl);
+                throw sessionError;
+            }
             
             // Handle different response structures
             let userSessions = [];
@@ -268,46 +355,29 @@ const PhaseSessionLibrary = () => {
                 userSessions = sessionsResponse.data.data;
             }
             
+            console.log('User sessions after processing:', userSessions);
+            
             console.log('User sessions:', userSessions);
             console.log('Phase topics:', phase?.topics);
             
             // Generate phase-specific session recommendations
             let phaseSessions = [];
             
-            if (phase && phase.topics) {
-                // Create phase-specific session templates
-                const phaseSessionTemplates = generatePhaseSessionTemplates(phase, role);
-                
-                // Match existing user sessions to phase topics
-                const matchingUserSessions = userSessions.filter(session => {
-                    const roleMatch = session.role?.toLowerCase().includes(role.toLowerCase());
-                    
-                    let topicMatch = false;
-                    if (session.topicsToFocus && Array.isArray(session.topicsToFocus)) {
-                        topicMatch = phase.topics.some(topic => 
-                            session.topicsToFocus.some(sessionTopic => 
-                                sessionTopic && typeof sessionTopic === 'string' &&
-                                (sessionTopic.toLowerCase().includes(topic.toLowerCase()) ||
-                                topic.toLowerCase().includes(sessionTopic.toLowerCase()))
-                            )
-                        );
-                    }
-                    
-                    return roleMatch || topicMatch;
-                }).map(session => ({ ...session, isRelevant: true, isUserSession: true }));
-                
-                // Combine phase templates with matching user sessions
-                phaseSessions = [...phaseSessionTemplates, ...matchingUserSessions];
-            } else {
-                // Fallback to user sessions if no phase info
-                phaseSessions = userSessions.map(session => ({ ...session, isRelevant: false, isUserSession: true }));
-            }
+            // The API now returns pre-defined templates with status, so use them directly
+            phaseSessions = userSessions.map(session => ({
+                ...session,
+                isRelevant: true,
+                isRoadmapSession: true,
+                isTemplate: !session.isStarted, // Templates that haven't been started yet
+                isUserSession: session.isStarted // Only started sessions are user sessions
+            }));
             
             console.log('Filtered phase sessions:', phaseSessions);
 
             setAllSessions(phaseSessions);
         } catch (error) {
             console.error("Failed to fetch phase and sessions", error);
+            console.error("Error details:", error.response?.data || error.message);
         } finally {
             setIsLoading(false);
         }
@@ -414,68 +484,7 @@ const PhaseSessionLibrary = () => {
         setFilteredSessions(filtered);
     };
 
-    const getPhaseColor = (color) => {
-        const colors = {
-            blue: 'from-blue-500 to-cyan-500',
-            purple: 'from-purple-500 to-indigo-500',
-            emerald: 'from-emerald-500 to-green-500',
-            amber: 'from-amber-500 to-orange-500',
-            cyan: 'from-cyan-500 to-blue-500',
-            green: 'from-green-500 to-emerald-500',
-            red: 'from-red-500 to-pink-500',
-            indigo: 'from-indigo-500 to-purple-500',
-            orange: 'from-orange-500 to-red-500'
-        };
-        return colors[color] || 'from-gray-500 to-gray-600';
-    };
 
-    const getStatusIcon = (completionPercentage) => {
-        if (completionPercentage >= 100) {
-            return <LuCheck className="w-4 h-4 text-emerald-500" />;
-        } else if (completionPercentage > 0) {
-            return <LuPlay className="w-4 h-4 text-blue-500" />;
-        } else {
-            return <LuTarget className="w-4 h-4 text-gray-400" />;
-        }
-    };
-
-    const getStatusBadge = (completionPercentage) => {
-        if (completionPercentage >= 100) {
-            return <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Completed</span>;
-        } else if (completionPercentage > 0) {
-            return <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">In Progress</span>;
-        } else {
-            return <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">Not Started</span>;
-        }
-    };
-
-    const getDifficultyBadge = (experience) => {
-        if (experience <= 2) {
-            return <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Easy</span>;
-        } else if (experience <= 5) {
-            return <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">Medium</span>;
-        } else {
-            return <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">Hard</span>;
-        }
-    };
-
-    const getTypeIcon = (topics) => {
-        let topicStr = '';
-        if (topics && Array.isArray(topics)) {
-            topicStr = topics.join(' ').toLowerCase();
-        } else if (typeof topics === 'string') {
-            topicStr = topics.toLowerCase();
-        }
-        
-        if (topicStr.includes('algorithm') || topicStr.includes('data structure') || topicStr.includes('coding')) {
-            return <LuCode className="w-4 h-4 text-blue-500" />;
-        } else if (topicStr.includes('system') || topicStr.includes('design')) {
-            return <LuSettings className="w-4 h-4 text-purple-500" />;
-        } else if (topicStr.includes('behavioral') || topicStr.includes('leadership')) {
-            return <LuMessageSquare className="w-4 h-4 text-emerald-500" />;
-        }
-        return <LuBrain className="w-4 h-4 text-gray-500" />;
-    };
 
     if (isLoading) {
         return (
@@ -683,22 +692,35 @@ const PhaseSessionLibrary = () => {
                                     {/* Topics */}
                                     <div className="mb-4">
                                         <div className="flex flex-wrap gap-2">
-                                            {session.topicsToFocus && Array.isArray(session.topicsToFocus) ? (
-                                                <>
-                                                    {session.topicsToFocus.slice(0, 3).map((topic, index) => (
-                                                        <span
-                                                            key={index}
-                                                            className="px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-medium rounded-full"
-                                                        >
-                                                            {topic}
-                                                        </span>
-                                                    ))}
-                                                    {session.topicsToFocus.length > 3 && (
+                                            {session.topicsToFocus ? (
+                                                (() => {
+                                                    // Handle both string and array formats
+                                                    const topics = Array.isArray(session.topicsToFocus) 
+                                                        ? session.topicsToFocus 
+                                                        : session.topicsToFocus.split(',').map(t => t.trim()).filter(t => t);
+                                                    
+                                                    return topics.length > 0 ? (
+                                                        <>
+                                                            {topics.slice(0, 3).map((topic, index) => (
+                                                                <span
+                                                                    key={index}
+                                                                    className="px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-medium rounded-full"
+                                                                >
+                                                                    {topic}
+                                                                </span>
+                                                            ))}
+                                                            {topics.length > 3 && (
+                                                                <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
+                                                                    +{topics.length - 3} more
+                                                                </span>
+                                                            )}
+                                                        </>
+                                                    ) : (
                                                         <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
-                                                            +{session.topicsToFocus.length - 3} more
+                                                            General Practice
                                                         </span>
-                                                    )}
-                                                </>
+                                                    );
+                                                })()
                                             ) : (
                                                 <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
                                                     General Practice
@@ -731,8 +753,12 @@ const PhaseSessionLibrary = () => {
                                                 </span>
                                             )}
                                             {session.isRelevant && !session.isTemplate && (
-                                                <span className="px-2 py-1 bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 text-xs font-medium rounded-full">
-                                                    Your Session
+                                                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                                    session.isRoadmapSession 
+                                                        ? 'bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-700' 
+                                                        : 'bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700'
+                                                }`}>
+                                                    {session.isRoadmapSession ? 'Roadmap Session' : 'Your Session'}
                                                 </span>
                                             )}
                                         </div>
@@ -756,24 +782,29 @@ const PhaseSessionLibrary = () => {
                                     {/* Action Button */}
                                     {session.isTemplate ? (
                                         <button
-                                            onClick={() => handleCreateSession(session)}
+                                            onClick={() => handleStartTemplate(session)}
                                             className={`w-full flex items-center justify-center gap-2 px-4 py-3 font-semibold rounded-2xl text-white bg-gradient-to-r ${getPhaseColor(currentPhase.color)} hover:shadow-lg transition-all duration-300 transform group-hover:scale-105`}
                                         >
-                                            <LuRocket className="w-4 h-4" />
-                                            <span>Create Session</span>
+                                            <LuPlay className="w-4 h-4" />
+                                            <span>Start Session</span>
                                         </button>
                                     ) : (
                                         <button
-                                            onClick={() => navigate(`/interview-prep/${session._id}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`)}
+                                            onClick={() => {
+                                                // Navigate to roadmap session practice for roadmap sessions, regular interview prep for others
+                                                if (session.isRoadmapSession) {
+                                                    navigate(`/roadmap-session/${session.sessionId}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`);
+                                                } else {
+                                                    navigate(`/interview-prep/${session.sessionId}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`);
+                                                }
+                                            }}
                                             className={`w-full flex items-center justify-center gap-2 px-4 py-3 font-semibold rounded-2xl text-white bg-gradient-to-r ${getPhaseColor(currentPhase.color)} hover:shadow-lg transition-all duration-300 transform group-hover:scale-105`}
                                         >
                                             <LuPlay className="w-4 h-4" />
                                             <span>
                                                 {session.completionPercentage >= 100 
                                                     ? 'Review Session' 
-                                                    : session.completionPercentage > 0 
-                                                        ? 'Continue Session' 
-                                                        : 'Start Session'
+                                                    : 'Continue Session'
                                                 }
                                             </span>
                                         </button>

@@ -82,5 +82,14 @@ export const API_PATHS = {
         GET_PROGRESS: "/api/roadmap/progress",
         GENERATE: (role) => `/api/roadmap/${encodeURIComponent(role)}`,
     },
+    ROADMAP_SESSIONS: {
+        CREATE: "/api/roadmap-sessions/create",
+        GET_PHASE_SESSIONS: (role, phaseId) => `/api/roadmap-sessions/phase/${encodeURIComponent(role)}/${phaseId}`,
+        GET_MY_SESSIONS: "/api/roadmap-sessions/my-sessions",
+        GET_ONE: (id) => `/api/roadmap-sessions/${id}`,
+        DELETE: (id) => `/api/roadmap-sessions/${id}`,
+        UPDATE_RATING: (id) => `/api/roadmap-sessions/${id}/rating`,
+        UPDATE_PROGRESS: (id) => `/api/roadmap-sessions/${id}/progress`,
+    },
    
 };

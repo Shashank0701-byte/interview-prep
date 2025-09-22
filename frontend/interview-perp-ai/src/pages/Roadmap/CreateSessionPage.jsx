@@ -56,9 +56,13 @@ const CreateSessionPage = () => {
     const handleCreateSession = async () => {
         setIsCreating(true);
         try {
-            const response = await axiosInstance.post(API_PATHS.SESSIONS.CREATE, {
+            const response = await axiosInstance.post(API_PATHS.ROADMAP_SESSIONS.CREATE, {
                 ...sessionData,
-                numberOfQuestions: parseInt(sessionData.numberOfQuestions)
+                numberOfQuestions: parseInt(sessionData.numberOfQuestions),
+                phaseId: phaseId,
+                phaseName: currentPhase.name,
+                phaseColor: currentPhase.color,
+                roadmapRole: role
             });
             
             if (response.data && response.data.session) {
@@ -66,7 +70,7 @@ const CreateSessionPage = () => {
                 setIsCreated(true);
             }
         } catch (error) {
-            console.error("Failed to create session", error);
+            console.error("Failed to create roadmap session", error);
         } finally {
             setIsCreating(false);
         }
@@ -74,7 +78,7 @@ const CreateSessionPage = () => {
 
     const handleStartSession = () => {
         if (createdSession) {
-            navigate(`/interview-prep/${createdSession._id}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`);
+            navigate(`/roadmap-session/${createdSession._id}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`);
         }
     };
 
