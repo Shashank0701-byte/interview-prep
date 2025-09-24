@@ -13,6 +13,7 @@ import {
     LuTrendingUp
 } from 'react-icons/lu';
 import { CODE_REVIEW_SCENARIOS } from '../../data/codeReviewScenarios';
+import { getAllMultiFilePRs } from '../../data/multiFilePRScenarios';
 
 const ScenarioSelector = () => {
     const navigate = useNavigate();
@@ -31,11 +32,20 @@ const ScenarioSelector = () => {
     };
 
     const getAllScenarios = () => {
-        const allScenarios = [
+        const singleFileScenarios = [
             ...CODE_REVIEW_SCENARIOS.beginner,
             ...CODE_REVIEW_SCENARIOS.intermediate,
             ...CODE_REVIEW_SCENARIOS.advanced
         ];
+        
+        const multiFilePRs = getAllMultiFilePRs().map(pr => ({
+            ...pr,
+            type: 'multi-file',
+            estimatedTime: pr.estimatedTime,
+            tags: [...pr.tags, 'multi-file', 'pull-request']
+        }));
+        
+        const allScenarios = [...singleFileScenarios, ...multiFilePRs];
         
         if (selectedDifficulty === 'all') {
             return allScenarios;
@@ -46,8 +56,12 @@ const ScenarioSelector = () => {
         );
     };
 
-    const startScenario = (scenarioId) => {
-        navigate(`/code-review/${scenarioId}`);
+    const startScenario = (scenario) => {
+        if (scenario.type === 'multi-file') {
+            navigate(`/multi-file-pr/${scenario.id}`);
+        } else {
+            navigate(`/code-review/${scenario.id}`);
+        }
     };
 
     return (
@@ -178,21 +192,28 @@ const ScenarioSelector = () => {
                                         <div className="flex items-center justify-between text-sm text-slate-600 mb-6">
                                             <div className="flex items-center gap-1">
                                                 <LuTarget className="w-4 h-4" />
-                                                <span>{scenario.codeBlocks[0].issues.length} issues</span>
+                                                <span>
+                                                    {scenario.type === 'multi-file' 
+                                                        ? `${scenario.files?.length || 0} files` 
+                                                        : `${scenario.codeBlocks?.[0]?.issues?.length || 0} issues`
+                                                    }
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-1">
                                                 <LuCode className="w-4 h-4" />
-                                                <span>{scenario.language}</span>
+                                                <span>
+                                                    {scenario.type === 'multi-file' ? 'Multi-File PR' : scenario.language}
+                                                </span>
                                             </div>
                                         </div>
 
                                         {/* Action Button */}
                                         <button
-                                            onClick={() => startScenario(scenario.id)}
+                                            onClick={() => startScenario(scenario)}
                                             className={`w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r ${difficultyColors[scenario.difficulty]} text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300 group-hover:scale-105`}
                                         >
                                             <LuPlay className="w-4 h-4" />
-                                            Start Review
+                                            {scenario.type === 'multi-file' ? 'Review PR' : 'Start Review'}
                                         </button>
                                     </div>
                                 </div>

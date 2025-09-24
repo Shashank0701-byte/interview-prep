@@ -25,6 +25,7 @@ import CreateSessionPage from './pages/Roadmap/CreateSessionPage';
 import RoadmapSessionPractice from './pages/Roadmap/RoadmapSessionPractice';
 import CodeReviewSimulator from './pages/CodeReview/CodeReviewSimulator';
 import ScenarioSelector from './pages/CodeReview/ScenarioSelector';
+import MultiFilePRReview from './pages/CodeReview/MultiFilePRReview';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -89,6 +90,10 @@ const App = () => {
             <Route
               path="/code-review/:scenarioId"
               element={<ProtectedRoute><CodeReviewSimulator /></ProtectedRoute>}
+            />
+            <Route
+              path="/multi-file-pr/:prId"
+              element={<ProtectedRoute><MultiFilePRReview /></ProtectedRoute>}
             />
           </Routes>
         </Router>
