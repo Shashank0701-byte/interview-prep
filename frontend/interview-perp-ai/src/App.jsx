@@ -23,6 +23,7 @@ import PhaseQuizPage from './pages/Roadmap/PhaseQuizPage';
 import PhaseSessionLibrary from './pages/Roadmap/PhaseSessionLibrary';
 import CreateSessionPage from './pages/Roadmap/CreateSessionPage';
 import RoadmapSessionPractice from './pages/Roadmap/RoadmapSessionPractice';
+import CodeReviewSimulator from './pages/CodeReview/CodeReviewSimulator';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -79,6 +80,10 @@ const App = () => {
             <Route
               path="/review"
               element={<ProtectedRoute><ReviewPage /></ProtectedRoute>}
+            />
+            <Route
+              path="/code-review/:sessionId?"
+              element={<ProtectedRoute><CodeReviewSimulator /></ProtectedRoute>}
             />
           </Routes>
         </Router>

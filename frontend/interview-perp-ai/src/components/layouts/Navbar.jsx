@@ -42,6 +42,13 @@ const Navbar = () => {
                         >
                             Learning Roadmap
                         </NavLink>
+                        <NavLink 
+                            to="/code-review" 
+                            className="text-sm text-slate-600 hover:text-indigo-600 transition-colors"
+                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                        >
+                            Code Review
+                        </NavLink>
                         
                     </nav>
                 </div>
