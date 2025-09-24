@@ -24,6 +24,7 @@ import PhaseSessionLibrary from './pages/Roadmap/PhaseSessionLibrary';
 import CreateSessionPage from './pages/Roadmap/CreateSessionPage';
 import RoadmapSessionPractice from './pages/Roadmap/RoadmapSessionPractice';
 import CodeReviewSimulator from './pages/CodeReview/CodeReviewSimulator';
+import ScenarioSelector from './pages/CodeReview/ScenarioSelector';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -82,7 +83,11 @@ const App = () => {
               element={<ProtectedRoute><ReviewPage /></ProtectedRoute>}
             />
             <Route
-              path="/code-review/:sessionId?"
+              path="/code-review"
+              element={<ProtectedRoute><ScenarioSelector /></ProtectedRoute>}
+            />
+            <Route
+              path="/code-review/:scenarioId"
               element={<ProtectedRoute><CodeReviewSimulator /></ProtectedRoute>}
             />
           </Routes>

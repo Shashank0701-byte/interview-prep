@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import SpinnerLoader from '../../components/Loader/SpinnerLoader';
+import { getScenarioById } from '../../data/codeReviewScenarios';
 import { 
     LuCode, 
     LuMessageSquare, 
@@ -22,7 +23,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const CodeReviewSimulator = () => {
     const navigate = useNavigate();
-    const { sessionId } = useParams();
+    const { scenarioId } = useParams();
     
     const [isLoading, setIsLoading] = useState(true);
     const [currentReview, setCurrentReview] = useState(null);
@@ -31,6 +32,9 @@ const CodeReviewSimulator = () => {
     const [selectedLine, setSelectedLine] = useState(null);
     const [reviewScore, setReviewScore] = useState(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [hoveredLine, setHoveredLine] = useState(null);
+    const [hintsEnabled, setHintsEnabled] = useState(false);
+    const [showHints, setShowHints] = useState(false);
 
     // Sample code review data (will be replaced with API call)
     const sampleCodeReview = {
@@ -102,12 +106,21 @@ module.exports = { loginUser, hashPassword };`,
     };
 
     useEffect(() => {
-        // Simulate loading
-        setTimeout(() => {
-            setCurrentReview(sampleCodeReview);
-            setIsLoading(false);
-        }, 1500);
-    }, [sessionId]);
+        // Load scenario from data
+        if (scenarioId) {
+            const scenario = getScenarioById(scenarioId);
+            if (scenario) {
+                setCurrentReview(scenario);
+                setIsLoading(false);
+            } else {
+                // Redirect to scenario selector if scenario not found
+                navigate('/code-review');
+            }
+        } else {
+            // Redirect to scenario selector if no scenario specified
+            navigate('/code-review');
+        }
+    }, [scenarioId, navigate]);
 
     const addComment = (lineNumber) => {
         if (!newComment.trim()) return;
@@ -175,6 +188,76 @@ module.exports = { loginUser, hashPassword };`,
             case 'low': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
             default: return 'bg-gray-100 text-gray-700 border-gray-200';
         }
+    };
+
+    const getLineHighlight = (lineNumber) => {
+        if (!currentReview || !showHints) return 'transparent';
+        
+        const issue = currentReview.codeBlocks[0].issues.find(issue => 
+            Math.abs(issue.line - lineNumber) <= 1
+        );
+        
+        if (!issue) return 'transparent';
+        
+        switch (issue.severity) {
+            case 'high': return 'rgba(239, 68, 68, 0.1)';
+            case 'medium': return 'rgba(245, 158, 11, 0.1)';
+            case 'low': return 'rgba(234, 179, 8, 0.1)';
+            default: return 'transparent';
+        }
+    };
+
+    const getHintForLine = (lineNumber) => {
+        if (!currentReview || !hintsEnabled) return null;
+        
+        const issue = currentReview.codeBlocks[0].issues.find(issue => 
+            Math.abs(issue.line - lineNumber) <= 1
+        );
+        
+        if (!issue) return null;
+        
+        // Progressive hints based on user progress
+        const userCommentOnLine = comments.find(comment => 
+            Math.abs(comment.line - lineNumber) <= 1
+        );
+        
+        if (userCommentOnLine) return null; // Don't show hints if user already commented
+        
+        return {
+            type: issue.type,
+            severity: issue.severity,
+            hint: getProgressiveHint(issue, comments.length)
+        };
+    };
+
+    const getProgressiveHint = (issue, userProgress) => {
+        const hints = {
+            validation: [
+                "🤔 Look at the input handling...",
+                "🔍 Are all inputs being validated?",
+                "⚠️ Missing input validation could be dangerous"
+            ],
+            security: [
+                "🔐 Security consideration needed here...",
+                "🛡️ This could be a security vulnerability",
+                "🚨 Sensitive data or weak security practice detected"
+            ],
+            performance: [
+                "⚡ Performance could be improved...",
+                "🐌 This might be inefficient",
+                "🚀 Consider optimization opportunities"
+            ],
+            bug: [
+                "🐛 Something looks off here...",
+                "❌ This could cause unexpected behavior",
+                "💥 Potential runtime error or logic bug"
+            ]
+        };
+        
+        const typeHints = hints[issue.type] || hints.bug;
+        const hintLevel = Math.min(Math.floor(userProgress / 3), typeHints.length - 1);
+        
+        return typeHints[hintLevel];
     };
 
     if (isLoading) {
@@ -282,7 +365,7 @@ module.exports = { loginUser, hashPassword };`,
                         <div className="max-w-6xl mx-auto">
                             <div className="flex items-center gap-4 mb-6">
                                 <button
-                                    onClick={() => navigate('/dashboard')}
+                                    onClick={() => navigate('/code-review')}
                                     className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                                 >
                                     <LuArrowLeft className="w-5 h-5" />
@@ -300,22 +383,48 @@ module.exports = { loginUser, hashPassword };`,
 
                             {/* Review Info */}
                             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                                <div className="flex flex-wrap items-center gap-6 text-sm">
-                                    <div className="flex items-center gap-2">
-                                        <LuFileText className="w-4 h-4" />
-                                        <span>{currentReview.title}</span>
+                                <div className="flex flex-wrap items-center justify-between gap-6">
+                                    <div className="flex flex-wrap items-center gap-6 text-sm">
+                                        <div className="flex items-center gap-2">
+                                            <LuFileText className="w-4 h-4" />
+                                            <span>{currentReview.title}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <LuUser className="w-4 h-4" />
+                                            <span>by {currentReview.author}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <LuClock className="w-4 h-4" />
+                                            <span>{currentReview.estimatedTime}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <LuStar className="w-4 h-4" />
+                                            <span>{currentReview.difficulty}</span>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <LuUser className="w-4 h-4" />
-                                        <span>by {currentReview.author}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <LuClock className="w-4 h-4" />
-                                        <span>{currentReview.estimatedTime}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <LuStar className="w-4 h-4" />
-                                        <span>{currentReview.difficulty}</span>
+                                    
+                                    {/* Hint Controls */}
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            onClick={() => setShowHints(!showHints)}
+                                            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                                                showHints 
+                                                    ? 'bg-white/20 text-white' 
+                                                    : 'bg-white/10 text-white/80 hover:bg-white/15'
+                                            }`}
+                                        >
+                                            {showHints ? '🔍 Hide Hints' : '💡 Show Hints'}
+                                        </button>
+                                        <button
+                                            onClick={() => setHintsEnabled(!hintsEnabled)}
+                                            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                                                hintsEnabled 
+                                                    ? 'bg-white/20 text-white' 
+                                                    : 'bg-white/10 text-white/80 hover:bg-white/15'
+                                            }`}
+                                        >
+                                            {hintsEnabled ? '🤖 AI Hints: ON' : '🤖 AI Hints: OFF'}
+                                        </button>
                                     </div>
                                 </div>
                                 <p className="text-white/90 mt-3">{currentReview.description}</p>
@@ -338,29 +447,61 @@ module.exports = { loginUser, hashPassword };`,
                                         </div>
                                     </div>
                                     <div className="relative">
-                                        <SyntaxHighlighter
-                                            language={currentReview.language}
-                                            style={vscDarkPlus}
-                                            showLineNumbers={true}
-                                            lineNumberStyle={{ 
-                                                minWidth: '3em',
-                                                paddingRight: '1em',
-                                                textAlign: 'right',
-                                                userSelect: 'none',
-                                                cursor: 'pointer'
-                                            }}
-                                            wrapLines={true}
-                                            lineProps={(lineNumber) => ({
-                                                style: {
-                                                    display: 'block',
-                                                    cursor: 'pointer',
-                                                    backgroundColor: selectedLine === lineNumber ? 'rgba(59, 130, 246, 0.1)' : 'transparent'
-                                                },
-                                                onClick: () => setSelectedLine(lineNumber)
-                                            })}
-                                        >
-                                            {currentReview.codeBlocks[0].code}
-                                        </SyntaxHighlighter>
+                                        <div className="relative">
+                                            <SyntaxHighlighter
+                                                language={currentReview.language}
+                                                style={vscDarkPlus}
+                                                showLineNumbers={true}
+                                                lineNumberStyle={{ 
+                                                    minWidth: '3em',
+                                                    paddingRight: '1em',
+                                                    textAlign: 'right',
+                                                    userSelect: 'none',
+                                                    cursor: 'pointer'
+                                                }}
+                                                wrapLines={true}
+                                                lineProps={(lineNumber) => ({
+                                                    style: {
+                                                        display: 'block',
+                                                        cursor: 'pointer',
+                                                        backgroundColor: selectedLine === lineNumber 
+                                                            ? 'rgba(59, 130, 246, 0.2)' 
+                                                            : getLineHighlight(lineNumber),
+                                                        borderLeft: getLineHighlight(lineNumber) !== 'transparent' 
+                                                            ? '3px solid rgba(239, 68, 68, 0.5)' 
+                                                            : 'none',
+                                                        paddingLeft: getLineHighlight(lineNumber) !== 'transparent' ? '0.5rem' : '0'
+                                                    },
+                                                    onClick: () => setSelectedLine(lineNumber),
+                                                    onMouseEnter: () => setHoveredLine(lineNumber),
+                                                    onMouseLeave: () => setHoveredLine(null)
+                                                })}
+                                            >
+                                                {currentReview.codeBlocks[0].code}
+                                            </SyntaxHighlighter>
+                                            
+                                            {/* Hover Hints */}
+                                            {hoveredLine && hintsEnabled && (
+                                                (() => {
+                                                    const hint = getHintForLine(hoveredLine);
+                                                    return hint ? (
+                                                        <div 
+                                                            className="absolute right-4 bg-slate-800 text-white px-3 py-2 rounded-lg shadow-lg text-sm max-w-xs z-10"
+                                                            style={{ top: `${hoveredLine * 1.5}em` }}
+                                                        >
+                                                            <div className="flex items-center gap-2 mb-1">
+                                                                {getIssueIcon(hint.type)}
+                                                                <span className="font-medium capitalize">{hint.type}</span>
+                                                                <span className={`px-2 py-0.5 rounded text-xs ${getSeverityColor(hint.severity)}`}>
+                                                                    {hint.severity}
+                                                                </span>
+                                                            </div>
+                                                            <p>{hint.hint}</p>
+                                                        </div>
+                                                    ) : null;
+                                                })()
+                                            )}
+                                        </div>
                                         
                                         {/* Comment indicators */}
                                         {comments.map(comment => (
