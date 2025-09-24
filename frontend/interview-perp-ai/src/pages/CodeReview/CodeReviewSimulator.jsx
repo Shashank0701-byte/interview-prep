@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import SpinnerLoader from '../../components/Loader/SpinnerLoader';
 import { getScenarioById } from '../../data/codeReviewScenarios';
+import { generateAuthorResponse, getFollowUpPrompts, scoreRebuttalResponse } from '../../data/authorPersonas';
 import { 
     LuCode, 
     LuMessageSquare, 
@@ -35,6 +36,11 @@ const CodeReviewSimulator = () => {
     const [hoveredLine, setHoveredLine] = useState(null);
     const [hintsEnabled, setHintsEnabled] = useState(false);
     const [showHints, setShowHints] = useState(false);
+    const [conversations, setConversations] = useState([]);
+    const [activeConversation, setActiveConversation] = useState(null);
+    const [rebuttalResponse, setRebuttalResponse] = useState('');
+    const [showRebuttalPhase, setShowRebuttalPhase] = useState(false);
+    const [communicationScore, setCommunicationScore] = useState(null);
 
     // Sample code review data (will be replaced with API call)
     const sampleCodeReview = {
@@ -139,15 +145,98 @@ module.exports = { loginUser, hashPassword };`,
     };
 
     const submitReview = async () => {
+        if (comments.length === 0) return;
+        
         setIsLoading(true);
         
-        // Simulate AI grading
+        // Generate AI author responses to user comments
         setTimeout(() => {
-            const score = calculateReviewScore();
-            setReviewScore(score);
-            setIsSubmitted(true);
+            const newConversations = comments.map(comment => {
+                // Determine issue type based on comment content and actual issues
+                const relatedIssue = currentReview.codeBlocks[0].issues.find(issue => 
+                    Math.abs(issue.line - comment.line) <= 2
+                );
+                
+                const issueType = relatedIssue ? relatedIssue.type : 'bug';
+                
+                const authorResponse = generateAuthorResponse(
+                    currentReview.author, 
+                    issueType, 
+                    comment.text
+                );
+                
+                return {
+                    id: `conv-${comment.id}`,
+                    commentId: comment.id,
+                    userComment: comment,
+                    authorResponse: authorResponse,
+                    issueType: issueType,
+                    userRebuttal: null,
+                    isResolved: false
+                };
+            });
+            
+            setConversations(newConversations);
+            setShowRebuttalPhase(true);
             setIsLoading(false);
         }, 2000);
+    };
+
+    const submitRebuttal = (conversationId, rebuttalText) => {
+        const conversation = conversations.find(c => c.id === conversationId);
+        if (!conversation) return;
+
+        // Score the rebuttal response
+        const score = scoreRebuttalResponse(rebuttalText, {
+            issueType: conversation.issueType,
+            authorPersonality: conversation.authorResponse.personality,
+            originalComment: conversation.userComment.text
+        });
+
+        // Update conversation with user's rebuttal
+        const updatedConversations = conversations.map(conv => 
+            conv.id === conversationId 
+                ? { 
+                    ...conv, 
+                    userRebuttal: {
+                        text: rebuttalText,
+                        timestamp: new Date(),
+                        score: score
+                    },
+                    isResolved: true
+                }
+                : conv
+        );
+
+        setConversations(updatedConversations);
+        setActiveConversation(null);
+        setRebuttalResponse('');
+
+        // Check if all conversations are resolved
+        const allResolved = updatedConversations.every(conv => conv.isResolved);
+        if (allResolved) {
+            // Calculate final scores including communication
+            setTimeout(() => {
+                const reviewScore = calculateReviewScore();
+                const avgCommunicationScore = updatedConversations.reduce((sum, conv) => 
+                    sum + conv.userRebuttal.score.overall, 0
+                ) / updatedConversations.length;
+
+                setCommunicationScore({
+                    overall: Math.round(avgCommunicationScore),
+                    conversations: updatedConversations.length,
+                    empathy: Math.round(updatedConversations.reduce((sum, conv) => 
+                        sum + conv.userRebuttal.score.empathy, 0) / updatedConversations.length),
+                    technical: Math.round(updatedConversations.reduce((sum, conv) => 
+                        sum + conv.userRebuttal.score.technical, 0) / updatedConversations.length),
+                    leadership: Math.round(updatedConversations.reduce((sum, conv) => 
+                        sum + conv.userRebuttal.score.leadership, 0) / updatedConversations.length)
+                });
+
+                setReviewScore(reviewScore);
+                setIsSubmitted(true);
+            }, 1000);
+        }
     };
 
     const calculateReviewScore = () => {
@@ -273,6 +362,154 @@ module.exports = { loginUser, hashPassword };`,
         );
     }
 
+    // Rebuttal Phase UI
+    if (showRebuttalPhase && !isSubmitted) {
+        return (
+            <DashboardLayout>
+                <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/20 p-6">
+                    <div className="max-w-4xl mx-auto">
+                        {/* Header */}
+                        <div className="bg-white rounded-2xl shadow-lg border border-slate-200/60 p-8 mb-6">
+                            <div className="text-center">
+                                <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <LuMessageSquare className="w-10 h-10 text-white" />
+                                </div>
+                                <h1 className="text-3xl font-bold text-slate-800 mb-2">Author Responses</h1>
+                                <p className="text-slate-600">The code author has responded to your feedback. How do you reply?</p>
+                            </div>
+                        </div>
+
+                        {/* Conversations */}
+                        <div className="space-y-6">
+                            {conversations.map(conversation => (
+                                <div key={conversation.id} className="bg-white rounded-2xl shadow-lg border border-slate-200/60 overflow-hidden">
+                                    {/* Original Comment */}
+                                    <div className="bg-slate-50 p-6 border-b border-slate-200">
+                                        <div className="flex items-start gap-4">
+                                            <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-semibold">
+                                                You
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="font-semibold text-slate-800">Your Review Comment</span>
+                                                    <span className="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded">
+                                                        Line {conversation.userComment.line}
+                                                    </span>
+                                                </div>
+                                                <p className="text-slate-700">{conversation.userComment.text}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Author Response */}
+                                    <div className="p-6 border-b border-slate-200">
+                                        <div className="flex items-start gap-4">
+                                            <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white text-lg">
+                                                {conversation.authorResponse.avatar}
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="font-semibold text-slate-800">{conversation.authorResponse.author}</span>
+                                                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">
+                                                        {conversation.authorResponse.experience} experience
+                                                    </span>
+                                                    <span className={`text-xs px-2 py-1 rounded ${
+                                                        conversation.authorResponse.style === 'defensive' ? 'bg-red-100 text-red-700' :
+                                                        conversation.authorResponse.style === 'questioning' ? 'bg-blue-100 text-blue-700' :
+                                                        'bg-yellow-100 text-yellow-700'
+                                                    }`}>
+                                                        {conversation.authorResponse.style}
+                                                    </span>
+                                                </div>
+                                                <p className="text-slate-700 mb-4">{conversation.authorResponse.response}</p>
+                                                
+                                                {/* Response Area */}
+                                                {!conversation.isResolved && (
+                                                    <div className="mt-4">
+                                                        {activeConversation === conversation.id ? (
+                                                            <div className="space-y-4">
+                                                                <textarea
+                                                                    value={rebuttalResponse}
+                                                                    onChange={(e) => setRebuttalResponse(e.target.value)}
+                                                                    placeholder="How do you respond? Consider their perspective while defending your position..."
+                                                                    className="w-full p-4 border border-slate-300 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                                    rows={4}
+                                                                />
+                                                                <div className="flex gap-3">
+                                                                    <button
+                                                                        onClick={() => submitRebuttal(conversation.id, rebuttalResponse)}
+                                                                        disabled={!rebuttalResponse.trim()}
+                                                                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                                    >
+                                                                        <LuSend className="w-4 h-4" />
+                                                                        Send Response
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => setActiveConversation(null)}
+                                                                        className="px-4 py-2 text-slate-600 hover:text-slate-800 transition-colors"
+                                                                    >
+                                                                        Cancel
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <button
+                                                                onClick={() => setActiveConversation(conversation.id)}
+                                                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                                                            >
+                                                                <LuMessageSquare className="w-4 h-4" />
+                                                                Respond to {conversation.authorResponse.author}
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                )}
+
+                                                {/* User's Rebuttal */}
+                                                {conversation.userRebuttal && (
+                                                    <div className="mt-4 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <span className="font-semibold text-indigo-800">Your Response</span>
+                                                            <span className="text-xs bg-indigo-200 text-indigo-700 px-2 py-1 rounded">
+                                                                Communication Score: {conversation.userRebuttal.score.overall}%
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-indigo-700">{conversation.userRebuttal.text}</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Progress Indicator */}
+                        <div className="mt-8 bg-white rounded-xl shadow-lg border border-slate-200/60 p-6">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h3 className="font-semibold text-slate-800">Conversation Progress</h3>
+                                    <p className="text-slate-600 text-sm">
+                                        {conversations.filter(c => c.isResolved).length} of {conversations.length} conversations completed
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {conversations.map(conv => (
+                                        <div
+                                            key={conv.id}
+                                            className={`w-3 h-3 rounded-full ${
+                                                conv.isResolved ? 'bg-emerald-500' : 'bg-slate-300'
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </DashboardLayout>
+        );
+    }
+
     if (isSubmitted && reviewScore) {
         return (
             <DashboardLayout>
@@ -290,10 +527,10 @@ module.exports = { loginUser, hashPassword };`,
                         </div>
 
                         {/* Score Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
                             <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 p-6 text-center">
                                 <div className="text-3xl font-bold text-indigo-600 mb-2">{reviewScore.overall}%</div>
-                                <div className="text-sm text-slate-600">Overall Score</div>
+                                <div className="text-sm text-slate-600">Technical Score</div>
                             </div>
                             <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 p-6 text-center">
                                 <div className="text-3xl font-bold text-emerald-600 mb-2">{reviewScore.accuracy}%</div>
@@ -307,7 +544,43 @@ module.exports = { loginUser, hashPassword };`,
                                 <div className="text-3xl font-bold text-orange-600 mb-2">{reviewScore.constructiveness}/10</div>
                                 <div className="text-sm text-slate-600">Constructiveness</div>
                             </div>
+                            {communicationScore && (
+                                <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 p-6 text-center">
+                                    <div className="text-3xl font-bold text-blue-600 mb-2">{communicationScore.overall}%</div>
+                                    <div className="text-sm text-slate-600">Communication</div>
+                                </div>
+                            )}
                         </div>
+
+                        {/* Communication Breakdown */}
+                        {communicationScore && (
+                            <div className="bg-white rounded-2xl shadow-lg border border-slate-200/60 p-8 mb-6">
+                                <h2 className="text-xl font-semibold text-slate-800 mb-6">Communication Skills Breakdown</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div className="text-center">
+                                        <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                            <span className="text-white font-bold text-lg">{communicationScore.empathy}%</span>
+                                        </div>
+                                        <h3 className="font-semibold text-slate-800 mb-2">Empathy</h3>
+                                        <p className="text-sm text-slate-600">Understanding and acknowledging others' perspectives</p>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                            <span className="text-white font-bold text-lg">{communicationScore.technical}%</span>
+                                        </div>
+                                        <h3 className="font-semibold text-slate-800 mb-2">Technical Reasoning</h3>
+                                        <p className="text-sm text-slate-600">Backing arguments with data and evidence</p>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                            <span className="text-white font-bold text-lg">{communicationScore.leadership}%</span>
+                                        </div>
+                                        <h3 className="font-semibold text-slate-800 mb-2">Leadership</h3>
+                                        <p className="text-sm text-slate-600">Providing clear direction and recommendations</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Detailed Feedback */}
                         <div className="bg-white rounded-2xl shadow-lg border border-slate-200/60 p-8 mb-6">
@@ -605,7 +878,7 @@ module.exports = { loginUser, hashPassword };`,
                                     disabled={comments.length === 0}
                                     className="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    Submit Review for Grading
+                                    Submit Review & Start Discussion
                                 </button>
                             </div>
                         </div>
