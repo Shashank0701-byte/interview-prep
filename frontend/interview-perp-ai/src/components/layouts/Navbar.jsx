@@ -49,6 +49,13 @@ const Navbar = () => {
                         >
                             Code Review
                         </NavLink>
+                        <NavLink 
+                            to="/resume-builder" 
+                            className="text-sm text-slate-600 hover:text-indigo-600 transition-colors"
+                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                        >
+                            Resume Builder
+                        </NavLink>
                         
                     </nav>
                 </div>

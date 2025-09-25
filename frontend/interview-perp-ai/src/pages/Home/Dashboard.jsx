@@ -187,6 +187,19 @@ const Dashboard = () => {
                                     </svg>
                                     <span>Code Review</span>
                                 </Link>
+                                <Link
+                                    to="/resume-builder"
+                                    className="group flex items-center justify-center gap-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                                        <svg className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </div>
+                                    <span>Smart Resume Builder</span>
+                                    <div className="px-2 py-1 bg-white/20 rounded-full text-xs font-bold">NEW!</div>
+                                </Link>
                                 <button
                                     onClick={() => setOpenCreateModal(true)}
                                     className="group flex items-center justify-center gap-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"

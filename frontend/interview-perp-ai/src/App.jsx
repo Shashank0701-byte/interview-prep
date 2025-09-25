@@ -26,6 +26,7 @@ import RoadmapSessionPractice from './pages/Roadmap/RoadmapSessionPractice';
 import CodeReviewSimulator from './pages/CodeReview/CodeReviewSimulator';
 import ScenarioSelector from './pages/CodeReview/ScenarioSelector';
 import MultiFilePRReview from './pages/CodeReview/MultiFilePRReview';
+import SmartResumeBuilder from './pages/Resume/SmartResumeBuilder';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -94,6 +95,10 @@ const App = () => {
             <Route
               path="/multi-file-pr/:prId"
               element={<ProtectedRoute><MultiFilePRReview /></ProtectedRoute>}
+            />
+            <Route
+              path="/resume-builder"
+              element={<ProtectedRoute><SmartResumeBuilder /></ProtectedRoute>}
             />
           </Routes>
         </Router>
