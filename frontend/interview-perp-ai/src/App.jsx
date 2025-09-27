@@ -27,6 +27,8 @@ import CodeReviewSimulator from './pages/CodeReview/CodeReviewSimulator';
 import ScenarioSelector from './pages/CodeReview/ScenarioSelector';
 import MultiFilePRReview from './pages/CodeReview/MultiFilePRReview';
 import SmartResumeBuilder from './pages/Resume/SmartResumeBuilder';
+import LiveCodingPage from './pages/LiveCoding/LiveCodingPage';
+import LiveCodingChallenge from './pages/LiveCoding/LiveCodingChallenge';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -99,6 +101,14 @@ const App = () => {
             <Route
               path="/resume-builder"
               element={<ProtectedRoute><SmartResumeBuilder /></ProtectedRoute>}
+            />
+            <Route
+              path="/live-coding"
+              element={<ProtectedRoute><LiveCodingPage /></ProtectedRoute>}
+            />
+            <Route
+              path="/live-coding/:challengeId"
+              element={<ProtectedRoute><LiveCodingChallenge /></ProtectedRoute>}
             />
           </Routes>
         </Router>
