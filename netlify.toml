@@ -5,14 +5,16 @@
   base = "frontend/interview-perp-ai"
 
   # The command to build your site for production.
-  command = "npm run build"
+  command = "rm -rf node_modules package-lock.json && npm install --legacy-peer-deps && npm run build"
 
   # The directory that contains the deploy-ready HTML files and assets.
   publish = "dist"
 
 [build.environment]
   # Node.js version for build
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
+  # Fix npm optional dependencies issue
+  NPM_FLAGS = "--legacy-peer-deps"
 
 # Redirect rules for Single Page Application (SPA)
 [[redirects]]
