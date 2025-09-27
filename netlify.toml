@@ -8,7 +8,7 @@
   command = "npm run build"
 
   # The directory that contains the deploy-ready HTML files and assets.
-  publish = "frontend/interview-perp-ai/dist"
+  publish = "dist"
 
 [build.environment]
   # Node.js version for build

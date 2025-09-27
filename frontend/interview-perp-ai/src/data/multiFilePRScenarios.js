@@ -111,7 +111,7 @@ class AuthService {
         // Issue 10: JWT token missing expiration and proper claims
         const token = jwt.sign(
             { userId: user._id },
-            process.env.JWT_SECRET
+            'your-secret-key'
         );
         
         logSecurityEvent('user_login', { userId: user._id, email });

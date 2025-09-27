@@ -74,7 +74,7 @@ const loginUser = async (email, password) => {
             // Issue 2: No expiration time set
             const token = jwt.sign(
                 { userId: user._id, email: user.email },
-                process.env.JWT_SECRET
+                'your-secret-key'
             );
             
             // Issue 3: Sensitive data in response
