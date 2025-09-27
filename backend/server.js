@@ -77,6 +77,23 @@ app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
 app.use('/api/feedback', feedbackRoutes);
 app.use("/api/ai", aiRoutes);
 
+// Health check route
+app.get('/', (req, res) => {
+    res.json({ 
+        message: 'Interview Prep AI Backend is running!', 
+        status: 'healthy',
+        timestamp: new Date().toISOString()
+    });
+});
+
+app.get('/api/health', (req, res) => {
+    res.json({ 
+        message: 'API is working!', 
+        status: 'healthy',
+        timestamp: new Date().toISOString()
+    });
+});
+
 // This 404 handler should only run after all other routes have been checked
 app.use((req, res) => {
     console.log('No route found for:', req.originalUrl);
