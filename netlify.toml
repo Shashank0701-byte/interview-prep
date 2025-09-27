@@ -19,8 +19,8 @@
   SECRETS_SCAN_OMIT_KEYS = "PORT"
   # Omit paths that contain salary data and other non-secret numeric values
   SECRETS_SCAN_OMIT_PATHS = "src/components/Resume/*,public/pdf.worker.min.js,dist/*"
-  # Backend URL for production
-  VITE_API_BASE_URL = "https://interview-prep-gbhf-8511cjx4b.vercel.app"
+  # Backend URL for production (using the actual URL from the error)
+  VITE_API_BASE_URL = "interview-prep-gbhf"
 
 # Redirect rules for Single Page Application (SPA)
 [[redirects]]
