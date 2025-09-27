@@ -1,4 +1,9 @@
+// Use environment variable or fallback to localhost for development
 export const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+
+// For production without backend, you can use a mock API or disable features
+export const IS_PRODUCTION = import.meta.env.PROD;
+export const HAS_BACKEND = import.meta.env.VITE_API_BASE_URL !== undefined;
 
 export const API_PATHS = {
     AUTH: {

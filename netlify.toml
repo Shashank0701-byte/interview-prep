@@ -19,6 +19,8 @@
   SECRETS_SCAN_OMIT_KEYS = "PORT"
   # Omit paths that contain salary data and other non-secret numeric values
   SECRETS_SCAN_OMIT_PATHS = "src/components/Resume/*,public/pdf.worker.min.js,dist/*"
+  # Add your backend URL here after deployment
+  # VITE_API_BASE_URL = "https://your-backend-url.railway.app"
 
 # Redirect rules for Single Page Application (SPA)
 [[redirects]]
