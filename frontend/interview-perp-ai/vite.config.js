@@ -13,5 +13,9 @@ export default defineConfig({
         secure: false,
       }
     }
-  }
+  },
+  optimizeDeps: {
+    include: ['pdfjs-dist']
+  },
+  assetsInclude: ['**/*.worker.js']
 })
