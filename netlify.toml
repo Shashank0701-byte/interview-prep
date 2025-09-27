@@ -15,6 +15,10 @@
   NODE_VERSION = "20"
   # Fix npm optional dependencies issue
   NPM_FLAGS = "--legacy-peer-deps"
+  # Omit PORT from secrets scanning (it's just a port number, not a secret)
+  SECRETS_SCAN_OMIT_KEYS = "PORT"
+  # Omit paths that contain salary data and other non-secret numeric values
+  SECRETS_SCAN_OMIT_PATHS = "src/components/Resume/*,public/pdf.worker.min.js,dist/*"
 
 # Redirect rules for Single Page Application (SPA)
 [[redirects]]
