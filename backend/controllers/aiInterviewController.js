@@ -2,7 +2,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const InterviewSession = require('../models/InterviewSession');
 const Company = require('../models/Company');
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
 // @desc    Start a new AI interview session
 // @route   POST /api/ai-interview/start
