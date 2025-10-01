@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import SpinnerLoader from '../../components/Loader/SpinnerLoader';
 import { getScenarioById } from '../../data/codeReviewScenarios';
@@ -25,6 +26,9 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 const CodeReviewSimulator = () => {
     const navigate = useNavigate();
     const { scenarioId } = useParams();
+    
+    // Auto scroll to top when navigating to this page or changing scenarios
+    useScrollToTop(true, [scenarioId]);
     
     const [isLoading, setIsLoading] = useState(true);
     const [currentReview, setCurrentReview] = useState(null);

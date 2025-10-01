@@ -1,5 +1,5 @@
-import React from 'react'
-import { LuTrash2, LuStar } from 'react-icons/lu';
+import React, { useState } from 'react'
+import { LuTrash2, LuStar, LuInfo } from 'react-icons/lu';
 import { getInitials } from '../../utils/helper';
 
 const SummaryCard = ({
@@ -31,6 +31,7 @@ const SummaryCard = ({
     
     
     const avgRating = (userRating.overall + userRating.difficulty + userRating.usefulness) / 3;
+    const [showRatingTooltip, setShowRatingTooltip] = useState(false);
     
     return (
         <div 
@@ -101,81 +102,92 @@ const SummaryCard = ({
     </div>
 
     <div className='px-5 pb-5 pt-3'>
-        {/* Rating Display */}
-        <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-                <div className="flex items-center gap-0.5">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                        <LuStar
-                            key={star}
-                            className={`w-4 h-4 ${
-                                star <= Math.round(avgRating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                            }`}
-                        />
-                    ))}
-                </div>
-                <span className="text-sm font-medium text-gray-700">({avgRating.toFixed(1)})</span>
-            </div>
-            
-            {completionPercentage > 0 && (
-                <div className="flex items-center gap-2">
-                    <div className="relative w-16 bg-gray-100 rounded-full h-2 overflow-hidden">
-                        <div 
-                            className="bg-gradient-to-r from-emerald-400 via-emerald-500 to-green-500 h-2 rounded-full transition-all duration-1000 ease-out relative"
-                            style={{ width: `${completionPercentage}%` }}
-                        >
-                            {/* Gentle shimmer effect */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-1">
-                        <span className="text-xs font-medium text-emerald-600">{completionPercentage}%</span>
-                        {completionPercentage === 100 && <span className="text-xs">🎉</span>}
-                    </div>
-                </div>
-            )}
-        </div>
-        
-        {/* Enhanced Stats with Gentle Progress Indicators */}
-        <div className='grid grid-cols-2 gap-3 mb-4'>
-            <div className='bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-3 border border-blue-100/50 hover:shadow-md hover:scale-105 transition-all duration-300'>
-                <div className='flex items-center gap-2 mb-2'>
-                    <span className='text-blue-500'>💼</span>
-                    <div className='text-xs font-medium text-blue-700'>Experience</div>
-                </div>
-                <div className='text-sm font-bold text-blue-900'>{experience} {experience == 1 ? "Year" : "Years"}</div>
-            </div>
-            
-            <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-3 border border-purple-100/50 hover:shadow-md hover:scale-105 transition-all duration-300'>
-                <div className='flex items-center gap-2 mb-2'>
-                    <span className='text-purple-500'>❓</span>
-                    <div className='text-xs font-medium text-purple-700'>Questions</div>
-                </div>
-                <div className='text-sm font-bold text-purple-900'>{questions} Q&A</div>
-            </div>
-            
-            {masteredQuestions > 0 && (
-                <div className='bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-3 border border-emerald-100/50 col-span-2 hover:shadow-md hover:scale-105 transition-all duration-300'>
-                    <div className='flex items-center justify-between mb-2'>
+        {/* Consolidated Progress Section */}
+        <div className="mb-4">
+            {/* Primary Progress Indicator - Mastered Questions */}
+            {masteredQuestions > 0 ? (
+                <div className='bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-4 border border-emerald-100/50 hover:shadow-md transition-all duration-300'>
+                    <div className='flex items-center justify-between mb-3'>
                         <div className='flex items-center gap-2'>
-                            <span className='text-emerald-500'>✨</span>
-                            <div className='text-xs font-medium text-emerald-700'>Mastered Questions</div>
+                            <span className='text-emerald-500 text-lg'>✨</span>
+                            <div className='text-sm font-semibold text-emerald-800'>Progress</div>
                         </div>
-                        <div className='text-xs text-emerald-600 font-medium'>
+                        <div className='text-xs text-emerald-600 font-medium bg-emerald-100 px-2 py-1 rounded-full'>
                             {questions > 0 ? Math.round((masteredQuestions / questions) * 100) : 0}% complete
                         </div>
                     </div>
-                    <div className='flex items-center justify-between'>
-                        <div className='text-sm font-bold text-emerald-900'>{masteredQuestions} of {questions}</div>
-                        <div className='w-12 bg-emerald-100 rounded-full h-1.5'>
-                            <div 
-                                className='bg-gradient-to-r from-emerald-400 to-green-500 h-1.5 rounded-full transition-all duration-700'
-                                style={{ width: `${questions > 0 ? (masteredQuestions / questions) * 100 : 0}%` }}
-                            ></div>
+                    <div className='flex items-center justify-between mb-2'>
+                        <div className='text-lg font-bold text-emerald-900'>{masteredQuestions} of {questions} mastered</div>
+                    </div>
+                    <div className='w-full bg-emerald-100 rounded-full h-2'>
+                        <div 
+                            className='bg-gradient-to-r from-emerald-400 to-green-500 h-2 rounded-full transition-all duration-1000 ease-out relative'
+                            style={{ width: `${questions > 0 ? (masteredQuestions / questions) * 100 : 0}%` }}
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
                         </div>
                     </div>
                 </div>
+            ) : (
+                <div className='bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100/50'>
+                    <div className='flex items-center gap-2 mb-2'>
+                        <span className='text-blue-500 text-lg'>🌱</span>
+                        <div className='text-sm font-semibold text-blue-800'>Ready to Start</div>
+                    </div>
+                    <div className='text-lg font-bold text-blue-900'>{questions} questions waiting</div>
+                    <div className='text-xs text-blue-600 mt-1'>Begin your learning journey!</div>
+                </div>
             )}
+        </div>
+
+        {/* Clarified Rating Display with Tooltip */}
+        <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                    <span className="text-xs font-medium text-gray-600">Self-Assessment:</span>
+                    <div className="flex items-center gap-0.5">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                            <LuStar
+                                key={star}
+                                className={`w-4 h-4 ${
+                                    star <= Math.round(avgRating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                                }`}
+                            />
+                        ))}
+                    </div>
+                    <span className="text-sm font-medium text-gray-700">({avgRating.toFixed(1)})</span>
+                </div>
+                <div className="relative">
+                    <LuInfo 
+                        className="w-3 h-3 text-gray-400 cursor-help hover:text-gray-600 transition-colors"
+                        onMouseEnter={() => setShowRatingTooltip(true)}
+                        onMouseLeave={() => setShowRatingTooltip(false)}
+                    />
+                    {showRatingTooltip && (
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 bg-gray-800 text-white text-xs rounded-lg px-3 py-2 z-10">
+                            Average of your self-rated difficulty, usefulness, and clarity scores
+                            <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                        </div>
+                    )}
+                </div>
+            </div>
+            
+            {/* Secondary metadata - Experience as small tag */}
+            <div className="flex items-center gap-1 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
+                <span>💼</span>
+                <span>{experience}y exp</span>
+            </div>
+        </div>
+        
+        {/* Simplified Stats */}
+        <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-3 border border-purple-100/50 hover:shadow-md transition-all duration-300 mb-4'>
+            <div className='flex items-center justify-between'>
+                <div className='flex items-center gap-2'>
+                    <span className='text-purple-500'>❓</span>
+                    <div className='text-xs font-medium text-purple-700'>Total Questions</div>
+                </div>
+                <div className='text-sm font-bold text-purple-900'>{questions}</div>
+            </div>
         </div>
 
         {/* Description */}

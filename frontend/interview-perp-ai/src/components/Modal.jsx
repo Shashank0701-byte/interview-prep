@@ -2,19 +2,17 @@ import React from 'react';
 
 const Modal = ({ children, isOpen, onClose, title, hideHeader }) => {
 
-  // CRITICAL: This ensures the modal doesn't render when it's closed.
   if (!isOpen) {
     return null;
   }
 
   return (
-    <div className='fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black/40'>
-      {/* Corrected: "relative" */}
+    <div className='fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black/40 p-4'>
+      {/* Mobile responsive modal container */}
       <div
-        className={`relative flex flex-col bg-white shadow-lg rounded-lg overflow-hidden`}
+        className={`relative flex flex-col bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-md max-h-[90vh] mx-auto`}
       >
         {!hideHeader && (
-          // Corrected: "items-center"
           <div className='flex items-center justify-between p-4 border-b border-gray-200'>
             <h3 className='md:text-lg font-medium text-gray-900'>{title}</h3>
           </div>

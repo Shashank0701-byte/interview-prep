@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import * as pdfjsLib from 'pdfjs-dist';
 import { 
@@ -18,8 +19,10 @@ import {
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 const SmartResumeBuilder = () => {
-    const fileInputRef = useRef(null);
     const navigate = useNavigate();
+    
+    // Auto scroll to top when navigating to this page
+    useScrollToTop();
     
     // State for resume analysis
     const [isAnalyzing, setIsAnalyzing] = useState(false);

@@ -6,7 +6,7 @@ import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import { UserContext } from '../../context/userContext';
 // import AuthLayout from '../../components/layouts/AuthLayout';
-const Login = () => {
+const Login = ({ setCurrentPage }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -55,9 +55,9 @@ const Login = () => {
   };
 
   return (
-    <div className="w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center">
-      <h3 className="text-lg font-semibold text-black">Welcome Back</h3>
-      <p className="text-xs text-slate-700 mt-[5px] mb-6">
+    <div className="w-full p-6 sm:p-7 flex flex-col justify-center">
+      <h3 className="text-xl sm:text-2xl font-semibold text-black mb-2">Welcome Back</h3>
+      <p className="text-sm text-slate-700 mb-6">
         Please enter your details to log in
       </p>
       <form onSubmit={handleLogin}>
@@ -76,20 +76,24 @@ const Login = () => {
           type="password"
         />
 
-        {error && <p className='text-red-500 text-xs pb-2.5'>{error}</p>}
+        {error && <p className='text-red-500 text-sm pb-3 px-1'>{error}</p>}
 
-        <button type="submit" className="btn-primary" disabled={isLoading}>
+        <button 
+          type="submit" 
+          className="w-full bg-black text-white py-3 px-4 rounded-lg font-medium text-base hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-4" 
+          disabled={isLoading}
+        >
           {isLoading ? "Logging in..." : "Login"}
         </button>
 
-        <p className='text-[13px] text-slate-800 mt-3'>
+        <p className='text-sm text-slate-800 text-center'>
           Don't have an account?{" "}
           <button
             type="button"
-            className='font-medium text-primary underline cursor-pointer'
-            onClick={() => navigate("/signUp")}
+            className='font-medium text-orange-600 hover:text-orange-700 underline cursor-pointer'
+            onClick={() => setCurrentPage("signup")}
           >
-            SignUp
+            Sign Up
           </button>
         </p>
       </form>

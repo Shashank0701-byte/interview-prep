@@ -62,7 +62,7 @@ const SignUp = ({ setCurrentPage }) => {
             localStorage.setItem("token", token);
             updateUser(response.data);
             navigate("/dashboard");
-            }
+        }
         } catch (error) {
             if (error.response && error.response.data.message) {
                 setError(error.response.data.message);
@@ -73,14 +73,11 @@ const SignUp = ({ setCurrentPage }) => {
     };
 
     return (
-        
-          <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-300">
-        <div className="w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center bg-white rounded-lg shadow-lg">
-      <h3 className="text-lg font-semibold text-black text-center">Create an Account</h3>
-      <p className="text-xs text-slate-700 mt-[5px] text-center">
-        Join us today by entering your details below.
-      </p>
-
+        <div className="w-full p-6 sm:p-7 flex flex-col justify-center">
+            <h3 className="text-xl sm:text-2xl font-semibold text-black text-center mb-2">Create an Account</h3>
+            <p className="text-sm text-slate-700 text-center mb-6">
+                Join us today by entering your details below.
+            </p>
       <form onSubmit={handleSignUp} className="mt-6">
         <ProfilePhotoSelector
           image={profilePic}
@@ -133,9 +130,7 @@ const SignUp = ({ setCurrentPage }) => {
         </p>
       </form>
     </div>
-  </div>
-  
-);
+  );
 };
 
 export default SignUp;

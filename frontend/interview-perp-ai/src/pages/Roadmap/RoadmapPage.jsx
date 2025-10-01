@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
@@ -22,6 +23,9 @@ import {
 } from 'react-icons/lu';
 
 const RoadmapPage = () => {
+    // Auto scroll to top when navigating to this page
+    useScrollToTop();
+    
     const [selectedRole, setSelectedRole] = useState('');
     const [availableRoles, setAvailableRoles] = useState([]);
     const [roadmap, setRoadmap] = useState(null);

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import { Bar, Line, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -36,6 +37,9 @@ ChartJS.register(
 
 // --- Main Component ---
 const AnalyticsDashboard = () => {
+    // Auto scroll to top when navigating to this page
+    useScrollToTop();
+    
     // --- State for all charts ---
     const [progressData, setProgressData] = useState({ labels: [], datasets: [] });
     const [performanceData, setPerformanceData] = useState({ labels: [], datasets: [] });

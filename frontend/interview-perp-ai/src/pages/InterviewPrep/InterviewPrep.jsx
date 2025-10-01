@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import moment from "moment";
 import { AnimatePresence, motion } from "framer-motion";
 import { LuCircleAlert, LuListCollapse } from "react-icons/lu";
@@ -16,6 +17,10 @@ import AIResponsePreview from './components/AIResponsePreview';
 
 const InterviewPrep = () => {
     const { sessionId } = useParams();
+    
+    // Auto scroll to top when navigating to this page or changing sessions
+    useScrollToTop(true, [sessionId]);
+    
     const [sessionData, setSessionData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isUpdateLoader, setIsUpdateLoader] = useState(false);

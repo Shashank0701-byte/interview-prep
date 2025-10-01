@@ -1,16 +1,41 @@
+// Meaningful color system based on session status and progress
+export const getSessionCardColor = (completionPercentage, status) => {
+  // Completed sessions - celebratory green
+  if (completionPercentage === 100 || status === 'Completed') {
+    return { bgcolor: 'linear-gradient(135deg, #e6f8f3 0%, #f0fdf4 100%)', meaning: 'Completed' };
+  }
+  
+  // High progress sessions (70%+) - encouraging blue
+  if (completionPercentage >= 70) {
+    return { bgcolor: 'linear-gradient(135deg, #eaf7ff 0%, #f0f9ff 100%)', meaning: 'High Progress' };
+  }
+  
+  // Medium progress sessions (30-69%) - motivating purple
+  if (completionPercentage >= 30) {
+    return { bgcolor: 'linear-gradient(135deg, #f0ecff 0%, #f5f3ff 100%)', meaning: 'In Progress' };
+  }
+  
+  // Low progress sessions (1-29%) - gentle orange
+  if (completionPercentage > 0) {
+    return { bgcolor: 'linear-gradient(135deg, #fff2e9 0%, #fff7ed 100%)', meaning: 'Getting Started' };
+  }
+  
+  // New/untouched sessions - neutral gray
+  return { bgcolor: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', meaning: 'Ready to Start' };
+};
 
-
+// Legacy CARD_BG for backward compatibility (now unused)
 export const CARD_BG = [
-  { id: 1, bgcolor: 'linear-gradient(135deg, #e6f8f3 0%, #f7fcfa 100%)' },
-  { id: 2, bgcolor: 'linear-gradient(135deg, #fef9e7 0%, #fffdf4 100%)' },
-  { id: 3, bgcolor: 'linear-gradient(135deg, #eaf7ff 0%, #f3fbff 100%)' },
-  { id: 4, bgcolor: 'linear-gradient(135deg, #fff2e9 0%, #fff8f3 100%)' },
-  { id: 5, bgcolor: 'linear-gradient(135deg, #e7f6fe 0%, #f4fafd 100%)' },
-  { id: 6, bgcolor: 'linear-gradient(135deg, #f5f5f5 0%, #fbfbfb 100%)' },
-  { id: 7, bgcolor: 'linear-gradient(135deg, #fff4fc 0%, #fff8fd 100%)' },
-  { id: 8, bgcolor: 'linear-gradient(135deg, #e8fef3 0%, #f5fef8 100%)' },
-  { id: 9, bgcolor: 'linear-gradient(135deg, #f0ecff 0%, #f7f5ff 100%)' },
-  { id: 10, bgcolor: 'linear-gradient(135deg, #fef2f2 0%, #fff8f8 100%)' },
+  { id: 1, bgcolor: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' },
+  { id: 2, bgcolor: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' },
+  { id: 3, bgcolor: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' },
+  { id: 4, bgcolor: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' },
+  { id: 5, bgcolor: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' },
+  { id: 6, bgcolor: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' },
+  { id: 7, bgcolor: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' },
+  { id: 8, bgcolor: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' },
+  { id: 9, bgcolor: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' },
+  { id: 10, bgcolor: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' },
 ];
 
 export const APP_FEATURES = [

@@ -73,6 +73,34 @@ export const useSessionFilter = (sessions = []) => {
                     aValue = new Date(a.createdAt);
                     bValue = new Date(b.createdAt);
                     break;
+                case 'proficiencyScore':
+                    // Calculate proficiency score based on mastered questions percentage
+                    const aMastered = a.questions?.filter(q => q.mastered).length || 0;
+                    const aTotal = a.questions?.length || 1;
+                    aValue = (aMastered / aTotal) * 100;
+                    
+                    const bMastered = b.questions?.filter(q => q.mastered).length || 0;
+                    const bTotal = b.questions?.length || 1;
+                    bValue = (bMastered / bTotal) * 100;
+                    break;
+                case 'progressPercentage':
+                    // Calculate progress percentage based on answered questions
+                    const aAnswered = a.questions?.filter(q => q.userAnswer).length || 0;
+                    const aTotalQuestions = a.questions?.length || 1;
+                    aValue = (aAnswered / aTotalQuestions) * 100;
+                    
+                    const bAnswered = b.questions?.filter(q => q.userAnswer).length || 0;
+                    const bTotalQuestions = b.questions?.length || 1;
+                    bValue = (bAnswered / bTotalQuestions) * 100;
+                    break;
+                case 'averageRating':
+                    // Calculate average rating from user ratings
+                    const aRating = a.userRating || { overall: 0, difficulty: 0, usefulness: 0 };
+                    aValue = (aRating.overall + aRating.difficulty + aRating.usefulness) / 3;
+                    
+                    const bRating = b.userRating || { overall: 0, difficulty: 0, usefulness: 0 };
+                    bValue = (bRating.overall + bRating.difficulty + bRating.usefulness) / 3;
+                    break;
                 case 'lastUpdated':
                 default:
                     aValue = new Date(a.updatedAt);
@@ -80,10 +108,20 @@ export const useSessionFilter = (sessions = []) => {
                     break;
             }
 
+            // Handle string comparisons
+            if (typeof aValue === 'string' && typeof bValue === 'string') {
+                if (filters.sortOrder === 'asc') {
+                    return aValue.localeCompare(bValue);
+                } else {
+                    return bValue.localeCompare(aValue);
+                }
+            }
+
+            // Handle numeric and date comparisons
             if (filters.sortOrder === 'asc') {
-                return aValue > bValue ? 1 : -1;
+                return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
             } else {
-                return aValue < bValue ? 1 : -1;
+                return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
             }
         });
 

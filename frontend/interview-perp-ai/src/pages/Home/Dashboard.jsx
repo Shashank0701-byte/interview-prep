@@ -12,7 +12,7 @@ import useSessionFilter from '../../hooks/useSessionFilter';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import moment from "moment";
-import { CARD_BG } from "../../utils/data";
+import { CARD_BG, getSessionCardColor } from "../../utils/data";
 import RatingModal from '../../components/RatingModal';
 
 
@@ -134,18 +134,18 @@ const Dashboard = () => {
             <div className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20'>
                 {/* Enhanced Hero Section */}
                 <div className="bg-gradient-to-r from-white via-blue-50/30 to-indigo-50/20 border-b border-gray-100/60">
-                    <div className="container mx-auto px-4 md:px-6 py-10">
-                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-                            <div className="space-y-4">
+                    <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-10">
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 sm:gap-8">
+                            <div className="space-y-3 sm:space-y-4">
                                 <div className="space-y-2">
-                                    <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 bg-clip-text text-transparent leading-tight">
+                                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 bg-clip-text text-transparent leading-tight">
                                         My Interview Sessions
                                     </h1>
-                                    <p className="text-lg text-gray-600 max-w-2xl">
+                                    <p className="text-base sm:text-lg text-gray-600 max-w-2xl">
                                         Track your progress, practice with AI-generated questions, and ace your next interview
                                     </p>
                                 </div>
-                                <div className="flex items-center gap-6 text-sm">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 text-sm">
                                     <div className="flex items-center gap-3 bg-white/70 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-blue-100/50 shadow-sm">
                                         <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full animate-pulse"></div>
                                         <span className="font-medium text-gray-700">
@@ -163,17 +163,20 @@ const Dashboard = () => {
                                 </div>
                             </div>
                             
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
                                 {reviewCount > 0 && (
                                     <Link 
                                         to="/review" 
-                                        className="group flex flex-col items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-4 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 min-h-[100px] relative"
+                                        className="group flex flex-col items-center justify-center gap-1 sm:gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-2 sm:px-4 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 min-h-[80px] sm:min-h-[100px] relative"
                                     >
-                                        <div className="absolute top-2 right-2 w-3 h-3 bg-white rounded-full animate-pulse"></div>
-                                        <svg className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="absolute top-1 right-1 sm:top-2 sm:right-2 w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full animate-pulse"></div>
+                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
-                                        <span className="text-center text-sm">Start Review ({reviewCount})</span>
+                                        <span className="text-center text-xs sm:text-sm">
+                                            <span className="hidden sm:inline">Start Review ({reviewCount})</span>
+                                            <span className="sm:hidden">Review ({reviewCount})</span>
+                                        </span>
                                     </Link>
                                 )}
                                 <Link
@@ -189,7 +192,7 @@ const Dashboard = () => {
                                     to="/resume-builder"
                                     className="group flex flex-col items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-4 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 min-h-[100px] relative"
                                 >
-                                    <div className="absolute top-2 right-2 px-2 py-1 bg-white/20 rounded-full text-xs font-bold">NEW!</div>
+                                    <div className="absolute top-2 right-2 w-2 h-2 bg-white rounded-full animate-pulse"></div>
                                     <svg className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
@@ -199,7 +202,7 @@ const Dashboard = () => {
                                     to="/live-coding"
                                     className="group flex flex-col items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-4 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 min-h-[100px] relative"
                                 >
-                                    <div className="absolute top-2 right-2 px-2 py-1 bg-white/20 rounded-full text-xs font-bold">HOT!</div>
+                                    <div className="absolute top-2 right-2 w-2 h-2 bg-yellow-300 rounded-full animate-bounce"></div>
                                     <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
@@ -234,6 +237,33 @@ const Dashboard = () => {
                             onFilterChange={updateFilters} 
                             activeFilters={filters}
                         />
+                        
+                        {/* Color Legend */}
+                        <div className="mt-6 pt-6 border-t border-gray-100">
+                            <h3 className="text-sm font-semibold text-gray-700 mb-3">Session Progress Colors</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 rounded-md" style={{background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)'}}></div>
+                                    <span className="text-gray-600">Ready to Start</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 rounded-md" style={{background: 'linear-gradient(135deg, #fff2e9 0%, #fff7ed 100%)'}}></div>
+                                    <span className="text-gray-600">Getting Started</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 rounded-md" style={{background: 'linear-gradient(135deg, #f0ecff 0%, #f5f3ff 100%)'}}></div>
+                                    <span className="text-gray-600">In Progress</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 rounded-md" style={{background: 'linear-gradient(135deg, #eaf7ff 0%, #f0f9ff 100%)'}}></div>
+                                    <span className="text-gray-600">High Progress</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 rounded-md" style={{background: 'linear-gradient(135deg, #e6f8f3 0%, #f0fdf4 100%)'}}></div>
+                                    <span className="text-gray-600">Completed</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {/* Sessions Grid */}
@@ -263,7 +293,7 @@ const Dashboard = () => {
                             <SummaryCard
                                 key={data._id}
                                 sessionId={data._id}
-                                colors={CARD_BG[index % CARD_BG.length]} 
+                                colors={getSessionCardColor(data.completionPercentage || 0, data.status || 'Active')} 
                                 role={data.role}
                                 topicsToFocus={data.topicsToFocus}
                                 experience={data.experience}

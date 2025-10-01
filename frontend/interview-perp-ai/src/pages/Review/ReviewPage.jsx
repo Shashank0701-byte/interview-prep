@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
@@ -8,6 +9,9 @@ import ReactMarkdown from 'react-markdown';
 import { LuBrain, LuTarget, LuStar, LuCheck, LuRefreshCw, LuPlay, LuHeart } from 'react-icons/lu';
 
 const ReviewPage = () => {
+    // Auto scroll to top when navigating to this page
+    useScrollToTop();
+    
     const [queue, setQueue] = useState([]);
     const [initialCount, setInitialCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);

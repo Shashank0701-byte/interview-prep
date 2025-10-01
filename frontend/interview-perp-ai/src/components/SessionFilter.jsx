@@ -82,14 +82,20 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                         }}
                         className="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-gray-50/50 text-sm font-medium text-gray-700 transition-all duration-200"
                     >
-                        <option value="lastUpdated-desc">Latest Updated</option>
-                        <option value="lastUpdated-asc">Oldest Updated</option>
-                        <option value="createdAt-desc">Newest Created</option>
-                        <option value="createdAt-asc">Oldest Created</option>
-                        <option value="role-asc">Role A-Z</option>
-                        <option value="role-desc">Role Z-A</option>
-                        <option value="questions-desc">Most Questions</option>
-                        <option value="questions-asc">Least Questions</option>
+                        <option value="lastUpdated-desc">📅 Latest Updated</option>
+                        <option value="lastUpdated-asc">📅 Oldest Updated</option>
+                        <option value="createdAt-desc">🆕 Newest Created</option>
+                        <option value="createdAt-asc">🗓️ Oldest Created</option>
+                        <option value="proficiencyScore-desc">🎯 Proficiency Score (High to Low)</option>
+                        <option value="proficiencyScore-asc">🎯 Proficiency Score (Low to High)</option>
+                        <option value="progressPercentage-desc">📊 Progress % (High to Low)</option>
+                        <option value="progressPercentage-asc">📊 Progress % (Low to High)</option>
+                        <option value="role-asc">🔤 Alphabetical (A-Z)</option>
+                        <option value="role-desc">🔤 Alphabetical (Z-A)</option>
+                        <option value="questions-desc">📝 Most Questions</option>
+                        <option value="questions-asc">📝 Least Questions</option>
+                        <option value="averageRating-desc">⭐ Highest Rated</option>
+                        <option value="averageRating-asc">⭐ Lowest Rated</option>
                     </select>
 
                     {getActiveFilterCount() > 0 && (

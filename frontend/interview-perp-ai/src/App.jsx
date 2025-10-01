@@ -6,6 +6,7 @@ import {
   Navigate, // Make sure to import Navigate
 } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import ScrollToTop from './components/ScrollToTop';
 
 // Import your page components
 import LandingPage from './pages/LandingPage';
@@ -50,6 +51,7 @@ const App = () => {
     <UserProvider>
       <div>
         <Router>
+          <ScrollToTop />
           <Routes>
             <Route path='/' element={<LandingPage />} />
              <Route 
