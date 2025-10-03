@@ -32,6 +32,9 @@ const SmartResumeBuilder = () => {
     const [analysisResults, setAnalysisResults] = useState(null);
     const [error, setError] = useState(null);
     const [showTextInput, setShowTextInput] = useState(false);
+    
+    // Ref for file input
+    const fileInputRef = useRef(null);
 
     // Analyze resume content
     const analyzeResumeContent = (text) => {

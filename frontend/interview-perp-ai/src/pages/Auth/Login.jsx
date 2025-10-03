@@ -56,8 +56,8 @@ const Login = ({ setCurrentPage }) => {
 
   return (
     <div className="w-full p-6 sm:p-7 flex flex-col justify-center">
-      <h3 className="text-xl sm:text-2xl font-semibold text-black mb-2">Welcome Back</h3>
-      <p className="text-sm text-slate-700 mb-6">
+      <h3 className="text-xl sm:text-2xl font-semibold text-black dark:text-white mb-2 transition-colors duration-300">Welcome Back</h3>
+      <p className="text-sm text-slate-700 dark:text-slate-300 mb-6 transition-colors duration-300">
         Please enter your details to log in
       </p>
       <form onSubmit={handleLogin}>

@@ -52,7 +52,7 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                             placeholder="Search sessions by role or topics..."
                             value={filters.searchTerm}
                             onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
-                            className="block w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50/50 transition-all duration-200"
+                            className="block w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-slate-600 rounded-xl text-sm placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50/50 dark:bg-slate-800/50 text-gray-900 dark:text-slate-100 transition-all duration-200"
                         />
                     </div>
                     

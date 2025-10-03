@@ -74,8 +74,8 @@ const SignUp = ({ setCurrentPage }) => {
 
     return (
         <div className="w-full p-6 sm:p-7 flex flex-col justify-center">
-            <h3 className="text-xl sm:text-2xl font-semibold text-black text-center mb-2">Create an Account</h3>
-            <p className="text-sm text-slate-700 text-center mb-6">
+            <h3 className="text-xl sm:text-2xl font-semibold text-black dark:text-white text-center mb-2 transition-colors duration-300">Create an Account</h3>
+            <p className="text-sm text-slate-700 dark:text-slate-300 text-center mb-6 transition-colors duration-300">
                 Join us today by entering your details below.
             </p>
       <form onSubmit={handleSignUp} className="mt-6">

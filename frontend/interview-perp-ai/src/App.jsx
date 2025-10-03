@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import ScrollToTop from './components/ScrollToTop';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Import your page components
 import LandingPage from './pages/LandingPage';
@@ -48,9 +49,10 @@ const RedirectIfAuth = ({ children }) => {
 
 const App = () => {
   return (
-    <UserProvider>
-      <div>
-        <Router>
+    <ThemeProvider>
+      <UserProvider>
+        <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
+          <Router>
           <ScrollToTop />
           <Routes>
             <Route path='/' element={<LandingPage />} />
@@ -122,8 +124,9 @@ const App = () => {
             },
           }}
         />
-      </div>
-    </UserProvider>
+        </div>
+      </UserProvider>
+    </ThemeProvider>
   );
 };
 
