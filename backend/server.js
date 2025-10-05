@@ -2,8 +2,11 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const http = require("http");
+const socketIo = require("socket.io");
 // const { connect } = require("http2");
 const connectDB = require("./config/db");
+const StudyRoomSocket = require("./socket/studyRoomSocket");
 const aiRoutes = require("./routes/aiRoutes");
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const authRoutes = require("./routes/authRoutes");
@@ -15,10 +18,12 @@ const recruiterRoutes = require("./routes/recruiterRoutes");
 const learningPathRoutes = require("./routes/learningPathRoutes");
 const roadmapRoutes = require("./routes/roadmapRoutes");
 const roadmapSessionRoutes = require("./routes/roadmapSessionRoutes");
+const studyRoomRoutes = require("./routes/studyRoomRoutes");
 const {protect} = require("./middlewares/authMiddleware");
 const { generateInterviewQuestions, generateConceptExplanation } = require("./controllers/aiController");
 const feedbackRoutes = require('./routes/feedbackRoutes');
 const app = express();
+const server = http.createServer(app);
 
 // Debug CORS configuration
 console.log('FRONTEND_URL from env:', process.env.FRONTEND_URL);
@@ -60,6 +65,30 @@ app.use(
 
 connectDB()
 
+// Initialize Socket.IO
+const io = socketIo(server, {
+  cors: {
+    origin: [
+      "http://localhost:5173", 
+      "http://localhost:5174", 
+      "http://localhost:5175", 
+      "http://localhost:5176", 
+      "http://localhost:3000", 
+      "http://127.0.0.1:5173",
+      "http://127.0.0.1:5174",
+      "http://127.0.0.1:5175",
+      "http://127.0.0.1:5176",
+      "https://interview-prep-karo.netlify.app",
+      process.env.FRONTEND_URL
+    ].filter(Boolean),
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+// Initialize Study Room Socket handlers
+new StudyRoomSocket(io);
+
 // Middleware
 app.use(express.json());
 
@@ -89,6 +118,7 @@ app.use("/api/recruiter", recruiterRoutes);
 app.use("/api/learning-path", learningPathRoutes);
 app.use("/api/roadmap", roadmapRoutes);
 app.use("/api/roadmap-sessions", roadmapSessionRoutes);
+app.use("/api/study-rooms", studyRoomRoutes);
 app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
 app.use('/api/feedback', feedbackRoutes);
 app.use("/api/ai", aiRoutes);
@@ -118,4 +148,4 @@ app.use((req, res) => {
 
 // Start Server
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT} with Socket.IO support`));

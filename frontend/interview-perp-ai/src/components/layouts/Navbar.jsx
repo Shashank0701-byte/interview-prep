@@ -71,14 +71,17 @@ const Navbar = () => {
                         >
                             Live Coding
                         </NavLink>
+                        <NavLink 
+                            to="/study-rooms" 
+                            className="text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                        >
+                            Study Rooms
+                        </NavLink>
                         </nav>
                     </div>
                     
                     <div className="flex items-center gap-4">
-                        {/* Temporary test to verify dark mode is working */}
-                        <div className="px-2 py-1 text-xs rounded bg-white dark:bg-slate-800 text-black dark:text-white border border-gray-300 dark:border-slate-600">
-                            {typeof window !== 'undefined' && document.documentElement.classList.contains('dark') ? 'DARK' : 'LIGHT'}
-                        </div>
                         <DarkModeToggle size="small" />
                         <ProfileInfoCard />
                         
@@ -151,6 +154,14 @@ const Navbar = () => {
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
                             Live Coding
+                        </NavLink>
+                        <NavLink 
+                            to="/study-rooms" 
+                            className="block text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors py-2"
+                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                            Study Rooms
                         </NavLink>
                     </div>
                 </div>

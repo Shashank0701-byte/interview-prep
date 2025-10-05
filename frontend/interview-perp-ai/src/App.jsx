@@ -31,6 +31,9 @@ import MultiFilePRReview from './pages/CodeReview/MultiFilePRReview';
 import SmartResumeBuilder from './pages/Resume/SmartResumeBuilder';
 import LiveCodingPage from './pages/LiveCoding/LiveCodingPage';
 import LiveCodingChallenge from './pages/LiveCoding/LiveCodingChallenge';
+import StudyRoomDashboard from './pages/StudyRoom/StudyRoomDashboard';
+import StudyRoomInterface from './pages/StudyRoom/StudyRoomInterface';
+import StudyRoomJoin from './pages/StudyRoom/StudyRoomJoin';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -113,6 +116,18 @@ const App = () => {
             <Route
               path="/live-coding/:challengeId"
               element={<ProtectedRoute><LiveCodingChallenge /></ProtectedRoute>}
+            />
+            <Route
+              path="/study-rooms"
+              element={<ProtectedRoute><StudyRoomDashboard /></ProtectedRoute>}
+            />
+            <Route
+              path="/study-room/:roomId"
+              element={<ProtectedRoute><StudyRoomInterface /></ProtectedRoute>}
+            />
+            <Route
+              path="/join/:roomId"
+              element={<ProtectedRoute><StudyRoomJoin /></ProtectedRoute>}
             />
           </Routes>
         </Router>

@@ -11,14 +11,18 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-    // Initialize theme from localStorage or default to light mode
+    // Force light mode as default - clear any existing theme
     const [isDarkMode, setIsDarkMode] = useState(() => {
         if (typeof window !== 'undefined') {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                return savedTheme === 'dark';
-            }
-            // Default to light mode instead of system preference
+            // Clear localStorage to reset theme
+            localStorage.removeItem('theme');
+            localStorage.setItem('theme', 'light');
+            
+            // Force remove dark class
+            document.documentElement.classList.remove('dark');
+            document.documentElement.className = document.documentElement.className.replace(/\bdark\b/g, '').trim();
+            
+            console.log('Theme initialized: LIGHT mode forced');
             return false;
         }
         return false;
@@ -38,6 +42,20 @@ export const ThemeProvider = ({ children }) => {
         }
     }, [isDarkMode]);
 
+    // Additional effect to ensure sync on mount
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const currentClass = document.documentElement.classList.contains('dark');
+            if (currentClass !== isDarkMode) {
+                if (isDarkMode) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+        }
+    }, []);
+
     // Listen for system theme changes
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -56,7 +74,25 @@ export const ThemeProvider = ({ children }) => {
     }, []);
 
     const toggleTheme = () => {
-        setIsDarkMode(prev => !prev);
+        setIsDarkMode(prev => {
+            const newMode = !prev;
+            
+            // Immediately update DOM
+            if (typeof window !== 'undefined') {
+                if (newMode) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                    console.log('Theme toggled to: DARK');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.className = document.documentElement.className.replace(/\bdark\b/g, '').trim();
+                    localStorage.setItem('theme', 'light');
+                    console.log('Theme toggled to: LIGHT');
+                }
+            }
+            
+            return newMode;
+        });
     };
 
     const setTheme = (theme) => {

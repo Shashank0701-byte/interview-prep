@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import { LuSun, LuMoon } from 'react-icons/lu';
 
 const DarkModeToggle = ({ className = "", size = "default" }) => {
     const { isDarkMode, toggleTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    // Ensure component is mounted before rendering to prevent hydration mismatch
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const sizeClasses = {
         small: "w-12 h-6",
@@ -19,7 +25,17 @@ const DarkModeToggle = ({ className = "", size = "default" }) => {
 
     const handleToggle = () => {
         toggleTheme();
+        // Force a small delay to ensure DOM is updated
+        setTimeout(() => {
+            const actualDarkMode = document.documentElement.classList.contains('dark');
+            console.log('Toggle clicked - State:', isDarkMode, 'DOM:', actualDarkMode);
+        }, 50);
     };
+
+    // Don't render until mounted to prevent hydration issues
+    if (!mounted) {
+        return null;
+    }
 
     return (
         <button
