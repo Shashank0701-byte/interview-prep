@@ -6,7 +6,7 @@
     From Zero to One: The Story of a Personal AI Interview Coach
   </p>
   <p align="center">
-    <a href="https://interview-prep-ai-kappa.vercel.app/"><strong>✨ View the Live Application ✨</strong></a>
+    <a href="[https://interview-prep-ai-kappa.vercel.app/"><](https://interview-prep-karo.netlify.app/)strong>✨ View the Live Application ✨</strong></a>
   </p>
 </div>
 
