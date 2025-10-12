@@ -16,6 +16,7 @@ const SignUp = ({ setCurrentPage }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const {updateUser} = useContext(UserContext);
 
@@ -40,6 +41,7 @@ const SignUp = ({ setCurrentPage }) => {
         }
 
         setError(null); // Clear any previous errors if validation passes
+        setIsLoading(true);
 
         // SignUp API Call
         try {
@@ -69,68 +71,94 @@ const SignUp = ({ setCurrentPage }) => {
             } else {
                 setError("Something went wrong. Please try again.");
             }
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="w-full p-6 sm:p-7 flex flex-col justify-center">
-            <h3 className="text-xl sm:text-2xl font-semibold text-black dark:text-white text-center mb-2 transition-colors duration-300">Create an Account</h3>
-            <p className="text-sm text-slate-700 dark:text-slate-300 text-center mb-6 transition-colors duration-300">
-                Join us today by entering your details below.
-            </p>
-      <form onSubmit={handleSignUp} className="mt-6">
-        <ProfilePhotoSelector
-          image={profilePic}
-          setImage={setProfilePic}
-          preview={preview}
-          setPreview={setPreview}
-        />
+        <div className="w-full px-8 py-10 flex flex-col justify-center min-h-[600px]">
+            {/* Header Section */}
+            <div className="text-center mb-8">
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 transition-colors duration-300">
+                    Create an Account
+                </h3>
+                <p className="text-base text-gray-600 dark:text-gray-400 transition-colors duration-300">
+                    Join us today by entering your details below.
+                </p>
+            </div>
 
-        <Input
-          value={fullName}
-          onChange={({ target }) => setFullName(target.value)}
-          label="Full Name"
-          placeholder="John Doe"
-          type="text"
-        />
+            <form onSubmit={handleSignUp} className="space-y-1">
+                {/* Profile Photo Section */}
+                <div className="mb-8">
+                    <ProfilePhotoSelector
+                        image={profilePic}
+                        setImage={setProfilePic}
+                        preview={preview}
+                        setPreview={setPreview}
+                    />
+                </div>
 
-        <Input
-          value={email}
-          onChange={({ target }) => setEmail(target.value)}
-          label="Email Address"
-          placeholder="john@example.com"
-          type="text"
-        />
+                <Input
+                    value={fullName}
+                    onChange={({ target }) => setFullName(target.value)}
+                    label="Full Name"
+                    placeholder="John Doe"
+                    type="text"
+                />
 
-        <Input
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-          label="Password"
-          placeholder="Min 8 Characters"
-          type="password"
-        />
+                <Input
+                    value={email}
+                    onChange={({ target }) => setEmail(target.value)}
+                    label="Email Address"
+                    placeholder="john@example.com"
+                    type="email"
+                />
 
-        {error && <p className="text-red-500 text-xs text-center pb-2">{error}</p>}
+                <Input
+                    value={password}
+                    onChange={({ target }) => setPassword(target.value)}
+                    label="Password"
+                    placeholder="Min 8 Characters"
+                    type="password"
+                />
 
-        <button
-          type="submit"
-          className="w-full bg-black text-white p-3 rounded-lg font-semibold mt-1 cursor-pointer"
-        >
-          Sign Up
-        </button>
+                {error && (
+                    <div className='bg-red-50 border border-red-200 rounded-xl p-4 mb-6'>
+                        <p className='text-red-600 text-sm font-medium text-center'>{error}</p>
+                    </div>
+                )}
 
-        <p className="text-sm text-center mt-6">
-          Already have an account?{" "}
-          <span
-            className="font-medium text-orange-600 underline cursor-pointer"
-            onClick={() => setCurrentPage("login")}
-          >
-            Login
-          </span>
-        </p>
-      </form>
-    </div>
-  );
+                <button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-4 px-6 rounded-xl font-semibold text-base transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg hover:shadow-xl mb-6"
+                    disabled={isLoading}
+                >
+                    {isLoading ? (
+                        <div className="flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                            Creating Account...
+                        </div>
+                    ) : (
+                        "Sign Up"
+                    )}
+                </button>
+
+                <div className="text-center pt-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Already have an account?{" "}
+                        <button
+                            type="button"
+                            className="font-semibold text-green-600 hover:text-green-700 transition-colors duration-200 underline decoration-2 underline-offset-2"
+                            onClick={() => setCurrentPage("login")}
+                        >
+                            Login
+                        </button>
+                    </p>
+                </div>
+            </form>
+        </div>
+    );
 };
 
 export default SignUp;

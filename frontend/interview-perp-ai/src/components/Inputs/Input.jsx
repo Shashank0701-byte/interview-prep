@@ -3,38 +3,49 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 const Input = ({ value, onChange, label, placeholder, type }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
   return (
-    <div className="flex flex-col gap-1 mb-4">
-      <label className="text-[13px] text-slate-800">{label}</label>
-      <div className="flex items-center border-2 border-gray-200 rounded-lg p-3">
+    <div className="flex flex-col gap-2 mb-6">
+      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">
+        {label}
+      </label>
+      <div className={`flex items-center border-2 rounded-xl px-4 py-3.5 transition-all duration-300 ${
+        isFocused 
+          ? 'border-blue-500 bg-blue-50/50 shadow-sm' 
+          : 'border-gray-200 hover:border-gray-300 bg-gray-50/50'
+      }`}>
         <input
           type={type === "password" ? (showPassword ? "text" : "password") : type}
           placeholder={placeholder}
-          className="w-full bg-transparent outline-none text-sm"
+          className="w-full bg-transparent outline-none text-sm text-gray-900 placeholder-gray-500 transition-colors duration-300"
           value={value}
           onChange={onChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
         />
         {type === "password" && (
-          <>
+          <button
+            type="button"
+            onClick={toggleShowPassword}
+            className="ml-3 p-1 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+          >
             {showPassword ? (
               <FaRegEye
-                size={20}
-                className="text-primary cursor-pointer"
-                onClick={toggleShowPassword}
+                size={18}
+                className="text-gray-600 hover:text-gray-800 transition-colors duration-200"
               />
             ) : (
               <FaRegEyeSlash
-                size={20}
-                className="text-slate-400 cursor-pointer"
-                onClick={toggleShowPassword}
+                size={18}
+                className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
               />
             )}
-          </>
+          </button>
         )}
       </div>
     </div>

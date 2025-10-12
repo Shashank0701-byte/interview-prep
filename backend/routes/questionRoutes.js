@@ -7,7 +7,9 @@ const {
     reviewQuestion,
     updateQuestionRating,
     updateQuestionJustification,
-    getFilteredQuestions
+    getFilteredQuestions,
+    generateQuestionsWithGemini,
+    testGeminiAPI
 } = require('../controllers/questionController');
 const { protect } = require('../middlewares/authMiddleware');
 
@@ -25,5 +27,11 @@ router.put('/:id/rating', protect, updateQuestionRating);
 // New routes for justifications and filtering
 router.put('/:id/justification', protect, updateQuestionJustification);
 router.get('/filter', protect, getFilteredQuestions);
+
+// Gemini AI question generation
+router.post('/generate', protect, generateQuestionsWithGemini);
+
+// Test Gemini API
+router.get('/test-gemini', protect, testGeminiAPI);
 
 module.exports = router;

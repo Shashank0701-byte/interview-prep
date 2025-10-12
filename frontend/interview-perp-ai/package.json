@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@monaco-editor/react": "^4.7.0",
     "axios": "^1.11.0",
     "chart.js": "^4.5.0",
