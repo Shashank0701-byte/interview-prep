@@ -78,6 +78,13 @@ const Navbar = () => {
                         >
                             Study Rooms
                         </NavLink>
+                        <NavLink 
+                            to="/ai-interview-coach" 
+                            className="text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                        >
+                            AI Interview Coach
+                        </NavLink>
                         </nav>
                     </div>
                     
@@ -162,6 +169,14 @@ const Navbar = () => {
                             onClick={() => setIsMobileMenuOpen(false)}
                         >
                             Study Rooms
+                        </NavLink>
+                        <NavLink 
+                            to="/ai-interview-coach" 
+                            className="block text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors py-2"
+                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                            AI Interview Coach
                         </NavLink>
                     </div>
                 </div>

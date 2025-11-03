@@ -34,6 +34,9 @@ import LiveCodingChallenge from './pages/LiveCoding/LiveCodingChallenge';
 import StudyRoomDashboard from './pages/StudyRoom/StudyRoomDashboard';
 import StudyRoomInterface from './pages/StudyRoom/StudyRoomInterface';
 import StudyRoomJoin from './pages/StudyRoom/StudyRoomJoin';
+import AIInterviewCoach from './pages/AIInterviewCoach/AIInterviewCoach';
+import InterviewInterface from './pages/AIInterviewCoach/InterviewInterface';
+import InterviewReport from './pages/AIInterviewCoach/InterviewReport';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -128,6 +131,18 @@ const App = () => {
             <Route
               path="/join/:roomId"
               element={<ProtectedRoute><StudyRoomJoin /></ProtectedRoute>}
+            />
+            <Route
+              path="/ai-interview-coach"
+              element={<ProtectedRoute><AIInterviewCoach /></ProtectedRoute>}
+            />
+            <Route
+              path="/ai-interview/:sessionId"
+              element={<ProtectedRoute><InterviewInterface /></ProtectedRoute>}
+            />
+            <Route
+              path="/ai-interview/:sessionId/report"
+              element={<ProtectedRoute><InterviewReport /></ProtectedRoute>}
             />
           </Routes>
         </Router>
