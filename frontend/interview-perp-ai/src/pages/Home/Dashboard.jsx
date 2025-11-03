@@ -218,6 +218,17 @@ const Dashboard = () => {
                                     </svg>
                                     <span className="text-center text-sm">Study Rooms</span>
                                 </Link>
+                                <Link
+                                    to="/ai-interview-coach"
+                                    className="group flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 min-h-[100px] relative border border-purple-500/20"
+                                >
+                                    <div className="absolute top-2 right-2 w-2 h-2 bg-red-400 rounded-full animate-bounce"></div>
+                                    <div className="absolute top-1 right-1 text-xs font-bold text-red-400 animate-pulse">NEW!</div>
+                                    <svg className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                    <span className="text-center text-sm">AI Interview Coach</span>
+                                </Link>
                                 <button
                                     onClick={() => setOpenCreateModal(true)}
                                     className="group flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white px-4 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 min-h-[100px] border border-indigo-500/20"
