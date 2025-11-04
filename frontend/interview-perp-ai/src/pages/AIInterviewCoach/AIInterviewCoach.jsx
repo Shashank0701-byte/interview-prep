@@ -55,7 +55,10 @@ const AIInterviewCoach = () => {
     const createInterviewSession = async () => {
         setIsCreating(true);
         try {
+            console.log('Creating interview session with config:', selectedConfig);
             const response = await axiosInstance.post('/api/ai-interview-coach/create', selectedConfig);
+            
+            console.log('Create interview response:', response.data);
             
             if (response.data.success) {
                 toast.success('Interview session created!');
@@ -63,9 +66,24 @@ const AIInterviewCoach = () => {
             }
         } catch (error) {
             console.error('Error creating interview session:', error);
+            console.error('Create interview error details:', error.response?.data);
             toast.error('Failed to create interview session');
         } finally {
             setIsCreating(false);
+        }
+    };
+
+    // Test function to verify backend connection
+    const testBackendConnection = async () => {
+        try {
+            console.log('Testing backend connection...');
+            const response = await axiosInstance.get('/api/test');
+            console.log('Backend test response:', response.data);
+            toast.success('Backend connection successful!');
+        } catch (error) {
+            console.error('Backend connection test failed:', error);
+            console.error('Test error details:', error.response?.data);
+            toast.error('Backend connection failed');
         }
     };
 
@@ -126,6 +144,13 @@ const AIInterviewCoach = () => {
                             Practice with our AI interviewer that analyzes your performance in real-time. 
                             Get feedback on eye contact, voice clarity, confidence, and technical responses.
                         </p>
+                        {/* Debug Test Button */}
+                        <button
+                            onClick={testBackendConnection}
+                            className="mt-4 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm"
+                        >
+                            Test Backend Connection
+                        </button>
                     </div>
                 </div>
 

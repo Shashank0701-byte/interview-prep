@@ -246,6 +246,17 @@ const startInterview = async (req, res) => {
 
         interview.status = 'in-progress';
         interview.startedAt = new Date();
+        
+        // Initialize analysisData structure if not exists
+        if (!interview.analysisData) {
+            interview.analysisData = {
+                facialExpressions: [],
+                voiceMetrics: [],
+                environmentFlags: [],
+                behavioralFlags: []
+            };
+        }
+        
         await interview.save();
 
         res.json({
@@ -438,14 +449,20 @@ const completeInterview = async (req, res) => {
 
         interview.status = 'completed';
         interview.completedAt = new Date();
-        interview.totalDuration = Math.round((interview.completedAt - interview.startedAt) / 60000); // minutes
+        
+        // Handle case where startedAt might be null
+        if (interview.startedAt) {
+            interview.totalDuration = Math.round((interview.completedAt - interview.startedAt) / 60000); // minutes
+        } else {
+            interview.totalDuration = 0;
+        }
 
         // Calculate comprehensive scores
         const scores = await calculateInterviewScores(interview);
         interview.scores = scores;
 
-        // Generate detailed report
-        const report = await generateInterviewReport(interview);
+        // Generate detailed report (pass scores directly)
+        const report = await generateInterviewReport(interview, scores);
         interview.report = report;
 
         await interview.save();
@@ -463,7 +480,11 @@ const completeInterview = async (req, res) => {
 
     } catch (error) {
         console.error('Error completing interview:', error);
-        res.status(500).json({ message: 'Failed to complete interview' });
+        console.error('Error stack:', error.stack);
+        res.status(500).json({ 
+            message: 'Failed to complete interview',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+        });
     }
 };
 
@@ -585,9 +606,9 @@ async function generateFollowUpQuestion(interview, questionId, userResponse) {
 
 async function calculateInterviewScores(interview) {
     // Implement comprehensive scoring algorithm
-    const facialData = interview.analysisData.facialExpressions;
-    const voiceData = interview.analysisData.voiceMetrics;
-    const environmentData = interview.analysisData.environmentFlags;
+    const facialData = interview.analysisData?.facialExpressions || [];
+    const voiceData = interview.analysisData?.voiceMetrics || [];
+    const environmentData = interview.analysisData?.environmentFlags || [];
     
     // Calculate individual scores (simplified version)
     const eyeContact = calculateEyeContactScore(facialData);
@@ -665,8 +686,8 @@ function calculateCommunicationScore(questions) {
     return 75;
 }
 
-async function generateInterviewReport(interview) {
-    const scores = interview.scores;
+async function generateInterviewReport(interview, scores) {
+    // Use passed scores parameter instead of interview.scores
     
     const strengths = [];
     const improvements = [];
