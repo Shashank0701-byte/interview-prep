@@ -91,5 +91,14 @@ export const API_PATHS = {
         UPDATE_RATING: (id) => `/api/roadmap-sessions/${id}/rating`,
         UPDATE_PROGRESS: (id) => `/api/roadmap-sessions/${id}/progress`,
     },
+    AI_INTERVIEW_COACH: {
+        CREATE: "/api/ai-interview-coach/create",
+        START: (sessionId) => `/api/ai-interview-coach/${sessionId}/start`,
+        COMPLETE: (sessionId) => `/api/ai-interview-coach/${sessionId}/complete`,
+        GET_SESSION: (sessionId) => `/api/ai-interview-coach/${sessionId}`,
+        SUBMIT_ANALYSIS: (sessionId) => `/api/ai-interview-coach/${sessionId}/analysis`,
+        VOICE_RESPONSE: (sessionId) => `/api/ai-interview-coach/${sessionId}/voice-response`,
+        HISTORY: "/api/ai-interview-coach/history",
+    },
    
 };
