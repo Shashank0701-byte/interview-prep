@@ -184,7 +184,6 @@ const AIInterviewSchema = new mongoose.Schema({
 
 // Indexes for performance
 AIInterviewSchema.index({ user: 1, createdAt: -1 });
-AIInterviewSchema.index({ sessionId: 1 });
 AIInterviewSchema.index({ status: 1 });
 
 module.exports = mongoose.model('AIInterview', AIInterviewSchema);
