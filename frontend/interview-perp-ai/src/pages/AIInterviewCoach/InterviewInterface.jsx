@@ -46,6 +46,7 @@ const InterviewInterface = () => {
     
     // Real-time feedback
     const [feedbackFlags, setFeedbackFlags] = useState([]);
+    const [textResponse, setTextResponse] = useState('');
     const [currentScore, setCurrentScore] = useState({
         eyeContact: 0,
         confidence: 0,
@@ -66,29 +67,56 @@ const InterviewInterface = () => {
         };
     }, [sessionId]);
 
+    // Debug: Log current question when it changes
+    useEffect(() => {
+        console.log('Current question updated:', currentQuestion);
+    }, [currentQuestion]);
+
+    // Debug: Log interview started state changes
+    useEffect(() => {
+        console.log('Interview started state changed:', interviewStarted);
+    }, [interviewStarted]);
+
     useEffect(() => {
         let interval;
         if (interviewStarted) {
+            console.log('Timer starting - interview is active');
             interval = setInterval(() => {
-                setTimeElapsed(prev => prev + 1);
+                setTimeElapsed(prev => {
+                    const newTime = prev + 1;
+                    console.log('Timer tick:', newTime);
+                    return newTime;
+                });
             }, 1000);
+        } else {
+            console.log('Timer stopped - interview not active');
         }
-        return () => clearInterval(interval);
+        return () => {
+            if (interval) {
+                console.log('Clearing timer interval');
+                clearInterval(interval);
+            }
+        };
     }, [interviewStarted]);
 
     const fetchInterviewSession = async () => {
         try {
+            console.log('Fetching interview session:', sessionId);
             const response = await axiosInstance.get(`/api/ai-interview-coach/${sessionId}`);
+            
+            console.log('Interview session response:', response.data);
             
             if (response.data.success) {
                 setInterview(response.data.interview);
                 setAiPersona(response.data.interview.aiPersona);
                 if (response.data.interview.questions.length > 0) {
                     setCurrentQuestion(response.data.interview.questions[0]);
+                    console.log('First question set:', response.data.interview.questions[0]);
                 }
             }
         } catch (error) {
             console.error('Error fetching interview session:', error);
+            console.error('Error details:', error.response?.data);
             toast.error('Failed to load interview session');
             navigate('/ai-interview-coach');
         }
@@ -129,17 +157,28 @@ const InterviewInterface = () => {
 
     const startInterview = async () => {
         try {
+            console.log('Starting interview for session:', sessionId);
+            console.log('AI Persona:', aiPersona);
+            console.log('Current Question:', currentQuestion);
+            
             await axiosInstance.post(`/api/ai-interview-coach/${sessionId}/start`, {});
             
+            // Reset timer and start interview
+            setTimeElapsed(0);
             setInterviewStarted(true);
             setIsRecording(true);
             
-            // Start AI introduction
-            speakAIResponse(`Hello! I'm ${aiPersona?.name}, and I'll be conducting your interview today. Let's begin with our first question.`);
+            console.log('Interview started - timer should begin');
+            
+            // Start AI introduction and first question
+            const introText = `Hello! I'm ${aiPersona?.name}, and I'll be conducting your interview today. Let's begin with our first question: ${currentQuestion?.question}`;
+            console.log('Speaking intro text:', introText);
+            speakAIResponse(introText);
             
             toast.success('Interview started! Good luck!');
         } catch (error) {
             console.error('Error starting interview:', error);
+            console.error('Start interview error details:', error.response?.data);
             toast.error('Failed to start interview');
         }
     };
@@ -204,10 +243,23 @@ const InterviewInterface = () => {
             setCurrentQuestion(interview.questions[nextIndex]);
             
             // AI asks the next question
-            speakAIResponse(interview.questions[nextIndex].question);
+            setTimeout(() => {
+                speakAIResponse(`Great! Let's move to the next question: ${interview.questions[nextIndex].question}`);
+            }, 1000);
         } else {
             endInterview();
         }
+    };
+
+    // Add a simple voice response simulation
+    const simulateVoiceResponse = () => {
+        toast.success('Voice response recorded! AI is analyzing...');
+        
+        // Simulate some analysis delay
+        setTimeout(() => {
+            // Move to next question or end interview
+            nextQuestion();
+        }, 2000);
     };
 
     const handleAnalysisUpdate = useCallback((type, data) => {
@@ -432,13 +484,22 @@ const InterviewInterface = () => {
                                         Start Interview
                                     </button>
                                 ) : (
-                                    <button
-                                        onClick={nextQuestion}
-                                        className="bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-                                        disabled={questionIndex >= interview.questions.length - 1}
-                                    >
-                                        Next Question
-                                    </button>
+                                    <div className="flex space-x-3">
+                                        <button
+                                            onClick={simulateVoiceResponse}
+                                            className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+                                        >
+                                            Submit Response
+                                        </button>
+                                        {questionIndex >= interview.questions.length - 1 && (
+                                            <button
+                                                onClick={endInterview}
+                                                className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+                                            >
+                                                End Interview
+                                            </button>
+                                        )}
+                                    </div>
                                 )}
                             </div>
                         </div>
@@ -457,6 +518,87 @@ const InterviewInterface = () => {
                                     </div>
                                 </div>
                             )}
+                        </div>
+
+                        {/* Start Interview Button - Prominent Placement */}
+                        {!interviewStarted && (
+                            <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl p-6 text-center">
+                                <h3 className="text-xl font-bold text-white mb-3">Ready to Begin?</h3>
+                                <p className="text-green-100 mb-4 text-sm">
+                                    Click the button below to start your AI interview session
+                                </p>
+                                <button
+                                    onClick={startInterview}
+                                    className="bg-white text-green-600 hover:bg-green-50 px-8 py-4 rounded-lg font-bold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg"
+                                >
+                                    🚀 Start Interview
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Response Input Area */}
+                        {interviewStarted ? (
+                            <div className="bg-gray-800 rounded-xl p-4 border-2 border-green-500">
+                                <h3 className="text-lg font-semibold mb-3 text-green-400">Your Response</h3>
+                                <div className="text-xs text-green-400 mb-2">✅ Interview Active - Type your answer below</div>
+                                <textarea
+                                    placeholder="Type your response here or use voice recording..."
+                                    className="w-full h-32 bg-gray-700 text-white rounded-lg p-3 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    value={textResponse}
+                                    onChange={(e) => setTextResponse(e.target.value)}
+                                />
+                                <div className="flex justify-between items-center mt-3">
+                                    <span className="text-xs text-gray-400">
+                                        {textResponse.length} characters
+                                    </span>
+                                    <div className="flex space-x-2">
+                                        <button
+                                            onClick={() => {
+                                                // Simple voice recording simulation
+                                                toast.success('Voice recording started! (Mock)');
+                                                setTimeout(() => {
+                                                    setTextResponse('This is a mock voice response. Voice recording would work with proper microphone access.');
+                                                    toast.success('Voice recording completed!');
+                                                }, 2000);
+                                            }}
+                                            className="px-3 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm transition-colors duration-200"
+                                        >
+                                            🎤 Record
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                if (textResponse.trim()) {
+                                                    simulateVoiceResponse();
+                                                    setTextResponse('');
+                                                }
+                                            }}
+                                            disabled={!textResponse.trim()}
+                                            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg text-sm transition-colors duration-200"
+                                        >
+                                            Submit Response
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="bg-gray-800 rounded-xl p-4 border-2 border-red-500">
+                                <h3 className="text-lg font-semibold mb-3 text-red-400">Response Area</h3>
+                                <div className="text-xs text-red-400 mb-2">❌ Interview Not Started - Click "Start Interview" first</div>
+                                <div className="bg-gray-700 rounded-lg p-3 text-gray-500 text-center">
+                                    Response area will appear here once interview starts
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Debug Info */}
+                        <div className="bg-yellow-900 rounded-xl p-4 border border-yellow-600">
+                            <h3 className="text-lg font-semibold mb-3 text-yellow-400">Debug Info</h3>
+                            <div className="text-xs space-y-1">
+                                <div>Interview Started: <span className={interviewStarted ? 'text-green-400' : 'text-red-400'}>{interviewStarted ? 'YES' : 'NO'}</span></div>
+                                <div>Timer: <span className="text-white">{formatTime(timeElapsed)}</span></div>
+                                <div>Current Question: <span className="text-white">{currentQuestion ? 'Loaded' : 'Not Loaded'}</span></div>
+                                <div>Session ID: <span className="text-white">{sessionId}</span></div>
+                            </div>
                         </div>
 
                         {/* Real-time Feedback */}

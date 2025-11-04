@@ -33,8 +33,7 @@ const studyRoomSchema = new mongoose.Schema({
   roomId: {
     type: String,
     required: true,
-    unique: true,
-    index: true
+    unique: true
   },
   name: {
     type: String,
