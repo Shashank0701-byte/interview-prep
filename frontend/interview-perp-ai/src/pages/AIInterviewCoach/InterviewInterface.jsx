@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { 
     Video, VideoOff, Mic, MicOff, Phone, Settings, 
     Eye, AlertTriangle, CheckCircle, Clock, User,
-    Volume2, VolumeX, Camera, CameraOff
+    Volume2, VolumeX, Camera, CameraOff, Zap
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axiosInstance from '../../utils/axiosInstance';
@@ -14,6 +14,7 @@ import VoiceAnalyzer from '../../components/AIInterview/VoiceAnalyzer';
 import EnvironmentAnalyzer from '../../components/AIInterview/EnvironmentAnalyzer';
 import RealTimeFeedback from '../../components/AIInterview/RealTimeFeedback';
 import RealTimeCoach from '../../components/AIInterview/RealTimeCoach';
+import DynamicQuestionGenerator from '../../components/AIInterview/DynamicQuestionGenerator';
 
 const InterviewInterface = () => {
     const { sessionId } = useParams();
@@ -67,6 +68,12 @@ const InterviewInterface = () => {
         confidenceBoosts: 0,
         bodyLanguageTips: 0
     });
+
+    // Dynamic question generation state
+    const [followUpQuestions, setFollowUpQuestions] = useState([]);
+    const [currentFollowUp, setCurrentFollowUp] = useState(null);
+    const [questionGenerationEnabled, setQuestionGenerationEnabled] = useState(true);
+    const [adaptiveDifficulty, setAdaptiveDifficulty] = useState('medium');
 
     useEffect(() => {
         fetchInterviewSession();
@@ -371,6 +378,68 @@ const InterviewInterface = () => {
         }
     };
 
+    const handleFollowUpGenerated = (followUpQuestion) => {
+        // Add to follow-up questions list
+        setFollowUpQuestions(prev => [...prev, {
+            ...followUpQuestion,
+            id: `followup-${Date.now()}`,
+            generatedAt: new Date(),
+            originalQuestionId: currentQuestion?.id
+        }]);
+
+        // Set as current follow-up
+        setCurrentFollowUp(followUpQuestion);
+
+        // Adjust difficulty based on response quality
+        if (followUpQuestion.difficulty !== adaptiveDifficulty) {
+            setAdaptiveDifficulty(followUpQuestion.difficulty);
+        }
+
+        // AI speaks the follow-up question
+        setTimeout(() => {
+            const introText = getFollowUpIntro(followUpQuestion.type);
+            speakAIResponse(`${introText} ${followUpQuestion.question}`);
+        }, 1000);
+
+        toast.success('AI generated a follow-up question!');
+    };
+
+    const getFollowUpIntro = (type) => {
+        const intros = {
+            'clarification': "Let me ask for some clarification.",
+            'deep-dive': "I'd like to dive deeper into that.",
+            'scenario': "Here's a scenario for you to consider.",
+            'alternative': "What about alternative approaches?",
+            'real-world': "In a real-world situation,",
+            'problem-solving': "Let's explore this problem further."
+        };
+        return intros[type] || "Here's a follow-up question:";
+    };
+
+    const proceedToFollowUp = () => {
+        if (currentFollowUp) {
+            // Clear current response and set follow-up as active question
+            setTextResponse('');
+            
+            // Add follow-up to interview questions
+            setInterview(prev => {
+                const updatedInterview = { ...prev };
+                const currentQ = updatedInterview.questions.find(q => q.id === currentQuestion.id);
+                if (currentQ) {
+                    if (!currentQ.aiFollowUp) currentQ.aiFollowUp = [];
+                    currentQ.aiFollowUp.push({
+                        ...currentFollowUp,
+                        askedAt: new Date()
+                    });
+                }
+                return updatedInterview;
+            });
+
+            setCurrentFollowUp(null);
+            toast.info('Ready for your follow-up response!');
+        }
+    };
+
     if (!interview) {
         return (
             <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -663,38 +732,86 @@ const InterviewInterface = () => {
                             onAnalysisUpdate={(data) => handleAnalysisUpdate('voice', data)}
                         />
 
+                        {/* Dynamic Question Generator */}
+                        <DynamicQuestionGenerator
+                            sessionId={sessionId}
+                            currentQuestion={currentQuestion}
+                            userResponse={textResponse}
+                            analysisData={analysisData}
+                            onFollowUpGenerated={handleFollowUpGenerated}
+                            isActive={questionGenerationEnabled && interviewStarted}
+                        />
+
+                        {/* Current Follow-up Question */}
+                        {currentFollowUp && (
+                            <div className="bg-gradient-to-r from-purple-900 to-indigo-900 rounded-xl p-4 border border-purple-500">
+                                <h3 className="text-lg font-semibold mb-3 text-white flex items-center">
+                                    <Zap className="w-5 h-5 mr-2 text-yellow-400" />
+                                    Active Follow-up
+                                </h3>
+                                <div className="bg-black/20 rounded-lg p-3 mb-3">
+                                    <p className="text-white font-medium leading-relaxed">
+                                        {currentFollowUp.question}
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={proceedToFollowUp}
+                                    className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200"
+                                >
+                                    Answer Follow-up Question
+                                </button>
+                            </div>
+                        )}
+
                         {/* Coaching Stats */}
                         {interviewStarted && (
                             <div className="bg-gray-800 rounded-xl p-4">
-                                <h3 className="text-lg font-semibold mb-3 text-indigo-400">AI Coaching Stats</h3>
-                                <div className="grid grid-cols-2 gap-3 text-sm">
+                                <h3 className="text-lg font-semibold mb-3 text-indigo-400">AI Features</h3>
+                                
+                                {/* Feature Stats */}
+                                <div className="grid grid-cols-2 gap-3 text-sm mb-4">
                                     <div className="bg-gray-700 rounded-lg p-2 text-center">
                                         <div className="text-emerald-400 font-bold">{coachingStats.hintsGiven}</div>
-                                        <div className="text-gray-400 text-xs">Hints</div>
+                                        <div className="text-gray-400 text-xs">Coaching Tips</div>
                                     </div>
                                     <div className="bg-gray-700 rounded-lg p-2 text-center">
-                                        <div className="text-amber-400 font-bold">{coachingStats.paceCorrections}</div>
-                                        <div className="text-gray-400 text-xs">Pace Tips</div>
+                                        <div className="text-purple-400 font-bold">{followUpQuestions.length}</div>
+                                        <div className="text-gray-400 text-xs">Follow-ups</div>
                                     </div>
                                     <div className="bg-gray-700 rounded-lg p-2 text-center">
-                                        <div className="text-pink-400 font-bold">{coachingStats.confidenceBoosts}</div>
-                                        <div className="text-gray-400 text-xs">Confidence</div>
+                                        <div className="text-blue-400 font-bold">{adaptiveDifficulty}</div>
+                                        <div className="text-gray-400 text-xs">Difficulty</div>
                                     </div>
                                     <div className="bg-gray-700 rounded-lg p-2 text-center">
-                                        <div className="text-blue-400 font-bold">{coachingStats.bodyLanguageTips}</div>
-                                        <div className="text-gray-400 text-xs">Posture</div>
+                                        <div className="text-amber-400 font-bold">{questionIndex + 1}</div>
+                                        <div className="text-gray-400 text-xs">Question #</div>
                                     </div>
                                 </div>
-                                <button
-                                    onClick={() => setCoachingEnabled(!coachingEnabled)}
-                                    className={`w-full mt-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                                        coachingEnabled 
-                                            ? 'bg-indigo-600 hover:bg-indigo-700 text-white' 
-                                            : 'bg-gray-600 hover:bg-gray-500 text-gray-300'
-                                    }`}
-                                >
-                                    {coachingEnabled ? '🤖 AI Coach: ON' : '🤖 AI Coach: OFF'}
-                                </button>
+
+                                {/* Feature Toggles */}
+                                <div className="space-y-2">
+                                    <button
+                                        onClick={() => setCoachingEnabled(!coachingEnabled)}
+                                        className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                                            coachingEnabled 
+                                                ? 'bg-indigo-600 hover:bg-indigo-700 text-white' 
+                                                : 'bg-gray-600 hover:bg-gray-500 text-gray-300'
+                                        }`}
+                                    >
+                                        {coachingEnabled ? '🤖 AI Coach: ON' : '🤖 AI Coach: OFF'}
+                                    </button>
+                                    
+                                    <button
+                                        onClick={() => setQuestionGenerationEnabled(!questionGenerationEnabled)}
+                                        className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                                            questionGenerationEnabled 
+                                                ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                                                : 'bg-gray-600 hover:bg-gray-500 text-gray-300'
+                                        }`}
+                                    >
+                                        {questionGenerationEnabled ? '🧠 Dynamic Q: ON' : '🧠 Dynamic Q: OFF'}
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </div>
