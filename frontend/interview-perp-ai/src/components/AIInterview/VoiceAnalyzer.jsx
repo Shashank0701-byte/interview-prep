@@ -121,6 +121,13 @@ const VoiceAnalyzer = ({ audioRef, isActive, onAnalysisUpdate }) => {
         // Count filler words (this would need speech recognition in real implementation)
         const fillerWords = Math.random() < 0.1 ? Math.floor(Math.random() * 3) : 0;
         
+        const averageVolume = volume;
+        const averagePitch = pitch;
+        const wordsPerMinute = pace;
+        const clarityScore = clarity;
+        const fillerWordCount = fillerWords;
+        const backgroundNoiseLevel = backgroundNoise.level;
+        
         return {
             timestamp: Date.now(),
             volume: Math.round(volume * 100),
@@ -128,14 +135,21 @@ const VoiceAnalyzer = ({ audioRef, isActive, onAnalysisUpdate }) => {
             pace: pace,
             clarity: clarity,
             fillerWords: fillerWords,
-            pauseLength: volume < 0.01 ? 1 : 0, // Simplified pause detection
             backgroundNoise: backgroundNoise,
             frequencyDistribution: {
                 low: Math.round(lowFreq),
                 mid: Math.round(midFreq),
                 high: Math.round(highFreq)
             },
-            isSpeaking: volume > 0.02
+            isSpeaking: volume > 0.02,
+            speakingDuration: analysisCountRef.current * 0.1, // seconds
+            pauseDetected: averageVolume < 10,
+            energyLevel: averageVolume > 50 ? 'high' : averageVolume > 20 ? 'medium' : 'low',
+            confidenceIndicators: {
+                steadyPace: Math.abs(wordsPerMinute - 150) < 30,
+                clearSpeech: clarityScore > 70,
+                appropriateVolume: averageVolume > 20 && averageVolume < 80
+            }
         };
     };
 

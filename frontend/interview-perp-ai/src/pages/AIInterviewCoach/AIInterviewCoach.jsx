@@ -73,19 +73,19 @@ const AIInterviewCoach = () => {
         }
     };
 
-    // Test function to verify backend connection
-    const testBackendConnection = async () => {
-        try {
-            console.log('Testing backend connection...');
-            const response = await axiosInstance.get('/api/test');
-            console.log('Backend test response:', response.data);
-            toast.success('Backend connection successful!');
-        } catch (error) {
-            console.error('Backend connection test failed:', error);
-            console.error('Test error details:', error.response?.data);
-            toast.error('Backend connection failed');
-        }
-    };
+    // // Test function to verify backend connection
+    // const testBackendConnection = async () => {
+    //     try {
+    //         console.log('Testing backend connection...');
+    //         const response = await axiosInstance.get('/api/test');
+    //         console.log('Backend test response:', response.data);
+    //         toast.success('Backend connection successful!');
+    //     } catch (error) {
+    //         console.error('Backend connection test failed:', error);
+    //         console.error('Test error details:', error.response?.data);
+    //         toast.error('Backend connection failed');
+    //     }
+    // };
 
     const interviewTypes = [
         { id: 'technical', name: 'Technical Interview', icon: '💻', description: 'Coding and system design questions' },
@@ -145,12 +145,12 @@ const AIInterviewCoach = () => {
                             Get feedback on eye contact, voice clarity, confidence, and technical responses.
                         </p>
                         {/* Debug Test Button */}
-                        <button
+                        {/* <button
                             onClick={testBackendConnection}
                             className="mt-4 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm"
                         >
                             Test Backend Connection
-                        </button>
+                        </button> */}
                     </div>
                 </div>
 

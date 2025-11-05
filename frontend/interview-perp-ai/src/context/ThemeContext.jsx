@@ -11,19 +11,32 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-    // Force light mode as default - clear any existing theme
+    // Initialize theme from localStorage or default to light
     const [isDarkMode, setIsDarkMode] = useState(() => {
         if (typeof window !== 'undefined') {
-            // Clear localStorage to reset theme
-            localStorage.removeItem('theme');
-            localStorage.setItem('theme', 'light');
+            // Check if user has a saved preference
+            const savedTheme = localStorage.getItem('theme');
             
-            // Force remove dark class
-            document.documentElement.classList.remove('dark');
-            document.documentElement.className = document.documentElement.className.replace(/\bdark\b/g, '').trim();
-            
-            console.log('Theme initialized: LIGHT mode forced');
-            return false;
+            if (savedTheme) {
+                // Use saved preference
+                const isDark = savedTheme === 'dark';
+                console.log('Theme initialized from localStorage:', savedTheme);
+                
+                // Apply the saved theme to DOM immediately
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                
+                return isDark;
+            } else {
+                // No saved preference, default to light mode
+                localStorage.setItem('theme', 'light');
+                document.documentElement.classList.remove('dark');
+                console.log('Theme initialized: Default LIGHT mode');
+                return false;
+            }
         }
         return false;
     });
@@ -56,15 +69,16 @@ export const ThemeProvider = ({ children }) => {
         }
     }, []);
 
-    // Listen for system theme changes
+    // Listen for system theme changes (only if no user preference exists)
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
             const handleChange = (e) => {
                 // Only auto-switch if user hasn't manually set a preference
                 const savedTheme = localStorage.getItem('theme');
-                if (!savedTheme) {
+                if (!savedTheme || savedTheme === 'system') {
                     setIsDarkMode(e.matches);
+                    console.log('System theme changed to:', e.matches ? 'dark' : 'light');
                 }
             };
 
@@ -96,13 +110,42 @@ export const ThemeProvider = ({ children }) => {
     };
 
     const setTheme = (theme) => {
-        setIsDarkMode(theme === 'dark');
+        const isDark = theme === 'dark';
+        setIsDarkMode(isDark);
+        
+        // Update localStorage and DOM immediately
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('theme', theme);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            console.log('Theme set to:', theme);
+        }
+    };
+
+    const resetTheme = () => {
+        // Reset to system preference or light mode
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            setIsDarkMode(systemPrefersDark);
+            
+            if (systemPrefersDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            console.log('Theme reset to system preference:', systemPrefersDark ? 'dark' : 'light');
+        }
     };
 
     const value = {
         isDarkMode,
         toggleTheme,
         setTheme,
+        resetTheme,
         theme: isDarkMode ? 'dark' : 'light'
     };
 
