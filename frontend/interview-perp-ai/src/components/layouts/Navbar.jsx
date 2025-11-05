@@ -17,73 +17,89 @@ const Navbar = () => {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-900 border-b border-gray-200/80 dark:border-slate-700/80 backdrop-blur-[2px] sticky top-0 z-30 transition-colors duration-300">
+        <div className="bg-white/95 dark:bg-slate-900/95 border-b border-gray-200/50 dark:border-slate-700/50 backdrop-blur-md sticky top-0 z-30 transition-all duration-300">
             <div className="h-16 py-2.5 px-4 md:px-0">
                 <div className="container mx-auto flex items-center justify-between gap-5">
                     <div className="flex items-center gap-8">
-                        <Link to="/dashboard">
-                            <h2 className="text-lg md:text-xl font-medium text-black dark:text-white leading-5 transition-colors duration-300">
+                        <Link to="/dashboard" className="group">
+                            <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white leading-5 transition-colors duration-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
                                 Interview Prep AI
                             </h2>
                         </Link>
 
                         {/* Desktop Navigation */}
-                        <nav className="hidden md:flex items-center gap-6">
+                        <nav className="hidden md:flex items-center gap-1">
                         <NavLink 
                             to="/dashboard" 
-                            className="text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-200"
+                            style={({ isActive }) => isActive ? { 
+                                color: '#4f46e5', 
+                                backgroundColor: '#f1f5f9',
+                                fontWeight: '500' 
+                            } : undefined}
                         >
                             Dashboard
                         </NavLink>
                         <NavLink 
                             to="/progress" 
-                            className="text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-200"
+                            style={({ isActive }) => isActive ? { 
+                                color: '#4f46e5', 
+                                backgroundColor: '#f1f5f9',
+                                fontWeight: '500' 
+                            } : undefined}
                         >
-                            My Progress
+                            Progress
                         </NavLink>
                         <NavLink 
                             to="/roadmap" 
-                            className="text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-200"
+                            style={({ isActive }) => isActive ? { 
+                                color: '#4f46e5', 
+                                backgroundColor: '#f1f5f9',
+                                fontWeight: '500' 
+                            } : undefined}
                         >
-                            Learning Roadmap
+                            Roadmap
                         </NavLink>
                         <NavLink 
                             to="/code-review" 
-                            className="text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-200"
+                            style={({ isActive }) => isActive ? { 
+                                color: '#4f46e5', 
+                                backgroundColor: '#f1f5f9',
+                                fontWeight: '500' 
+                            } : undefined}
                         >
                             Code Review
                         </NavLink>
                         <NavLink 
-                            to="/resume-builder" 
-                            className="text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
-                        >
-                            Resume Builder
-                        </NavLink>
-                        <NavLink 
-                            to="/live-coding" 
-                            className="text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
-                        >
-                            Live Coding
-                        </NavLink>
-                        <NavLink 
                             to="/study-rooms" 
-                            className="text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-200 relative"
+                            style={({ isActive }) => isActive ? { 
+                                color: '#4f46e5', 
+                                backgroundColor: '#f1f5f9',
+                                fontWeight: '500' 
+                            } : undefined}
                         >
                             Study Rooms
+                            <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs px-1.5 py-0.5 rounded-full font-medium">
+                                NEW
+                            </span>
                         </NavLink>
                         <NavLink 
                             to="/ai-interview-coach" 
-                            className="text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                            style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                            className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-200 relative"
+                            style={({ isActive }) => isActive ? { 
+                                color: '#4f46e5', 
+                                backgroundColor: '#f1f5f9',
+                                fontWeight: '500' 
+                            } : undefined}
                         >
-                            AI Interview Coach
+                            AI Coach
+                            <span className="absolute -top-1 -right-1 bg-indigo-500 text-white text-xs px-1.5 py-0.5 rounded-full font-medium">
+                                AI
+                            </span>
                         </NavLink>
                         </nav>
                     </div>
