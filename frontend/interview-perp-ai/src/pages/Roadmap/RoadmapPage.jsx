@@ -139,20 +139,20 @@ const RoadmapPage = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/20">
+            <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
                 {/* Enhanced Hero Header */}
-                <div className="bg-gradient-to-r from-white via-indigo-50/30 to-purple-50/20 border-b border-gray-100/60">
+                <div className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
                     <div className="container mx-auto px-4 md:px-6 py-8">
                         <div className="text-center space-y-4">
                             <div className="flex items-center justify-center gap-3 mb-4">
-                                <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
+                                <div className="w-12 h-12 bg-gray-600 dark:bg-slate-600 rounded-xl flex items-center justify-center">
                                     <LuMap className="w-6 h-6 text-white" />
                                 </div>
-                                <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 via-indigo-800 to-purple-800 bg-clip-text text-transparent">
+                                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
                                     Learning Roadmap
                                 </h1>
                             </div>
-                            <p className="text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed">
+                            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
                                 Your personalized learning journey, crafted to guide you from where you are to where you want to be.
                             </p>
                             
@@ -162,10 +162,10 @@ const RoadmapPage = () => {
                                     <button
                                         key={role.name}
                                         onClick={() => handleRoleChange(role.name)}
-                                        className={`px-6 py-3 rounded-2xl font-medium transition-all duration-300 transform hover:scale-105 ${
+                                        className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
                                             selectedRole === role.name
-                                                ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg'
-                                                : 'bg-white/70 backdrop-blur-sm text-slate-700 hover:bg-white border border-indigo-100/50 hover:border-indigo-200'
+                                                ? 'bg-gray-900 dark:bg-slate-600 text-white'
+                                                : 'bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600 border border-gray-200 dark:border-slate-600'
                                         }`}
                                     >
                                         {role.name}
@@ -187,35 +187,35 @@ const RoadmapPage = () => {
                     ) : roadmap ? (
                         <div className="space-y-8">
                             {/* Roadmap Overview */}
-                            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl shadow-indigo-100/50 border border-white/50 p-8">
+                            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-8">
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
-                                            <LuTrendingUp className="w-8 h-8 text-white" />
+                                        <div className="w-16 h-16 bg-gray-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                            <LuTrendingUp className="w-8 h-8 text-gray-600 dark:text-gray-400" />
                                         </div>
-                                        <div className="text-2xl font-bold text-gray-800">{roadmap.overallProgress}%</div>
-                                        <div className="text-sm text-slate-600">Overall Progress</div>
+                                        <div className="text-2xl font-bold text-gray-900 dark:text-white">{roadmap.overallProgress}%</div>
+                                        <div className="text-sm text-gray-600 dark:text-gray-400">Overall Progress</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
-                                            <LuAward className="w-8 h-8 text-white" />
+                                        <div className="w-16 h-16 bg-gray-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                            <LuAward className="w-8 h-8 text-gray-600 dark:text-gray-400" />
                                         </div>
-                                        <div className="text-2xl font-bold text-gray-800">{roadmap.completedPhases}/{roadmap.totalPhases}</div>
-                                        <div className="text-sm text-slate-600">Phases Complete</div>
+                                        <div className="text-2xl font-bold text-gray-900 dark:text-white">{roadmap.completedPhases}/{roadmap.totalPhases}</div>
+                                        <div className="text-sm text-gray-600 dark:text-gray-400">Phases Complete</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
-                                            <LuCalendar className="w-8 h-8 text-white" />
+                                        <div className="w-16 h-16 bg-gray-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                            <LuCalendar className="w-8 h-8 text-gray-600 dark:text-gray-400" />
                                         </div>
-                                        <div className="text-2xl font-bold text-gray-800">{roadmap.estimatedCompletionDays}</div>
-                                        <div className="text-sm text-slate-600">Days Remaining</div>
+                                        <div className="text-2xl font-bold text-gray-900 dark:text-white">{roadmap.estimatedCompletionDays}</div>
+                                        <div className="text-sm text-gray-600 dark:text-gray-400">Days Remaining</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
-                                            <LuBookOpen className="w-8 h-8 text-white" />
+                                        <div className="w-16 h-16 bg-gray-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                            <LuBookOpen className="w-8 h-8 text-gray-600 dark:text-gray-400" />
                                         </div>
-                                        <div className="text-2xl font-bold text-gray-800">{roadmap.phases.reduce((sum, phase) => sum + phase.sessionsCount, 0)}</div>
-                                        <div className="text-sm text-slate-600">Total Sessions</div>
+                                        <div className="text-2xl font-bold text-gray-900 dark:text-white">{roadmap.phases.reduce((sum, phase) => sum + phase.sessionsCount, 0)}</div>
+                                        <div className="text-sm text-gray-600 dark:text-gray-400">Total Sessions</div>
                                     </div>
                                 </div>
                             </div>

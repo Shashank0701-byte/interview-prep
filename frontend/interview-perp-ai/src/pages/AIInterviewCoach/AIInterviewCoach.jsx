@@ -117,16 +117,16 @@ const AIInterviewCoach = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4">
+        <div className="min-h-screen bg-gray-50 dark:bg-slate-900 p-4 transition-colors duration-300">
             <div className="max-w-7xl mx-auto">
                 {/* Header with Back Button */}
                 <div className="relative mb-8">
                     {/* Back Button */}
                     <button
                         onClick={() => navigate('/dashboard')}
-                        className="absolute left-0 top-0 flex items-center space-x-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 group"
+                        className="absolute left-0 top-0 flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200 group"
                     >
-                        <div className="p-2 rounded-lg hover:bg-white/50 transition-colors duration-200">
+                        <div className="p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors duration-200">
                             <ArrowLeft className="w-5 h-5 group-hover:transform group-hover:-translate-x-1 transition-transform duration-200" />
                         </div>
                         <span className="font-medium">Back to Dashboard</span>
@@ -134,13 +134,13 @@ const AIInterviewCoach = () => {
                     
                     {/* Centered Header Content */}
                     <div className="text-center">
-                        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full mb-4">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-xl mb-4 shadow-lg">
                             <Video className="w-8 h-8 text-white" />
                         </div>
-                        <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2 transition-colors duration-300">
                             AI Interview Coach
                         </h1>
-                        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                        <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto transition-colors duration-300">
                             Practice with our AI interviewer that analyzes your performance in real-time. 
                             Get feedback on eye contact, voice clarity, confidence, and technical responses.
                         </p>
@@ -156,40 +156,40 @@ const AIInterviewCoach = () => {
 
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-slate-700 transition-colors duration-300">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-600">Total Interviews</p>
-                                <p className="text-2xl font-bold text-gray-900">{stats.totalInterviews}</p>
+                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors duration-300">Total Interviews</p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{stats.totalInterviews}</p>
                             </div>
-                            <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
-                                <Users className="w-6 h-6 text-indigo-600" />
+                            <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center">
+                                <Users className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-slate-700 transition-colors duration-300">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-600">Average Score</p>
-                                <p className="text-2xl font-bold text-gray-900">{stats.averageScore}%</p>
+                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors duration-300">Average Score</p>
+                                <p className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{stats.averageScore}%</p>
                             </div>
-                            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                                <Award className="w-6 h-6 text-green-600" />
+                            <div className="w-12 h-12 bg-green-50 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                                <Award className="w-6 h-6 text-green-600 dark:text-green-400" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-slate-700 transition-colors duration-300">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm font-medium text-gray-600">Improvement</p>
-                                <p className={`text-2xl font-bold ${stats.improvementTrend >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors duration-300">Improvement</p>
+                                <p className={`text-2xl font-bold ${stats.improvementTrend >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} transition-colors duration-300`}>
                                     {stats.improvementTrend >= 0 ? '+' : ''}{stats.improvementTrend}%
                                 </p>
                             </div>
-                            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                                <Clock className="w-6 h-6 text-purple-600" />
+                            <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                                <Clock className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                             </div>
                         </div>
                     </div>
