@@ -5,6 +5,7 @@ const {
     createInterviewSession,
     startInterview,
     submitAnalysisData,
+    generateFollowUpQuestion,
     processVoiceResponse,
     completeInterview,
     getInterviewHistory,
@@ -25,6 +26,11 @@ router.post('/:sessionId/start', protect, startInterview);
 // @desc    Submit real-time analysis data
 // @access  Private
 router.post('/:sessionId/analysis', protect, submitAnalysisData);
+
+// @route   POST /api/ai-interview-coach/:sessionId/generate-followup
+// @desc    Generate dynamic follow-up question based on response
+// @access  Private
+router.post('/:sessionId/generate-followup', protect, generateFollowUpQuestion);
 
 // @route   POST /api/ai-interview-coach/:sessionId/voice-response
 // @desc    Process voice response with Whisper API
