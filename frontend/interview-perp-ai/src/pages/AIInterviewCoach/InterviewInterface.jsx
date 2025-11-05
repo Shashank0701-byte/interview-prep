@@ -13,6 +13,7 @@ import FacialAnalyzer from '../../components/AIInterview/FacialAnalyzer';
 import VoiceAnalyzer from '../../components/AIInterview/VoiceAnalyzer';
 import EnvironmentAnalyzer from '../../components/AIInterview/EnvironmentAnalyzer';
 import RealTimeFeedback from '../../components/AIInterview/RealTimeFeedback';
+import RealTimeCoach from '../../components/AIInterview/RealTimeCoach';
 
 const InterviewInterface = () => {
     const { sessionId } = useParams();
@@ -57,6 +58,15 @@ const InterviewInterface = () => {
     // AI Interviewer state
     const [aiSpeaking, setAiSpeaking] = useState(false);
     const [aiPersona, setAiPersona] = useState(null);
+    
+    // Real-time coaching state
+    const [coachingEnabled, setCoachingEnabled] = useState(true);
+    const [coachingStats, setCoachingStats] = useState({
+        hintsGiven: 0,
+        paceCorrections: 0,
+        confidenceBoosts: 0,
+        bodyLanguageTips: 0
+    });
 
     useEffect(() => {
         fetchInterviewSession();
@@ -322,6 +332,43 @@ const InterviewInterface = () => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
+
+    const handleCoachingAction = (coaching) => {
+        // Update coaching stats
+        setCoachingStats(prev => {
+            const newStats = { ...prev };
+            switch (coaching.type) {
+                case 'hint':
+                    newStats.hintsGiven++;
+                    break;
+                case 'pace':
+                    newStats.paceCorrections++;
+                    break;
+                case 'confidence':
+                    newStats.confidenceBoosts++;
+                    break;
+                case 'body-language':
+                    newStats.bodyLanguageTips++;
+                    break;
+            }
+            return newStats;
+        });
+
+        // Optional: Send coaching data to backend for analytics
+        if (coaching.severity === 'warning' || coaching.severity === 'encouragement') {
+            submitAnalysisData('coaching', {
+                type: coaching.type,
+                message: coaching.message,
+                action: coaching.action,
+                timestamp: Date.now()
+            });
+        }
+
+        // Provide haptic feedback on mobile devices
+        if (navigator.vibrate && coaching.severity === 'warning') {
+            navigator.vibrate(100);
+        }
     };
 
     if (!interview) {
@@ -615,9 +662,53 @@ const InterviewInterface = () => {
                             isActive={interviewStarted && isAudioOn}
                             onAnalysisUpdate={(data) => handleAnalysisUpdate('voice', data)}
                         />
+
+                        {/* Coaching Stats */}
+                        {interviewStarted && (
+                            <div className="bg-gray-800 rounded-xl p-4">
+                                <h3 className="text-lg font-semibold mb-3 text-indigo-400">AI Coaching Stats</h3>
+                                <div className="grid grid-cols-2 gap-3 text-sm">
+                                    <div className="bg-gray-700 rounded-lg p-2 text-center">
+                                        <div className="text-emerald-400 font-bold">{coachingStats.hintsGiven}</div>
+                                        <div className="text-gray-400 text-xs">Hints</div>
+                                    </div>
+                                    <div className="bg-gray-700 rounded-lg p-2 text-center">
+                                        <div className="text-amber-400 font-bold">{coachingStats.paceCorrections}</div>
+                                        <div className="text-gray-400 text-xs">Pace Tips</div>
+                                    </div>
+                                    <div className="bg-gray-700 rounded-lg p-2 text-center">
+                                        <div className="text-pink-400 font-bold">{coachingStats.confidenceBoosts}</div>
+                                        <div className="text-gray-400 text-xs">Confidence</div>
+                                    </div>
+                                    <div className="bg-gray-700 rounded-lg p-2 text-center">
+                                        <div className="text-blue-400 font-bold">{coachingStats.bodyLanguageTips}</div>
+                                        <div className="text-gray-400 text-xs">Posture</div>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => setCoachingEnabled(!coachingEnabled)}
+                                    className={`w-full mt-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                                        coachingEnabled 
+                                            ? 'bg-indigo-600 hover:bg-indigo-700 text-white' 
+                                            : 'bg-gray-600 hover:bg-gray-500 text-gray-300'
+                                    }`}
+                                >
+                                    {coachingEnabled ? '🤖 AI Coach: ON' : '🤖 AI Coach: OFF'}
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
+
+            {/* Real-Time AI Coach - Floating Overlay */}
+            <RealTimeCoach
+                isActive={coachingEnabled}
+                analysisData={analysisData}
+                currentQuestion={currentQuestion}
+                interviewStarted={interviewStarted}
+                onCoachingAction={handleCoachingAction}
+            />
         </div>
     );
 };
