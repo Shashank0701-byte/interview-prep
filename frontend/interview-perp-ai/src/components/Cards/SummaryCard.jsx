@@ -22,10 +22,10 @@ const SummaryCard = ({
 }) => {
     const getStatusColor = (status) => {
         switch (status) {
-            case 'Active': return 'text-green-700 bg-green-100 border-green-200';
-            case 'Completed': return 'text-blue-700 bg-blue-100 border-blue-200';
-            case 'Paused': return 'text-yellow-700 bg-yellow-100 border-yellow-200';
-            default: return 'text-gray-700 bg-gray-100 border-gray-200';
+            case 'Active': return 'text-slate-700 bg-slate-100 border-slate-200';
+            case 'Completed': return 'text-slate-700 bg-slate-100 border-slate-200';
+            case 'Paused': return 'text-slate-600 bg-slate-50 border-slate-200';
+            default: return 'text-slate-600 bg-slate-50 border-slate-200';
         }
     };
     
@@ -35,23 +35,13 @@ const SummaryCard = ({
     
     return (
         <div 
-            className='bg-white border border-gray-100 rounded-3xl overflow-hidden cursor-pointer hover:shadow-2xl hover:shadow-blue-100/50 shadow-lg shadow-gray-100/50 relative group transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02] hover:rotate-0.5'
+            className='bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl overflow-hidden cursor-pointer hover:shadow-md shadow-sm relative group transition-all duration-200'
             onClick={onSelect}
-            style={{
-                background: completionPercentage === 100 
-                    ? 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%)' 
-                    : 'white'
-            }}
         >
-                <div 
-                    className='rounded-lg p-4 cursor-pointer relative'
-                    style={{
-                        background: colors.bgcolor,
-                    }}
-                >
+                <div className='p-4 cursor-pointer relative'>
             <div className='flex items-start'>
-                <div className='flex-shrink-0 w-14 h-14 bg-white/90 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110'>
-                    <span className='text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-300'>
+                <div className='flex-shrink-0 w-12 h-12 bg-gray-100 dark:bg-slate-700 rounded-lg flex items-center justify-center mr-4'>
+                    <span className='text-sm font-semibold text-gray-700 dark:text-gray-300'>
                         {getInitials(role)}
                     </span>
                 </div>
@@ -60,12 +50,12 @@ const SummaryCard = ({
                     <div className='flex justify-between items-start'>
                         <div className='flex-1 pr-4'>
                             <div className='flex items-center gap-2 mb-1'>
-                                <h2 className='text-lg font-semibold text-gray-900 group-hover:text-blue-800 transition-colors duration-300'>{role}</h2>
+                                <h2 className='text-lg font-semibold text-gray-900 dark:text-white'>{role}</h2>
                                 <span className={`px-2 py-0.5 text-xs font-medium rounded-md border ${getStatusColor(status)}`}>
                                     {status}
                                 </span>
                             </div>
-                            <p className='text-sm text-gray-700 leading-relaxed'>
+                            <p className='text-sm text-gray-600 dark:text-gray-400 leading-relaxed'>
                                 {topicsToFocus}
                             </p>
                         </div>
@@ -81,13 +71,13 @@ const SummaryCard = ({
                             e.stopPropagation();
                             onRateClick();
                         }}
-                        className="flex items-center gap-2 text-xs text-yellow-600 hover:text-yellow-700 bg-yellow-50/90 hover:bg-yellow-100 backdrop-blur-sm px-3 py-2 rounded-xl transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-xl border border-yellow-200/50"
+                        className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium bg-white dark:bg-slate-800 px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-600 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-gray-300 dark:hover:border-slate-500 transition-all duration-200"
                     >
                         <LuStar className="w-4 h-4" />
                         <span className="font-medium">Rate</span>
                     </button>
                     <button
-                        className='flex items-center gap-2 text-xs text-rose-700 font-medium bg-white/90 backdrop-blur-sm px-3 py-2 rounded-xl border border-rose-200/50 cursor-pointer hover:bg-rose-50 hover:border-rose-300 transition-all duration-300 transform hover:scale-110 shadow-lg hover:shadow-xl'
+                        className='flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium bg-white dark:bg-slate-800 px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-600 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-gray-300 dark:hover:border-slate-500 transition-all duration-200'
                         onClick={(e) =>{
                             e.stopPropagation();
                             onDelete();
@@ -106,36 +96,35 @@ const SummaryCard = ({
         <div className="mb-4">
             {/* Primary Progress Indicator - Mastered Questions */}
             {masteredQuestions > 0 ? (
-                <div className='bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-4 border border-emerald-100/50 hover:shadow-md transition-all duration-300'>
+                <div className='bg-gray-50 dark:bg-slate-700 rounded-lg p-4 border border-gray-200 dark:border-slate-600'>
                     <div className='flex items-center justify-between mb-3'>
                         <div className='flex items-center gap-2'>
-                            <span className='text-emerald-500 text-lg'>✨</span>
-                            <div className='text-sm font-semibold text-emerald-800'>Progress</div>
+                            <span className='text-gray-600 dark:text-gray-400'>📊</span>
+                            <div className='text-sm font-medium text-gray-700 dark:text-gray-300'>Progress</div>
                         </div>
-                        <div className='text-xs text-emerald-600 font-medium bg-emerald-100 px-2 py-1 rounded-full'>
+                        <div className='text-xs text-gray-600 dark:text-gray-400 font-medium bg-gray-200 dark:bg-slate-600 px-2 py-1 rounded-full'>
                             {questions > 0 ? Math.round((masteredQuestions / questions) * 100) : 0}% complete
                         </div>
                     </div>
                     <div className='flex items-center justify-between mb-2'>
-                        <div className='text-lg font-bold text-emerald-900'>{masteredQuestions} of {questions} mastered</div>
+                        <div className='text-sm font-semibold text-gray-900 dark:text-white'>{masteredQuestions} of {questions} mastered</div>
                     </div>
-                    <div className='w-full bg-emerald-100 rounded-full h-2'>
+                    <div className='w-full bg-gray-200 dark:bg-slate-600 rounded-full h-2'>
                         <div 
-                            className='bg-gradient-to-r from-emerald-400 to-green-500 h-2 rounded-full transition-all duration-1000 ease-out relative'
+                            className='bg-gray-600 dark:bg-slate-400 h-2 rounded-full transition-all duration-500'
                             style={{ width: `${questions > 0 ? (masteredQuestions / questions) * 100 : 0}%` }}
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
                         </div>
                     </div>
                 </div>
             ) : (
-                <div className='bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100/50'>
+                <div className='bg-gray-50 dark:bg-slate-700 rounded-lg p-4 border border-gray-200 dark:border-slate-600'>
                     <div className='flex items-center gap-2 mb-2'>
-                        <span className='text-blue-500 text-lg'>🌱</span>
-                        <div className='text-sm font-semibold text-blue-800'>Ready to Start</div>
+                        <span className='text-gray-600 dark:text-gray-400'>📋</span>
+                        <div className='text-sm font-medium text-gray-700 dark:text-gray-300'>Ready to Start</div>
                     </div>
-                    <div className='text-lg font-bold text-blue-900'>{questions} questions waiting</div>
-                    <div className='text-xs text-blue-600 mt-1'>Begin your learning journey!</div>
+                    <div className='text-sm font-semibold text-gray-900 dark:text-white'>{questions} questions waiting</div>
+                    <div className='text-xs text-gray-600 dark:text-gray-400 mt-1'>Begin your session</div>
                 </div>
             )}
         </div>
@@ -173,26 +162,26 @@ const SummaryCard = ({
             </div>
             
             {/* Secondary metadata - Experience as small tag */}
-            <div className="flex items-center gap-1 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
+            <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded-full">
                 <span>💼</span>
                 <span>{experience}y exp</span>
             </div>
         </div>
         
         {/* Simplified Stats */}
-        <div className='bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-3 border border-purple-100/50 hover:shadow-md transition-all duration-300 mb-4'>
+        <div className='bg-gray-50 dark:bg-slate-700 rounded-lg p-3 border border-gray-200 dark:border-slate-600 mb-4'>
             <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-2'>
-                    <span className='text-purple-500'>❓</span>
-                    <div className='text-xs font-medium text-purple-700'>Total Questions</div>
+                    <span className='text-gray-600 dark:text-gray-400'>❓</span>
+                    <div className='text-xs font-medium text-gray-700 dark:text-gray-300'>Total Questions</div>
                 </div>
-                <div className='text-sm font-bold text-purple-900'>{questions}</div>
+                <div className='text-sm font-semibold text-gray-900 dark:text-white'>{questions}</div>
             </div>
         </div>
 
         {/* Description */}
         {description && (
-            <p className='text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed'>
+            <p className='text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3 leading-relaxed'>
                 {description}
             </p>
         )}
@@ -208,27 +197,27 @@ const SummaryCard = ({
             
             {/* Gentle Encouragement Based on Progress */}
             {completionPercentage === 0 && (
-                <div className='flex items-center gap-2 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-lg'>
-                    <span>🌱</span>
-                    <span className='font-medium'>Ready to start your journey?</span>
+                <div className='flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded-lg'>
+                    <span>📋</span>
+                    <span className='font-medium'>Ready to start</span>
                 </div>
             )}
             {completionPercentage > 0 && completionPercentage < 50 && (
-                <div className='flex items-center gap-2 text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg'>
-                    <span>💪</span>
-                    <span className='font-medium'>Great start! Keep building momentum</span>
+                <div className='flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded-lg'>
+                    <span>📈</span>
+                    <span className='font-medium'>In progress</span>
                 </div>
             )}
             {completionPercentage >= 50 && completionPercentage < 100 && (
-                <div className='flex items-center gap-2 text-xs text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg'>
-                    <span>🚀</span>
-                    <span className='font-medium'>You're doing amazing! Almost there</span>
+                <div className='flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded-lg'>
+                    <span>⚡</span>
+                    <span className='font-medium'>Almost complete</span>
                 </div>
             )}
             {completionPercentage === 100 && (
-                <div className='flex items-center gap-2 text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded-lg'>
-                    <span>🎉</span>
-                    <span className='font-medium'>Congratulations! Session completed</span>
+                <div className='flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded-lg'>
+                    <span>✓</span>
+                    <span className='font-medium'>Completed</span>
                 </div>
             )}
         </div>
