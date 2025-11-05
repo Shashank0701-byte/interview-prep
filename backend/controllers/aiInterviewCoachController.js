@@ -1,21 +1,168 @@
 const AIInterview = require('../models/AIInterview');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 const multer = require('multer');
+
+// AI-powered contextual follow-up question generator
+const generateContextualFollowUp = async ({
+    userResponse,
+    originalQuestion,
+    interviewType,
+    difficulty,
+    responseQuality,
+    performanceMetrics,
+    aiPersona
+}) => {
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+        // Analyze response quality and determine follow-up strategy
+        const followUpStrategy = determineFollowUpStrategy(responseQuality, performanceMetrics);
+        
+        const prompt = `
+You are ${aiPersona.name}, a ${aiPersona.role} conducting a ${interviewType} interview. 
+Your personality is ${aiPersona.personality}.
+
+ORIGINAL QUESTION: "${originalQuestion.question}"
+CANDIDATE'S RESPONSE: "${userResponse}"
+
+RESPONSE ANALYSIS:
+- Quality Score: ${responseQuality.overall}/100
+- Completeness: ${responseQuality.completeness}/100
+- Technical Accuracy: ${responseQuality.technical}/100
+- Communication: ${responseQuality.communication}/100
+
+PERFORMANCE METRICS:
+- Confidence Level: ${performanceMetrics.confidence}%
+- Speaking Pace: ${performanceMetrics.pace} WPM
+- Eye Contact: ${performanceMetrics.eyeContact}%
+
+FOLLOW-UP STRATEGY: ${followUpStrategy.type}
+TARGET: ${followUpStrategy.goal}
+
+Generate a contextual follow-up question that:
+1. ${followUpStrategy.instructions}
+2. Maintains the ${aiPersona.personality} interviewer personality
+3. Is appropriate for ${difficulty} level candidate
+4. Builds naturally on their response
+
+FOLLOW-UP TYPES TO CONSIDER:
+- Clarification: "Can you elaborate on..."
+- Deep Dive: "Tell me more about the technical details..."
+- Scenario Extension: "How would you handle if..."
+- Alternative Approach: "What other ways could you..."
+- Real-world Application: "In a production environment..."
+- Problem Solving: "What if you encountered..."
+
+Return ONLY a JSON object with:
+{
+    "question": "The follow-up question",
+    "context": "Why this question was chosen",
+    "difficulty": "easy|medium|hard",
+    "expectedResponse": "What a good answer should include",
+    "type": "clarification|deep-dive|scenario|alternative|real-world|problem-solving"
+}`;
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+        
+        // Parse the JSON response
+        const followUpData = JSON.parse(text.replace(/```json\n?|\n?```/g, ''));
+        
+        return followUpData;
+
+    } catch (error) {
+        console.error('Error generating contextual follow-up:', error);
+        
+        // Fallback to predefined follow-ups
+        return generateFallbackFollowUp(originalQuestion, interviewType, responseQuality);
+    }
+};
+
+// Determine follow-up strategy based on response quality
+const determineFollowUpStrategy = (responseQuality, performanceMetrics) => {
+    const overall = responseQuality.overall;
+    const completeness = responseQuality.completeness;
+    const technical = responseQuality.technical;
+    
+    if (overall >= 80) {
+        return {
+            type: "CHALLENGE",
+            goal: "Test deeper knowledge",
+            instructions: "Ask a more challenging question that builds on their strong response"
+        };
+    } else if (overall >= 60) {
+        return {
+            type: "CLARIFY",
+            goal: "Get more specific details",
+            instructions: "Ask for clarification or more specific examples"
+        };
+    } else if (completeness < 50) {
+        return {
+            type: "GUIDE",
+            goal: "Help them provide a complete answer",
+            instructions: "Guide them to provide missing information with a leading question"
+        };
+    } else if (technical < 50) {
+        return {
+            type: "SIMPLIFY",
+            goal: "Break down the technical aspects",
+            instructions: "Ask a simpler technical question to build confidence"
+        };
+    } else {
+        return {
+            type: "ENCOURAGE",
+            goal: "Build confidence",
+            instructions: "Ask an encouraging follow-up that lets them showcase their strengths"
+        };
+    }
+};
+
+// Fallback follow-up generator for when AI fails
+const generateFallbackFollowUp = (originalQuestion, interviewType, responseQuality) => {
+    const fallbackQuestions = {
+        'technical': [
+            "Can you walk me through your thought process on that?",
+            "How would you optimize this solution?",
+            "What edge cases would you consider?",
+            "How would you test this implementation?"
+        ],
+        'behavioral': [
+            "What did you learn from that experience?",
+            "How did others react to your approach?",
+            "What would you do differently next time?",
+            "Can you give me a specific example?"
+        ],
+        'system-design': [
+            "How would this scale with millions of users?",
+            "What are the potential bottlenecks?",
+            "How would you handle failures in this system?",
+            "What monitoring would you implement?"
+        ]
+    };
+    
+    const questions = fallbackQuestions[interviewType] || fallbackQuestions['technical'];
+    const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+    
+    return {
+        question: randomQuestion,
+        context: "Fallback follow-up question",
+        difficulty: "medium",
+        expectedResponse: "A thoughtful response that demonstrates understanding",
+        type: "clarification"
+    };
+};
+
 const path = require('path');
 const fs = require('fs').promises;
 const whisperService = require('../utils/whisperService');
 
-// Initialize Gemini AI
-let genAI;
-try {
-    if (process.env.GOOGLE_AI_API_KEY) {
-        genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
-        console.log('✅ Gemini AI initialized for Interview Coach');
-    } else {
-        console.warn('⚠️ GOOGLE_AI_API_KEY not found - AI Interview features will be disabled');
-    }
-} catch (error) {
-    console.error('❌ Error initializing Gemini AI for Interview Coach:', error);
+// Check if Gemini AI is properly initialized
+if (!process.env.GOOGLE_AI_API_KEY) {
+    console.warn('⚠️ GOOGLE_AI_API_KEY not found - AI Interview features will be disabled');
+} else {
+    console.log('✅ Gemini AI initialized for Interview Coach');
 }
 
 // Configure multer for audio uploads
@@ -324,6 +471,66 @@ const submitAnalysisData = async (req, res) => {
     }
 };
 
+// @desc    Generate dynamic follow-up question based on response
+// @route   POST /api/ai-interview-coach/:sessionId/generate-followup
+// @access  Private
+const generateFollowUpQuestion = async (req, res) => {
+    try {
+        const { sessionId } = req.params;
+        const { userResponse, currentQuestionId, responseQuality, performanceMetrics } = req.body;
+        
+        const interview = await AIInterview.findOne({ 
+            sessionId, 
+            user: req.user._id 
+        });
+        
+        if (!interview) {
+            return res.status(404).json({ message: 'Interview session not found' });
+        }
+
+        const currentQuestion = interview.questions.find(q => q.id === currentQuestionId);
+        if (!currentQuestion) {
+            return res.status(404).json({ message: 'Current question not found' });
+        }
+
+        // Analyze user response and generate contextual follow-up
+        const followUpQuestion = await generateContextualFollowUp({
+            userResponse,
+            originalQuestion: currentQuestion,
+            interviewType: interview.interviewType,
+            difficulty: interview.difficulty,
+            responseQuality,
+            performanceMetrics,
+            aiPersona: interview.aiPersona
+        });
+
+        // Add follow-up to the current question
+        if (!currentQuestion.aiFollowUp) {
+            currentQuestion.aiFollowUp = [];
+        }
+        
+        currentQuestion.aiFollowUp.push({
+            question: followUpQuestion.question,
+            askedAt: new Date(),
+            context: followUpQuestion.context,
+            difficulty: followUpQuestion.difficulty,
+            expectedResponse: followUpQuestion.expectedResponse
+        });
+
+        await interview.save();
+
+        res.json({
+            success: true,
+            followUpQuestion: followUpQuestion,
+            questionId: currentQuestion.id
+        });
+
+    } catch (error) {
+        console.error('Error generating follow-up question:', error);
+        res.status(500).json({ message: 'Failed to generate follow-up question' });
+    }
+};
+
 // @desc    Process voice response with Whisper API
 // @route   POST /api/ai-interview-coach/:sessionId/voice-response
 // @access  Private
@@ -386,7 +593,7 @@ const processVoiceResponse = async (req, res) => {
             }
 
             // Generate AI follow-up question based on the response
-            const followUp = await generateFollowUpQuestion(interview, questionId, transcriptionResult.text);
+            const followUp = await generateSimpleFollowUp(interview, questionId, transcriptionResult.text);
 
             // Add follow-up to the question
             if (questionIndex !== -1 && followUp) {
@@ -586,7 +793,7 @@ async function generateRealTimeFeedback(interview, type, data) {
 
 // Whisper transcription is now handled by whisperService
 
-async function generateFollowUpQuestion(interview, questionId, userResponse) {
+async function generateSimpleFollowUp(interview, questionId, userResponse) {
     if (!genAI) return null;
     
     try {
@@ -735,6 +942,7 @@ module.exports = {
     createInterviewSession,
     startInterview,
     submitAnalysisData,
+    generateFollowUpQuestion,
     processVoiceResponse,
     completeInterview,
     getInterviewHistory,
