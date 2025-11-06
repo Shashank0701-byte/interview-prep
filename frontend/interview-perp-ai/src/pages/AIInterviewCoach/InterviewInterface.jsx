@@ -442,33 +442,33 @@ const InterviewInterface = () => {
 
     if (!interview) {
         return (
-            <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto mb-4"></div>
-                    <p className="text-white">Loading interview session...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 dark:border-slate-400 mx-auto mb-4"></div>
+                    <p className="text-gray-900 dark:text-white">Loading interview session...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-900 text-white">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
             {/* Header */}
-            <div className="bg-gray-800 border-b border-gray-700 p-4">
+            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-2">
                             <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
                             <span className="text-sm font-medium">LIVE INTERVIEW</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-gray-300">
+                        <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
                             <Clock className="w-4 h-4" />
                             <span className="font-mono">{formatTime(timeElapsed)}</span>
                         </div>
                     </div>
                     
                     <div className="flex items-center space-x-4">
-                        <div className="text-sm text-gray-300">
+                        <div className="text-sm text-gray-600 dark:text-gray-300">
                             Question {questionIndex + 1} of {interview.questions.length}
                         </div>
                         <button
@@ -486,15 +486,15 @@ const InterviewInterface = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     {/* Video Call Interface */}
                     <div className="lg:col-span-3">
-                        <div className="bg-gray-800 rounded-xl overflow-hidden">
+                        <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
                             {/* AI Interviewer */}
-                            <div className="relative h-48 bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center">
+                            <div className="relative h-48 bg-gray-600 dark:bg-gray-700 flex items-center justify-center">
                                 <div className="text-center">
                                     <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-3 mx-auto">
                                         <User className="w-10 h-10 text-white" />
                                     </div>
                                     <h3 className="text-xl font-semibold text-white">{aiPersona?.name}</h3>
-                                    <p className="text-indigo-200">{aiPersona?.role} at {aiPersona?.company}</p>
+                                    <p className="text-gray-200">{aiPersona?.role} at {aiPersona?.company}</p>
                                     {aiSpeaking && (
                                         <div className="flex items-center justify-center mt-2">
                                             <div className="flex space-x-1">
