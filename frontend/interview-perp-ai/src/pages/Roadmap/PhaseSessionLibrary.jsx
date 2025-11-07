@@ -132,9 +132,11 @@ const PhaseSessionLibrary = () => {
         }
     };
 
-    // Generate phase-specific session templates
-    const generatePhaseSessionTemplates = (phase, role) => {
-        const sessionTemplates = {
+    // REMOVED: Static templates - all templates now come from backend API with Gemini-generated questions
+    // The backend getPhaseSessionTemplates() function provides templates that are created with AI-generated content
+    const generatePhaseSessionTemplates_DEPRECATED = (phase, role) => {
+        // This function is no longer used - kept for reference only
+        const sessionTemplates_DEPRECATED = {
             'Foundation': [
                 {
                     _id: 'template-big-o',

@@ -16,9 +16,9 @@ const { protect } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 router.post('/add', protect, addQuestionsToSession);
-router.post('/:id/pin', protect, togglePinQuestion);
 
-// Note: Using PUT for updating is more conventional than POST
+// Using PUT for all update operations for consistency
+router.put('/:id/pin', protect, togglePinQuestion);
 router.put('/:id/note', protect, updateQuestionNote);  
 router.put('/:id/master', protect, toggleMasteredStatus);
 router.put('/:id/review', protect, reviewQuestion);
