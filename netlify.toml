@@ -5,7 +5,7 @@
   base = "frontend/interview-perp-ai"
 
   # The command to build your site for production.
-  command = "rm -rf node_modules package-lock.json && npm install --legacy-peer-deps && npm run build"
+  command = "npm install -g patch-package && npm install --legacy-peer-deps && npm run build"
 
   # The directory that contains the deploy-ready HTML files and assets.
   publish = "dist"
