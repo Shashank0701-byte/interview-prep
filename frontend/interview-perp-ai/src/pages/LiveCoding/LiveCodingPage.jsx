@@ -39,10 +39,10 @@ const LiveCodingPage = () => {
     // Get difficulty color
     const getDifficultyColor = (difficulty) => {
         switch (difficulty) {
-            case 'Easy': return 'bg-green-100 text-green-800';
-            case 'Medium': return 'bg-yellow-100 text-yellow-800';
-            case 'Hard': return 'bg-red-100 text-red-800';
-            default: return 'bg-gray-100 text-gray-800';
+            case 'Easy': return 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300';
+            case 'Medium': return 'bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-slate-200';
+            case 'Hard': return 'bg-slate-300 dark:bg-slate-500 text-slate-900 dark:text-slate-100';
+            default: return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300';
         }
     };
 
@@ -65,17 +65,17 @@ const LiveCodingPage = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-8 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
                     {/* Hero Section */}
-                    <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl shadow-lg p-8 mb-8">
+                    <div className="bg-slate-800 dark:bg-slate-900 text-white rounded-xl shadow-lg p-8 mb-8">
                         <div className="flex items-center gap-4 mb-4">
                             <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
                                 <LuCode className="w-6 h-6" />
                             </div>
                             <div>
                                 <h1 className="text-3xl font-bold">Live Coding Challenges</h1>
-                                <p className="text-indigo-100 mt-2">
+                                <p className="text-slate-300 mt-2">
                                     Practice coding with instant AI feedback on correctness, efficiency, and code style
                                 </p>
                             </div>
@@ -85,40 +85,40 @@ const LiveCodingPage = () => {
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
                             <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
                                 <div className="flex items-center gap-3">
-                                    <LuTarget className="w-8 h-8 text-indigo-200" />
+                                    <LuTarget className="w-8 h-8 text-slate-300" />
                                     <div>
                                         <div className="text-2xl font-bold">{codingChallenges.length}</div>
-                                        <div className="text-indigo-200 text-sm">Total Challenges</div>
+                                        <div className="text-slate-300 text-sm">Total Challenges</div>
                                     </div>
                                 </div>
                             </div>
                             
                             <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
                                 <div className="flex items-center gap-3">
-                                    <LuBrain className="w-8 h-8 text-purple-200" />
+                                    <LuBrain className="w-8 h-8 text-slate-300" />
                                     <div>
                                         <div className="text-2xl font-bold">AI</div>
-                                        <div className="text-purple-200 text-sm">Code Review</div>
+                                        <div className="text-slate-300 text-sm">Code Review</div>
                                     </div>
                                 </div>
                             </div>
                             
                             <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
                                 <div className="flex items-center gap-3">
-                                    <LuZap className="w-8 h-8 text-yellow-200" />
+                                    <LuZap className="w-8 h-8 text-slate-300" />
                                     <div>
                                         <div className="text-2xl font-bold">Real-time</div>
-                                        <div className="text-yellow-200 text-sm">Feedback</div>
+                                        <div className="text-slate-300 text-sm">Feedback</div>
                                     </div>
                                 </div>
                             </div>
                             
                             <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
                                 <div className="flex items-center gap-3">
-                                    <LuTrendingUp className="w-8 h-8 text-green-200" />
+                                    <LuTrendingUp className="w-8 h-8 text-slate-300" />
                                     <div>
                                         <div className="text-2xl font-bold">Big O</div>
-                                        <div className="text-green-200 text-sm">Analysis</div>
+                                        <div className="text-slate-300 text-sm">Analysis</div>
                                     </div>
                                 </div>
                             </div>
@@ -126,10 +126,10 @@ const LiveCodingPage = () => {
                     </div>
 
                     {/* Filters */}
-                    <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 mb-8">
                         <div className="flex items-center gap-2 mb-4">
-                            <LuFilter className="w-5 h-5 text-gray-600" />
-                            <h2 className="text-lg font-semibold text-gray-800">Filter Challenges</h2>
+                            <LuFilter className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                            <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Filter Challenges</h2>
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -141,7 +141,7 @@ const LiveCodingPage = () => {
                                     placeholder="Search challenges..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                                 />
                             </div>
 
@@ -149,7 +149,7 @@ const LiveCodingPage = () => {
                             <select
                                 value={selectedDifficulty}
                                 onChange={(e) => setSelectedDifficulty(e.target.value)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                             >
                                 {difficulties.map(difficulty => (
                                     <option key={difficulty} value={difficulty}>
@@ -162,7 +162,7 @@ const LiveCodingPage = () => {
                             <select
                                 value={selectedCategory}
                                 onChange={(e) => setSelectedCategory(e.target.value)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
                             >
                                 {categories.map(category => (
                                     <option key={category} value={category}>
@@ -176,17 +176,17 @@ const LiveCodingPage = () => {
                     {/* Challenge Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredChallenges.map((challenge) => (
-                            <div key={challenge.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div key={challenge.id} className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                                 {/* Card Header */}
                                 <div className="p-6 pb-4">
                                     <div className="flex items-start justify-between mb-3">
                                         <div className="flex items-center gap-2">
                                             <span className="text-2xl">{getCategoryIcon(challenge.category)}</span>
                                             <div>
-                                                <h3 className="text-lg font-bold text-gray-800 line-clamp-1">
+                                                <h3 className="text-lg font-bold text-gray-800 dark:text-white line-clamp-1">
                                                     {challenge.title}
                                                 </h3>
-                                                <div className="text-sm text-gray-500 capitalize">
+                                                <div className="text-sm text-gray-500 dark:text-gray-400 capitalize">
                                                     {challenge.category.replace('-', ' ')}
                                                 </div>
                                             </div>
@@ -197,12 +197,12 @@ const LiveCodingPage = () => {
                                         </div>
                                     </div>
 
-                                    <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                                    <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 mb-4">
                                         {challenge.description}
                                     </p>
 
                                     {/* Challenge Stats */}
-                                    <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
+                                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-4">
                                         <div className="flex items-center gap-1">
                                             <LuClock className="w-3 h-3" />
                                             <span>O({challenge.expectedComplexity})</span>
@@ -218,7 +218,7 @@ const LiveCodingPage = () => {
                                 <div className="px-6 pb-6">
                                     <button
                                         onClick={() => startChallenge(challenge.id)}
-                                        className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105"
+                                        className="w-full flex items-center justify-center gap-2 bg-slate-800 dark:bg-slate-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-slate-700 dark:hover:bg-slate-500 transition-all duration-200 transform hover:scale-105"
                                     >
                                         <LuPlay className="w-4 h-4" />
                                         Start Challenge
