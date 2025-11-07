@@ -548,12 +548,12 @@ function calculatePerformanceMetrics(aiInterviews) {
     let totalCompleteness = 0;
 
     recentInterviews.forEach(interview => {
-        if (interview.feedback && interview.feedback.scores) {
-            totalScore += interview.feedback.scores.overall || 0;
-            totalTechnical += interview.feedback.scores.technical || 0;
-            totalCommunication += interview.feedback.scores.communication || 0;
-            totalConfidence += interview.feedback.scores.confidence || 0;
-            totalCompleteness += interview.feedback.scores.completeness || 0;
+        if (interview.scores) {
+            totalScore += interview.scores.overall || 0;
+            totalTechnical += interview.scores.technical || 0;
+            totalCommunication += interview.scores.communication || 0;
+            totalConfidence += interview.scores.confidence || 0;
+            totalCompleteness += interview.scores.responseRelevance || 0;
         }
     });
 
@@ -570,9 +570,9 @@ function calculatePerformanceMetrics(aiInterviews) {
         const secondHalf = aiInterviews.slice(-2);
         
         const firstAvg = firstHalf.reduce((sum, interview) => 
-            sum + (interview.feedback?.scores?.overall || 0), 0) / firstHalf.length;
+            sum + (interview.scores?.overall || 0), 0) / firstHalf.length;
         const secondAvg = secondHalf.reduce((sum, interview) => 
-            sum + (interview.feedback?.scores?.overall || 0), 0) / secondHalf.length;
+            sum + (interview.scores?.overall || 0), 0) / secondHalf.length;
         
         metrics.improvementTrend = Math.round(secondAvg - firstAvg);
     }
@@ -713,14 +713,14 @@ function calculateRecentTrend(aiInterviews) {
     if (aiInterviews.length < 3) return 'insufficient_data';
 
     const recent = aiInterviews.slice(0, 3);
-    const scores = recent.map(interview => interview.feedback?.scores?.overall || 0);
+    const scores = recent.map(interview => interview.scores?.overall || 0);
     
     const avgRecent = scores.reduce((sum, score) => sum + score, 0) / scores.length;
     const older = aiInterviews.slice(3, 6);
     
     if (older.length === 0) return 'improving';
     
-    const olderScores = older.map(interview => interview.feedback?.scores?.overall || 0);
+    const olderScores = older.map(interview => interview.scores?.overall || 0);
     const avgOlder = olderScores.reduce((sum, score) => sum + score, 0) / olderScores.length;
     
     const difference = avgRecent - avgOlder;
@@ -741,7 +741,7 @@ function analyzeCommunicationPatterns(aiInterviews) {
 
     // Calculate communication score
     const communicationScores = aiInterviews
-        .map(interview => interview.feedback?.scores?.communication || 0)
+        .map(interview => interview.scores?.communication || 0)
         .filter(score => score > 0);
 
     if (communicationScores.length > 0) {
@@ -837,7 +837,7 @@ function analyzeSkillGaps(aiInterviews, targetRole, targetCompany) {
 
     // Determine readiness level
     const averagePerformance = aiInterviews.length > 0 
-        ? aiInterviews.reduce((sum, interview) => sum + (interview.feedback?.scores?.overall || 0), 0) / aiInterviews.length
+        ? aiInterviews.reduce((sum, interview) => sum + (interview.scores?.overall || 0), 0) / aiInterviews.length
         : 0;
 
     if (averagePerformance >= 80) analysis.readinessLevel = 'senior';
@@ -859,7 +859,7 @@ function calculateSkillPerformance(aiInterviews, skill) {
     if (relevantInterviews.length === 0) return 0;
 
     const totalScore = relevantInterviews.reduce((sum, interview) => 
-        sum + (interview.feedback?.scores?.technical || 0), 0);
+        sum + (interview.scores?.technical || 0), 0);
     
     return Math.round(totalScore / relevantInterviews.length);
 }
