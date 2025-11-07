@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import SummaryCard from '../../components/Cards/SummaryCard';
 import Modal from '../../components/Modal';
-import CreateSessionForm from './CreateSessionForm';
+import CreateInterviewModal from '../../components/Modals/CreateInterviewModal';
 import DeleteAlertContent from '../../components/DeleteAlertContent';
 import SessionFilter from '../../components/SessionFilter';
 import useSessionFilter from '../../hooks/useSessionFilter';
@@ -102,6 +102,67 @@ const Dashboard = () => {
                 userRating: session.userRating || { overall: 3, difficulty: 3, usefulness: 3 }
             }
         });
+    };
+
+    const handleCreateSession = async (formData) => {
+        try {
+            // Map the new modal data to the expected API format
+            const sessionData = {
+                role: formData.targetRole,
+                experience: formData.experience,
+                topicsToFocus: formData.topics,
+                description: formData.description
+            };
+
+            // Call AI API to generate questions
+            let aiResponse;
+            
+            if (formData.targetCompany) {
+                // Generate company-specific questions
+                aiResponse = await axiosInstance.post(API_PATHS.AI.COMPANY_QUESTIONS, {
+                    companyName: formData.targetCompany,
+                    role: formData.targetRole,
+                    experience: formData.experience,
+                    topicsToFocus: formData.topics,
+                    numberOfQuestions: 10,
+                });
+            } else {
+                // Generate general questions
+                aiResponse = await axiosInstance.post(API_PATHS.AI.GENERATE_QUESTIONS, {
+                    role: formData.targetRole,
+                    experience: formData.experience,
+                    topicsToFocus: formData.topics,
+                    numberOfQuestions: 10,
+                });
+            }
+
+            // Create the session with generated questions
+            const generatedQuestions = aiResponse.data;
+            const response = await axiosInstance.post(API_PATHS.SESSIONS.CREATE, {
+                ...sessionData,
+                questions: generatedQuestions,
+            });
+
+            if (response.data?.session?._id) {
+                toast.success("Session created successfully!");
+                setOpenCreateModal(false);
+                fetchDashboardData();
+                
+                // Trigger analytics refresh after creating new session
+                window.dispatchEvent(new Event('analytics-refresh'));
+                
+                // Navigate to the new session
+                navigate(`/interview-prep/${response.data?.session?._id}`);
+            }
+        } catch (error) {
+            console.error("Error creating session:", error);
+            if (error.response && error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Something went wrong. Please try again.");
+            }
+            throw error; // Re-throw to let the modal handle the error state
+        }
     };
 
     useEffect(() => {
@@ -462,15 +523,11 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
-            <Modal isOpen={openCreateModal} onClose={() => setOpenCreateModal(false)} hideHeader>
-                <CreateSessionForm onSuccess={() => {
-                    setOpenCreateModal(false);
-                    fetchDashboardData();
-                    
-                    // Trigger analytics refresh after creating session
-                    window.dispatchEvent(new Event('analytics-refresh'));
-                }} />
-            </Modal>
+            <CreateInterviewModal 
+                isOpen={openCreateModal} 
+                onClose={() => setOpenCreateModal(false)}
+                onCreateSession={handleCreateSession}
+            />
             <Modal isOpen={openDeleteAlert.open} onClose={() => setOpenDeleteAlert({ open: false, data: null })} title="Delete Session">
                 <div className='w-[30vw]'>
                     <DeleteAlertContent
