@@ -112,10 +112,10 @@ const AIInterviewCoach = () => {
     ];
 
     const difficulties = [
-        { id: 'junior', name: 'Junior (0-2 years)', color: 'text-green-600' },
-        { id: 'mid-level', name: 'Mid-Level (3-5 years)', color: 'text-blue-600' },
-        { id: 'senior', name: 'Senior (5+ years)', color: 'text-purple-600' },
-        { id: 'principal', name: 'Principal/Staff', color: 'text-red-600' }
+        { id: 'junior', name: 'Junior (0-2 years)', color: 'text-slate-600' },
+        { id: 'mid-level', name: 'Mid-Level (3-5 years)', color: 'text-slate-700' },
+        { id: 'senior', name: 'Senior (5+ years)', color: 'text-slate-800' },
+        { id: 'principal', name: 'Principal/Staff', color: 'text-slate-900' }
     ];
 
     return (
@@ -126,7 +126,7 @@ const AIInterviewCoach = () => {
                     {/* Back Button */}
                     <button
                         onClick={() => navigate('/dashboard')}
-                        className="absolute left-0 top-0 flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200 group"
+                        className="absolute left-0 top-0 flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-slate-600 dark:hover:text-slate-400 transition-colors duration-200 group"
                     >
                         <div className="p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors duration-200">
                             <ArrowLeft className="w-5 h-5 group-hover:transform group-hover:-translate-x-1 transition-transform duration-200" />
@@ -136,7 +136,7 @@ const AIInterviewCoach = () => {
                     
                     {/* Centered Header Content */}
                     <div className="text-center">
-                        <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-xl mb-4 shadow-lg">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-600 rounded-xl mb-4 shadow-lg">
                             <Video className="w-8 h-8 text-white" />
                         </div>
                         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2 transition-colors duration-300">
@@ -188,8 +188,8 @@ const AIInterviewCoach = () => {
                                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors duration-300">Total Interviews</p>
                                 <p className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{stats.totalInterviews}</p>
                             </div>
-                            <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center">
-                                <Users className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                            <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800/50 rounded-lg flex items-center justify-center">
+                                <Users className="w-6 h-6 text-slate-600 dark:text-slate-400" />
                             </div>
                         </div>
                     </div>
@@ -200,8 +200,8 @@ const AIInterviewCoach = () => {
                                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors duration-300">Average Score</p>
                                 <p className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">{stats.averageScore}%</p>
                             </div>
-                            <div className="w-12 h-12 bg-green-50 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
-                                <Award className="w-6 h-6 text-green-600 dark:text-green-400" />
+                            <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800/50 rounded-lg flex items-center justify-center">
+                                <Award className="w-6 h-6 text-slate-600 dark:text-slate-400" />
                             </div>
                         </div>
                     </div>
@@ -210,12 +210,12 @@ const AIInterviewCoach = () => {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400 transition-colors duration-300">Improvement</p>
-                                <p className={`text-2xl font-bold ${stats.improvementTrend >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} transition-colors duration-300`}>
+                                <p className={`text-2xl font-bold ${stats.improvementTrend >= 0 ? 'text-slate-700 dark:text-slate-300' : 'text-slate-600 dark:text-slate-400'} transition-colors duration-300`}>
                                     {stats.improvementTrend >= 0 ? '+' : ''}{stats.improvementTrend}%
                                 </p>
                             </div>
-                            <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
-                                <Clock className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                            <div className="w-12 h-12 bg-slate-50 dark:bg-slate-800/50 rounded-lg flex items-center justify-center">
+                                <Clock className="w-6 h-6 text-slate-600 dark:text-slate-400" />
                             </div>
                         </div>
                     </div>
