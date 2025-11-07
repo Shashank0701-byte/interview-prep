@@ -121,7 +121,7 @@ const togglePinQuestion = async (req, res) => {
 };
 
 // @desc    Update a note for a question
-// @route   POST /api/questions/:id/note
+// @route   PUT /api/questions/:id/note
 // @access  Private
 const updateQuestionNote = async (req, res) => {
     try {
@@ -132,8 +132,17 @@ const updateQuestionNote = async (req, res) => {
             return res.status(404).json({ success: false, message: "Question not found" });
         }
 
-        // Ensure the user owns this question's session
-        const session = await Session.findById(question.session);
+        // Check both Session and RoadmapSession models
+        let session = await Session.findById(question.session);
+        if (!session) {
+            const RoadmapSession = require('../models/RoadmapSession');
+            session = await RoadmapSession.findById(question.session);
+        }
+        
+        if (!session) {
+            return res.status(404).json({ message: "Session not found" });
+        }
+        
         if (session.user.toString() !== req.user._id.toString()) {
             return res.status(401).json({ message: "Not authorized" });
         }
@@ -145,7 +154,7 @@ const updateQuestionNote = async (req, res) => {
         res.status(200).json({ success: true, question });
     } catch (error) {
         console.error("Error updating note:", error);
-        res.status(500).json({ message: "Server Error" });
+        res.status(500).json({ message: "Server Error", error: error.message });
     }
 };
 
@@ -160,7 +169,21 @@ const toggleMasteredStatus = async (req, res) => {
             return res.status(404).json({ message: "Question not found" });
         }
 
-        const session = await Session.findById(question.session);
+        // Check both Session and RoadmapSession models
+        let session = await Session.findById(question.session);
+        let isRoadmapSession = false;
+        
+        if (!session) {
+            // Try RoadmapSession
+            const RoadmapSession = require('../models/RoadmapSession');
+            session = await RoadmapSession.findById(question.session);
+            isRoadmapSession = true;
+        }
+        
+        if (!session) {
+            return res.status(404).json({ message: "Session not found" });
+        }
+        
         if (session.user.toString() !== userId.toString()) {
             return res.status(401).json({ message: "Not authorized" });
         }
@@ -169,7 +192,9 @@ const toggleMasteredStatus = async (req, res) => {
         await question.save();
 
         // Auto-update session progress when mastery status changes
-        const sessionWithQuestions = await Session.findById(question.session).populate('questions');
+        const SessionModel = isRoadmapSession ? require('../models/RoadmapSession') : Session;
+        const sessionWithQuestions = await SessionModel.findById(question.session).populate('questions');
+        
         if (sessionWithQuestions) {
             const totalQuestions = sessionWithQuestions.questions.length;
             const masteredQuestions = sessionWithQuestions.questions.filter(q => q.isMastered).length;
@@ -191,7 +216,7 @@ const toggleMasteredStatus = async (req, res) => {
         res.status(200).json({ message: "Status updated successfully", question });
     } catch (error) {
         console.error("Error toggling mastered status:", error);
-        res.status(500).json({ message: "Server Error" });
+        res.status(500).json({ message: "Server Error", error: error.message });
     }
 };
 
