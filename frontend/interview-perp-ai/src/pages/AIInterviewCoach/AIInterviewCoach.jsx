@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Video, Mic, MicOff, VideoOff, Settings, Play, Clock, Users, Award, ArrowLeft } from 'lucide-react';
+import { Video, Mic, MicOff, VideoOff, Settings, Play, Clock, Users, Award, ArrowLeft, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axiosInstance from '../../utils/axiosInstance';
+import AIInterviewAnalytics from '../../components/Analytics/AIInterviewAnalytics';
 
 const AIInterviewCoach = () => {
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ const AIInterviewCoach = () => {
     
     const [isCreating, setIsCreating] = useState(false);
     const [recentInterviews, setRecentInterviews] = useState([]);
+    const [showAnalytics, setShowAnalytics] = useState(false);
     const [stats, setStats] = useState({
         totalInterviews: 0,
         averageScore: 0,
@@ -144,18 +146,42 @@ const AIInterviewCoach = () => {
                             Practice with our AI interviewer that analyzes your performance in real-time. 
                             Get feedback on eye contact, voice clarity, confidence, and technical responses.
                         </p>
-                        {/* Debug Test Button */}
-                        {/* <button
-                            onClick={testBackendConnection}
-                            className="mt-4 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm"
-                        >
-                            Test Backend Connection
-                        </button> */}
+                        
+                        {/* Analytics Toggle */}
+                        <div className="mt-6 flex justify-center">
+                            <div className="flex bg-gray-100 dark:bg-slate-700 rounded-lg p-1">
+                                <button
+                                    onClick={() => setShowAnalytics(false)}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-all duration-200 ${
+                                        !showAnalytics
+                                            ? 'bg-white dark:bg-slate-600 text-gray-900 dark:text-white shadow-sm'
+                                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                                    }`}
+                                >
+                                    <Video className="w-4 h-4" />
+                                    Interview Setup
+                                </button>
+                                <button
+                                    onClick={() => setShowAnalytics(true)}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-all duration-200 ${
+                                        showAnalytics
+                                            ? 'bg-white dark:bg-slate-600 text-gray-900 dark:text-white shadow-sm'
+                                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                                    }`}
+                                >
+                                    <BarChart3 className="w-4 h-4" />
+                                    Advanced Analytics
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                {/* Conditional Content */}
+                {!showAnalytics ? (
+                    <>
+                        {/* Stats Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-slate-700 transition-colors duration-300">
                         <div className="flex items-center justify-between">
                             <div>
@@ -366,6 +392,10 @@ const AIInterviewCoach = () => {
                         </div>
                     </div>
                 </div>
+                    </>
+                ) : (
+                    <AIInterviewAnalytics />
+                )}
             </div>
         </div>
     );

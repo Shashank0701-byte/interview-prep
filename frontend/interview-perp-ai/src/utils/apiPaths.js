@@ -46,6 +46,10 @@ export const API_PATHS = {
         GET_MASTERY_RATIO: "/api/analytics/mastery-ratio",
         GET_PROGRESS_STATS: "/api/analytics/progress-stats",
         GET_STREAK_DATA: "/api/analytics/streak-data",
+        // AI Interview Analytics
+        GET_AI_INTERVIEW_INSIGHTS: "/api/analytics/ai-interview-insights",
+        GET_COMMUNICATION_ANALYSIS: "/api/analytics/communication-analysis",
+        GET_SKILL_GAP_ANALYSIS: "/api/analytics/skill-gap-analysis",
     },
     FEEDBACK: {
         GENERATE: 'api/feedback', // Add this new path
