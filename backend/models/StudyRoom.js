@@ -79,6 +79,10 @@ const studyRoomSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Mixed,
     default: []
   },
+  currentQuestionIndex: {
+    type: Number,
+    default: 0
+  },
   sharedCode: {
     content: {
       type: String,
@@ -254,6 +258,12 @@ studyRoomSchema.methods.addChatMessage = function(userId, username, message, typ
     this.chat = this.chat.slice(-100);
   }
   
+  this.lastActivity = new Date();
+  return this.save();
+};
+
+studyRoomSchema.methods.updateCurrentQuestion = function(questionIndex) {
+  this.currentQuestionIndex = questionIndex;
   this.lastActivity = new Date();
   return this.save();
 };
