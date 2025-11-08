@@ -71,6 +71,14 @@ const studyRoomSchema = new mongoose.Schema({
       default: false
     }
   },
+  topic: {
+    type: String,
+    default: 'javascript'
+  },
+  questions: {
+    type: mongoose.Schema.Types.Mixed,
+    default: []
+  },
   sharedCode: {
     content: {
       type: String,
