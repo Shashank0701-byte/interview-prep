@@ -29,6 +29,8 @@ const PhaseOverviewPage = () => {
     const [currentPhase, setCurrentPhase] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [recommendedSessions, setRecommendedSessions] = useState([]);
+    const [sessionTemplates, setSessionTemplates] = useState([]);
+    const [creatingSession, setCreatingSession] = useState(null);
 
     useEffect(() => {
         fetchRoadmapAndPhase();
@@ -51,11 +53,55 @@ const PhaseOverviewPage = () => {
                     return new Date(a.createdAt) - new Date(b.createdAt);
                 });
                 setRecommendedSessions(sortedSessions);
+                
+                // Fetch session templates for this phase
+                await fetchSessionTemplates();
             }
         } catch (error) {
             console.error("Failed to fetch roadmap and phase", error);
         } finally {
             setIsLoading(false);
+        }
+    };
+    
+    const fetchSessionTemplates = async () => {
+        try {
+            console.log('Fetching session templates for:', role, phaseId);
+            const response = await axiosInstance.get(`/api/roadmap-sessions/phase/${role}/${phaseId}`);
+            console.log('Session templates response:', response.data);
+            if (response.data.success) {
+                console.log('Setting session templates:', response.data.sessions);
+                setSessionTemplates(response.data.sessions);
+            }
+        } catch (error) {
+            console.error("Failed to fetch session templates", error);
+        }
+    };
+    
+    const handleStartSession = async (template) => {
+        setCreatingSession(template._id);
+        try {
+            // Create the roadmap session with AI question generation
+            const response = await axiosInstance.post('/api/roadmap-sessions/create', {
+                role: template.role,
+                experience: template.experience,
+                topicsToFocus: template.topicsToFocus.join(', '),
+                description: template.description,
+                phaseId: phaseId,
+                phaseName: currentPhase.name,
+                phaseColor: currentPhase.color,
+                roadmapRole: role
+            });
+            
+            if (response.data.success) {
+                // Navigate to the practice page
+                navigate(`/roadmap-session/${response.data.session._id}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`);
+            }
+        } catch (error) {
+            console.error("Failed to create session", error);
+            alert('Failed to create session. Please try again.');
+        } finally {
+            setCreatingSession(null);
         }
     };
 
@@ -258,52 +304,102 @@ const PhaseOverviewPage = () => {
                                 </div>
                             </div>
 
-                            {/* Recommended Sessions */}
-                            {recommendedSessions.length > 0 && (
+                            {/* Session Templates */}
+                            {console.log('Rendering session templates, count:', sessionTemplates.length)}
+                            {sessionTemplates.length > 0 ? (
                                 <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-8">
                                     <div className="flex items-center gap-3 mb-6">
                                         <div className={`w-10 h-10 bg-gradient-to-r ${getPhaseColor(currentPhase.color)} rounded-2xl flex items-center justify-center`}>
                                             <LuRocket className="w-5 h-5 text-white" />
                                         </div>
-                                        <h2 className="text-2xl font-bold text-gray-800">Recommended Learning Path</h2>
+                                        <h2 className="text-2xl font-bold text-gray-800">Your Sessions ({sessionTemplates.length})</h2>
                                     </div>
-                                    <div className="space-y-4">
-                                        {recommendedSessions.slice(0, 5).map((session, index) => (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {sessionTemplates.map((template, index) => (
                                             <div
-                                                key={session.id}
-                                                className={`flex items-center justify-between p-4 rounded-2xl border transition-all duration-200 ${
-                                                    index === 0 
-                                                        ? 'bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200 shadow-md' 
-                                                        : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
-                                                }`}
+                                                key={template._id}
+                                                className="bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-indigo-300 hover:shadow-lg transition-all duration-200"
                                             >
-                                                <div className="flex items-center gap-4">
-                                                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${
-                                                        index === 0 
-                                                            ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white' 
-                                                            : 'bg-gray-300 text-gray-600'
-                                                    }`}>
-                                                        {index === 0 ? <LuPlay className="w-5 h-5" /> : <span className="font-bold">{index + 1}</span>}
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-semibold text-gray-800">
-                                                            {session.role} - {session.experience} Years
+                                                <div className="flex items-start justify-between mb-4">
+                                                    <div className="flex-1">
+                                                        <h3 className="font-bold text-gray-800 text-lg mb-2">
+                                                            {template.role}
+                                                        </h3>
+                                                        <p className="text-sm text-gray-600 mb-3">
+                                                            {template.description}
+                                                        </p>
+                                                        <div className="flex flex-wrap gap-2 mb-3">
+                                                            {template.topicsToFocus.slice(0, 3).map((topic, i) => (
+                                                                <span key={i} className="text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full">
+                                                                    {topic}
+                                                                </span>
+                                                            ))}
+                                                            {template.topicsToFocus.length > 3 && (
+                                                                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                                                                    +{template.topicsToFocus.length - 3} more
+                                                                </span>
+                                                            )}
                                                         </div>
-                                                        <div className="text-sm text-gray-600">
-                                                            {session.questionsCount} questions • {session.completionPercentage}% complete
+                                                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                                                            <span className="flex items-center gap-1">
+                                                                <LuTarget className="w-4 h-4" />
+                                                                {template.questions?.length || 5} questions
+                                                            </span>
+                                                            <span className="flex items-center gap-1">
+                                                                <LuClock className="w-4 h-4" />
+                                                                {template.experience} years
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center gap-2">
-                                                    {getStatusIcon(session.completionPercentage >= 100 ? 'completed' : session.completionPercentage > 0 ? 'in_progress' : 'available')}
-                                                    {index === 0 && (
-                                                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
-                                                            Next Up
-                                                        </span>
-                                                    )}
-                                                </div>
+                                                
+                                                {template.isStarted ? (
+                                                    <div className="space-y-2">
+                                                        <div className="flex items-center justify-between text-sm mb-2">
+                                                            <span className="text-gray-600">Progress</span>
+                                                            <span className="font-semibold text-indigo-600">{template.completionPercentage}%</span>
+                                                        </div>
+                                                        <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                                                            <div 
+                                                                className="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                                                                style={{ width: `${template.completionPercentage}%` }}
+                                                            />
+                                                        </div>
+                                                        <button
+                                                            onClick={() => navigate(`/roadmap-session/${template.sessionId}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`)}
+                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-200"
+                                                        >
+                                                            <LuPlay className="w-4 h-4" />
+                                                            {template.completionPercentage === 100 ? 'Review Session' : 'Continue Session'}
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => handleStartSession(template)}
+                                                        disabled={creatingSession === template._id}
+                                                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        {creatingSession === template._id ? (
+                                                            <>
+                                                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                                                Generating Questions...
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <LuRocket className="w-4 h-4" />
+                                                                Start Session
+                                                            </>
+                                                        )}
+                                                    </button>
+                                                )}
                                             </div>
                                         ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-8">
+                                    <div className="text-center py-8">
+                                        <p className="text-gray-600">No session templates available for this phase yet.</p>
                                     </div>
                                 </div>
                             )}
@@ -315,16 +411,6 @@ const PhaseOverviewPage = () => {
                             <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-6">
                                 <h3 className="text-xl font-bold text-gray-800 mb-6">Ready to Learn?</h3>
                                 <div className="space-y-4">
-                                    {recommendedSessions.length > 0 && (
-                                        <button
-                                            onClick={handleStartRecommendedSession}
-                                            className={`w-full group flex items-center justify-center gap-3 px-6 py-4 font-semibold rounded-2xl text-white bg-gradient-to-r ${getPhaseColor(currentPhase.color)} hover:shadow-lg transition-all duration-300 transform hover:scale-105`}
-                                        >
-                                            <LuPlay className="w-5 h-5 group-hover:animate-pulse" />
-                                            <span>Start Recommended Session</span>
-                                        </button>
-                                    )}
-                                    
                                     <button
                                         onClick={handleBrowseSessions}
                                         className="w-full flex items-center justify-center gap-3 px-6 py-4 font-semibold rounded-2xl text-gray-700 bg-white border-2 border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-300"
