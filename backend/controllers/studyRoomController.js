@@ -5,7 +5,7 @@ const User = require('../models/User');
 // Create a new study room
 const createStudyRoom = async (req, res) => {
   try {
-    const { name, description, maxParticipants, settings } = req.body;
+    const { name, description, maxParticipants, settings, topic } = req.body;
     const userId = req.user._id;
     const user = await User.findById(userId);
 
@@ -23,6 +23,7 @@ const createStudyRoom = async (req, res) => {
       name,
       description,
       host: userId,
+      topic: topic || name || 'javascript',
       maxParticipants: maxParticipants || 6,
       settings: {
         isPublic: settings?.isPublic || false,
@@ -107,7 +108,12 @@ const getStudyRoom = async (req, res) => {
         settings: studyRoom.settings,
         status: studyRoom.status,
         createdAt: studyRoom.createdAt,
-        lastActivity: studyRoom.lastActivity
+        lastActivity: studyRoom.lastActivity,
+        topic: studyRoom.topic,
+        questions: studyRoom.questions,
+        sharedCode: studyRoom.sharedCode,
+        whiteboard: studyRoom.whiteboard,
+        chat: studyRoom.chat
       }
     });
   } catch (error) {
@@ -412,6 +418,50 @@ const setRoomSession = async (req, res) => {
   }
 };
 
+// Update room questions
+const updateRoomQuestions = async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const { questions } = req.body;
+    const userId = req.user._id;
+
+    const studyRoom = await StudyRoom.findOne({ roomId });
+
+    if (!studyRoom) {
+      return res.status(404).json({
+        success: false,
+        message: 'Study room not found'
+      });
+    }
+
+    // Only host can update questions
+    if (studyRoom.host.toString() !== userId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Only the host can update questions'
+      });
+    }
+
+    studyRoom.questions = questions;
+    studyRoom.lastActivity = new Date();
+    await studyRoom.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Questions updated successfully',
+      data: {
+        questions: studyRoom.questions
+      }
+    });
+  } catch (error) {
+    console.error('Update room questions error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update questions'
+    });
+  }
+};
+
 module.exports = {
   createStudyRoom,
   getStudyRoom,
@@ -420,5 +470,6 @@ module.exports = {
   updateStudyRoom,
   getUserStudyRooms,
   deleteStudyRoom,
-  setRoomSession
+  setRoomSession,
+  updateRoomQuestions
 };
