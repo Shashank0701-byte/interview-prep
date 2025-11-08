@@ -736,6 +736,92 @@ const getPhaseSessionTemplates = (role, phaseId) => {
                     completionPercentage: 0,
                     questions: { length: 10 }
                 }
+            ],
+            'phase-2': [ // Data & Security
+                {
+                    _id: `template-${role}-${phaseId}-1`,
+                    role: 'Database Optimization',
+                    experience: '3',
+                    topicsToFocus: ['Indexing', 'Query Optimization', 'Performance Tuning'],
+                    description: 'Optimize database queries and improve performance',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 10 }
+                },
+                {
+                    _id: `template-${role}-${phaseId}-2`,
+                    role: 'Security Best Practices',
+                    experience: '3',
+                    topicsToFocus: ['SQL Injection', 'XSS', 'CSRF', 'Security Headers'],
+                    description: 'Implement security measures to protect your applications',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 8 }
+                },
+                {
+                    _id: `template-${role}-${phaseId}-3`,
+                    role: 'Authentication Patterns',
+                    experience: '4',
+                    topicsToFocus: ['OAuth 2.0', 'JWT', 'Session Management', 'SSO'],
+                    description: 'Advanced authentication and authorization patterns',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 12 }
+                }
+            ],
+            'phase-3': [ // Scalability
+                {
+                    _id: `template-${role}-${phaseId}-1`,
+                    role: 'Caching Strategies',
+                    experience: '4',
+                    topicsToFocus: ['Redis', 'Memcached', 'CDN', 'Cache Invalidation'],
+                    description: 'Implement effective caching for better performance',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 10 }
+                },
+                {
+                    _id: `template-${role}-${phaseId}-2`,
+                    role: 'Microservices Architecture',
+                    experience: '5',
+                    topicsToFocus: ['Service Design', 'API Gateway', 'Service Discovery'],
+                    description: 'Design and build scalable microservices',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 12 }
+                },
+                {
+                    _id: `template-${role}-${phaseId}-3`,
+                    role: 'Load Balancing & Scaling',
+                    experience: '5',
+                    topicsToFocus: ['Horizontal Scaling', 'Load Balancers', 'Auto-scaling'],
+                    description: 'Scale applications to handle high traffic',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 8 }
+                }
+            ],
+            'phase-4': [ // Behavioral
+                {
+                    _id: `template-${role}-${phaseId}-1`,
+                    role: 'Technical Leadership',
+                    experience: '4',
+                    topicsToFocus: ['Code Reviews', 'Mentoring', 'Technical Decisions'],
+                    description: 'Lead technical discussions and mentor junior developers',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 8 }
+                },
+                {
+                    _id: `template-${role}-${phaseId}-2`,
+                    role: 'System Design Discussions',
+                    experience: '5',
+                    topicsToFocus: ['Architecture Decisions', 'Trade-offs', 'Scalability'],
+                    description: 'Discuss and defend system design choices',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 10 }
+                }
             ]
         },
         'Full Stack Developer': {
