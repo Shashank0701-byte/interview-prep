@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { 
   Users, 
   MessageSquare, 
-  Code, 
   Settings, 
   Share2, 
   Mic, 
@@ -21,7 +20,6 @@ import {
 } from 'lucide-react';
 import io from 'socket.io-client';
 import axiosInstance from '../../utils/axiosInstance';
-import CollaborativeCodeEditor from './CollaborativeCodeEditor';
 import ParticipantsList from './ParticipantsList';
 import ChatPanel from './ChatPanel';
 import { generateStudyRoomQuestions } from '../../utils/studyRoomQuestions';
@@ -566,43 +564,17 @@ const StudyRoomInterface = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto p-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-200px)]">
-          {/* Left Panel - Question/Code */}
+          {/* Left Panel - Question */}
           <div className="lg:col-span-3 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
-            {/* Tab Navigation */}
-            <div className="flex border-b bg-gray-50/50">
-              {[
-                { key: 'code', label: 'Code Editor', icon: Code },
-                { key: 'question', label: 'Question', icon: MessageSquare }
-              ].map(({ key, label, icon: Icon }) => (
-                <button
-                  key={key}
-                  onClick={() => setActiveTab(key)}
-                  className={`flex items-center gap-2 px-6 py-3 font-medium transition-colors ${
-                    activeTab === key
-                      ? 'bg-white text-blue-600 border-b-2 border-blue-600'
-                      : 'text-gray-600 hover:text-gray-800'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {label}
-                </button>
-              ))}
+            {/* Question Header */}
+            <div className="flex items-center gap-2 px-6 py-3 border-b bg-gray-50/50">
+              <MessageSquare className="w-5 h-5 text-blue-600" />
+              <h3 className="font-semibold text-gray-800">Question</h3>
             </div>
 
-            {/* Tab Content */}
+            {/* Question Content */}
             <div className="h-[calc(100%-60px)] p-6 overflow-hidden">
-              {activeTab === 'code' && (
-                <CollaborativeCodeEditor
-                  code={sharedCode}
-                  language={codeLanguage}
-                  onChange={handleCodeChange}
-                  participants={participants}
-                  currentUser={currentUser}
-                  socket={socketRef.current}
-                />
-              )}
-
-              {activeTab === 'question' && currentQuestion && (
+              {currentQuestion && (
                 <div className="h-full overflow-y-auto pb-6">
                   <div className="flex items-center gap-3 mb-4">
                     <h2 className="text-2xl font-bold text-gray-800">
