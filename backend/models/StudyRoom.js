@@ -222,6 +222,16 @@ studyRoomSchema.methods.removeParticipant = function(userId) {
   return this.save();
 };
 
+// Clean up inactive participants (remove all inactive participants immediately)
+studyRoomSchema.methods.cleanupInactiveParticipants = function() {
+  // Simply remove all inactive participants
+  // Active participants are those currently connected via socket
+  this.participants = this.participants.filter(p => p.isActive === true);
+  
+  this.lastActivity = new Date();
+  return this.save();
+};
+
 studyRoomSchema.methods.updateCode = function(content, userId) {
   this.sharedCode.content = content;
   this.sharedCode.lastModified.by = userId;
