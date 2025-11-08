@@ -22,14 +22,21 @@ class StudyRoomSocket {
             return;
           }
 
-          // Check if room is full
-          if (room.participantCount >= room.maxParticipants) {
+          // Check if user is already in the room
+          const existingParticipant = room.participants.find(p => p.userId.toString() === userId.toString());
+          const wasAlreadyActive = existingParticipant && existingParticipant.isActive;
+
+          // Check if room is full (but allow existing participants to rejoin)
+          if (!existingParticipant && room.participantCount >= room.maxParticipants) {
             socket.emit('error', { message: 'Room is full' });
             return;
           }
-
-          // Add user to room
+          
+          // Add user to room (or reactivate if they were inactive)
           await room.addParticipant(userId, username);
+          
+          // Reload room to get updated participant count
+          const updatedRoom = await StudyRoom.findOne({ roomId }).populate('participants.userId', 'username');
           
           // Join socket room
           socket.join(roomId);
@@ -37,35 +44,37 @@ class StudyRoomSocket {
           socket.userId = userId;
           socket.username = username;
 
-          // Notify user joined
-          socket.to(roomId).emit('user-joined', {
-            userId,
-            username,
-            participantCount: room.participantCount + 1
-          });
+          // Only notify others if this is a new join (not a refresh/reconnect)
+          if (!wasAlreadyActive) {
+            socket.to(roomId).emit('user-joined', {
+              userId,
+              username,
+              participantCount: updatedRoom.participantCount
+            });
 
-          // Send room state to new user
+            // Add system message only for new joins
+            await updatedRoom.addChatMessage(userId, username, `${username} joined the room`, 'system');
+            socket.to(roomId).emit('chat-message', {
+              userId,
+              username,
+              message: `${username} joined the room`,
+              type: 'system',
+              timestamp: new Date()
+            });
+          }
+
+          // Send room state to user (always, even on refresh)
           socket.emit('room-state', {
             room: {
-              roomId: room.roomId,
-              name: room.name,
-              participants: room.participants.filter(p => p.isActive),
-              sharedCode: room.sharedCode,
-              whiteboard: room.whiteboard,
-              currentSession: room.currentSession,
-              chat: room.chat.slice(-20), // Last 20 messages
-              settings: room.settings
+              roomId: updatedRoom.roomId,
+              name: updatedRoom.name,
+              participants: updatedRoom.participants.filter(p => p.isActive),
+              sharedCode: updatedRoom.sharedCode,
+              whiteboard: updatedRoom.whiteboard,
+              currentSession: updatedRoom.currentSession,
+              chat: updatedRoom.chat.slice(-20), // Last 20 messages
+              settings: updatedRoom.settings
             }
-          });
-
-          // Add system message
-          await room.addChatMessage(userId, username, `${username} joined the room`, 'system');
-          socket.to(roomId).emit('chat-message', {
-            userId,
-            username,
-            message: `${username} joined the room`,
-            type: 'system',
-            timestamp: new Date()
           });
 
         } catch (error) {

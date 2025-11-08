@@ -94,6 +94,9 @@ const getStudyRoom = async (req, res) => {
       });
     }
 
+    // Clean up old inactive participants
+    await studyRoom.cleanupInactiveParticipants();
+
     res.json({
       success: true,
       data: {
@@ -290,6 +293,13 @@ const getUserStudyRooms = async (req, res) => {
       .skip((page - 1) * limit);
 
     const total = await StudyRoom.countDocuments(query);
+
+    // Clean up inactive participants only for rooms that have inactive participants
+    await Promise.all(
+      studyRooms
+        .filter(room => room.participants.some(p => !p.isActive))
+        .map(room => room.cleanupInactiveParticipants())
+    );
 
     res.json({
       success: true,
