@@ -576,7 +576,7 @@ const StudyRoomInterface = () => {
             </div>
 
             {/* Tab Content */}
-            <div className="h-full p-6">
+            <div className="h-[calc(100%-60px)] p-6 overflow-hidden">
               {activeTab === 'code' && (
                 <CollaborativeCodeEditor
                   code={sharedCode}
@@ -589,7 +589,7 @@ const StudyRoomInterface = () => {
               )}
 
               {activeTab === 'question' && currentQuestion && (
-                <div className="h-full overflow-y-auto">
+                <div className="h-full overflow-y-auto pb-6">
                   <div className="flex items-center gap-3 mb-4">
                     <h2 className="text-2xl font-bold text-gray-800">
                       {currentQuestion.title}
@@ -619,9 +619,11 @@ const StudyRoomInterface = () => {
                     {currentQuestion.type === 'coding' && currentQuestion.starterCode && (
                       <div className="mb-6">
                         <h3 className="text-lg font-semibold mb-3">Starter Code:</h3>
-                        <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-                          <code>{currentQuestion.starterCode}</code>
-                        </pre>
+                        <div className="overflow-auto max-h-96 bg-gray-900 rounded-lg">
+                          <pre className="text-green-400 p-4 text-sm">
+                            <code className="whitespace-pre">{currentQuestion.starterCode}</code>
+                          </pre>
+                        </div>
                       </div>
                     )}
 
@@ -629,9 +631,11 @@ const StudyRoomInterface = () => {
                     {currentQuestion.type === 'code-review' && currentQuestion.codeToReview && (
                       <div className="mb-6">
                         <h3 className="text-lg font-semibold mb-3">Code to Review:</h3>
-                        <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-                          <code>{currentQuestion.codeToReview}</code>
-                        </pre>
+                        <div className="overflow-auto max-h-96 bg-gray-900 rounded-lg">
+                          <pre className="text-green-400 p-4 text-sm">
+                            <code className="whitespace-pre">{currentQuestion.codeToReview}</code>
+                          </pre>
+                        </div>
                         {currentQuestion.issues && (
                           <div className="mt-4">
                             <p className="text-sm text-gray-600">
@@ -648,9 +652,9 @@ const StudyRoomInterface = () => {
                         <summary className="cursor-pointer text-blue-600 hover:text-blue-800 font-medium">
                           💡 View Solution (Click to reveal)
                         </summary>
-                        <div className="mt-3">
-                          <pre className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg overflow-x-auto text-sm">
-                            <code>{currentQuestion.solution}</code>
+                        <div className="mt-3 overflow-auto max-h-96 bg-blue-50 border-l-4 border-blue-400 rounded-lg">
+                          <pre className="p-4 text-sm">
+                            <code className="whitespace-pre">{currentQuestion.solution}</code>
                           </pre>
                         </div>
                       </details>
