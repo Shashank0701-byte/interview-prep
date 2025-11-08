@@ -10,7 +10,8 @@ const {
   getUserStudyRooms,
   deleteStudyRoom,
   setRoomSession,
-  updateRoomQuestions
+  updateRoomQuestions,
+  updateCurrentQuestion
 } = require('../controllers/studyRoomController');
 
 // Create a new study room
@@ -39,5 +40,8 @@ router.post('/:roomId/session', protect, setRoomSession);
 
 // Update room questions (host only)
 router.put('/:roomId/questions', protect, updateRoomQuestions);
+
+// Update current question index
+router.put('/:roomId/current-question', protect, updateCurrentQuestion);
 
 module.exports = router;
