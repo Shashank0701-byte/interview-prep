@@ -137,32 +137,52 @@ const StudyRoomInterface = () => {
       setCurrentUser(userData);
       setIsHost(roomData.host._id === userData._id);
 
-      // Generate study questions based on room topic
+      // Load or generate study questions based on room topic
       const topic = roomData.topic || roomData.name || 'javascript';
       console.log('Room topic detected:', topic); // Debug log
       setRoomTopic(topic);
       
-      // Test Gemini API first
-      const apiWorking = await testGeminiAPI();
-      if (!apiWorking) {
-        console.error('❌ Gemini API test failed, using fallback questions');
-      }
-      
-      // Clear cache to force fresh generation (temporary for debugging)
-      clearQuestionCache();
-      
-      // Generate questions asynchronously with Gemini API
       let generatedQuestions = [];
-      try {
-        generatedQuestions = await generateStudyRoomQuestions(topic);
-        console.log('Generated questions for topic:', topic, '- First question:', generatedQuestions[0]?.title); // Debug log
+      
+      // Check if room already has questions stored in database
+      if (roomData.questions && roomData.questions.length > 0) {
+        console.log('✅ Loading existing questions from database:', roomData.questions.length);
+        console.log('First question:', roomData.questions[0]?.title);
+        generatedQuestions = roomData.questions;
         setStudyQuestions(generatedQuestions);
         setCurrentQuestion(generatedQuestions[0]);
-      } catch (error) {
-        console.error('Failed to generate questions:', error);
-        // Set empty questions array as fallback
-        setStudyQuestions([]);
-        setCurrentQuestion(null);
+      } else {
+        console.log('🔄 No existing questions in database, generating new ones...');
+        
+        // Test Gemini API first
+        const apiWorking = await testGeminiAPI();
+        if (!apiWorking) {
+          console.error('❌ Gemini API test failed, using fallback questions');
+        }
+        
+        // Generate questions asynchronously with Gemini API
+        try {
+          generatedQuestions = await generateStudyRoomQuestions(topic);
+          console.log('✅ Generated new questions for topic:', topic, '- Count:', generatedQuestions.length);
+          console.log('First generated question:', generatedQuestions[0]?.title);
+          setStudyQuestions(generatedQuestions);
+          setCurrentQuestion(generatedQuestions[0]);
+          
+          // Save generated questions to the room
+          try {
+            await axiosInstance.put(`/api/study-rooms/${roomId}/questions`, {
+              questions: generatedQuestions
+            });
+            console.log('✅ Saved questions to room');
+          } catch (saveError) {
+            console.error('Failed to save questions to room:', saveError);
+          }
+        } catch (error) {
+          console.error('Failed to generate questions:', error);
+          // Set empty questions array as fallback
+          setStudyQuestions([]);
+          setCurrentQuestion(null);
+        }
       }
 
       // Initialize socket connection
