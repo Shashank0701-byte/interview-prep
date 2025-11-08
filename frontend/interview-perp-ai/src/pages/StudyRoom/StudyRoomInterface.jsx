@@ -150,7 +150,11 @@ const StudyRoomInterface = () => {
         console.log('First question:', roomData.questions[0]?.title);
         generatedQuestions = roomData.questions;
         setStudyQuestions(generatedQuestions);
-        setCurrentQuestion(generatedQuestions[0]);
+        
+        // Load the saved current question index
+        const savedIndex = roomData.currentQuestionIndex || 0;
+        setQuestionIndex(savedIndex);
+        setCurrentQuestion(generatedQuestions[savedIndex]);
       } else {
         console.log('🔄 No existing questions in database, generating new ones...');
         
@@ -370,7 +374,7 @@ const StudyRoomInterface = () => {
     }
   };
 
-  const navigateQuestion = (direction) => {
+  const navigateQuestion = async (direction) => {
     if (!isHost || studyQuestions.length === 0) return;
 
     const newIndex = direction === 'next' 
@@ -380,6 +384,16 @@ const StudyRoomInterface = () => {
     if (newIndex !== questionIndex) {
       setQuestionIndex(newIndex);
       setCurrentQuestion(studyQuestions[newIndex]);
+      
+      // Save current question index to backend
+      try {
+        await axiosInstance.put(`/api/study-rooms/${roomId}/current-question`, {
+          questionIndex: newIndex
+        });
+        console.log('✅ Saved current question index:', newIndex);
+      } catch (error) {
+        console.error('Failed to save current question index:', error);
+      }
       
       if (socketRef.current) {
         socketRef.current.emit('navigate-question', {

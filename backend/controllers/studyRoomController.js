@@ -114,6 +114,7 @@ const getStudyRoom = async (req, res) => {
         lastActivity: studyRoom.lastActivity,
         topic: studyRoom.topic,
         questions: studyRoom.questions,
+        currentQuestionIndex: studyRoom.currentQuestionIndex,
         sharedCode: studyRoom.sharedCode,
         whiteboard: studyRoom.whiteboard,
         chat: studyRoom.chat
@@ -472,6 +473,39 @@ const updateRoomQuestions = async (req, res) => {
   }
 };
 
+// Update current question index
+const updateCurrentQuestion = async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const { questionIndex } = req.body;
+
+    const studyRoom = await StudyRoom.findOne({ roomId });
+
+    if (!studyRoom) {
+      return res.status(404).json({
+        success: false,
+        message: 'Study room not found'
+      });
+    }
+
+    await studyRoom.updateCurrentQuestion(questionIndex);
+
+    res.status(200).json({
+      success: true,
+      message: 'Current question updated successfully',
+      data: {
+        currentQuestionIndex: studyRoom.currentQuestionIndex
+      }
+    });
+  } catch (error) {
+    console.error('Update current question error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update current question'
+    });
+  }
+};
+
 module.exports = {
   createStudyRoom,
   getStudyRoom,
@@ -481,5 +515,6 @@ module.exports = {
   getUserStudyRooms,
   deleteStudyRoom,
   setRoomSession,
-  updateRoomQuestions
+  updateRoomQuestions,
+  updateCurrentQuestion
 };
