@@ -22,20 +22,35 @@ const ATSAnalyzer = ({ resumeContent, onScoreUpdate }) => {
         length: { score: 0, issues: [], suggestions: [] }
     });
 
-    // ATS Keywords database
+    // ATS Keywords database (expanded for better detection)
     const atsKeywords = {
-        technical: ['JavaScript', 'React', 'Node.js', 'Python', 'AWS', 'Docker', 'Kubernetes', 'TypeScript', 'GraphQL', 'MongoDB'],
-        soft: ['leadership', 'collaboration', 'communication', 'problem-solving', 'analytical', 'creative', 'adaptable'],
-        action: ['developed', 'implemented', 'designed', 'optimized', 'managed', 'led', 'created', 'improved', 'achieved', 'delivered'],
-        metrics: ['%', 'increased', 'decreased', 'reduced', 'improved', 'million', 'thousand', 'users', 'revenue', 'performance']
+        technical: [
+            'JavaScript', 'React', 'Node.js', 'Python', 'AWS', 'Docker', 'Kubernetes', 'TypeScript', 'GraphQL', 'MongoDB',
+            'Java', 'C++', 'SQL', 'PostgreSQL', 'MySQL', 'Redis', 'Git', 'GitHub', 'CI/CD', 'Jenkins',
+            'Azure', 'GCP', 'Terraform', 'Ansible', 'Linux', 'Nginx', 'Apache', 'REST', 'API', 'Microservices',
+            'Vue', 'Angular', 'Next.js', 'Express', 'Flask', 'Django', 'Spring', 'TailwindCSS', 'Bootstrap',
+            'Jest', 'Pytest', 'Selenium', 'Cypress', 'Webpack', 'Babel', 'ESLint', 'Prettier'
+        ],
+        soft: [
+            'leadership', 'collaboration', 'communication', 'problem-solving', 'analytical', 'creative', 'adaptable',
+            'teamwork', 'mentoring', 'agile', 'scrum', 'cross-functional', 'stakeholder', 'initiative', 'ownership'
+        ],
+        action: [
+            'developed', 'implemented', 'designed', 'optimized', 'managed', 'led', 'created', 'improved', 'achieved', 'delivered',
+            'engineered', 'architected', 'spearheaded', 'launched', 'built', 'established', 'streamlined', 'automated',
+            'integrated', 'migrated', 'refactored', 'deployed', 'scaled', 'reduced', 'increased', 'enhanced'
+        ],
+        metrics: ['%', 'increased', 'decreased', 'reduced', 'improved', 'million', 'thousand', 'users', 'revenue', 'performance',
+                  'faster', 'slower', 'growth', 'efficiency', 'productivity', 'cost', 'time', 'speed', 'latency']
     };
 
-    // Required resume sections
+    // Required resume sections (flexible matching)
     const requiredSections = [
-        'Professional Summary',
-        'Technical Skills', 
-        'Experience',
-        'Education'
+        { names: ['summary', 'professional summary', 'objective', 'profile'], label: 'Professional Summary' },
+        { names: ['skills', 'technical skills', 'core competencies'], label: 'Technical Skills' },
+        { names: ['experience', 'work experience', 'professional experience', 'employment'], label: 'Work Experience' },
+        { names: ['education', 'academic background'], label: 'Education' },
+        { names: ['projects', 'key projects', 'notable projects'], label: 'Projects' }
     ];
 
     const analyzeResume = () => {
@@ -71,51 +86,68 @@ const ATSAnalyzer = ({ resumeContent, onScoreUpdate }) => {
         const issues = [];
         const suggestions = [];
         let score = 0;
+        const contentLower = content.toLowerCase();
 
-        // Check for technical keywords
+        // Check for technical keywords (more strict)
         const technicalMatches = atsKeywords.technical.filter(keyword => 
-            content.toLowerCase().includes(keyword.toLowerCase())
-        ).length;
+            contentLower.includes(keyword.toLowerCase())
+        );
         
-        if (technicalMatches < 3) {
-            issues.push('Insufficient technical keywords');
-            suggestions.push('Add more relevant technical skills like React, Node.js, or cloud technologies');
+        if (technicalMatches.length < 5) {
+            issues.push(`Only ${technicalMatches.length} technical keywords found (need 5+)`);
+            suggestions.push('Add more relevant technical skills from job descriptions (React, AWS, Docker, TypeScript, etc.)');
+            score += Math.min(20, technicalMatches.length * 4);
+        } else if (technicalMatches.length < 8) {
+            suggestions.push('Good technical keywords, but add 2-3 more trending skills for better matching');
+            score += 20;
         } else {
             score += 25;
         }
 
-        // Check for action verbs
+        // Check for action verbs (stricter)
         const actionMatches = atsKeywords.action.filter(verb => 
-            content.toLowerCase().includes(verb.toLowerCase())
-        ).length;
+            contentLower.includes(verb.toLowerCase())
+        );
         
-        if (actionMatches < 5) {
-            issues.push('Limited action verbs');
-            suggestions.push('Use more action verbs like "developed", "implemented", "optimized"');
+        if (actionMatches.length < 6) {
+            issues.push(`Only ${actionMatches.length} action verbs found (need 6+)`);
+            suggestions.push('Start bullet points with strong action verbs: "Engineered", "Architected", "Spearheaded", "Optimized"');
+            score += Math.min(20, actionMatches.length * 3);
         } else {
             score += 25;
         }
 
-        // Check for metrics
+        // Check for metrics (much stricter)
+        const hasPercentage = /%|percent/i.test(content);
+        const hasNumbers = /\d+[,.]?\d*\s*(million|thousand|k|users|customers|revenue|performance|time|speed|efficiency)/i.test(content);
         const metricMatches = atsKeywords.metrics.filter(metric => 
-            content.toLowerCase().includes(metric.toLowerCase())
+            contentLower.includes(metric.toLowerCase())
         ).length;
         
-        if (metricMatches < 3) {
-            issues.push('Missing quantified achievements');
-            suggestions.push('Add specific numbers, percentages, and metrics to your accomplishments');
+        if (!hasPercentage && !hasNumbers) {
+            issues.push('No quantified achievements with metrics');
+            suggestions.push('Add specific numbers: "Improved performance by 40%", "Reduced load time by 2.5s", "Served 10K+ users"');
+            score += 0;
+        } else if (metricMatches < 3) {
+            issues.push('Limited quantified achievements');
+            suggestions.push('Add more metrics to demonstrate impact: percentages, user counts, performance improvements');
+            score += 15;
         } else {
             score += 25;
         }
 
         // Check for soft skills
         const softMatches = atsKeywords.soft.filter(skill => 
-            content.toLowerCase().includes(skill.toLowerCase())
-        ).length;
+            contentLower.includes(skill.toLowerCase())
+        );
         
-        if (softMatches < 2) {
-            issues.push('Limited soft skills mentioned');
-            suggestions.push('Include soft skills like leadership, communication, or problem-solving');
+        if (softMatches.length === 0) {
+            issues.push('No soft skills mentioned');
+            suggestions.push('Include soft skills in your summary or project descriptions: leadership, collaboration, problem-solving');
+            score += 0;
+        } else if (softMatches.length < 2) {
+            suggestions.push('Add 1-2 more soft skills to demonstrate well-rounded abilities');
+            score += 15;
         } else {
             score += 25;
         }
@@ -166,21 +198,38 @@ const ATSAnalyzer = ({ resumeContent, onScoreUpdate }) => {
         const issues = [];
         const suggestions = [];
         let score = 0;
+        const contentLower = content.toLowerCase();
 
-        const foundSections = requiredSections.filter(section => 
-            content.toLowerCase().includes(section.toLowerCase())
-        );
+        const foundSections = [];
+        const missingSections = [];
 
+        requiredSections.forEach(section => {
+            const found = section.names.some(name => contentLower.includes(name));
+            if (found) {
+                foundSections.push(section.label);
+            } else {
+                missingSections.push(section.label);
+            }
+        });
+
+        // Calculate score based on found sections
         const sectionScore = (foundSections.length / requiredSections.length) * 100;
         score = Math.round(sectionScore);
 
-        const missingSections = requiredSections.filter(section => 
-            !content.toLowerCase().includes(section.toLowerCase())
-        );
+        // Provide specific feedback for missing critical sections
+        if (missingSections.includes('Professional Summary')) {
+            issues.push('Missing Professional Summary/Objective');
+            suggestions.push('Add a 2-3 sentence summary highlighting your expertise and career goals');
+        }
+        
+        if (missingSections.includes('Work Experience')) {
+            issues.push('Missing Work Experience section');
+            suggestions.push('Add internships, part-time jobs, or freelance work. If none, emphasize projects with real-world impact');
+        }
 
-        if (missingSections.length > 0) {
-            issues.push(`Missing sections: ${missingSections.join(', ')}`);
-            suggestions.push('Add all required sections for complete ATS compatibility');
+        if (missingSections.length > 2) {
+            issues.push(`Missing ${missingSections.length} critical sections`);
+            suggestions.push(`Add these sections: ${missingSections.join(', ')}`);
         }
 
         return { score, issues, suggestions };
@@ -191,18 +240,28 @@ const ATSAnalyzer = ({ resumeContent, onScoreUpdate }) => {
         const suggestions = [];
         let score = 0;
 
-        const wordCount = content.split(/\s+/).length;
+        const wordCount = content.split(/\s+/).filter(word => word.length > 0).length;
+        const lines = content.split('\n').filter(line => line.trim().length > 0).length;
         
-        if (wordCount >= 300 && wordCount <= 800) {
+        // Ideal: 400-700 words for 1-2 pages
+        if (wordCount >= 400 && wordCount <= 700) {
             score = 100;
-        } else if (wordCount < 300) {
-            issues.push('Resume too short');
-            suggestions.push('Add more details about your experience and achievements');
-            score = Math.max(0, (wordCount / 300) * 100);
+        } else if (wordCount < 250) {
+            issues.push(`Resume too short (${wordCount} words, need 400+)`);
+            suggestions.push('Add more details: quantify achievements, expand project descriptions, include relevant coursework');
+            score = Math.max(0, (wordCount / 400) * 100);
+        } else if (wordCount < 400) {
+            issues.push(`Resume slightly short (${wordCount} words)`);
+            suggestions.push('Add 1-2 more bullet points per project/experience with specific achievements');
+            score = Math.max(70, (wordCount / 400) * 100);
+        } else if (wordCount > 900) {
+            issues.push(`Resume too long (${wordCount} words, keep under 700)`);
+            suggestions.push('Remove less relevant details, focus on impact and results, condense older experiences');
+            score = Math.max(50, 100 - ((wordCount - 700) / 10));
         } else {
-            issues.push('Resume too long');
-            suggestions.push('Condense content to focus on most relevant experiences');
-            score = Math.max(0, 100 - ((wordCount - 800) / 10));
+            // 700-900 words: acceptable but could be tighter
+            suggestions.push('Good length, but consider condensing to 600-700 words for optimal readability');
+            score = 90;
         }
 
         return { score: Math.round(score), issues, suggestions };
