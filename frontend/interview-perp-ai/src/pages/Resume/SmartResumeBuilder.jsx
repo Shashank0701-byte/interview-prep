@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useScrollToTop } from '../../hooks/useScrollToTop';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import * as pdfjsLib from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { 
     LuFileText, 
     LuCheck, 
@@ -15,8 +16,8 @@ import {
     LuCopy
 } from 'react-icons/lu';
 
-// Configure PDF.js worker - using local worker file for reliability
-pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+// Configure PDF.js worker using the bundled worker file
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const SmartResumeBuilder = () => {
     const navigate = useNavigate();
