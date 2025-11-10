@@ -37,6 +37,9 @@ import StudyRoomJoin from './pages/StudyRoom/StudyRoomJoin';
 import AIInterviewCoach from './pages/AIInterviewCoach/AIInterviewCoach';
 import InterviewInterface from './pages/AIInterviewCoach/InterviewInterface';
 import InterviewReport from './pages/AIInterviewCoach/InterviewReport';
+import SalaryNegotiationPage from './pages/SalaryNegotiation/SalaryNegotiationPage';
+import NegotiationSimulator from './pages/SalaryNegotiation/NegotiationSimulator';
+import NegotiationResults from './pages/SalaryNegotiation/NegotiationResults';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -111,6 +114,18 @@ const App = () => {
             <Route
               path="/resume-builder"
               element={<ProtectedRoute><SmartResumeBuilder /></ProtectedRoute>}
+            />
+            <Route
+              path="/salary-negotiation"
+              element={<ProtectedRoute><SalaryNegotiationPage /></ProtectedRoute>}
+            />
+            <Route
+              path="/salary-negotiation/simulator"
+              element={<ProtectedRoute><NegotiationSimulator /></ProtectedRoute>}
+            />
+            <Route
+              path="/salary-negotiation/results"
+              element={<ProtectedRoute><NegotiationResults /></ProtectedRoute>}
             />
             <Route
               path="/live-coding"
