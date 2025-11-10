@@ -40,6 +40,7 @@ import InterviewReport from './pages/AIInterviewCoach/InterviewReport';
 import SalaryNegotiationPage from './pages/SalaryNegotiation/SalaryNegotiationPage';
 import NegotiationSimulator from './pages/SalaryNegotiation/NegotiationSimulator';
 import NegotiationResults from './pages/SalaryNegotiation/NegotiationResults';
+import NegotiationHistory from './pages/SalaryNegotiation/NegotiationHistory';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -126,6 +127,10 @@ const App = () => {
             <Route
               path="/salary-negotiation/results"
               element={<ProtectedRoute><NegotiationResults /></ProtectedRoute>}
+            />
+            <Route
+              path="/salary-negotiation/history"
+              element={<ProtectedRoute><NegotiationHistory /></ProtectedRoute>}
             />
             <Route
               path="/live-coding"

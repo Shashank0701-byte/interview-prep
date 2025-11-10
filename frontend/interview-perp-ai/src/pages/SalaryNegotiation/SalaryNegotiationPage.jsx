@@ -153,16 +153,25 @@ const SalaryNegotiationPage = () => {
                 {/* Hero Section */}
                 <div className="max-w-7xl mx-auto mb-12">
                     <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 md:p-12 shadow-lg border border-slate-200 dark:border-slate-700">
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-                                <LuDollarSign className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                                    <LuDollarSign className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                                </div>
+                                <div>
+                                    <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Salary Negotiation Simulator</h1>
+                                    <p className="text-slate-600 dark:text-slate-400 text-lg mt-2">
+                                        Practice negotiating with AI recruiters and maximize your compensation
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Salary Negotiation Simulator</h1>
-                                <p className="text-slate-600 dark:text-slate-400 text-lg mt-2">
-                                    Practice negotiating with AI recruiters and maximize your compensation
-                                </p>
-                            </div>
+                            <button
+                                onClick={() => navigate('/salary-negotiation/history')}
+                                className="hidden md:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
+                            >
+                                <LuActivity className="w-5 h-5" />
+                                View History
+                            </button>
                         </div>
 
                         {/* Stats */}

@@ -517,4 +517,122 @@ function generateRecommendations(negotiation, improvement, marketPosition) {
     return recommendations;
 }
 
+// Get user's negotiation history with analytics
+exports.getNegotiationHistory = async (req, res) => {
+    try {
+        const negotiations = await SalaryNegotiation.find({ user: req.user._id })
+            .sort({ createdAt: -1 })
+            .select('-conversationHistory'); // Exclude full conversation for performance
+        
+        // Calculate analytics
+        const totalNegotiations = negotiations.length;
+        const completedNegotiations = negotiations.filter(n => n.status !== 'in-progress').length;
+        
+        // Calculate average improvement
+        const improvementSum = negotiations
+            .filter(n => n.status !== 'in-progress')
+            .reduce((sum, n) => {
+                const initial = n.initialOffer.baseSalary + n.initialOffer.equity + n.initialOffer.signingBonus;
+                const final = n.finalOffer.baseSalary + n.finalOffer.equity + n.finalOffer.signingBonus;
+                const improvement = ((final - initial) / initial) * 100;
+                return sum + improvement;
+            }, 0);
+        const avgImprovement = completedNegotiations > 0 ? improvementSum / completedNegotiations : 0;
+        
+        // Calculate average confidence score
+        const confidenceSum = negotiations
+            .filter(n => n.performance.confidenceScore)
+            .reduce((sum, n) => sum + n.performance.confidenceScore, 0);
+        const avgConfidence = negotiations.length > 0 ? confidenceSum / negotiations.length : 0;
+        
+        // Get most used tactics
+        const tacticsCount = {};
+        negotiations.forEach(n => {
+            if (n.performance && n.performance.tacticsUsed && Array.isArray(n.performance.tacticsUsed)) {
+                n.performance.tacticsUsed.forEach(tactic => {
+                    tacticsCount[tactic] = (tacticsCount[tactic] || 0) + 1;
+                });
+            }
+        });
+        const topTactics = Object.entries(tacticsCount)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([tactic, count]) => ({ tactic, count }));
+        
+        // Get scenario breakdown
+        const scenarioStats = {};
+        negotiations.forEach(n => {
+            if (!scenarioStats[n.scenario]) {
+                scenarioStats[n.scenario] = { count: 0, avgImprovement: 0, totalImprovement: 0 };
+            }
+            scenarioStats[n.scenario].count++;
+            if (n.status !== 'in-progress') {
+                const initial = n.initialOffer.baseSalary + n.initialOffer.equity + n.initialOffer.signingBonus;
+                const final = n.finalOffer.baseSalary + n.finalOffer.equity + n.finalOffer.signingBonus;
+                const improvement = ((final - initial) / initial) * 100;
+                scenarioStats[n.scenario].totalImprovement += improvement;
+            }
+        });
+        
+        Object.keys(scenarioStats).forEach(scenario => {
+            const completed = negotiations.filter(n => n.scenario === scenario && n.status !== 'in-progress').length;
+            scenarioStats[scenario].avgImprovement = completed > 0 
+                ? scenarioStats[scenario].totalImprovement / completed 
+                : 0;
+        });
+        
+        // Calculate streak (consecutive days with negotiations)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let streak = 0;
+        let checkDate = new Date(today);
+        
+        while (true) {
+            const dayStart = new Date(checkDate);
+            const dayEnd = new Date(checkDate);
+            dayEnd.setHours(23, 59, 59, 999);
+            
+            const hasNegotiation = negotiations.some(n => {
+                const nDate = new Date(n.createdAt);
+                return nDate >= dayStart && nDate <= dayEnd;
+            });
+            
+            if (hasNegotiation) {
+                streak++;
+                checkDate.setDate(checkDate.getDate() - 1);
+            } else {
+                break;
+            }
+        }
+        
+        // Get recent achievements
+        const achievements = [];
+        if (totalNegotiations >= 1) achievements.push({ name: 'First Negotiation', icon: '🎯', date: negotiations[negotiations.length - 1].createdAt });
+        if (totalNegotiations >= 5) achievements.push({ name: '5 Negotiations', icon: '🔥', unlocked: true });
+        if (totalNegotiations >= 10) achievements.push({ name: '10 Negotiations', icon: '💪', unlocked: true });
+        if (avgImprovement >= 15) achievements.push({ name: '15% Avg Improvement', icon: '📈', unlocked: true });
+        if (avgImprovement >= 25) achievements.push({ name: '25% Avg Improvement', icon: '🚀', unlocked: true });
+        if (avgConfidence >= 70) achievements.push({ name: 'Confident Negotiator', icon: '⭐', unlocked: true });
+        if (streak >= 3) achievements.push({ name: '3-Day Streak', icon: '🔥', unlocked: true });
+        if (streak >= 7) achievements.push({ name: '7-Day Streak', icon: '💎', unlocked: true });
+        
+        res.json({
+            negotiations,
+            analytics: {
+                totalNegotiations,
+                completedNegotiations,
+                avgImprovement: Math.round(avgImprovement * 10) / 10,
+                avgConfidence: Math.round(avgConfidence),
+                topTactics,
+                scenarioStats,
+                streak,
+                achievements
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching negotiation history:', error);
+        res.status(500).json({ message: 'Error fetching negotiation history' });
+    }
+};
+
 module.exports = exports;
