@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
+import EmailNegotiationView from '../../components/EmailNegotiationView';
 import {
     LuDollarSign,
     LuSend,
@@ -364,8 +365,17 @@ const NegotiationSimulator = () => {
                             )}
                         </div>
 
-                        {/* Main Chat Area */}
+                        {/* Main Chat/Email Area */}
                         <div className="lg:col-span-2">
+                            {negotiation.communicationMode === 'email' ? (
+                                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg h-[calc(100vh-12rem)]">
+                                    <EmailNegotiationView
+                                        negotiation={negotiation}
+                                        conversationHistory={negotiation.conversationHistory || []}
+                                        onSendEmail={handleSendMessage}
+                                    />
+                                </div>
+                            ) : (
                             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg h-[calc(100vh-12rem)] flex flex-col">
                                 {/* Messages */}
                                 <div className="flex-1 overflow-y-auto p-6 space-y-4">
@@ -487,6 +497,7 @@ const NegotiationSimulator = () => {
                                     </div>
                                 </div>
                             </div>
+                            )}
                         </div>
                     </div>
                 </div>

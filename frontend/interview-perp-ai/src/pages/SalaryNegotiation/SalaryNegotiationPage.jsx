@@ -14,7 +14,9 @@ import {
     LuShield,
     LuAward,
     LuClock,
-    LuActivity
+    LuActivity,
+    LuMessageSquare,
+    LuMail
 } from 'react-icons/lu';
 
 const SalaryNegotiationPage = () => {
@@ -26,7 +28,8 @@ const SalaryNegotiationPage = () => {
         role: 'Software Engineer',
         level: 'mid',
         location: 'Bangalore',
-        recruiterPersonality: 'neutral'
+        recruiterPersonality: 'neutral',
+        communicationMode: 'chat'
     });
 
     const scenarios = [
@@ -366,6 +369,51 @@ const SalaryNegotiationPage = () => {
                                         </select>
                                         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                                             {personalities.find(p => p.value === formData.recruiterPersonality)?.description}
+                                        </p>
+                                    </div>
+
+                                    {/* Communication Mode */}
+                                    <div>
+                                        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                                            <LuMessageSquare className="inline w-4 h-4 mr-2" />
+                                            Communication Mode
+                                        </label>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, communicationMode: 'chat' })}
+                                                className={`p-4 rounded-xl border-2 transition-all ${
+                                                    formData.communicationMode === 'chat'
+                                                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
+                                                        : 'border-slate-200 dark:border-slate-600 hover:border-indigo-300'
+                                                }`}
+                                            >
+                                                <LuMessageSquare className={`w-6 h-6 mx-auto mb-2 ${
+                                                    formData.communicationMode === 'chat' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'
+                                                }`} />
+                                                <div className="text-sm font-semibold text-slate-900 dark:text-white">Chat Mode</div>
+                                                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Real-time messaging</div>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, communicationMode: 'email' })}
+                                                className={`p-4 rounded-xl border-2 transition-all ${
+                                                    formData.communicationMode === 'email'
+                                                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
+                                                        : 'border-slate-200 dark:border-slate-600 hover:border-indigo-300'
+                                                }`}
+                                            >
+                                                <LuMail className={`w-6 h-6 mx-auto mb-2 ${
+                                                    formData.communicationMode === 'email' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'
+                                                }`} />
+                                                <div className="text-sm font-semibold text-slate-900 dark:text-white">Email Mode</div>
+                                                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Professional emails</div>
+                                            </button>
+                                        </div>
+                                        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                                            {formData.communicationMode === 'chat' 
+                                                ? '💬 Practice quick, conversational negotiation skills'
+                                                : '📧 Learn professional email negotiation etiquette'}
                                         </p>
                                     </div>
                                 </div>
