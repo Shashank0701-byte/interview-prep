@@ -14,6 +14,12 @@ const negotiationMessageSchema = new mongoose.Schema({
         relocation: Number,
         benefits: String
     },
+    emailMetadata: {
+        subject: String,
+        from: String,
+        to: String,
+        cc: [String]
+    },
     timestamp: {
         type: Date,
         default: Date.now
@@ -48,6 +54,23 @@ const salaryNegotiationSchema = new mongoose.Schema({
         type: String,
         enum: ['friendly', 'aggressive', 'neutral', 'experienced'],
         default: 'neutral'
+    },
+    communicationMode: {
+        type: String,
+        enum: ['chat', 'email'],
+        default: 'chat'
+    },
+    recruiterName: {
+        type: String,
+        default: 'Priya Sharma'
+    },
+    recruiterEmail: {
+        type: String,
+        default: 'priya.sharma@company.com'
+    },
+    companyName: {
+        type: String,
+        default: 'TechCorp India'
     },
     initialOffer: {
         baseSalary: Number,

@@ -101,7 +101,7 @@ const recruiterPersonalities = {
 // Start a new negotiation session
 exports.startNegotiation = async (req, res) => {
     try {
-        const { scenario, role, level, location, recruiterPersonality } = req.body;
+        const { scenario, role, level, location, recruiterPersonality, communicationMode, companyName } = req.body;
         
         // Get market data for the role
         const market = marketData[role]?.[level]?.[location] || marketData['Software Engineer']['mid']['Remote'];
@@ -115,6 +115,12 @@ exports.startNegotiation = async (req, res) => {
         const noticePeriodDays = scenario === 'notice-period-buyout' ? 90 : 0;
         const buyoutAmount = scenario === 'notice-period-buyout' ? Math.round(baseOffer * 3 / 12) : 0; // 3 months salary
         
+        // Generate recruiter details for email mode
+        const recruiterNames = ['Priya Sharma', 'Rahul Verma', 'Anjali Patel', 'Vikram Singh', 'Neha Gupta'];
+        const recruiterName = recruiterNames[Math.floor(Math.random() * recruiterNames.length)];
+        const company = companyName || 'TechCorp India';
+        const recruiterEmail = `${recruiterName.toLowerCase().replace(' ', '.')}@${company.toLowerCase().replace(' ', '')}.com`;
+        
         const negotiation = new SalaryNegotiation({
             user: req.user._id,
             scenario,
@@ -122,6 +128,10 @@ exports.startNegotiation = async (req, res) => {
             level,
             location,
             recruiterPersonality: recruiterPersonality || 'neutral',
+            communicationMode: communicationMode || 'chat',
+            recruiterName,
+            recruiterEmail,
+            companyName: company,
             initialOffer: {
                 baseSalary: baseOffer,
                 equity,
@@ -143,11 +153,23 @@ exports.startNegotiation = async (req, res) => {
             null
         );
         
-        negotiation.conversationHistory.push({
+        // Add email metadata if in email mode
+        const messageData = {
             sender: 'recruiter',
             message: openingMessage,
             offer: negotiation.initialOffer
-        });
+        };
+        
+        if (negotiation.communicationMode === 'email') {
+            messageData.emailMetadata = {
+                subject: `Offer for ${negotiation.role} position at ${negotiation.companyName}`,
+                from: `${negotiation.recruiterName} <${negotiation.recruiterEmail}>`,
+                to: `${req.user.name} <${req.user.email}>`,
+                cc: []
+            };
+        }
+        
+        negotiation.conversationHistory.push(messageData);
         
         await negotiation.save();
         
@@ -160,6 +182,10 @@ exports.startNegotiation = async (req, res) => {
                 level: negotiation.level,
                 location: negotiation.location,
                 recruiterPersonality: negotiation.recruiterPersonality,
+                communicationMode: negotiation.communicationMode,
+                recruiterName: negotiation.recruiterName,
+                recruiterEmail: negotiation.recruiterEmail,
+                companyName: negotiation.companyName,
                 initialOffer: negotiation.initialOffer,
                 marketData: negotiation.marketData,
                 conversationHistory: negotiation.conversationHistory
@@ -187,11 +213,22 @@ exports.sendMessage = async (req, res) => {
         }
         
         // Add user message to history
-        negotiation.conversationHistory.push({
+        const userMessageData = {
             sender: 'user',
             message,
             offer: counterOffer
-        });
+        };
+        
+        if (negotiation.communicationMode === 'email') {
+            userMessageData.emailMetadata = {
+                subject: `Re: Offer for ${negotiation.role} position at ${negotiation.companyName}`,
+                from: `${req.user.name} <${req.user.email}>`,
+                to: `${negotiation.recruiterName} <${negotiation.recruiterEmail}>`,
+                cc: []
+            };
+        }
+        
+        negotiation.conversationHistory.push(userMessageData);
         
         negotiation.negotiationRounds += 1;
         
@@ -210,11 +247,22 @@ exports.sendMessage = async (req, res) => {
         // Determine if recruiter makes a counter-offer
         const newOffer = generateCounterOffer(negotiation, counterOffer, analysis, personality);
         
-        negotiation.conversationHistory.push({
+        const recruiterMessageData = {
             sender: 'recruiter',
             message: recruiterResponse,
             offer: newOffer
-        });
+        };
+        
+        if (negotiation.communicationMode === 'email') {
+            recruiterMessageData.emailMetadata = {
+                subject: `Re: Offer for ${negotiation.role} position at ${negotiation.companyName}`,
+                from: `${negotiation.recruiterName} <${negotiation.recruiterEmail}>`,
+                to: `${req.user.name} <${req.user.email}>`,
+                cc: []
+            };
+        }
+        
+        negotiation.conversationHistory.push(recruiterMessageData);
         
         // Update performance metrics
         if (!negotiation.performance) {
@@ -320,8 +368,18 @@ async function generateRecruiterMessage(type, negotiation, personality, context)
     
     if (type === 'opening') {
         const isNoticePeriod = negotiation.scenario === 'notice-period-buyout';
-        prompt = `You are a ${personality.tone} recruiter for a ${negotiation.scenario} company in India. 
-Generate an opening message for a ${isNoticePeriod ? 'notice period buyout' : 'salary'} negotiation with a ${negotiation.level} ${negotiation.role} in ${negotiation.location}.
+        const isEmail = negotiation.communicationMode === 'email';
+        
+        prompt = `You are ${negotiation.recruiterName}, a ${personality.tone} recruiter for ${negotiation.companyName} in India. 
+Generate an opening ${isEmail ? 'email' : 'message'} for a ${isNoticePeriod ? 'notice period buyout' : 'salary'} negotiation with a ${negotiation.level} ${negotiation.role} in ${negotiation.location}.
+
+${isEmail ? `Format as a professional email with:
+- Greeting (use candidate's name if available, otherwise "Hi there")
+- Brief introduction about yourself and the company
+- The offer details
+- Closing with your name and title
+
+Keep it professional but ${personality.tone}. Use proper email etiquette.` : 'Format as a conversational message.'}
 
 The initial offer is:
 - Base Salary (Fixed): ₹${(negotiation.initialOffer.baseSalary / 100000).toFixed(2)} LPA
@@ -332,10 +390,20 @@ ${isNoticePeriod ? `- Current Notice Period: ${negotiation.initialOffer.noticePe
 - Buyout Amount We Can Offer: ₹${(negotiation.initialOffer.buyoutAmount / 100000).toFixed(2)} LPA (to help you join earlier)` : ''}
 
 ${isNoticePeriod ? 'Mention that you need them to join quickly and are willing to discuss notice period buyout options.' : ''}
-Be ${personality.tone}. Use Indian salary terminology (CTC, LPA, fixed vs variable). Keep it under 100 words. Make it realistic and professional.`;
+Be ${personality.tone}. Use Indian salary terminology (CTC, LPA, fixed vs variable). ${isEmail ? 'Keep it under 150 words.' : 'Keep it under 100 words.'} Make it realistic and professional.`;
     } else {
         const lastOffer = negotiation.conversationHistory[negotiation.conversationHistory.length - 1].offer;
-        prompt = `You are a ${personality.tone} recruiter for an Indian company. The candidate just said: "${context.userMessage}"
+        const isEmail = negotiation.communicationMode === 'email';
+        
+        prompt = `You are ${negotiation.recruiterName}, a ${personality.tone} recruiter for ${negotiation.companyName}. The candidate just said: "${context.userMessage}"
+
+${isEmail ? `Format as a professional email reply with:
+- Greeting
+- Response to their message
+- Your counter-offer or position
+- Closing with your name
+
+Keep it professional but ${personality.tone}. Use proper email etiquette.` : 'Format as a conversational message.'}
 
 ${context.counterOffer ? `They're asking for:
 - Base (Fixed): ₹${context.counterOffer.baseSalary ? (context.counterOffer.baseSalary / 100000).toFixed(2) + ' LPA' : 'not specified'}
@@ -348,7 +416,7 @@ Your current offer is:
 - Joining Bonus: ₹${(lastOffer.signingBonus / 100000).toFixed(2)} LPA
 
 Respond as a ${personality.tone} recruiter in Indian context. ${personality.openness > 0.6 ? 'Be open to negotiation.' : 'Be firm but fair.'}
-Use Indian salary terminology (CTC, LPA, fixed vs variable). Keep it under 80 words. Be realistic.`;
+Use Indian salary terminology (CTC, LPA, fixed vs variable). ${isEmail ? 'Keep it under 120 words.' : 'Keep it under 80 words.'} Be realistic.`;
     }
     
     try {
