@@ -13,6 +13,7 @@ import {
     LuSparkles,
     LuShield,
     LuAward,
+    LuClock,
     LuActivity
 } from 'react-icons/lu';
 
@@ -73,6 +74,15 @@ const SalaryNegotiationPage = () => {
             difficulty: 'Expert',
             avgImprovement: '25-40%',
             features: ['Leverage multiple offers', 'Bidding war', 'Maximum compensation', 'Strategic negotiation']
+        },
+        {
+            id: 'notice-period-buyout',
+            title: 'Notice Period Buyout',
+            description: 'Negotiate notice period buyout with new employer. Unique to Indian market.',
+            icon: LuClock,
+            difficulty: 'Medium',
+            avgImprovement: '10-15%',
+            features: ['Notice period negotiation', 'Buyout amount discussion', 'Early joining incentive', 'Current employer release']
         }
     ];
 
@@ -202,7 +212,7 @@ const SalaryNegotiationPage = () => {
                                     <LuActivity className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                                     <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Scenarios</span>
                                 </div>
-                                <div className="text-2xl font-bold text-slate-900 dark:text-white">5</div>
+                                <div className="text-2xl font-bold text-slate-900 dark:text-white">6</div>
                             </div>
                         </div>
                     </div>

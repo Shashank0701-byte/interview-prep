@@ -111,6 +111,10 @@ exports.startNegotiation = async (req, res) => {
         const equity = scenario === 'startup' ? Math.round(baseOffer * 0.15) : Math.round(baseOffer * 0.05);
         const signingBonus = scenario === 'faang' ? Math.round(baseOffer * 0.15) : Math.round(baseOffer * 0.05);
         
+        // Notice period specific values (unique to Indian market)
+        const noticePeriodDays = scenario === 'notice-period-buyout' ? 90 : 0;
+        const buyoutAmount = scenario === 'notice-period-buyout' ? Math.round(baseOffer * 3 / 12) : 0; // 3 months salary
+        
         const negotiation = new SalaryNegotiation({
             user: req.user._id,
             scenario,
@@ -123,7 +127,9 @@ exports.startNegotiation = async (req, res) => {
                 equity,
                 signingBonus,
                 relocation: scenario === 'faang' ? 10000 : 0,
-                benefits: 'Standard benefits package including health, dental, vision, 401k'
+                benefits: 'Standard benefits package including health, dental, vision, 401k',
+                noticePeriodDays,
+                buyoutAmount
             },
             marketData: market
         });
@@ -313,15 +319,19 @@ async function generateRecruiterMessage(type, negotiation, personality, context)
     let prompt = '';
     
     if (type === 'opening') {
+        const isNoticePeriod = negotiation.scenario === 'notice-period-buyout';
         prompt = `You are a ${personality.tone} recruiter for a ${negotiation.scenario} company in India. 
-Generate an opening message for a salary negotiation with a ${negotiation.level} ${negotiation.role} in ${negotiation.location}.
+Generate an opening message for a ${isNoticePeriod ? 'notice period buyout' : 'salary'} negotiation with a ${negotiation.level} ${negotiation.role} in ${negotiation.location}.
 
 The initial offer is:
 - Base Salary (Fixed): ₹${(negotiation.initialOffer.baseSalary / 100000).toFixed(2)} LPA
 - ESOPs/Variable: ₹${(negotiation.initialOffer.equity / 100000).toFixed(2)} LPA
 - Joining Bonus: ₹${(negotiation.initialOffer.signingBonus / 100000).toFixed(2)} LPA
 - Benefits: ${negotiation.initialOffer.benefits}
+${isNoticePeriod ? `- Current Notice Period: ${negotiation.initialOffer.noticePeriodDays} days
+- Buyout Amount We Can Offer: ₹${(negotiation.initialOffer.buyoutAmount / 100000).toFixed(2)} LPA (to help you join earlier)` : ''}
 
+${isNoticePeriod ? 'Mention that you need them to join quickly and are willing to discuss notice period buyout options.' : ''}
 Be ${personality.tone}. Use Indian salary terminology (CTC, LPA, fixed vs variable). Keep it under 100 words. Make it realistic and professional.`;
     } else {
         const lastOffer = negotiation.conversationHistory[negotiation.conversationHistory.length - 1].offer;

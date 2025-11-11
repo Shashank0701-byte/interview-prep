@@ -28,7 +28,7 @@ const salaryNegotiationSchema = new mongoose.Schema({
     },
     scenario: {
         type: String,
-        enum: ['product-company', 'service-company', 'mnc-india', 'indian-startup', 'multiple-offers'],
+        enum: ['product-company', 'service-company', 'mnc-india', 'indian-startup', 'multiple-offers', 'notice-period-buyout'],
         required: true
     },
     role: {
@@ -54,14 +54,18 @@ const salaryNegotiationSchema = new mongoose.Schema({
         equity: Number,
         signingBonus: Number,
         relocation: Number,
-        benefits: String
+        benefits: String,
+        noticePeriodDays: Number,
+        buyoutAmount: Number
     },
     finalOffer: {
         baseSalary: Number,
         equity: Number,
         signingBonus: Number,
         relocation: Number,
-        benefits: String
+        benefits: String,
+        noticePeriodDays: Number,
+        buyoutAmount: Number
     },
     marketData: {
         p10: Number,  // 10th percentile

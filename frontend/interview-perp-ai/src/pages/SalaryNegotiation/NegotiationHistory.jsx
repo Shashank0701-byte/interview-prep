@@ -80,7 +80,8 @@ const NegotiationHistory = () => {
             'service-company': 'IT Service Company',
             'mnc-india': 'MNC India Office',
             'indian-startup': 'Indian Startup',
-            'multiple-offers': 'Multiple Offers'
+            'multiple-offers': 'Multiple Offers',
+            'notice-period-buyout': 'Notice Period Buyout'
         };
         return names[scenario] || scenario;
     };
