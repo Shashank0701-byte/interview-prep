@@ -104,5 +104,10 @@ export const API_PATHS = {
         VOICE_RESPONSE: (sessionId) => `/api/ai-interview-coach/${sessionId}/voice-response`,
         HISTORY: "/api/ai-interview-coach/history",
     },
-   
+    SALARY_NEGOTIATION: {
+        START: "/api/salary-negotiation/start",
+        SEND_MESSAGE: (negotiationId) => `/api/salary-negotiation/${negotiationId}/message`,
+        FINALIZE: (negotiationId) => `/api/salary-negotiation/${negotiationId}/finalize`,
+        HISTORY: "/api/salary-negotiation/history",
+    },
 };
