@@ -1,0 +1,162 @@
+# AI Training - Git Ignore File
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+ai-env/
+study-buddy-env/
+
+# Trained Models (Large Files)
+study-buddy/models/trained/*.pkl
+study-buddy/models/trained/*.joblib
+study-buddy/models/trained/*.h5
+study-buddy/models/trained/*.pt
+study-buddy/models/trained/*.pth
+study-buddy/models/evaluation/
+
+# Generated Data Files
+study-buddy/data/processed/
+study-buddy/data/synthetic/
+study-buddy/data/temp/
+*.csv
+*.parquet
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Logs and Debugging
+*.log
+logs/
+debug/
+study_buddy.log
+training.log
+evaluation.log
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Environment Variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache and Temporary Files
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Machine Learning Specific
+mlruns/
+mlflow/
+wandb/
+tensorboard_logs/
+checkpoints/
+experiments/
+
+# Data Science
+.ipynb_checkpoints
+profile_default/
+ipython_config.py
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup Files
+*.bak
+*.backup
+*.tmp
+*.temp
+
+# Large Dataset Files (Keep structure, ignore content)
+study-buddy/data/raw/*.json
+study-buddy/data/raw/*.csv
+study-buddy/data/raw/*.txt
+
+# API Keys and Secrets
+secrets.json
+config/secrets.py
+api_keys.txt
+
+# Performance Profiling
+*.prof
+*.profile
+
+# Documentation Build
+docs/_build/
+docs/build/
+site/
+
+# PyCharm
+.idea/
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Rope
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
