@@ -89,7 +89,7 @@ const InterviewPrep = () => {
 
     const toggleQuestionPinStatus = async (questionId) => {
         try {
-            await axiosInstance.post(API_PATHS.QUESTION.PIN(questionId));
+            await axiosInstance.put(API_PATHS.QUESTION.PIN(questionId));
             fetchSessionDetailsById();
             
             // Trigger analytics refresh after pinning/unpinning
