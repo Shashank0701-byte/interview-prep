@@ -1,0 +1,161 @@
+{
+  "behavior_patterns": {
+    "study_time_preferences": {
+      "morning_learner": {
+        "peak_hours": ["06:00", "07:00", "08:00", "09:00"],
+        "performance_multiplier": 1.3,
+        "attention_span_minutes": 45,
+        "preferred_session_length": 30,
+        "characteristics": ["high_focus", "quick_comprehension", "prefers_challenging_content"]
+      },
+      "afternoon_learner": {
+        "peak_hours": ["13:00", "14:00", "15:00", "16:00"],
+        "performance_multiplier": 1.1,
+        "attention_span_minutes": 35,
+        "preferred_session_length": 25,
+        "characteristics": ["steady_progress", "methodical_approach", "prefers_structured_content"]
+      },
+      "evening_learner": {
+        "peak_hours": ["19:00", "20:00", "21:00", "22:00"],
+        "performance_multiplier": 1.2,
+        "attention_span_minutes": 40,
+        "preferred_session_length": 35,
+        "characteristics": ["reflective_learning", "deep_thinking", "prefers_review_sessions"]
+      },
+      "night_owl": {
+        "peak_hours": ["22:00", "23:00", "00:00", "01:00"],
+        "performance_multiplier": 1.4,
+        "attention_span_minutes": 50,
+        "preferred_session_length": 40,
+        "characteristics": ["intense_focus", "problem_solving", "prefers_complex_challenges"]
+      }
+    },
+    "learning_styles": {
+      "visual_learner": {
+        "preferences": ["code_examples", "diagrams", "visual_explanations"],
+        "response_style": "include_examples",
+        "motivation_triggers": ["progress_visualization", "achievement_badges"]
+      },
+      "kinesthetic_learner": {
+        "preferences": ["hands_on_practice", "interactive_sessions", "trial_and_error"],
+        "response_style": "encourage_experimentation",
+        "motivation_triggers": ["practical_applications", "real_world_examples"]
+      },
+      "auditory_learner": {
+        "preferences": ["explanations", "discussions", "verbal_feedback"],
+        "response_style": "detailed_explanations",
+        "motivation_triggers": ["verbal_encouragement", "progress_narration"]
+      }
+    },
+    "motivation_patterns": {
+      "achievement_driven": {
+        "triggers": ["milestone_completion", "streak_maintenance", "skill_mastery"],
+        "demotivators": ["long_plateaus", "unclear_progress"],
+        "response_strategy": "celebrate_small_wins",
+        "reminder_frequency": "high"
+      },
+      "progress_driven": {
+        "triggers": ["consistent_improvement", "learning_new_concepts", "overcoming_challenges"],
+        "demotivators": ["repetitive_content", "lack_of_challenge"],
+        "response_strategy": "highlight_growth",
+        "reminder_frequency": "medium"
+      },
+      "social_driven": {
+        "triggers": ["peer_comparison", "sharing_achievements", "collaborative_learning"],
+        "demotivators": ["isolation", "lack_of_feedback"],
+        "response_strategy": "community_engagement",
+        "reminder_frequency": "medium"
+      },
+      "mastery_driven": {
+        "triggers": ["deep_understanding", "complex_problem_solving", "expertise_building"],
+        "demotivators": ["surface_learning", "rushed_progress"],
+        "response_strategy": "encourage_depth",
+        "reminder_frequency": "low"
+      }
+    },
+    "struggle_patterns": {
+      "concept_difficulty": {
+        "indicators": ["low_accuracy", "long_time_per_question", "frequent_hints"],
+        "intervention": "break_down_concepts",
+        "support_level": "high",
+        "alternative_approaches": ["simpler_examples", "step_by_step_guidance", "prerequisite_review"]
+      },
+      "attention_issues": {
+        "indicators": ["short_sessions", "frequent_breaks", "declining_performance"],
+        "intervention": "adjust_session_length",
+        "support_level": "medium",
+        "alternative_approaches": ["shorter_bursts", "gamification", "variety_in_content"]
+      },
+      "motivation_drop": {
+        "indicators": ["skipped_sessions", "reduced_frequency", "negative_feedback"],
+        "intervention": "motivational_boost",
+        "support_level": "high",
+        "alternative_approaches": ["easier_content", "achievement_focus", "personal_connection"]
+      },
+      "plateau_phase": {
+        "indicators": ["stagnant_progress", "repeated_mistakes", "frustration_signals"],
+        "intervention": "strategy_change",
+        "support_level": "medium",
+        "alternative_approaches": ["new_topics", "different_difficulty", "review_fundamentals"]
+      }
+    },
+    "success_patterns": {
+      "consistent_learner": {
+        "characteristics": ["regular_sessions", "steady_progress", "good_retention"],
+        "reinforcement": "maintain_momentum",
+        "growth_opportunities": ["increase_difficulty", "explore_new_topics", "leadership_roles"]
+      },
+      "fast_learner": {
+        "characteristics": ["quick_mastery", "high_accuracy", "seeks_challenges"],
+        "reinforcement": "provide_challenges",
+        "growth_opportunities": ["advanced_topics", "teaching_others", "complex_projects"]
+      },
+      "persistent_learner": {
+        "characteristics": ["overcomes_difficulties", "long_sessions", "thorough_understanding"],
+        "reinforcement": "acknowledge_effort",
+        "growth_opportunities": ["difficult_concepts", "research_projects", "mentoring"]
+      }
+    }
+  },
+  "behavioral_indicators": {
+    "engagement_signals": {
+      "high_engagement": ["long_sessions", "multiple_daily_sessions", "explores_additional_content", "asks_questions"],
+      "medium_engagement": ["regular_sessions", "completes_assigned_work", "occasional_extra_practice"],
+      "low_engagement": ["irregular_sessions", "minimal_completion", "frequent_breaks", "avoids_challenges"]
+    },
+    "learning_velocity": {
+      "fast": {
+        "questions_per_hour": "> 15",
+        "accuracy_threshold": "> 80%",
+        "concept_mastery_time": "< 2 days"
+      },
+      "moderate": {
+        "questions_per_hour": "8-15",
+        "accuracy_threshold": "60-80%",
+        "concept_mastery_time": "2-5 days"
+      },
+      "slow": {
+        "questions_per_hour": "< 8",
+        "accuracy_threshold": "< 60%",
+        "concept_mastery_time": "> 5 days"
+      }
+    },
+    "retention_patterns": {
+      "excellent": {
+        "review_accuracy": "> 90%",
+        "forgetting_curve": "slow",
+        "spaced_repetition_multiplier": 2.5
+      },
+      "good": {
+        "review_accuracy": "70-90%",
+        "forgetting_curve": "normal",
+        "spaced_repetition_multiplier": 2.0
+      },
+      "needs_improvement": {
+        "review_accuracy": "< 70%",
+        "forgetting_curve": "fast",
+        "spaced_repetition_multiplier": 1.5
+      }
+    }
+  }
+}
