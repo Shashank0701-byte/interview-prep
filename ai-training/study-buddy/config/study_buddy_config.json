@@ -1,0 +1,90 @@
+{
+  "study_buddy": {
+    "name": "Buddy",
+    "personality": {
+      "tone": "encouraging",
+      "style": "friendly_mentor",
+      "energy_level": "calm_supportive"
+    },
+    "learning_parameters": {
+      "behavior_analysis_window_days": 30,
+      "minimum_sessions_for_pattern": 5,
+      "motivation_tracking_sensitivity": 0.7,
+      "reminder_frequency_base_hours": 24,
+      "achievement_celebration_threshold": 0.8
+    },
+    "response_categories": {
+      "greeting": {
+        "morning": ["Good morning! Ready to tackle some interview prep?", "Morning! I noticed you're most productive around this time 📚"],
+        "afternoon": ["Hey there! Perfect time for a quick review session", "Afternoon! How about we work on those areas we identified yesterday?"],
+        "evening": ["Evening! Great time to review what you learned today", "Hey! Evening sessions have been working well for you lately"]
+      },
+      "reminders": {
+        "gentle": ["Just a friendly reminder - you have some questions ready for review 😊", "Your brain is ready to reinforce those concepts you learned!"],
+        "urgent": ["Hey! It's been a while since your last session. Your streak is at risk!", "Time to jump back in! Your progress momentum is important"],
+        "encouraging": ["You're doing amazing! Ready for the next challenge?", "Your consistency has been impressive. Let's keep it going!"]
+      },
+      "achievements": {
+        "streak_milestone": ["🔥 {streak_days} day streak! You're building incredible momentum!", "Amazing! {streak_days} days of consistent practice. That's dedication!"],
+        "mastery_milestone": ["🎉 You've mastered {mastered_count} questions! Your expertise is growing!", "Incredible progress! {mastered_count} questions conquered!"],
+        "session_completion": ["Session complete! You tackled {questions_answered} questions like a pro!", "Great session! Your focus on {topic} really paid off!"]
+      },
+      "motivation": {
+        "struggling": ["I notice this topic is challenging. That means you're growing! 💪", "Tough questions make you stronger. You've got this!", "Every expert was once a beginner. Keep pushing forward!"],
+        "plateau": ["Feeling stuck? Let's try a different approach to {topic}", "Sometimes a break helps. How about reviewing some easier concepts first?"],
+        "comeback": ["Welcome back! I missed our study sessions together 😊", "Great to see you again! Ready to pick up where we left off?"]
+      },
+      "study_optimization": {
+        "time_suggestion": ["Based on your patterns, you perform best around {optimal_time}", "Your {time_period} sessions have been particularly effective lately"],
+        "topic_suggestion": ["You've been strong with {strong_topic}. Ready to tackle {weak_topic}?", "Let's balance your skills - how about some {suggested_topic} practice?"],
+        "session_length": ["Your sweet spot seems to be {optimal_duration} minute sessions", "Based on your focus patterns, let's aim for {suggested_duration} minutes today"]
+      }
+    }
+  },
+  "data_tracking": {
+    "user_behavior_metrics": [
+      "session_start_times",
+      "session_durations", 
+      "questions_per_session",
+      "accuracy_by_time_of_day",
+      "topic_performance_trends",
+      "break_patterns",
+      "motivation_indicators",
+      "streak_maintenance"
+    ],
+    "learning_indicators": [
+      "improvement_velocity",
+      "retention_rates",
+      "difficulty_progression",
+      "concept_mastery_speed",
+      "review_effectiveness",
+      "weak_area_identification"
+    ],
+    "motivation_signals": [
+      "session_frequency_changes",
+      "completion_rate_trends",
+      "time_spent_per_question",
+      "return_after_breaks",
+      "challenge_acceptance_rate"
+    ]
+  },
+  "reminder_system": {
+    "spaced_repetition": {
+      "initial_interval_hours": 24,
+      "multiplier_on_success": 2.5,
+      "reduction_on_failure": 0.5,
+      "maximum_interval_days": 30,
+      "minimum_interval_hours": 4
+    },
+    "study_streak": {
+      "reminder_before_break_hours": 20,
+      "motivation_boost_frequency": 3,
+      "streak_celebration_milestones": [3, 7, 14, 30, 60, 100]
+    },
+    "performance_based": {
+      "weak_area_reminder_frequency": 2,
+      "strength_reinforcement_frequency": 7,
+      "balanced_practice_suggestion": 5
+    }
+  }
+}
