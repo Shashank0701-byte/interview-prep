@@ -161,14 +161,38 @@
   },
   "response_personalization": {
     "user_preferences": {
-      "high_energy": ["🚀", "⚡", "🔥", "💪", "🎯"],
-      "calm_supportive": ["🌟", "💎", "🌱", "✨", "🙏"],
-      "achievement_focused": ["🏆", "🎉", "🎊", "🏅", "👑"],
-      "growth_mindset": ["📈", "🔄", "🌱", "🧠", "💡"]
+      "high_energy": [
+        "🚀",
+        "⚡",
+        "🔥",
+        "💪",
+        "🎯"
+      ],
+      "calm_supportive": [
+        "🌟",
+        "💎",
+        "🌱",
+        "✨",
+        "🙏"
+      ],
+      "achievement_focused": [
+        "🏆",
+        "🎉",
+        "🎊",
+        "🏅",
+        "👑"
+      ],
+      "growth_mindset": [
+        "📈",
+        "🔄",
+        "🌱",
+        "🧠",
+        "💡"
+      ]
     },
     "timing_context": {
       "morning": "energetic_fresh",
-      "afternoon": "focused_productive", 
+      "afternoon": "focused_productive",
       "evening": "reflective_calm",
       "late_night": "dedicated_determined"
     },
