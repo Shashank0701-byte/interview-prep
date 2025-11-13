@@ -1,0 +1,182 @@
+{
+  "motivational_responses": {
+    "achievement_celebrations": {
+      "streak_milestones": {
+        "3_days": [
+          "🔥 3-day streak! You're building momentum like a rocket! 🚀",
+          "Three days strong! Your consistency is your secret weapon 💪",
+          "Day 3 complete! You're proving that small steps lead to big victories!"
+        ],
+        "7_days": [
+          "🎉 One week of dedication! You're officially building a habit that will change your career!",
+          "Seven days straight! Your commitment level is interview-winning material 🏆",
+          "Week 1 conquered! You're not just learning code, you're coding success into your future!"
+        ],
+        "14_days": [
+          "🌟 Two weeks of excellence! You're in the top 10% of learners with this consistency!",
+          "14 days of growth! Your future self is already thanking you for this dedication 🙏",
+          "Two-week milestone! You're not just preparing for interviews, you're becoming unstoppable!"
+        ],
+        "30_days": [
+          "🏆 30-day champion! You've built a habit that will serve you for life!",
+          "One month of mastery! You're not the same person who started this journey 🦋",
+          "30 days of dedication! You've proven you have what it takes to achieve anything!"
+        ],
+        "60_days": [
+          "🎊 60 days of excellence! You're in elite company - less than 5% reach this milestone!",
+          "Two months of transformation! You've built skills AND character 💎",
+          "60-day legend! Your consistency would impress any interviewer!"
+        ],
+        "100_days": [
+          "🏅 100-DAY MASTER! You've achieved something extraordinary! You're interview-ready AND life-ready!",
+          "Century club! 100 days of growth that will echo through your entire career! 🌟",
+          "100 days of excellence! You've not just learned to code - you've learned to succeed!"
+        ]
+      },
+      "mastery_achievements": {
+        "first_mastery": [
+          "🎯 First concept mastered! This is where your transformation begins!",
+          "Mastery unlocked! You've proven you can conquer any concept 🔓",
+          "First victory secured! Every expert started exactly where you are now!"
+        ],
+        "topic_completion": [
+          "🎉 {topic} conquered! You're building expertise one concept at a time!",
+          "Topic mastery achieved! {topic} is now part of your professional toolkit 🛠️",
+          "Another skill unlocked! {topic} mastery brings you closer to your dream job!"
+        ],
+        "difficulty_progression": [
+          "🚀 Level up! You've graduated to {new_difficulty} questions - your growth is accelerating!",
+          "Difficulty conquered! Moving to {new_difficulty} shows your expanding capabilities 📈",
+          "Next level unlocked! {new_difficulty} challenges await your growing expertise!"
+        ]
+      },
+      "session_completions": {
+        "perfect_session": [
+          "🌟 Perfect session! 100% accuracy shows your mastery is real!",
+          "Flawless execution! You're not just learning - you're excelling! ⭐",
+          "Perfect score! This is the confidence that wins interviews!"
+        ],
+        "improvement_session": [
+          "📈 Improvement detected! You're {improvement_percentage}% better than last time!",
+          "Growth mindset in action! Your progress curve is beautiful to see 📊",
+          "Upward trajectory! Each session makes you more interview-ready!"
+        ],
+        "challenging_session": [
+          "💪 Tough session conquered! Difficult challenges build strong developers!",
+          "Challenge accepted and completed! Your resilience is your superpower 🦾",
+          "Hard work pays off! Today's struggle is tomorrow's strength!"
+        ]
+      }
+    },
+    "encouragement_during_struggles": {
+      "concept_difficulty": [
+        "🧠 Complex concepts mean you're growing! Every expert struggled here first",
+        "This is where the magic happens! Difficult concepts separate good from great 🌟",
+        "Your brain is literally rewiring itself right now. Embrace the challenge! 🔄"
+      ],
+      "low_accuracy": [
+        "🎯 Accuracy will come with practice! Every mistake is a lesson in disguise",
+        "Learning curve in action! Your accuracy is improving with each attempt 📈",
+        "Mistakes are proof you're trying! Keep going - mastery is just around the corner 🔄"
+      ],
+      "slow_progress": [
+        "🐢 Slow and steady wins the race! Deep learning takes time but lasts forever",
+        "Quality over speed! Your thorough approach will pay dividends 💎",
+        "Patience with yourself is a professional skill! You're building both knowledge and character 🌱"
+      ],
+      "motivation_dip": [
+        "🌅 Every sunrise follows the darkest hour! Your breakthrough is coming",
+        "Champions are made in moments like this! Your persistence will be your victory 🏆",
+        "This feeling is temporary, but the skills you're building are permanent! 💪"
+      ]
+    },
+    "progress_insights": {
+      "strength_recognition": [
+        "🎯 Your {strong_area} skills are impressive! You're building real expertise",
+        "Strength identified! Your {strong_area} mastery shows your potential 💪",
+        "Natural talent spotted! {strong_area} could be your interview superpower ⚡"
+      ],
+      "improvement_areas": [
+        "🎯 {weak_area} is your growth opportunity! Every expert has areas to develop",
+        "Development zone identified! {weak_area} practice will round out your skills 🔄",
+        "Growth edge found! Improving {weak_area} will make you more well-rounded 🌟"
+      ],
+      "balanced_development": [
+        "⚖️ Balanced growth detected! You're developing into a well-rounded developer",
+        "Holistic improvement! Your diverse skill set will impress interviewers 🎯",
+        "Complete developer emerging! Your balanced approach is professional-level 💼"
+      ]
+    },
+    "comeback_motivation": {
+      "after_break": [
+        "🌟 Welcome back, champion! Every expert takes breaks - what matters is coming back!",
+        "Fresh start energy! Your brain has been processing everything in the background 🧠",
+        "Return of the learner! Ready to pick up where your awesome self left off? 🚀"
+      ],
+      "streak_restart": [
+        "🔄 New streak, new you! Your previous {old_streak} days proved you can do this!",
+        "Phoenix rising! Every restart is a chance to build something even better 🔥",
+        "Fresh momentum! Your comeback story starts with this very session 💪"
+      ],
+      "confidence_rebuild": [
+        "🌱 Confidence grows with action! One question at a time, you're rebuilding strength",
+        "Belief restoration in progress! Each correct answer rebuilds your confidence 📈",
+        "Trust the process! Your skills are still there, just waiting to shine again ✨"
+      ]
+    },
+    "daily_motivation": {
+      "morning_energy": [
+        "☀️ Good morning, future tech star! Ready to code your way to success?",
+        "🌅 New day, new growth! Your morning energy is perfect for learning",
+        "🚀 Morning momentum! Let's turn today's effort into tomorrow's opportunities!"
+      ],
+      "afternoon_focus": [
+        "🎯 Afternoon focus time! Your brain is primed for problem-solving",
+        "⚡ Midday mastery session! Perfect time to tackle challenging concepts",
+        "🔥 Afternoon advantage! Your sustained energy is perfect for deep learning"
+      ],
+      "evening_reflection": [
+        "🌙 Evening excellence! Perfect time to review and reinforce today's learning",
+        "✨ Twilight training! Your reflective evening energy enhances retention",
+        "🌟 End-of-day dedication! You're investing in your future with every session"
+      ]
+    },
+    "contextual_encouragement": {
+      "before_difficult_topic": [
+        "🧗 Challenge mountain ahead! Remember: every expert climbed this same peak",
+        "💪 Difficulty incoming! This is where you separate yourself from the crowd",
+        "🎯 Advanced territory! Your willingness to tackle this shows real growth mindset"
+      ],
+      "during_review_session": [
+        "🔄 Review power! You're strengthening neural pathways with every repetition",
+        "🧠 Memory reinforcement! This review session is building permanent knowledge",
+        "⚡ Retention boost! Your brain loves this spaced repetition approach"
+      ],
+      "approaching_milestone": [
+        "🎯 Milestone in sight! You're {distance} away from achieving {goal}!",
+        "🏁 Final stretch! Your dedication is about to pay off in a big way!",
+        "⭐ Almost there! This milestone will be proof of your incredible growth!"
+      ]
+    }
+  },
+  "response_personalization": {
+    "user_preferences": {
+      "high_energy": ["🚀", "⚡", "🔥", "💪", "🎯"],
+      "calm_supportive": ["🌟", "💎", "🌱", "✨", "🙏"],
+      "achievement_focused": ["🏆", "🎉", "🎊", "🏅", "👑"],
+      "growth_mindset": ["📈", "🔄", "🌱", "🧠", "💡"]
+    },
+    "timing_context": {
+      "morning": "energetic_fresh",
+      "afternoon": "focused_productive", 
+      "evening": "reflective_calm",
+      "late_night": "dedicated_determined"
+    },
+    "performance_context": {
+      "high_performer": "challenging_growth_oriented",
+      "steady_performer": "encouraging_consistent",
+      "struggling_performer": "supportive_gentle",
+      "returning_user": "welcoming_motivating"
+    }
+  }
+}
