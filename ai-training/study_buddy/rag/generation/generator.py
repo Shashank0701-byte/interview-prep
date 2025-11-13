@@ -146,14 +146,16 @@ class Generator:
             Context string
         """
         if not retrieved_docs:
-            return "No relevant context found."
+            return "No relevant context found in knowledge base."
         
         context_parts = []
-        for i, doc in enumerate(retrieved_docs[:5]):  # Limit to top 5 docs
+        for i, doc in enumerate(retrieved_docs[:3]):  # Limit to top 3 most relevant docs
             content = doc.get('content', '')
             score = doc.get('score', 0.0)
+            doc_type = doc.get('metadata', {}).get('type', 'general')
             
-            context_parts.append(f"Context {i+1} (relevance: {score:.2f}):\n{content}")
+            # Add document type for better context understanding
+            context_parts.append(f"[{doc_type.upper()}] {content}")
         
         return "\n\n".join(context_parts)
     
@@ -169,7 +171,7 @@ class Generator:
             Generated prompt
         """
         # Base prompt template
-        prompt_template = """You are a Smart Study Buddy AI, a personalized companion that helps users with interview preparation. You are encouraging, knowledgeable, and adaptive to each user's learning style and progress.
+        prompt_template = """You are a Smart Study Buddy AI, a knowledgeable companion that helps users with interview preparation. You provide accurate, helpful information while being encouraging and supportive.
 
 CONTEXT FROM KNOWLEDGE BASE:
 {context}
@@ -180,13 +182,19 @@ USER INFORMATION:
 USER QUERY: {query}
 
 INSTRUCTIONS:
-- Be encouraging and supportive in your tone
-- Provide specific, actionable advice
-- Reference the user's progress and patterns when relevant
-- Use the context to give accurate, helpful information
-- If the user seems stuck or frustrated, provide motivation
-- Suggest next steps or practice recommendations
-- Keep responses conversational but informative
+- FIRST: Answer the user's question directly and accurately using the context provided
+- Provide clear, specific explanations with examples when helpful
+- Use the context information to give comprehensive, factual answers
+- THEN: Add encouragement and reference user progress when relevant
+- Suggest practical next steps or related topics to explore
+- Keep responses informative, clear, and conversational
+- If the context doesn't contain the answer, say so and provide general guidance
+
+RESPONSE FORMAT:
+1. Direct answer to the question
+2. Additional helpful details or examples
+3. Encouraging note with personalized context
+4. Suggested next steps (if applicable)
 
 RESPONSE:"""
         
