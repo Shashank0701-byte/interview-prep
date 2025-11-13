@@ -67,29 +67,29 @@ const CreateInterviewModal = ({ isOpen, onClose, onCreateSession }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
-                    <div>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <div className="flex items-start justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-slate-700">
+                    <div className="flex-1 pr-4">
+                        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
                             Start a New Interview Journey
                         </h2>
-                        <p className="text-gray-600 dark:text-gray-400 mt-1">
+                        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
                             Fill out a few quick details and unlock your personalized set of interview questions
                         </p>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                        className="p-1.5 sm:p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors flex-shrink-0"
                     >
-                        <X className="w-5 h-5 text-gray-500" />
+                        <X className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
                     </button>
                 </div>
 
                 {/* Content */}
-                <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
-                    <div className="space-y-6">
+                <form onSubmit={handleSubmit} className="p-4 sm:p-6 overflow-y-auto max-h-[calc(95vh-140px)] sm:max-h-[calc(90vh-140px)]">
+                    <div className="space-y-4 sm:space-y-6">
                         {/* Target Role */}
                         <div>
                             <label className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white mb-3">
@@ -104,13 +104,13 @@ const CreateInterviewModal = ({ isOpen, onClose, onCreateSession }) => {
                                 className="w-full p-3 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all"
                                 required
                             />
-                            <div className="flex flex-wrap gap-2 mt-2">
+                            <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
                                 {popularRoles.map((role) => (
                                     <button
                                         key={role}
                                         type="button"
                                         onClick={() => handleInputChange('targetRole', role)}
-                                        className="px-3 py-1 text-xs bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
+                                        className="px-2 sm:px-3 py-1 text-xs bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
                                     >
                                         {role}
                                     </button>
@@ -140,7 +140,7 @@ const CreateInterviewModal = ({ isOpen, onClose, onCreateSession }) => {
                         </div>
 
                         {/* Two Column Layout for Topics and Company */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                             {/* Topics */}
                             <div>
                                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white mb-3">
@@ -169,7 +169,7 @@ const CreateInterviewModal = ({ isOpen, onClose, onCreateSession }) => {
                                     placeholder="Search companies like Google, Meta, Amazon..."
                                     className="w-full p-3 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all"
                                 />
-                                <div className="flex flex-wrap gap-1 mt-2">
+                                <div className="flex flex-wrap gap-1 sm:gap-1.5 mt-2">
                                     {popularCompanies.slice(0, 5).map((company) => (
                                         <button
                                             key={company}
@@ -205,22 +205,22 @@ const CreateInterviewModal = ({ isOpen, onClose, onCreateSession }) => {
                 </form>
 
                 {/* Footer */}
-                <div className="flex items-center justify-between p-6 border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50">
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 sm:p-6 border-t border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 gap-3 sm:gap-0">
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center sm:text-left">
                         <span className="font-medium">Required:</span> Target Role & Experience Level
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex gap-2 sm:gap-3">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                            className="flex-1 sm:flex-initial px-3 sm:px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
                         >
                             Cancel
                         </button>
                         <button
                             onClick={handleSubmit}
                             disabled={isCreating || !formData.targetRole || !formData.experience}
-                            className="px-6 py-2 bg-slate-900 dark:bg-slate-600 text-white rounded-lg hover:bg-slate-800 dark:hover:bg-slate-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            className="flex-1 sm:flex-initial px-4 sm:px-6 py-2 bg-slate-900 dark:bg-slate-600 text-white text-sm rounded-lg hover:bg-slate-800 dark:hover:bg-slate-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
                             {isCreating ? (
                                 <>

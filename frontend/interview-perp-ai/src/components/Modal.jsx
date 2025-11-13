@@ -8,24 +8,24 @@ const Modal = ({ children, isOpen, onClose, title, hideHeader }) => {
   }
 
   return (
-    <div className='fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black/50 backdrop-blur-sm p-4'>
-      {/* Enhanced modal with better sizing and spacing */}
+    <div className='fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black/50 backdrop-blur-sm p-2 sm:p-4'>
+      {/* Enhanced modal with better mobile responsiveness */}
       <div
-        className={`relative flex flex-col bg-white shadow-2xl rounded-2xl overflow-hidden w-full max-w-md mx-auto transform transition-all duration-300 ease-out`}
+        className={`relative flex flex-col bg-white shadow-2xl rounded-2xl overflow-hidden w-full max-w-md mx-auto transform transition-all duration-300 ease-out max-h-[95vh] sm:max-h-[90vh]`}
       >
         {!hideHeader && (
-          <div className='flex items-center justify-between px-6 py-5 border-b border-gray-100'>
-            <h3 className='text-xl font-semibold text-gray-900'>{title}</h3>
+          <div className='flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100'>
+            <h3 className='text-lg sm:text-xl font-semibold text-gray-900 pr-8'>{title}</h3>
           </div>
         )}
 
         <button
           type='button'
-          className='text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-600 rounded-full text-sm w-10 h-10 flex justify-center items-center absolute top-4 right-4 cursor-pointer transition-all duration-200 ease-in-out'
+          className='text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-600 rounded-full text-sm w-8 h-8 sm:w-10 sm:h-10 flex justify-center items-center absolute top-2 right-2 sm:top-4 sm:right-4 cursor-pointer transition-all duration-200 ease-in-out z-10'
           onClick={onClose}
         >
           <svg
-            className='w-4 h-4'
+            className='w-3 h-3 sm:w-4 sm:h-4'
             aria-hidden="true"
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
@@ -39,7 +39,7 @@ const Modal = ({ children, isOpen, onClose, title, hideHeader }) => {
             />
           </svg>
         </button>
-        <div className='flex-1 overflow-y-auto custom-scrollbar max-h-[80vh]'>
+        <div className='flex-1 overflow-y-auto custom-scrollbar'>
           {children}
         </div>
       </div>
