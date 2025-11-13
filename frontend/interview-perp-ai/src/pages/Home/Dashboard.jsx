@@ -14,6 +14,7 @@ import { API_PATHS } from '../../utils/apiPaths';
 import moment from "moment";
 import { CARD_BG, getSessionCardColor } from "../../utils/data";
 import RatingModal from '../../components/RatingModal';
+import StudyBuddyChat from '../../components/StudyBuddy/StudyBuddyChat';
 
 
 const Dashboard = () => {
@@ -559,6 +560,9 @@ const Dashboard = () => {
                 sessionData={ratingModal.session}
                 onSubmit={(ratings) => handleSessionRating(ratingModal.session?.id, ratings)}
             />
+            
+            {/* Study Buddy Chat */}
+            <StudyBuddyChat userId="current-user" />
         </DashboardLayout>
     );
 };
