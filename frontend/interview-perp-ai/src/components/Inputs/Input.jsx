@@ -10,11 +10,11 @@ const Input = ({ value, onChange, label, placeholder, type }) => {
   };
 
   return (
-    <div className="flex flex-col gap-2 mb-6">
+    <div className="flex flex-col gap-1.5 sm:gap-2 mb-4 sm:mb-6">
       <label className="text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">
         {label}
       </label>
-      <div className={`flex items-center border-2 rounded-xl px-4 py-3.5 transition-all duration-300 ${
+      <div className={`flex items-center border-2 rounded-xl px-3 sm:px-4 py-3 sm:py-3.5 transition-all duration-300 ${
         isFocused 
           ? 'border-blue-500 bg-blue-50/50 shadow-sm' 
           : 'border-gray-200 hover:border-gray-300 bg-gray-50/50'
@@ -22,7 +22,7 @@ const Input = ({ value, onChange, label, placeholder, type }) => {
         <input
           type={type === "password" ? (showPassword ? "text" : "password") : type}
           placeholder={placeholder}
-          className="w-full bg-transparent outline-none text-sm text-gray-900 placeholder-gray-500 transition-colors duration-300"
+          className="w-full bg-transparent outline-none text-sm sm:text-base text-gray-900 placeholder-gray-500 transition-colors duration-300"
           value={value}
           onChange={onChange}
           onFocus={() => setIsFocused(true)}
@@ -32,17 +32,17 @@ const Input = ({ value, onChange, label, placeholder, type }) => {
           <button
             type="button"
             onClick={toggleShowPassword}
-            className="ml-3 p-1 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+            className="ml-2 sm:ml-3 p-1 rounded-lg hover:bg-gray-200 transition-colors duration-200 flex-shrink-0"
           >
             {showPassword ? (
               <FaRegEye
-                size={18}
-                className="text-gray-600 hover:text-gray-800 transition-colors duration-200"
+                size={16}
+                className="text-gray-600 hover:text-gray-800 transition-colors duration-200 sm:w-[18px] sm:h-[18px]"
               />
             ) : (
               <FaRegEyeSlash
-                size={18}
-                className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                size={16}
+                className="text-gray-400 hover:text-gray-600 transition-colors duration-200 sm:w-[18px] sm:h-[18px]"
               />
             )}
           </button>

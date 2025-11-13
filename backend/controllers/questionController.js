@@ -99,7 +99,7 @@ const addQuestionsToSession = async (req, res) => {
 };
 
 // @desc    Pin or unpin a question
-// @route   POST /api/questions/:id/pin
+// @route   PUT /api/questions/:id/pin
 // @access  Private
 const togglePinQuestion = async (req, res) => {
     try {
