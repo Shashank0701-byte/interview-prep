@@ -160,3 +160,39 @@ site/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Week 1 Development and Testing Files (Not needed in production)
+debug_env.py
+fix_encoding.py
+fix_module_name.py
+list_models.py
+test_simple.py
+test_quota_friendly.py
+test_setup.py
+setup_environment.py
+
+# Vector Database Storage (Local development)
+chroma_db/
+*.chroma
+chromadb/
+
+# Old directory structure (if it exists)
+study-buddy/
+
+# Test outputs and temporary files
+test_output/
+temp_files/
+*.test
+
+# Development requirements (keep main requirements.txt)
+requirements-simple.txt
+
+# API development files
+api_test.py
+test_api.py
+
+# Backup and duplicate files
+*.backup
+*_backup.*
+*_old.*
+*_temp.*
