@@ -1,0 +1,103 @@
+{
+  "optimal_time": {
+    "model_type": "optimal_time_prediction",
+    "train_accuracy": 1.0,
+    "test_accuracy": 1.0,
+    "cv_mean": 1.0,
+    "cv_std": 0.0,
+    "feature_importance": {
+      "session_hour": 0.3472560421035265,
+      "hour_sin": 0.2570701753361343,
+      "hour_cos": 0.27476852298443527,
+      "day_sin": 0.00035241497860257734,
+      "day_cos": 0.00029358851280635777,
+      "accuracy": 0.06558244202028152,
+      "duration_minutes": 0.0013845289963614078,
+      "questions_attempted": 0.0006689654954058061,
+      "completion_rate": 0.029858328013151227,
+      "streak_days": 0.0005725530506687363,
+      "days_since_last_session": 0.0003218167131188557,
+      "questions_per_hour": 0.0008221576113241277,
+      "session_number": 0.0008520912494397662,
+      "accuracy_completion_ratio": 0.007616144054596735,
+      "session_efficiency": 0.000862138578086934,
+      "streak_momentum": 0.0008411963387414831,
+      "user_avg_accuracy": 0.006729464262761835,
+      "user_accuracy_std": 0.0016254186519122716,
+      "user_avg_duration": 0.0013846104637508497,
+      "user_avg_qph": 0.0011374005848933861
+    },
+    "classes": [
+      "afternoon",
+      "evening",
+      "morning",
+      "night"
+    ]
+  },
+  "performance": {
+    "model_type": "performance_prediction",
+    "train_r2": 0.999953482987579,
+    "test_r2": 0.9998071123877736,
+    "test_rmse": 0.0017566111266390197,
+    "cv_mean": 0.9996633438067063,
+    "cv_std": 0.00018762494803005716,
+    "feature_importance": {
+      "session_hour": 5.219874194685919e-06,
+      "hour_sin": 5.3968491894633916e-06,
+      "hour_cos": 5.838136912250894e-06,
+      "day_sin": 1.1353405334393919e-05,
+      "day_cos": 7.463162822792446e-06,
+      "accuracy": 0.9673007620615066,
+      "duration_minutes": 2.6082231675392373e-05,
+      "questions_attempted": 1.1164083814114103e-05,
+      "completion_rate": 0.032421008354488405,
+      "streak_days": 8.651011389136127e-06,
+      "days_since_last_session": 6.861158373275006e-06,
+      "questions_per_hour": 1.1324768892455726e-05,
+      "session_number": 1.7297275324285503e-05,
+      "accuracy_completion_ratio": 6.98059977035447e-05,
+      "session_efficiency": 1.0905161496613408e-05,
+      "streak_momentum": 1.2040814168654797e-05,
+      "user_avg_accuracy": 2.0786054929869166e-05,
+      "user_accuracy_std": 1.299634454483735e-05,
+      "user_avg_duration": 2.0188543690730224e-05,
+      "user_avg_qph": 1.4854709548681445e-05
+    }
+  },
+  "motivation": {
+    "model_type": "motivation_prediction",
+    "train_accuracy": 0.9554215094894807,
+    "test_accuracy": 0.9147058823529411,
+    "cv_mean": 0.9124606111760377,
+    "cv_std": 0.00337376515226063,
+    "feature_importance": {
+      "session_hour": 0.02339924389563119,
+      "hour_sin": 0.015729005345724335,
+      "hour_cos": 0.012106813450972824,
+      "day_sin": 0.007701247544594392,
+      "day_cos": 0.008148094548598652,
+      "accuracy": 0.15738265631989523,
+      "duration_minutes": 0.015321568156897915,
+      "questions_attempted": 0.007203968155275865,
+      "completion_rate": 0.1256664248055807,
+      "streak_days": 0.1237360435806523,
+      "days_since_last_session": 0.1780483509881541,
+      "questions_per_hour": 0.015298176700320939,
+      "session_number": 0.012479438781004059,
+      "accuracy_completion_ratio": 0.016644856616825854,
+      "session_efficiency": 0.013214595245216058,
+      "streak_momentum": 0.2080054419185261,
+      "user_avg_accuracy": 0.016021558609767193,
+      "user_accuracy_std": 0.015604802006555665,
+      "user_avg_duration": 0.012455352659625036,
+      "user_avg_qph": 0.01583236067018163
+    },
+    "classes": [
+      "high",
+      "low",
+      "moderate",
+      "very_high",
+      "very_low"
+    ]
+  }
+}
