@@ -171,6 +171,10 @@ test_quota_friendly.py
 test_setup.py
 setup_environment.py
 
+# Week 2 Development and Testing Files (Not needed in production)
+ingest_knowledge_base.py
+test_prompt_improvement.py
+
 # Vector Database Storage (Local development)
 chroma_db/
 *.chroma

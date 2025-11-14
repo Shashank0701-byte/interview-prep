@@ -1,0 +1,149 @@
+[
+  {
+    "id": "tell_me_about_yourself",
+    "question": "Tell me about yourself.",
+    "category": "introduction",
+    "approach": "Use the Present-Past-Future formula. Present: current role and key responsibilities. Past: relevant experience and achievements that led to current position. Future: career goals and why you're interested in this role. Keep it professional, concise (2-3 minutes), and relevant to the job.",
+    "example_structure": "Currently I'm a [role] at [company] where I [key responsibilities]. Previously, I [relevant experience] which helped me develop skills in [relevant skills]. I'm looking to [future goals] and I'm excited about this opportunity because [connection to role].",
+    "tips": [
+      "Practice out loud to stay within time limit",
+      "Tailor to the specific role and company",
+      "Avoid personal details unrelated to work",
+      "End with enthusiasm for the opportunity"
+    ],
+    "metadata": {
+      "type": "behavioral_question",
+      "category": "introduction",
+      "difficulty": "easy",
+      "frequency": "very_high",
+      "preparation_time": "high"
+    }
+  },
+  {
+    "id": "challenging_project",
+    "question": "Tell me about a challenging project you worked on.",
+    "category": "problem_solving",
+    "approach": "Use STAR method (Situation, Task, Action, Result). Situation: set the context. Task: explain your responsibility. Action: describe specific steps you took (focus on YOUR actions). Result: quantify the outcome and what you learned.",
+    "example_structure": "Situation: We had a critical system that was experiencing performance issues affecting 10,000+ users. Task: As the lead developer, I needed to identify and fix the bottleneck within 48 hours. Action: I [specific technical steps]. Result: Reduced response time by 60% and prevented potential revenue loss of $50K.",
+    "tips": [
+      "Choose a project that shows technical and leadership skills",
+      "Be specific about your individual contributions",
+      "Include metrics and quantifiable results",
+      "Mention what you learned or would do differently"
+    ],
+    "metadata": {
+      "type": "behavioral_question",
+      "category": "problem_solving",
+      "difficulty": "medium",
+      "frequency": "very_high",
+      "preparation_time": "high"
+    }
+  },
+  {
+    "id": "conflict_resolution",
+    "question": "Describe a time when you had a conflict with a team member. How did you handle it?",
+    "category": "teamwork",
+    "approach": "Show emotional intelligence and professionalism. Focus on the resolution process, not the conflict details. Demonstrate active listening, empathy, and collaborative problem-solving. Avoid blaming others or sharing overly personal conflicts.",
+    "example_structure": "Situation: Had a disagreement with a colleague about technical approach. Task: Needed to find a solution that worked for both of us and the project. Action: I scheduled a private conversation, listened to their concerns, shared my perspective, and we found a compromise. Result: Delivered the project successfully and improved our working relationship.",
+    "tips": [
+      "Focus on professional conflicts, not personal ones",
+      "Show that you can separate emotions from work",
+      "Demonstrate active listening and compromise",
+      "End with a positive outcome and lessons learned"
+    ],
+    "metadata": {
+      "type": "behavioral_question",
+      "category": "teamwork",
+      "difficulty": "medium",
+      "frequency": "high",
+      "preparation_time": "medium"
+    }
+  },
+  {
+    "id": "leadership_example",
+    "question": "Give me an example of when you showed leadership.",
+    "category": "leadership",
+    "approach": "Leadership doesn't require a formal title. Focus on influence, initiative, and positive impact. Show how you motivated others, made decisions, or took ownership. Demonstrate results and team success, not just personal achievement.",
+    "example_structure": "Situation: Our team was struggling with missed deadlines. Task: Though not the manager, I saw an opportunity to help. Action: I proposed and implemented a new workflow process, mentored junior developers, and facilitated better communication. Result: Team productivity increased 30% and we delivered the next three projects on time.",
+    "tips": [
+      "Leadership can be shown without formal authority",
+      "Focus on enabling others' success, not just your own",
+      "Include specific actions you took to lead",
+      "Quantify the positive impact on the team or project"
+    ],
+    "metadata": {
+      "type": "behavioral_question",
+      "category": "leadership",
+      "difficulty": "medium",
+      "frequency": "high",
+      "preparation_time": "high"
+    }
+  },
+  {
+    "id": "failure_learning",
+    "question": "Tell me about a time you failed and what you learned from it.",
+    "category": "growth_mindset",
+    "approach": "Choose a real failure that shows vulnerability and growth. Focus more on the learning and improvement than the failure itself. Show accountability, reflection, and how you applied the lesson. Avoid failures due to lack of effort or preparation.",
+    "example_structure": "Situation: I underestimated the complexity of a feature and missed a critical deadline. Task: I needed to deliver the feature and rebuild trust with stakeholders. Action: I took full responsibility, analyzed what went wrong, implemented better estimation practices, and delivered a higher-quality solution. Result: Learned valuable project management skills and never missed a deadline again.",
+    "tips": [
+      "Choose a failure with a clear learning outcome",
+      "Take full accountability without blaming others",
+      "Show specific changes you made based on the learning",
+      "Demonstrate how the failure made you better"
+    ],
+    "metadata": {
+      "type": "behavioral_question",
+      "category": "growth_mindset",
+      "difficulty": "medium",
+      "frequency": "high",
+      "preparation_time": "high"
+    }
+  },
+  {
+    "id": "why_this_company",
+    "question": "Why do you want to work for our company?",
+    "category": "motivation",
+    "approach": "Research the company thoroughly. Connect your values, skills, and career goals with the company's mission, culture, and opportunities. Be specific about what attracts you beyond salary or benefits. Show genuine enthusiasm and knowledge about the company.",
+    "example_structure": "I'm excited about [specific company mission/product]. Your focus on [specific value/technology] aligns with my passion for [relevant area]. I'm particularly impressed by [specific recent achievement/initiative]. I believe my experience in [relevant skills] would contribute to [specific team/project], and I'm excited about the opportunity to [specific growth opportunity].",
+    "tips": [
+      "Research recent company news, products, and culture",
+      "Connect your background to their specific needs",
+      "Mention specific projects, values, or initiatives",
+      "Show long-term interest, not just a stepping stone"
+    ],
+    "metadata": {
+      "type": "behavioral_question",
+      "category": "motivation",
+      "difficulty": "easy",
+      "frequency": "very_high",
+      "preparation_time": "high"
+    }
+  },
+  {
+    "id": "questions_for_interviewer",
+    "question": "Do you have any questions for me?",
+    "category": "engagement",
+    "approach": "Always have thoughtful questions prepared. Ask about role expectations, team dynamics, company culture, growth opportunities, and challenges. Avoid questions about salary, benefits, or vacation time in early rounds. Show genuine interest in the role and company.",
+    "good_questions": [
+      "What does success look like in this role after 6 months?",
+      "What are the biggest challenges facing the team right now?",
+      "How would you describe the team culture and collaboration style?",
+      "What opportunities are there for professional development?",
+      "What do you enjoy most about working here?",
+      "How does this role contribute to the company's overall goals?"
+    ],
+    "tips": [
+      "Prepare 5-7 questions in advance",
+      "Take notes during the interview to ask follow-up questions",
+      "Avoid questions easily answered by the company website",
+      "Show interest in growth and contribution, not just benefits"
+    ],
+    "metadata": {
+      "type": "behavioral_question",
+      "category": "engagement",
+      "difficulty": "easy",
+      "frequency": "very_high",
+      "preparation_time": "medium"
+    }
+  }
+]
