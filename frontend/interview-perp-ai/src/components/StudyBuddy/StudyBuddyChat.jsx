@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, Send, Bot, User, X, Minimize2 } from 'lucide-react';
+import { BASE_URL } from '../../utils/apiPaths';
 import './StudyBuddyChat.css';
 
 const StudyBuddyChat = ({ userId }) => {
@@ -41,7 +42,7 @@ const StudyBuddyChat = ({ userId }) => {
             setIsTyping(true);
             
             // Call your Node.js backend which connects to Python RAG service
-            const response = await fetch('/api/ai/chat', {
+            const response = await fetch(`${BASE_URL}/api/ai/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,7 +88,7 @@ const StudyBuddyChat = ({ userId }) => {
     // Check AI service health
     const checkAIServiceHealth = async () => {
         try {
-            const response = await fetch('/api/ai/health');
+            const response = await fetch(`${BASE_URL}/api/ai/health`);
             const health = await response.json();
             
             console.log('AI Service Health:', health);
