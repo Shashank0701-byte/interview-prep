@@ -1,0 +1,149 @@
+[
+  {
+    "id": "sliding_window",
+    "pattern_name": "Sliding Window",
+    "description": "Use two pointers to create a window that slides through the array/string. Useful for subarray/substring problems with contiguous elements.",
+    "when_to_use": "Problems involving contiguous subarrays, substrings, or when you need to find optimal window size. Keywords: 'maximum/minimum subarray', 'longest/shortest substring', 'window of size k'.",
+    "template": "def sliding_window(arr):\n    left = 0\n    window_sum = 0\n    result = 0\n    \n    for right in range(len(arr)):\n        # Expand window\n        window_sum += arr[right]\n        \n        # Contract window if needed\n        while window_condition_violated:\n            window_sum -= arr[left]\n            left += 1\n        \n        # Update result\n        result = max(result, right - left + 1)\n    \n    return result",
+    "example_problems": [
+      "Maximum sum subarray of size k",
+      "Longest substring without repeating characters",
+      "Minimum window substring",
+      "Longest substring with at most k distinct characters"
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1) to O(k)",
+    "metadata": {
+      "type": "coding_pattern",
+      "category": "two_pointers",
+      "difficulty": "medium",
+      "frequency": "very_high"
+    }
+  },
+  {
+    "id": "two_pointers",
+    "pattern_name": "Two Pointers",
+    "description": "Use two pointers moving towards each other or in the same direction to solve problems efficiently. Reduces time complexity from O(n²) to O(n).",
+    "when_to_use": "Sorted arrays, palindromes, pair problems, or when you need to compare elements from different positions. Keywords: 'pair sum', 'palindrome', 'sorted array', 'opposite ends'.",
+    "template": "def two_pointers(arr):\n    left, right = 0, len(arr) - 1\n    \n    while left < right:\n        if condition_met(arr[left], arr[right]):\n            # Process the pair\n            return [left, right]\n        elif arr[left] + arr[right] < target:\n            left += 1\n        else:\n            right -= 1\n    \n    return []",
+    "example_problems": [
+      "Two sum in sorted array",
+      "Valid palindrome",
+      "Container with most water",
+      "Remove duplicates from sorted array"
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)",
+    "metadata": {
+      "type": "coding_pattern",
+      "category": "two_pointers",
+      "difficulty": "easy",
+      "frequency": "very_high"
+    }
+  },
+  {
+    "id": "fast_slow_pointers",
+    "pattern_name": "Fast & Slow Pointers (Floyd's Cycle Detection)",
+    "description": "Use two pointers moving at different speeds to detect cycles or find middle elements. Fast pointer moves 2 steps, slow pointer moves 1 step.",
+    "when_to_use": "Linked list cycle detection, finding middle of linked list, or problems involving circular structures. Keywords: 'cycle', 'middle element', 'linked list'.",
+    "template": "def has_cycle(head):\n    if not head or not head.next:\n        return False\n    \n    slow = head\n    fast = head.next\n    \n    while fast and fast.next:\n        if slow == fast:\n            return True\n        slow = slow.next\n        fast = fast.next.next\n    \n    return False",
+    "example_problems": [
+      "Linked list cycle detection",
+      "Find middle of linked list",
+      "Happy number",
+      "Palindrome linked list"
+    ],
+    "time_complexity": "O(n)",
+    "space_complexity": "O(1)",
+    "metadata": {
+      "type": "coding_pattern",
+      "category": "linked_lists",
+      "difficulty": "medium",
+      "frequency": "high"
+    }
+  },
+  {
+    "id": "merge_intervals",
+    "pattern_name": "Merge Intervals",
+    "description": "Sort intervals by start time, then merge overlapping intervals. Useful for scheduling and interval-based problems.",
+    "when_to_use": "Problems involving time intervals, scheduling conflicts, or overlapping ranges. Keywords: 'intervals', 'meetings', 'overlapping', 'schedule'.",
+    "template": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    \n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n    \n    for current in intervals[1:]:\n        last = merged[-1]\n        if current[0] <= last[1]:  # Overlapping\n            merged[-1] = [last[0], max(last[1], current[1])]\n        else:\n            merged.append(current)\n    \n    return merged",
+    "example_problems": [
+      "Merge intervals",
+      "Insert interval",
+      "Meeting rooms",
+      "Non-overlapping intervals"
+    ],
+    "time_complexity": "O(n log n)",
+    "space_complexity": "O(1)",
+    "metadata": {
+      "type": "coding_pattern",
+      "category": "intervals",
+      "difficulty": "medium",
+      "frequency": "high"
+    }
+  },
+  {
+    "id": "binary_search",
+    "pattern_name": "Binary Search",
+    "description": "Divide search space in half repeatedly. Works on sorted data or when you can determine which half contains the answer.",
+    "when_to_use": "Sorted arrays, search problems, or when you need to find a specific condition in O(log n) time. Keywords: 'sorted', 'search', 'find target', 'logarithmic'.",
+    "template": "def binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    \n    while left <= right:\n        mid = left + (right - left) // 2\n        \n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    \n    return -1",
+    "example_problems": [
+      "Search in sorted array",
+      "Find first and last position",
+      "Search in rotated sorted array",
+      "Find peak element"
+    ],
+    "time_complexity": "O(log n)",
+    "space_complexity": "O(1)",
+    "metadata": {
+      "type": "coding_pattern",
+      "category": "searching",
+      "difficulty": "medium",
+      "frequency": "very_high"
+    }
+  },
+  {
+    "id": "top_k_elements",
+    "pattern_name": "Top K Elements",
+    "description": "Use heap data structure to efficiently find top K largest or smallest elements. Min-heap for K largest, max-heap for K smallest.",
+    "when_to_use": "Problems asking for top/bottom K elements, Kth largest/smallest element, or frequency-based problems. Keywords: 'top k', 'kth largest', 'most frequent'.",
+    "template": "import heapq\n\ndef find_k_largest(nums, k):\n    # Use min-heap of size k\n    heap = []\n    \n    for num in nums:\n        heapq.heappush(heap, num)\n        if len(heap) > k:\n            heapq.heappop(heap)\n    \n    return heap",
+    "example_problems": [
+      "Kth largest element in array",
+      "Top K frequent elements",
+      "K closest points to origin",
+      "Merge k sorted lists"
+    ],
+    "time_complexity": "O(n log k)",
+    "space_complexity": "O(k)",
+    "metadata": {
+      "type": "coding_pattern",
+      "category": "heaps",
+      "difficulty": "medium",
+      "frequency": "high"
+    }
+  },
+  {
+    "id": "backtracking",
+    "pattern_name": "Backtracking",
+    "description": "Explore all possible solutions by making choices, and undo them if they don't lead to a valid solution. Build solution incrementally.",
+    "when_to_use": "Combinatorial problems, generating all permutations/combinations, or constraint satisfaction problems. Keywords: 'all possible', 'generate', 'permutations', 'combinations'.",
+    "template": "def backtrack(path, choices):\n    # Base case\n    if is_valid_solution(path):\n        result.append(path[:])\n        return\n    \n    for choice in choices:\n        # Make choice\n        path.append(choice)\n        \n        # Recurse\n        backtrack(path, get_next_choices(choice))\n        \n        # Undo choice (backtrack)\n        path.pop()",
+    "example_problems": [
+      "Generate parentheses",
+      "Permutations",
+      "Subsets",
+      "N-Queens problem"
+    ],
+    "time_complexity": "Exponential (varies by problem)",
+    "space_complexity": "O(depth of recursion)",
+    "metadata": {
+      "type": "coding_pattern",
+      "category": "recursion",
+      "difficulty": "hard",
+      "frequency": "medium"
+    }
+  }
+]
