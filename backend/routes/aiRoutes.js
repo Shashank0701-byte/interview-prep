@@ -12,8 +12,9 @@ const AIService = require('../services/aiService');
 const router = express.Router();
 
 // Initialize AI service
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8001';
 const aiService = new AIService({
-    baseURL: 'http://localhost:8001',
+    baseURL: AI_SERVICE_URL,
     timeout: 30000,
     retries: 3
 });
