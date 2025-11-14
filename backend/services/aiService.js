@@ -8,7 +8,7 @@ const axios = require('axios');
 
 class AIService {
     constructor(options = {}) {
-        this.baseURL = options.baseURL || 'http://localhost:8001';
+        this.baseURL = options.baseURL || process.env.AI_SERVICE_URL || 'http://localhost:8001';
         this.timeout = options.timeout || 30000; // 30 seconds
         this.retries = options.retries || 3;
         
