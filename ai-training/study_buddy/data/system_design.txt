@@ -1,0 +1,465 @@
+# System Design and Architecture
+
+## System Design Fundamentals
+
+### Core Principles
+- **Scalability**: Handle increasing load through scaling strategies
+- **Availability**: System remains operational despite failures
+- **Performance**: Fast response times and throughput
+- **Reliability**: Consistent and dependable operation
+- **Maintainability**: Easy to modify and extend system
+
+### CAP Theorem
+- **Consistency**: All nodes see same data at same time
+- **Availability**: System remains operational
+- **Partition Tolerance**: System continues despite network partitions
+- **Trade-off**: Can only guarantee 2 of 3 properties simultaneously
+
+### ACID Properties
+- **Atomicity**: All transactions succeed or none
+- **Consistency**: Database remains in valid state
+- **Isolation**: Concurrent transactions don't interfere
+- **Durability**: Committed transactions persist
+
+## Scalability Patterns
+
+### Vertical Scaling (Scale Up)
+- **Definition**: Increase resources of single server
+- **Advantages**: Simple implementation, less complexity
+- **Disadvantages**: Physical limits, single point of failure
+- **Use Cases**: Small to medium applications
+
+### Horizontal Scaling (Scale Out)
+- **Definition**: Add more servers to distribute load
+- **Advantages**: Better fault tolerance, virtually unlimited scaling
+- **Disadvantages**: Increased complexity, distributed systems challenges
+- **Use Cases**: Large-scale applications
+
+### Load Balancing Strategies
+- **Round Robin**: Distribute requests sequentially
+- **Least Connections**: Send to server with fewest active connections
+- **IP Hash**: Route based on client IP address
+- **Weighted Round Robin**: Assign weights based on server capacity
+
+```python
+# Example: Simple load balancer implementation
+class LoadBalancer:
+    def __init__(self):
+        self.servers = []
+        self.current_index = 0
+    
+    def add_server(self, server):
+        self.servers.append(server)
+    
+    def get_server(self):
+        if not self.servers:
+            return None
+        
+        server = self.servers[self.current_index]
+        self.current_index = (self.current_index + 1) % len(self.servers)
+        return server
+```
+
+## Database Design
+
+### SQL vs. NoSQL
+
+#### SQL Databases
+- **Examples**: MySQL, PostgreSQL, Oracle, SQL Server
+- **Schema**: Fixed schema, structured data
+- **ACID**: Strong consistency guarantees
+- **Use Cases**: Financial systems, transactional applications
+- **Scaling**: Vertical scaling, read replicas
+
+#### NoSQL Databases
+- **Document**: MongoDB, CouchDB (flexible schema)
+- **Key-Value**: Redis, DynamoDB (simple lookups)
+- **Column-Family**: Cassandra, HBase (wide column stores)
+- **Graph**: Neo4j, Amazon Neptune (relationship data)
+
+### Database Normalization
+- **First Normal Form (1NF)**: No repeating groups
+- **Second Normal Form (2NF)**: 1NF + no partial dependencies
+- **Third Normal Form (3NF)**: 2NF + no transitive dependencies
+- **BCNF**: Stronger version of 3NF
+
+### Indexing Strategies
+- **Primary Index**: Unique identifier for records
+- **Secondary Index**: Non-unique searchable fields
+- **Composite Index**: Multiple columns combined
+- **Full-Text Index**: Efficient text search
+
+## Caching Strategies
+
+### Cache Types
+- **In-Memory Cache**: Redis, Memcached
+- **Database Cache**: Query result caching
+- **CDN Cache**: Content delivery networks
+- **Application Cache**: Local application caching
+
+### Cache Patterns
+- **Cache-Aside**: Application manages cache
+- **Read-Through**: Cache manages reads
+- **Write-Through**: Cache manages writes
+- **Write-Behind**: Asynchronous cache updates
+
+```python
+# Cache-Aside Pattern Example
+class CacheAsideService:
+    def __init__(self, cache, database):
+        self.cache = cache
+        self.database = database
+    
+    def get_data(self, key):
+        # Try cache first
+        data = self.cache.get(key)
+        if data:
+            return data
+        
+        # Cache miss - fetch from database
+        data = self.database.get(key)
+        if data:
+            self.cache.set(key, data)
+        
+        return data
+    
+    def update_data(self, key, data):
+        # Update database
+        self.database.update(key, data)
+        # Invalidate cache
+        self.cache.delete(key)
+```
+
+### Cache Eviction Policies
+- **LRU (Least Recently Used)**: Evict least recently accessed items
+- **LFU (Least Frequently Used)**: Evict least frequently accessed items
+- **FIFO (First In, First Out)**: Evict oldest items
+- **TTL (Time To Live)**: Expire items after time limit
+
+## Microservices Architecture
+
+### Microservices Characteristics
+- **Single Responsibility**: Each service handles one business function
+- **Decentralized**: Independent development and deployment
+- **Language Agnostic**: Different services can use different technologies
+- **Fault Isolation**: Failure in one service doesn't affect others
+
+### Service Communication
+- **Synchronous**: REST APIs, gRPC, GraphQL
+- **Asynchronous**: Message queues, event streaming
+- **Service Discovery**: Eureka, Consul, Zookeeper
+- **API Gateway**: Single entry point for clients
+
+### Data Management
+- **Database per Service**: Each service owns its data
+- **Event Sourcing**: Store all changes as events
+- **CQRS**: Separate read and write models
+- **Saga Pattern**: Manage distributed transactions
+
+```yaml
+# Example: Docker Compose for Microservices
+version: '3.8'
+services:
+  api-gateway:
+    image: api-gateway:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - user-service
+      - order-service
+  
+  user-service:
+    image: user-service:latest
+    environment:
+      - DATABASE_URL=postgresql://user-db:5432/users
+    depends_on:
+      - user-db
+  
+  order-service:
+    image: order-service:latest
+    environment:
+      - DATABASE_URL=postgresql://order-db:5432/orders
+    depends_on:
+      - order-db
+  
+  user-db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=users
+  
+  order-db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=orders
+```
+
+## Distributed Systems
+
+### Consistency Models
+- **Strong Consistency**: All reads return latest write
+- **Eventual Consistency**: Converges to consistency over time
+- **Causal Consistency**: Causally related operations are ordered
+- **Read-Your-Writes**: Client reads its own writes
+
+### Distributed Hash Tables
+- **Consistent Hashing**: Minimize key redistribution
+- **Virtual Nodes**: Improve load distribution
+- **Replication**: Store multiple copies of data
+- **Failure Detection**: Identify and handle node failures
+
+### Leader Election
+- **Bully Algorithm**: Highest ID node becomes leader
+- **Raft**: Consensus algorithm for leader election
+- **Paxos**: Family of protocols for consensus
+- **ZAB**: Zookeeper Atomic Broadcast
+
+## Message Queues and Event Streaming
+
+### Message Queues
+- **RabbitMQ**: Feature-rich message broker
+- **AWS SQS**: Cloud-based queue service
+- **Apache Kafka**: Distributed streaming platform
+- **Redis Pub/Sub**: Simple publish-subscribe
+
+### Messaging Patterns
+- **Point-to-Point**: One-to-one message delivery
+- **Publish-Subscribe**: One-to-many message delivery
+- **Request-Reply**: Synchronous request-response
+- **Competing Consumers**: Multiple consumers processing messages
+
+### Kafka Architecture
+- **Topics**: Categories of messages
+- **Partitions**: Parallel processing within topics
+- **Producers**: Write messages to topics
+- **Consumers**: Read messages from topics
+- **Consumer Groups**: Group of consumers sharing load
+
+```python
+# Kafka Producer Example
+from kafka import KafkaProducer
+import json
+
+producer = KafkaProducer(
+    bootstrap_servers=['localhost:9092'],
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+)
+
+# Send message
+producer.send('user-events', {
+    'user_id': 123,
+    'event_type': 'login',
+    'timestamp': '2023-01-01T12:00:00Z'
+})
+
+producer.flush()
+```
+
+## API Design
+
+### RESTful API Design
+- **Resources**: Nouns representing entities
+- **HTTP Methods**: GET, POST, PUT, DELETE, PATCH
+- **Status Codes**: 2xx success, 4xx client errors, 5xx server errors
+- **HATEOAS**: Hypermedia as the engine of application state
+
+### GraphQL
+- **Single Endpoint**: One endpoint for all queries
+- **Strong Typing**: Schema defines available data
+- **Introspection**: Query schema itself
+- **Real-time**: Subscriptions for live updates
+
+```graphql
+# GraphQL Schema Example
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  posts: [Post!]!
+}
+
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+  author: User!
+}
+
+type Query {
+  user(id: ID!): User
+  posts: [Post!]!
+}
+
+type Mutation {
+  createPost(title: String!, content: String!): Post!
+}
+```
+
+### API Gateway Patterns
+- **Routing**: Direct requests to appropriate services
+- **Composition**: Combine responses from multiple services
+- **Protocol Translation**: Convert between different protocols
+- **Security**: Authentication, authorization, rate limiting
+
+## Security Design
+
+### Authentication and Authorization
+- **OAuth 2.0**: Authorization framework
+- **JWT**: Stateless authentication tokens
+- **RBAC**: Role-based access control
+- **API Keys**: Simple authentication method
+
+### Security Best Practices
+- **Defense in Depth**: Multiple layers of security
+- **Principle of Least Privilege**: Minimal necessary permissions
+- **Zero Trust**: Never trust, always verify
+- **Security by Design**: Built-in security from start
+
+### Common Security Threats
+- **DDoS Attacks**: Overwhelm system with traffic
+- **Injection Attacks**: SQL injection, command injection
+- **Cross-Site Scripting**: Inject malicious scripts
+- **Data Breaches**: Unauthorized data access
+
+## Performance Optimization
+
+### Database Optimization
+- **Query Optimization**: Efficient SQL queries
+- **Connection Pooling**: Reuse database connections
+- **Read Replicas**: Distribute read operations
+- **Sharding**: Distribute data across databases
+
+### Application Optimization
+- **Async Processing**: Non-blocking operations
+- **Connection Pooling**: Reuse network connections
+- **Caching**: Store frequently accessed data
+- **Compression**: Reduce data transfer size
+
+### Monitoring and Observability
+- **Metrics**: CPU, memory, network, disk usage
+- **Logging**: Structured logging for debugging
+- **Tracing**: Request flow through system
+- **Alerting**: Automated notifications for issues
+
+## System Design Interview Process
+
+### Step 1: Requirements Clarification
+- **Functional Requirements**: What the system should do
+- **Non-functional Requirements**: Performance, scalability, availability
+- **Scale Estimates**: Expected users, requests, data volume
+- **Use Cases**: Key scenarios to support
+
+### Step 2: System Design
+- **High-Level Architecture**: Major components and their interactions
+- **Data Model**: Database schema and relationships
+- **API Design**: Interface between components
+- **Technology Choices**: Justify technology selection
+
+### Step 3: Deep Dive
+- **Component Design**: Detailed design of each component
+- **Data Flow**: How data moves through system
+- **Scalability**: How system handles growth
+- **Failure Scenarios**: How system handles failures
+
+### Step 4: Discussion
+- **Trade-offs**: Explain design decisions
+- **Alternatives**: Consider different approaches
+- **Improvements**: Potential enhancements
+- **Open Questions**: Areas needing clarification
+
+## Common System Design Questions
+
+### 1. Design a URL Shortener
+**Requirements**: Shorten long URLs, redirect to original URL
+**Components**: Encoding service, database, cache, analytics
+**Scale**: 100 million URLs, 100k requests/second
+**Challenges**: Hash collision, cache invalidation, analytics
+
+### 2. Design a Social Media Feed
+**Requirements**: User posts, following, timeline generation
+**Components**: Post service, feed service, user service, cache
+**Scale**: 1 billion users, 10 million posts/day
+**Challenges**: Real-time updates, feed ranking, storage
+
+### 3. Design a Ride-Sharing Service
+**Requirements**: Rider requests, driver matching, payment
+**Components**: Location service, matching service, payment service
+**Scale**: 1 million concurrent rides
+**Challenges**: Real-time location updates, surge pricing
+
+### 4. Design a Video Streaming Platform
+**Requirements**: Video upload, transcoding, streaming, recommendations
+**Components**: Upload service, transcoding service, CDN, recommendation engine
+**Scale**: 10 million concurrent viewers
+**Challenges**: Video quality adaptation, CDN distribution
+
+### 5. Design an E-commerce Platform
+**Requirements**: Product catalog, shopping cart, order processing, payment
+**Components**: Product service, cart service, order service, payment service
+**Scale**: 1 million products, 100k orders/day
+**Challenges**: Inventory management, payment processing, recommendations
+
+## Design Patterns
+
+### Architectural Patterns
+- **Layered Architecture**: Separation into distinct layers
+- **Microkernel Architecture**: Core system with plugins
+- **Event-Driven Architecture**: Loose coupling via events
+- **Space-Based Architecture**: Distributed shared memory
+
+### Integration Patterns
+- **API Gateway**: Single entry point
+- **Service Mesh**: Service-to-service communication
+- **Event Sourcing**: Store all state changes
+- **CQRS**: Separate read/write models
+
+### Data Patterns
+- **Database Sharding**: Horizontal partitioning
+- **Read Replicas**: Multiple read copies
+- **Eventual Consistency**: Converge over time
+- **Polyglot Persistence**: Multiple database types
+
+## Cloud Architecture
+
+### Cloud Service Models
+- **IaaS**: Infrastructure as a Service (AWS EC2, Azure VM)
+- **PaaS**: Platform as a Service (Heroku, AWS Elastic Beanstalk)
+- **SaaS**: Software as a Service (Google Workspace, Office 365)
+- **FaaS**: Function as a Service (AWS Lambda, Azure Functions)
+
+### Cloud Deployment Models
+- **Public Cloud**: Shared infrastructure (AWS, Azure, GCP)
+- **Private Cloud**: Dedicated infrastructure
+- **Hybrid Cloud**: Combination of public and private
+- **Multi-Cloud**: Multiple cloud providers
+
+### Cloud-Native Technologies
+- **Containers**: Docker, container orchestration
+- **Kubernetes**: Container orchestration platform
+- **Service Mesh**: Istio, Linkerd
+- **Serverless**: Lambda, Cloud Functions
+
+## Best Practices
+
+### Design Principles
+- **Simplicity**: Favor simple solutions over complex ones
+- **Modularity**: Build independent, reusable components
+- **Observability**: Make system behavior visible
+- **Evolution**: Design for change and growth
+
+### Documentation
+- **Architecture Diagrams**: Visual system representation
+- **API Documentation**: Clear interface specifications
+- **Runbooks**: Procedures for common operations
+- **Decision Records**: Track architectural decisions
+
+### Testing Strategies
+- **Unit Tests**: Test individual components
+- **Integration Tests**: Test component interactions
+- **Load Tests**: Test system under high load
+- **Chaos Engineering**: Test system resilience
+
+### Team Collaboration
+- **Code Reviews**: Maintain code quality
+- **Design Reviews**: Validate architectural decisions
+- **Knowledge Sharing**: Regular tech talks and documentation
+- **On-Call Rotation**: Shared operational responsibility
