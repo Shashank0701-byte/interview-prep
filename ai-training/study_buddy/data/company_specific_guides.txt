@@ -1,0 +1,581 @@
+Company-Specific Interview Preparation Guides
+
+1. FAANG Companies (Meta, Amazon, Apple, Netflix, Google)
+==========================================================
+
+Meta (Facebook)
+---------------
+Interview Format:
+- 1-2 technical phone screens (45-60 minutes each)
+- 4-5 on-site interviews (technical + behavioral)
+- Focus on practical problem-solving
+
+Technical Focus:
+- Data structures and algorithms
+- System design (for senior roles)
+- Product sense interviews
+- Web development fundamentals
+
+Common Questions:
+- Tree and graph traversals
+- Dynamic programming
+- API design
+- React/JavaScript deep dive
+- SQL and database design
+
+Preparation Tips:
+- Practice medium to hard LeetCode problems
+- Understand Meta's products and mission
+- Prepare for "move fast" culture questions
+- Focus on user-centric solutions
+
+Amazon
+------
+Interview Format:
+- 1-2 phone screens
+- 5-6 on-site interviews (loop)
+- Bar raiser interview (critical)
+
+Leadership Principles (must know):
+1. Customer Obsession
+2. Ownership
+3. Invent and Simplify
+4. Are Right, A Lot
+5. Learn and Be Curious
+6. Hire and Develop the Best
+7. Insist on the Highest Standards
+8. Think Big
+9. Bias for Action
+10. Frugality
+11. Earn Trust
+12. Dive Deep
+13. Have Backbone; Disagree and Commit
+14. Deliver Results
+15. Strive to be Earth's Best Employer
+16. Success and Scale Bring Broad Responsibility
+
+Technical Focus:
+- Data structures and algorithms
+- System design and scalability
+- Object-oriented design
+- Distributed systems
+- AWS knowledge (advantageous)
+
+Preparation Tips:
+- Prepare STAR stories for each leadership principle
+- Practice operational excellence questions
+- Understand Amazon's customer obsession
+- Be ready for debugging scenarios
+
+Apple
+-----
+Interview Format:
+- 1-2 technical phone screens
+- 4-6 on-site interviews
+- Heavy emphasis on culture fit
+
+Technical Focus:
+- Data structures and algorithms
+- System architecture
+- iOS/macOS development (if applicable)
+- Security and privacy
+- Performance optimization
+
+Culture Focus:
+- Attention to detail
+- User experience obsession
+- Collaboration and teamwork
+- Innovation and creativity
+- Quality and excellence
+
+Preparation Tips:
+- Research Apple's products deeply
+- Prepare for "why Apple" questions
+- Focus on user-centric design
+- Practice whiteboard coding
+
+Netflix
+-------
+Interview Format:
+- 1-2 technical screens
+- 4-5 on-site interviews
+- Culture and values heavily weighted
+
+Culture Deck Focus:
+- Judgment
+- Communication
+- Impact
+- Curiosity
+- Innovation
+- Courage
+- Passion
+- Integrity
+- Selflessness
+
+Technical Focus:
+- Distributed systems
+- Microservices architecture
+- Cloud computing (AWS)
+- High availability and reliability
+- Video streaming technology
+
+Preparation Tips:
+- Understand Netflix's business model
+- Prepare for freedom and responsibility discussions
+- Focus on impact and results
+- Be ready for technical depth questions
+
+Google
+------
+Interview Format:
+- 1-2 phone screens
+- 4-6 on-site interviews
+- Hiring committee review
+
+Technical Focus:
+- Algorithms and data structures
+- System design and scalability
+- Distributed systems
+- Machine learning (if applicable)
+- Google-specific technologies
+
+Preparation Tips:
+- Practice Google-style questions
+- Understand Google's products
+- Focus on analytical thinking
+- Prepare for "Googliness" behavioral questions
+
+2. Top Tech Companies
+====================
+
+Microsoft
+---------
+Interview Format:
+- 1-2 phone screens
+- 4-5 on-site interviews
+- Focus on collaboration and growth mindset
+
+Technical Focus:
+- Data structures and algorithms
+- System design
+- Cloud computing (Azure)
+- Object-oriented programming
+- Windows/Office products
+
+Culture Values:
+- Customer obsession
+- One Microsoft
+- Make a difference
+- Innovation
+- Diversity and inclusion
+
+Preparation Tips:
+- Practice Microsoft-specific problems
+- Understand cloud services
+- Prepare for team collaboration questions
+- Focus on growth mindset stories
+
+Tesla
+-----
+Interview Format:
+- 1-2 technical screens
+- 4-5 on-site interviews
+- Heavy emphasis on practical skills
+
+Technical Focus:
+- Embedded systems
+- Real-time operating systems
+- Automotive software
+- Battery management systems
+- Manufacturing automation
+
+Culture Focus:
+- First principles thinking
+- Extreme ownership
+- Hard work and dedication
+- Innovation in transportation
+- Sustainability mission
+
+Preparation Tips:
+- Understand Tesla's mission
+- Prepare for hardware-software integration
+- Focus on real-world problem solving
+- Be ready for intense technical discussions
+
+SpaceX
+------
+Interview Format:
+- Technical phone screen
+- Multiple on-site interviews
+- Problem-solving focus
+
+Technical Focus:
+- Real-time systems
+- Aerospace software
+- Control systems
+- Embedded programming
+- High-reliability systems
+
+Culture Focus:
+- Move fast and break things
+- First principles engineering
+- Extreme ownership
+- Mission-driven work
+- Hands-on approach
+
+Preparation Tips:
+- Study aerospace fundamentals
+- Practice real-time programming
+- Understand SpaceX's mission
+- Prepare for rapid-fire problem solving
+
+3. Startup Companies
+===================
+
+Stripe
+------
+Interview Format:
+- 1-2 phone screens
+- 4-5 on-site interviews
+- Focus on payment systems
+
+Technical Focus:
+- Payment processing
+- API design
+- Security and compliance
+- Distributed systems
+- Financial regulations
+
+Culture Values:
+- Users first
+- Rigor
+- Stripey thinking
+- Macro-optimism
+- Trust
+
+Preparation Tips:
+- Understand payment systems
+- Study API design principles
+- Prepare for security questions
+- Focus on international markets
+
+Airbnb
+------
+Interview Format:
+- 1-2 phone screens
+- 4-5 on-site interviews
+- Product and design focus
+
+Technical Focus:
+- Web development
+- Search and recommendation systems
+- Trust and safety systems
+- Mobile development
+- Data infrastructure
+
+Culture Values:
+- Be a host
+- Champion the mission
+- Be a "cereal" entrepreneur
+- Embrace the adventure
+- Simplify
+
+Preparation Tips:
+- Understand Airbnb's marketplace
+- Prepare for design questions
+- Focus on trust and safety
+- Study internationalization
+
+Uber
+----
+Interview Format:
+- 1-2 phone screens
+- 4-5 on-site interviews
+- Focus on logistics and mapping
+
+Technical Focus:
+- Logistics algorithms
+- Real-time systems
+- Mapping and geospatial
+- Machine learning
+- Mobile development
+
+Culture Values:
+- Customer obsession
+- Celebrate cities
+- We move fast
+- Do the right thing
+- It's about people
+
+Preparation Tips:
+- Understand logistics challenges
+- Study geospatial algorithms
+- Prepare for scalability questions
+- Focus on urban mobility
+
+4. Financial Technology (FinTech)
+==================================
+
+Square (Block)
+--------------
+Interview Format:
+- 1-2 phone screens
+- 4-5 on-site interviews
+- Focus on payment systems
+
+Technical Focus:
+- Payment processing
+- Point-of-sale systems
+- Financial regulations
+- Mobile payments
+- Bitcoin and cryptocurrency
+
+Preparation Tips:
+- Study payment processing
+- Understand financial regulations
+- Prepare for security questions
+- Focus on mobile development
+
+Robinhood
+---------
+Interview Format:
+- 1-2 phone screens
+- 4-5 on-site interviews
+- Focus on trading systems
+
+Technical Focus:
+- Trading systems
+- Real-time data processing
+- Financial APIs
+- Security and compliance
+- Mobile development
+
+Preparation Tips:
+- Understand trading systems
+- Study financial regulations
+- Prepare for real-time processing
+- Focus on user experience
+
+5. Cloud Computing Companies
+=============================
+
+AWS (Amazon Web Services)
+------------------------
+Interview Format:
+- 1-2 phone screens
+- 4-5 on-site interviews
+- Focus on cloud services
+
+Technical Focus:
+- Distributed systems
+- Cloud architecture
+- Storage systems
+- Networking
+- Security
+
+Preparation Tips:
+- Study AWS services deeply
+- Understand cloud patterns
+- Prepare for scalability questions
+- Focus on distributed systems
+
+Google Cloud Platform
+---------------------
+Interview Format:
+- 1-2 phone screens
+- 4-5 on-site interviews
+- Focus on cloud infrastructure
+
+Technical Focus:
+- Distributed systems
+- Cloud infrastructure
+- Machine learning
+- Data processing
+- Networking
+
+Preparation Tips:
+- Study GCP services
+- Understand cloud architecture
+- Prepare for scale questions
+- Focus on reliability
+
+6. AI/ML Companies
+==================
+
+OpenAI
+------
+Interview Format:
+- 1-2 phone screens
+- 4-5 on-site interviews
+- Focus on AI/ML systems
+
+Technical Focus:
+- Machine learning
+- Natural language processing
+- Computer vision
+- Reinforcement learning
+- AI safety
+
+Preparation Tips:
+- Study ML fundamentals
+- Understand AI safety
+- Prepare for research discussions
+- Focus on practical applications
+
+NVIDIA
+------
+Interview Format:
+- 1-2 phone screens
+- 4-5 on-site interviews
+- Focus on GPU computing
+
+Technical Focus:
+- GPU programming
+- CUDA development
+- Parallel computing
+- Computer graphics
+- AI/ML acceleration
+
+Preparation Tips:
+- Study CUDA programming
+- Understand GPU architecture
+- Prepare for parallel computing
+- Focus on performance optimization
+
+7. Company-Specific Question Patterns
+=====================================
+
+Amazon Leadership Principle Questions
+-------------------------------------
+Customer Obsession:
+- "Tell me about a time you went above and beyond for a customer."
+- "Describe a situation where you used customer feedback to improve a product."
+
+Ownership:
+- "Tell me about a time you took ownership of a project."
+- "Describe a mistake you made and how you fixed it."
+
+Invent and Simplify:
+- "Tell me about an innovation you brought to your team."
+- "Describe a complex problem you simplified."
+
+Google "Googliness" Questions
+-----------------------------
+- "Tell me about a time you had to work with incomplete information."
+- "Describe a situation where you had to adapt to major changes."
+- "Tell me about a time you helped a teammate succeed."
+
+Apple Culture Questions
+----------------------
+- "Why do you want to work at Apple?"
+- "Tell me about a product you love and why."
+- "Describe a time you paid extreme attention to detail."
+
+Netflix Culture Questions
+-------------------------
+- "Tell me about a time you took a calculated risk."
+- "Describe a situation where you had to make a tough decision."
+- "Tell me about a time you disagreed with your team."
+
+8. Industry-Specific Preparation
+================================
+
+E-commerce Companies
+-------------------
+Focus Areas:
+- Search and recommendation algorithms
+- Inventory management
+- Payment processing
+- Supply chain optimization
+- User experience design
+
+Key Companies: Amazon, Shopify, eBay, Etsy
+
+Social Media Companies
+---------------------
+Focus Areas:
+- Feed algorithms
+- Real-time systems
+- Content moderation
+- User engagement
+- Privacy and security
+
+Key Companies: Meta, Twitter, Snapchat, TikTok
+
+Gaming Companies
+----------------
+Focus Areas:
+- Game engines
+- Real-time rendering
+- Multiplayer systems
+- Physics simulation
+- User experience
+
+Key Companies: Unity, Epic Games, Roblox, Electronic Arts
+
+Healthcare Technology
+--------------------
+Focus Areas:
+- Data privacy (HIPAA)
+- Medical device software
+- Telemedicine platforms
+- Health data analysis
+- Regulatory compliance
+
+Key Companies: Epic Systems, Cerner, Teladoc, Flatiron Health
+
+9. Preparation Timeline
+======================
+
+8 Weeks Before Interview:
+- Research target companies
+- Start LeetCode practice (medium difficulty)
+- Begin system design study
+- Create STAR story inventory
+
+6 Weeks Before Interview:
+- Increase problem difficulty
+- Practice company-specific questions
+- Study company products and culture
+- Mock interviews with peers
+
+4 Weeks Before Interview:
+- Focus on weak areas
+- Practice timed problem solving
+- Deep dive into company tech stack
+- Prepare behavioral questions
+
+2 Weeks Before Interview:
+- Full mock interview loops
+- Review company-specific guides
+- Practice whiteboard coding
+- Finalize STAR stories
+
+1 Week Before Interview:
+- Light practice only
+- Review key concepts
+- Prepare questions for interviewers
+- Rest and mental preparation
+
+10. Day of Interview Tips
+========================
+
+Before Interview:
+- Get good sleep
+- Eat a healthy breakfast
+- Review company values
+- Prepare your environment
+
+During Interview:
+- Listen carefully to questions
+- Think before speaking
+- Ask clarifying questions
+- Communicate your thought process
+
+After Interview:
+- Send thank-you notes
+- Reflect on performance
+- Note areas for improvement
+- Follow up appropriately
+
+Remember: Each company has unique culture and expectations. Tailor your preparation to match their specific values and technical focus.
