@@ -52,7 +52,7 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                             placeholder="Search sessions by role or topics..."
                             value={filters.searchTerm}
                             onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
-                            className="block w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50/50 transition-all duration-200"
+                            className="block w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-slate-600 rounded-xl text-sm placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50/50 dark:bg-slate-800/50 text-gray-900 dark:text-slate-100 transition-all duration-200"
                         />
                     </div>
                     
@@ -82,14 +82,20 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                         }}
                         className="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-gray-50/50 text-sm font-medium text-gray-700 transition-all duration-200"
                     >
-                        <option value="lastUpdated-desc">Latest Updated</option>
-                        <option value="lastUpdated-asc">Oldest Updated</option>
-                        <option value="createdAt-desc">Newest Created</option>
-                        <option value="createdAt-asc">Oldest Created</option>
-                        <option value="role-asc">Role A-Z</option>
-                        <option value="role-desc">Role Z-A</option>
-                        <option value="questions-desc">Most Questions</option>
-                        <option value="questions-asc">Least Questions</option>
+                        <option value="lastUpdated-desc">📅 Latest Updated</option>
+                        <option value="lastUpdated-asc">📅 Oldest Updated</option>
+                        <option value="createdAt-desc">🆕 Newest Created</option>
+                        <option value="createdAt-asc">🗓️ Oldest Created</option>
+                        <option value="proficiencyScore-desc">🎯 Proficiency Score (High to Low)</option>
+                        <option value="proficiencyScore-asc">🎯 Proficiency Score (Low to High)</option>
+                        <option value="progressPercentage-desc">📊 Progress % (High to Low)</option>
+                        <option value="progressPercentage-asc">📊 Progress % (Low to High)</option>
+                        <option value="role-asc">🔤 Alphabetical (A-Z)</option>
+                        <option value="role-desc">🔤 Alphabetical (Z-A)</option>
+                        <option value="questions-desc">📝 Most Questions</option>
+                        <option value="questions-asc">📝 Least Questions</option>
+                        <option value="averageRating-desc">⭐ Highest Rated</option>
+                        <option value="averageRating-asc">⭐ Lowest Rated</option>
                     </select>
 
                     {getActiveFilterCount() > 0 && (
@@ -106,7 +112,13 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
 
             {/* Filter Panel */}
             {isOpen && (
-                <div className="absolute top-full left-0 mt-2 w-full max-w-4xl bg-white border border-gray-200 rounded-xl shadow-lg z-50 p-6">
+                <>
+                    {/* Backdrop */}
+                    <div 
+                        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[9998]"
+                        onClick={() => setIsOpen(false)}
+                    />
+                    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] p-6 mx-4">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold text-gray-800">Filter Interview Sessions</h3>
                         <button
@@ -213,6 +225,7 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                         </div>
                     )}
                 </div>
+                </>
             )}
         </div>
     );

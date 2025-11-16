@@ -1,0 +1,194 @@
+[
+  {
+    "id": "google_swe_prep",
+    "company": "Google",
+    "role": "Software Engineer",
+    "content": "Google emphasizes algorithmic thinking and system design. Focus on: Data structures (trees, graphs, hash tables), algorithms (sorting, searching, dynamic programming), system design basics. Coding interviews: 2-3 rounds, 45 minutes each, use any language. Expect questions on: array manipulation, string processing, tree traversal, graph algorithms. System design: design a URL shortener, chat system, or search engine component. Behavioral: Google's leadership principles, teamwork examples, handling ambiguity.",
+    "interview_process": "Phone screen (1 hour) → Onsite (4-5 rounds: 3-4 coding, 1 system design, 1 behavioral) → Team matching → Offer",
+    "key_focus_areas": [
+      "Algorithmic problem solving",
+      "System design fundamentals", 
+      "Code quality and optimization",
+      "Communication and collaboration"
+    ],
+    "common_questions": [
+      "Implement LRU Cache",
+      "Design a web crawler",
+      "Find median in data stream",
+      "Design Google Maps"
+    ],
+    "tips": [
+      "Think out loud during coding",
+      "Ask clarifying questions",
+      "Consider edge cases and optimization",
+      "Practice on Google-style problems"
+    ],
+    "metadata": {
+      "type": "company_prep",
+      "category": "faang",
+      "difficulty": "hard",
+      "interview_length": "5-6 hours",
+      "success_rate": "15-20%"
+    }
+  },
+  {
+    "id": "amazon_sde_prep",
+    "company": "Amazon",
+    "role": "Software Development Engineer",
+    "content": "Amazon focuses heavily on leadership principles and system design. Technical: strong emphasis on data structures, algorithms, and object-oriented design. Behavioral: 14 leadership principles (Customer Obsession, Ownership, Invent and Simplify, etc.). System design: scalability, reliability, cost optimization. Coding: expect 2-3 coding rounds with focus on problem-solving approach. Common topics: trees, graphs, dynamic programming, system design, OOP design patterns.",
+    "interview_process": "Online assessment → Phone screen → Onsite (4-5 rounds: 2-3 coding, 1 system design, 1-2 behavioral) → Bar raiser round",
+    "key_focus_areas": [
+      "Leadership principles alignment",
+      "System design and scalability",
+      "Problem-solving methodology",
+      "Customer-focused thinking"
+    ],
+    "common_questions": [
+      "Design Amazon's recommendation system",
+      "Implement a distributed cache",
+      "Two sum variations",
+      "Design a parking lot system"
+    ],
+    "tips": [
+      "Prepare STAR format stories for each leadership principle",
+      "Focus on scalability in system design",
+      "Show customer obsession in examples",
+      "Practice coding without IDE"
+    ],
+    "metadata": {
+      "type": "company_prep",
+      "category": "faang",
+      "difficulty": "hard",
+      "interview_length": "4-6 hours",
+      "success_rate": "20-25%"
+    }
+  },
+  {
+    "id": "meta_e4_prep",
+    "company": "Meta (Facebook)",
+    "role": "Software Engineer (E4)",
+    "content": "Meta emphasizes building at scale and impact-driven development. Technical focus: algorithms, data structures, system design with emphasis on social media scale. Behavioral: Meta's core values (Move Fast, Be Bold, Focus on Impact, Be Open, Build Social Value). Coding interviews test problem-solving speed and code quality. System design: design Facebook features, news feed, messaging systems. Expect questions on: graph algorithms, string manipulation, system scalability.",
+    "interview_process": "Recruiter call → Technical phone screen → Onsite (4-5 rounds: 2 coding, 1 system design, 1 behavioral, 1 product sense)",
+    "key_focus_areas": [
+      "Fast problem-solving",
+      "Large-scale system design",
+      "Product thinking",
+      "Impact and execution"
+    ],
+    "common_questions": [
+      "Design Facebook News Feed",
+      "Implement friend suggestions",
+      "Valid parentheses variations",
+      "Design a chat system"
+    ],
+    "tips": [
+      "Move fast but write clean code",
+      "Think about scale from the beginning",
+      "Show product intuition",
+      "Practice graph and tree problems"
+    ],
+    "metadata": {
+      "type": "company_prep",
+      "category": "faang",
+      "difficulty": "hard",
+      "interview_length": "4-5 hours",
+      "success_rate": "18-22%"
+    }
+  },
+  {
+    "id": "startup_fullstack_prep",
+    "company": "Early Stage Startup",
+    "role": "Full Stack Engineer",
+    "content": "Startups value versatility, speed, and practical problem-solving. Technical focus: full-stack development, rapid prototyping, working with limited resources. Expect questions on: web development, databases, API design, deployment. Less emphasis on complex algorithms, more on practical coding and system thinking. Behavioral: adaptability, ownership, working in ambiguous environments, wearing multiple hats.",
+    "interview_process": "Initial call → Technical challenge (take-home or live coding) → Culture fit interview → Final round with founders",
+    "key_focus_areas": [
+      "Full-stack development skills",
+      "Practical problem-solving",
+      "Adaptability and learning",
+      "Product mindset"
+    ],
+    "common_questions": [
+      "Build a simple web application",
+      "Design a REST API",
+      "Database schema design",
+      "How would you scale this feature?"
+    ],
+    "tips": [
+      "Show enthusiasm for the product",
+      "Demonstrate learning ability",
+      "Focus on practical solutions",
+      "Ask about growth opportunities"
+    ],
+    "metadata": {
+      "type": "company_prep",
+      "category": "startup",
+      "difficulty": "medium",
+      "interview_length": "2-4 hours",
+      "success_rate": "30-40%"
+    }
+  },
+  {
+    "id": "microsoft_sde_prep",
+    "company": "Microsoft",
+    "role": "Software Development Engineer",
+    "content": "Microsoft emphasizes collaboration, growth mindset, and technical excellence. Technical focus: algorithms, data structures, system design, and Microsoft technologies. Behavioral: growth mindset, collaboration, customer focus, diversity and inclusion. Coding interviews: problem-solving with clean, efficient code. System design: enterprise-scale systems, cloud architecture. Common topics: trees, graphs, dynamic programming, object-oriented design, cloud concepts.",
+    "interview_process": "Recruiter screen → Technical phone screen → Onsite (4-5 rounds: 2-3 coding, 1 system design, 1 behavioral)",
+    "key_focus_areas": [
+      "Growth mindset demonstration",
+      "Collaborative problem-solving",
+      "Technical depth and breadth",
+      "Customer empathy"
+    ],
+    "common_questions": [
+      "Design Microsoft Teams",
+      "Implement a binary search tree",
+      "Design a cloud storage system",
+      "String manipulation problems"
+    ],
+    "tips": [
+      "Show willingness to learn and grow",
+      "Collaborate during problem-solving",
+      "Consider Microsoft's customer base",
+      "Practice system design with cloud services"
+    ],
+    "metadata": {
+      "type": "company_prep",
+      "category": "big_tech",
+      "difficulty": "hard",
+      "interview_length": "4-5 hours",
+      "success_rate": "25-30%"
+    }
+  },
+  {
+    "id": "netflix_senior_prep",
+    "company": "Netflix",
+    "role": "Senior Software Engineer",
+    "content": "Netflix values high performance, freedom and responsibility, and innovation. Technical focus: distributed systems, streaming technology, data processing at scale. Behavioral: Netflix culture values (judgment, communication, impact, curiosity, innovation, courage, passion, honesty, selflessness). Expect deep technical discussions, system design for streaming, and cultural fit assessment. Senior level requires architectural thinking and mentoring capabilities.",
+    "interview_process": "Recruiter call → Technical phone screen → Onsite (3-4 rounds: 1-2 coding, 1 system design, 1 culture/behavioral)",
+    "key_focus_areas": [
+      "High-performance systems",
+      "Streaming and media technology",
+      "Cultural alignment",
+      "Senior-level technical depth"
+    ],
+    "common_questions": [
+      "Design Netflix's recommendation engine",
+      "Optimize video streaming quality",
+      "Design a content delivery system",
+      "Handle distributed system failures"
+    ],
+    "tips": [
+      "Understand Netflix's unique culture",
+      "Focus on performance and scale",
+      "Show innovation and creative thinking",
+      "Demonstrate senior-level system thinking"
+    ],
+    "metadata": {
+      "type": "company_prep",
+      "category": "big_tech",
+      "difficulty": "hard",
+      "interview_length": "3-4 hours",
+      "success_rate": "20-25%"
+    }
+  }
+]

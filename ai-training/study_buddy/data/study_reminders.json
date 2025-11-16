@@ -1,0 +1,199 @@
+{
+  "reminder_templates": {
+    "spaced_repetition": {
+      "immediate_review": {
+        "timing": "within_1_hour",
+        "messages": [
+          "Great session! Let's quickly review what you just learned to lock it in ðŸ§ ",
+          "Perfect timing for a quick review - your brain is ready to reinforce those concepts!",
+          "Strike while the iron is hot! A quick review now will boost your retention by 40%"
+        ],
+        "tone": "encouraging",
+        "urgency": "low"
+      },
+      "short_term_review": {
+        "timing": "24_hours",
+        "messages": [
+          "Time for a quick review! Yesterday's {topic} concepts are ready for reinforcement ðŸ“š",
+          "Your brain has been processing {topic} overnight. Ready to strengthen those neural pathways?",
+          "24-hour mark! Perfect time to review {topic} and move it to long-term memory"
+        ],
+        "tone": "friendly",
+        "urgency": "medium"
+      },
+      "medium_term_review": {
+        "timing": "3_days",
+        "messages": [
+          "Hey! It's been 3 days since you worked on {topic}. Time for a refresher! ðŸ”„",
+          "Your {topic} knowledge needs a little boost. Ready for a quick review session?",
+          "3-day checkpoint! Let's make sure {topic} stays fresh in your memory"
+        ],
+        "tone": "motivational",
+        "urgency": "medium"
+      },
+      "long_term_review": {
+        "timing": "1_week",
+        "messages": [
+          "Weekly review time! Let's revisit {topic} to keep your skills sharp âš¡",
+          "It's been a week since {topic}. Time to prove you've still got it!",
+          "Weekly checkpoint: {topic} review will keep you interview-ready!"
+        ],
+        "tone": "challenging",
+        "urgency": "high"
+      }
+    },
+    "streak_maintenance": {
+      "streak_at_risk": {
+        "timing": "20_hours_since_last",
+        "messages": [
+          "ðŸ”¥ Your {streak_days}-day streak is at risk! Just 10 minutes can keep the momentum going",
+          "Don't break the chain! {streak_days} days of progress deserves continuation",
+          "Your streak is calling! {streak_days} days of dedication shouldn't end today"
+        ],
+        "tone": "urgent_but_supportive",
+        "urgency": "high"
+      },
+      "streak_celebration": {
+        "timing": "after_session_completion",
+        "messages": [
+          "ðŸŽ‰ {streak_days} days strong! You're building incredible momentum!",
+          "Streak master! {streak_days} consecutive days of growth. You're unstoppable!",
+          "Day {streak_days} complete! Your consistency is your superpower ðŸ’ª"
+        ],
+        "tone": "celebratory",
+        "urgency": "low"
+      },
+      "comeback_encouragement": {
+        "timing": "after_streak_break",
+        "messages": [
+          "Welcome back! Every expert has off days. Ready to start a new streak? ðŸŒŸ",
+          "Fresh start! Your previous {previous_streak}-day streak shows you've got this",
+          "New beginning! Let's build an even stronger streak than your last {previous_streak} days"
+        ],
+        "tone": "forgiving_and_motivating",
+        "urgency": "low"
+      }
+    },
+    "performance_based": {
+      "struggling_area": {
+        "timing": "after_low_performance",
+        "messages": [
+          "I noticed {topic} is challenging. How about we break it down into smaller pieces? ðŸ§©",
+          "{topic} giving you trouble? Let's try a different approach that might click better",
+          "Tough concepts like {topic} are where real growth happens. Ready to tackle it together?"
+        ],
+        "tone": "supportive",
+        "urgency": "medium"
+      },
+      "strength_reinforcement": {
+        "timing": "after_high_performance",
+        "messages": [
+          "You're crushing {topic}! Ready to level up to more advanced concepts? ðŸš€",
+          "Mastery alert! Your {topic} skills are solid. Time for the next challenge?",
+          "{topic} expert in the making! Want to explore some advanced applications?"
+        ],
+        "tone": "confident_and_challenging",
+        "urgency": "low"
+      },
+      "balanced_practice": {
+        "timing": "weekly_analysis",
+        "messages": [
+          "Great progress on {strong_topic}! How about balancing with some {weak_topic} practice?",
+          "You're strong in {strong_topic}. Let's round out your skills with {weak_topic}",
+          "Balanced learning time! Your {strong_topic} skills can help tackle {weak_topic}"
+        ],
+        "tone": "strategic",
+        "urgency": "medium"
+      }
+    },
+    "motivation_boosters": {
+      "low_motivation": {
+        "timing": "detected_disengagement",
+        "messages": [
+          "Feeling stuck? Remember why you started - that dream job is within reach! ðŸ’¼",
+          "Every expert was once a beginner. You're closer to your goals than you think!",
+          "Tough days build strong developers. You've overcome challenges before - you've got this!"
+        ],
+        "tone": "inspiring",
+        "urgency": "high"
+      },
+      "milestone_approach": {
+        "timing": "near_achievement",
+        "messages": [
+          "So close! Just {remaining_questions} more questions to hit your {milestone} goal! ðŸŽ¯",
+          "Almost there! {progress_percentage}% complete - the finish line is in sight!",
+          "Final push! You're {remaining_effort} away from achieving {milestone}!"
+        ],
+        "tone": "exciting",
+        "urgency": "medium"
+      },
+      "progress_celebration": {
+        "timing": "milestone_reached",
+        "messages": [
+          "ðŸŽŠ Milestone unlocked! You've mastered {achievement}. Your growth is incredible!",
+          "Achievement earned! {achievement} complete. You're becoming interview-ready!",
+          "Success! {achievement} conquered. Your dedication is paying off big time!"
+        ],
+        "tone": "celebratory",
+        "urgency": "low"
+      }
+    }
+  },
+  "reminder_scheduling": {
+    "optimal_times": {
+      "morning_person": [
+        "07:00",
+        "08:00",
+        "09:00"
+      ],
+      "afternoon_person": [
+        "13:00",
+        "14:00",
+        "15:00"
+      ],
+      "evening_person": [
+        "19:00",
+        "20:00",
+        "21:00"
+      ],
+      "night_owl": [
+        "22:00",
+        "23:00"
+      ]
+    },
+    "frequency_rules": {
+      "high_performer": {
+        "reminder_frequency": "low",
+        "self_motivation": "high",
+        "intervention_threshold": "3_days_inactive"
+      },
+      "moderate_performer": {
+        "reminder_frequency": "medium",
+        "self_motivation": "medium",
+        "intervention_threshold": "2_days_inactive"
+      },
+      "struggling_performer": {
+        "reminder_frequency": "high",
+        "self_motivation": "low",
+        "intervention_threshold": "1_day_inactive"
+      }
+    },
+    "context_awareness": {
+      "weekday_vs_weekend": {
+        "weekday": "professional_tone",
+        "weekend": "casual_friendly_tone"
+      },
+      "time_of_day": {
+        "morning": "energetic_fresh_start",
+        "afternoon": "productive_focused",
+        "evening": "reflective_review",
+        "night": "calm_contemplative"
+      },
+      "recent_performance": {
+        "high_performance": "challenging_growth",
+        "moderate_performance": "encouraging_steady",
+        "low_performance": "supportive_gentle"
+      }
+    }
+  }
+}

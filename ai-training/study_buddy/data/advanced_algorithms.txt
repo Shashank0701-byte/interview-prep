@@ -1,0 +1,263 @@
+Advanced Algorithms for Technical Interviews
+
+1. Dynamic Programming Patterns
+==============================
+
+Pattern 1: Knapsack Problem
+---------------------------
+Problem: Given weights and values of items, maximize total value without exceeding capacity.
+Key Insight: Break into subproblems, build solution incrementally.
+Code Template:
+def knapsack(weights, values, capacity):
+    dp = [[0] * (capacity + 1) for _ in range(len(weights) + 1)]
+    for i in range(1, len(weights) + 1):
+        for w in range(capacity + 1):
+            if weights[i-1] <= w:
+                dp[i][w] = max(dp[i-1][w], dp[i-1][w-weights[i-1]] + values[i-1])
+            else:
+                dp[i][w] = dp[i-1][w]
+    return dp[-1][-1]
+
+Interview Questions:
+- Subset Sum problem
+- Partition Equal Subset Sum
+- Coin Change combinations
+- Target Sum problem
+
+Pattern 2: Longest Common Subsequence (LCS)
+------------------------------------------
+Problem: Find longest sequence common to two sequences.
+Key Insight: Compare characters, build DP table.
+Applications: DNA sequencing, version control, diff tools.
+Time Complexity: O(m*n), Space: O(m*n) or O(min(m,n)) optimized.
+
+Pattern 3: Matrix Chain Multiplication
+--------------------------------------
+Problem: Find optimal parenthesization for matrix multiplication.
+Key Insight: Try all splits, choose minimum cost.
+Formula: dp[i][j] = min(dp[i][k] + dp[k+1][j] + dimensions[i-1]*dimensions[k]*dimensions[j])
+
+2. Graph Algorithms
+===================
+
+Dijkstra's Algorithm (Shortest Path)
+------------------------------------
+Purpose: Find shortest path from source to all vertices.
+Requirements: Non-negative edge weights.
+Time Complexity: O(V^2) naive, O(E + V log V) with priority queue.
+Implementation:
+import heapq
+def dijkstra(graph, start):
+    distances = {node: float('inf') for node in graph}
+    distances[start] = 0
+    pq = [(0, start)]
+    
+    while pq:
+        current_dist, current = heapq.heappop(pq)
+        if current_dist > distances[current]:
+            continue
+        for neighbor, weight in graph[current].items():
+            distance = current_dist + weight
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(pq, (distance, neighbor))
+    return distances
+
+Variations:
+- A* algorithm (heuristic-based)
+- Bidirectional Dijkstra
+- Multi-source Dijkstra
+
+Bellman-Ford Algorithm
+----------------------
+Purpose: Shortest paths with negative edge weights.
+Detects negative cycles.
+Time Complexity: O(V*E)
+Applications: Currency arbitrage, network routing.
+
+Floyd-Warshall Algorithm
+------------------------
+Purpose: All pairs shortest paths.
+Time Complexity: O(V^3)
+Dynamic programming approach.
+for k in range(V):
+    for i in range(V):
+        for j in range(V):
+            dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+
+Minimum Spanning Tree
+---------------------
+Prim's Algorithm: Greedy, starts from any vertex.
+Kruskal's Algorithm: Sort edges by weight, use Union-Find.
+Time Complexity: Prim - O(E + V log V), Kruskal - O(E log E)
+
+3. Advanced Tree Structures
+===========================
+
+Segment Trees
+------------
+Purpose: Range queries and updates on arrays.
+Construction: O(n), Query: O(log n), Update: O(log n)
+Applications: Range sum, min, max, GCD queries.
+
+Binary Indexed Tree (Fenwick Tree)
+----------------------------------
+Purpose: Point updates, prefix sum queries.
+More memory efficient than Segment Trees.
+Time Complexity: O(log n) for both operations.
+
+Trie (Prefix Tree)
+----------------
+Purpose: Efficient string operations.
+Applications: Autocomplete, spell checker, IP routing.
+Operations: Insert O(L), Search O(L), Delete O(L) where L is string length.
+
+4. String Algorithms
+====================
+
+KMP Algorithm (Pattern Matching)
+--------------------------------
+Purpose: Find all occurrences of pattern in text.
+Time Complexity: O(n + m)
+Key Innovation: Preprocess pattern to find longest proper prefix which is also suffix.
+
+Rabin-Karp Algorithm
+-------------------
+Purpose: Pattern matching using rolling hash.
+Average Case: O(n + m), Worst Case: O(n*m)
+Applications: Plagiarism detection, string matching.
+
+Suffix Array and Suffix Tree
+----------------------------
+Purpose: Efficient string queries.
+Construction: O(n log n) for suffix array, O(n) for suffix tree.
+Applications: Longest common substring, pattern matching.
+
+5. Number Theory
+================
+
+Prime Number Algorithms
+----------------------
+Sieve of Eratosthenes: O(n log log n) to find all primes up to n.
+Miller-Rabin Test: Probabilistic primality test.
+
+GCD and Extended Euclidean Algorithm
+------------------------------------
+gcd(a, b) = gcd(b, a % b)
+Extended version finds x, y such that ax + by = gcd(a, b)
+Applications: Modular inverse, Diophantine equations.
+
+Chinese Remainder Theorem
+------------------------
+Solves system of congruences.
+Applications: Cryptography, coding theory.
+
+6. Bit Manipulation
+===================
+
+Common Tricks:
+- Check if power of 2: n & (n-1) == 0
+- Count set bits: Brian Kernighan's algorithm
+- Swap without temp: a ^= b; b ^= a; a ^= b
+- Find rightmost set bit: n & (-n)
+
+Applications:
+- Subset generation using bitmasking
+- Gray codes
+- Hamming distance calculation
+
+7. Greedy Algorithms
+====================
+
+Activity Selection Problem
+--------------------------
+Select maximum non-overlapping activities.
+Sort by end times, greedily select.
+
+Huffman Coding
+--------------
+Optimal prefix code for data compression.
+Build min-heap, combine two smallest frequencies.
+
+8. Backtracking Patterns
+========================
+
+N-Queens Problem
+---------------
+Place N queens on N×N chessboard.
+Key Insight: Track columns, diagonals, anti-diagonals.
+
+Sudoku Solver
+--------------
+Backtrack with constraint propagation.
+Use bitmasking for optimization.
+
+Permutation Generation
+----------------------
+Generate all permutations of array.
+Handle duplicates with visited array.
+
+9. Computational Geometry
+=========================
+
+Convex Hull (Graham Scan)
+--------------------------
+Find smallest convex polygon containing all points.
+Sort by polar angle, maintain stack.
+
+Line Intersection
+-----------------
+Check if two line segments intersect.
+Using orientation and cross product.
+
+Closest Pair of Points
+----------------------
+Divide and conquer: O(n log n)
+Find minimum distance among n points.
+
+10. Optimization Techniques
+===========================
+
+Meet in the Middle
+-----------------
+Split problem into halves, combine results.
+Applications: Subset sum with constraints.
+
+Mo's Algorithm
+-------------
+Offline query processing for array problems.
+Time Complexity: O((N + Q) * √N)
+
+Square Root Decomposition
+------------------------
+Break array into blocks of size √n.
+Process queries efficiently.
+
+Interview Tips:
+--------------
+1. Identify the pattern first
+2. Start with brute force, then optimize
+3. Consider edge cases (empty input, single element)
+4. Analyze time and space complexity
+5. Think about recursive vs iterative solutions
+6. Use appropriate data structures
+7. Practice implementing from scratch
+8. Understand trade-offs between different approaches
+
+Common Mistakes to Avoid:
+------------------------
+1. Not handling edge cases
+2. Incorrect base cases in recursion
+3. Off-by-one errors in loops
+4. Not considering constraints
+5. Choosing wrong data structure
+6. Ignoring time complexity requirements
+7. Not testing with examples
+8. Premature optimization
+
+Practice Problems by Difficulty:
+Beginner: Two Sum, Valid Parentheses, Maximum Subarray
+Intermediate: 3Sum, Merge Intervals, Word Break
+Advanced: Trapping Rain Water, Edit Distance, Regular Expression Matching
+
+Remember: Understanding the pattern is more important than memorizing solutions. Focus on the problem-solving approach and optimization techniques.

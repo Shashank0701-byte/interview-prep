@@ -5,15 +5,16 @@ import toast from "react-hot-toast";
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import SummaryCard from '../../components/Cards/SummaryCard';
 import Modal from '../../components/Modal';
-import CreateSessionForm from './CreateSessionForm';
+import CreateInterviewModal from '../../components/Modals/CreateInterviewModal';
 import DeleteAlertContent from '../../components/DeleteAlertContent';
 import SessionFilter from '../../components/SessionFilter';
 import useSessionFilter from '../../hooks/useSessionFilter';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import moment from "moment";
-import { CARD_BG } from "../../utils/data";
+import { CARD_BG, getSessionCardColor } from "../../utils/data";
 import RatingModal from '../../components/RatingModal';
+import StudyBuddyChat from '../../components/StudyBuddy/StudyBuddyChat';
 
 
 const Dashboard = () => {
@@ -45,7 +46,16 @@ const Dashboard = () => {
             ]);
             
             if (sessionsRes.data?.sessions) {
-                setSessions(sessionsRes.data.sessions);
+                // Calculate real progress data for each session
+                const sessionsWithProgress = sessionsRes.data.sessions.map(session => {
+                    // Use the actual progress data from the session model
+                    return {
+                        ...session,
+                        completionPercentage: session.completionPercentage || 0,
+                        masteredQuestions: session.masteredQuestions || 0
+                    };
+                });
+                setSessions(sessionsWithProgress);
             }
             if (reviewRes.data?.reviewQueue) {
                 setReviewCount(reviewRes.data.reviewQueue.length);
@@ -95,37 +105,119 @@ const Dashboard = () => {
         });
     };
 
+    const handleCreateSession = async (formData) => {
+        try {
+            // Map the new modal data to the expected API format
+            const sessionData = {
+                role: formData.targetRole,
+                experience: formData.experience,
+                topicsToFocus: formData.topics,
+                description: formData.description
+            };
+
+            // Call AI API to generate questions
+            let aiResponse;
+            
+            if (formData.targetCompany) {
+                // Generate company-specific questions
+                aiResponse = await axiosInstance.post(API_PATHS.AI.COMPANY_QUESTIONS, {
+                    companyName: formData.targetCompany,
+                    role: formData.targetRole,
+                    experience: formData.experience,
+                    topicsToFocus: formData.topics,
+                    numberOfQuestions: 10,
+                });
+            } else {
+                // Generate general questions
+                aiResponse = await axiosInstance.post(API_PATHS.AI.GENERATE_QUESTIONS, {
+                    role: formData.targetRole,
+                    experience: formData.experience,
+                    topicsToFocus: formData.topics,
+                    numberOfQuestions: 10,
+                });
+            }
+
+            // Create the session with generated questions
+            const generatedQuestions = aiResponse.data;
+            const response = await axiosInstance.post(API_PATHS.SESSIONS.CREATE, {
+                ...sessionData,
+                questions: generatedQuestions,
+            });
+
+            if (response.data?.session?._id) {
+                toast.success("Session created successfully!");
+                setOpenCreateModal(false);
+                fetchDashboardData();
+                
+                // Trigger analytics refresh after creating new session
+                window.dispatchEvent(new Event('analytics-refresh'));
+                
+                // Navigate to the new session
+                navigate(`/interview-prep/${response.data?.session?._id}`);
+            }
+        } catch (error) {
+            console.error("Error creating session:", error);
+            if (error.response && error.response.data.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("Something went wrong. Please try again.");
+            }
+            throw error; // Re-throw to let the modal handle the error state
+        }
+    };
+
     useEffect(() => {
         fetchDashboardData();
     }, [fetchDashboardData]);
 
+    // Listen for various refresh events to update dashboard
+    useEffect(() => {
+        const handleRefresh = () => {
+            console.log('Dashboard refresh triggered');
+            fetchDashboardData();
+        };
+
+        // Listen to multiple events
+        window.addEventListener('analytics-refresh', handleRefresh);
+        window.addEventListener('dashboard-refresh', handleRefresh);
+        window.addEventListener('session-updated', handleRefresh);
+        window.addEventListener('force-dashboard-refresh', handleRefresh);
+        
+        return () => {
+            window.removeEventListener('analytics-refresh', handleRefresh);
+            window.removeEventListener('dashboard-refresh', handleRefresh);
+            window.removeEventListener('session-updated', handleRefresh);
+            window.removeEventListener('force-dashboard-refresh', handleRefresh);
+        };
+    }, [fetchDashboardData]);
+
     return (
         <DashboardLayout>
-            <div className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20'>
+            <div className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 dark:from-slate-900 dark:via-slate-800/50 dark:to-slate-900/80 transition-colors duration-300'>
                 {/* Enhanced Hero Section */}
-                <div className="bg-gradient-to-r from-white via-blue-50/30 to-indigo-50/20 border-b border-gray-100/60">
-                    <div className="container mx-auto px-4 md:px-6 py-10">
-                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-                            <div className="space-y-4">
+                <div className="bg-gradient-to-r from-white via-blue-50/30 to-indigo-50/20 dark:from-slate-800 dark:via-slate-700/30 dark:to-slate-800/20 border-b border-gray-100/60 dark:border-slate-700/60 transition-colors duration-300">
+                    <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-10">
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 sm:gap-8">
+                            <div className="space-y-3 sm:space-y-4">
                                 <div className="space-y-2">
-                                    <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 bg-clip-text text-transparent leading-tight">
+                                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 dark:from-slate-100 dark:via-blue-300 dark:to-indigo-300 bg-clip-text text-transparent leading-tight">
                                         My Interview Sessions
                                     </h1>
-                                    <p className="text-lg text-gray-600 max-w-2xl">
+                                    <p className="text-base sm:text-lg text-gray-600 dark:text-slate-300 max-w-2xl transition-colors duration-300">
                                         Track your progress, practice with AI-generated questions, and ace your next interview
                                     </p>
                                 </div>
-                                <div className="flex items-center gap-6 text-sm">
-                                    <div className="flex items-center gap-3 bg-white/70 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-blue-100/50 shadow-sm">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 text-sm">
+                                    <div className="flex items-center gap-3 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-blue-100/50 dark:border-slate-600/50 shadow-sm transition-colors duration-300">
                                         <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full animate-pulse"></div>
-                                        <span className="font-medium text-gray-700">
+                                        <span className="font-medium text-gray-700 dark:text-slate-200 transition-colors duration-300">
                                             {getFilterStats().filtered} of {getFilterStats().total} sessions
                                         </span>
                                     </div>
                                     {getFilterStats().filtered !== getFilterStats().total && (
-                                        <div className="flex items-center gap-2 bg-amber-50/80 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-amber-200/50">
+                                        <div className="flex items-center gap-2 bg-amber-50/80 dark:bg-amber-900/30 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-amber-200/50 dark:border-amber-700/50 transition-colors duration-300">
                                             <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-                                            <span className="text-amber-700 font-medium">
+                                            <span className="text-amber-700 dark:text-amber-300 font-medium transition-colors duration-300">
                                                 Filtered view active
                                             </span>
                                         </div>
@@ -133,29 +225,114 @@ const Dashboard = () => {
                                 </div>
                             </div>
                             
-                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                                 {reviewCount > 0 && (
                                     <Link 
                                         to="/review" 
-                                        className="group flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-8 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
+                                        className="group flex flex-col items-center justify-center gap-3 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-600 px-4 py-6 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-200 min-h-[120px] relative"
                                     >
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
-                                            <svg className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="absolute top-3 right-3 w-2 h-2 bg-green-500 rounded-full"></div>
+                                        <div className="w-10 h-10 bg-green-50 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                                            <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </div>
-                                        <span>Start Review ({reviewCount})</span>
+                                        <span className="text-center text-sm text-gray-900 dark:text-gray-100">
+                                            Review ({reviewCount})
+                                        </span>
                                     </Link>
                                 )}
+                                <Link
+                                    to="/code-review"
+                                    className="group flex flex-col items-center justify-center gap-3 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-600 px-4 py-6 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-200 min-h-[120px]"
+                                >
+                                    <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                        </svg>
+                                    </div>
+                                    <span className="text-center text-sm text-gray-900 dark:text-gray-100">Code Review</span>
+                                </Link>
+                                <Link
+                                    to="/resume-builder"
+                                    className="group flex flex-col items-center justify-center gap-3 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-600 px-4 py-6 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-200 min-h-[120px] relative"
+                                >
+                                    <div className="absolute top-3 right-3 w-2 h-2 bg-amber-500 rounded-full"></div>
+                                    <div className="w-10 h-10 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </div>
+                                    <span className="text-center text-sm text-gray-900 dark:text-gray-100">Resume Builder</span>
+                                </Link>
+                                <Link
+                                    to="/live-coding"
+                                    className="group flex flex-col items-center justify-center gap-3 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-600 px-4 py-6 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-200 min-h-[120px] relative"
+                                >
+                                    <div className="absolute top-2 right-2 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs font-medium px-2 py-1 rounded-full">
+                                        LIVE
+                                    </div>
+                                    <div className="w-10 h-10 bg-orange-50 dark:bg-orange-900/20 rounded-lg flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <span className="text-center text-sm text-gray-900 dark:text-gray-100">Live Coding</span>
+                                </Link>
+                                <Link
+                                    to="/salary-negotiation"
+                                    className="group flex flex-col items-center justify-center gap-3 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-600 px-4 py-6 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-200 min-h-[120px] relative"
+                                >
+                                    <div className="absolute top-2 right-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-medium px-2 py-1 rounded-full">
+                                        NEW
+                                    </div>
+                                    <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <span className="text-center text-sm text-gray-900 dark:text-gray-100">Salary Negotiation</span>
+                                </Link>
+                                <Link
+                                    to="/study-rooms"
+                                    className="group flex flex-col items-center justify-center gap-3 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-600 px-4 py-6 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-200 min-h-[120px] relative"
+                                >
+                                    <div className="absolute top-2 right-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-xs font-medium px-2 py-1 rounded-full">
+                                        NEW
+                                    </div>
+                                    <div className="w-10 h-10 bg-green-50 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        </svg>
+                                    </div>
+                                    <span className="text-center text-sm text-gray-900 dark:text-gray-100">Study Rooms</span>
+                                </Link>
+                                <Link
+                                    to="/ai-interview-coach"
+                                    className="group flex flex-col items-center justify-center gap-3 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-600 px-4 py-6 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-200 min-h-[120px] relative"
+                                >
+                                    <div className="absolute top-2 right-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-medium px-2 py-1 rounded-full">
+                                        AI
+                                    </div>
+                                    <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                        </svg>
+                                    </div>
+                                    <span className="text-center text-sm text-gray-900 dark:text-gray-100">AI Interview Coach</span>
+                                </Link>
+                                
+                                {/* Create New Session Button */}
                                 <button
                                     onClick={() => setOpenCreateModal(true)}
-                                    className="group flex items-center justify-center gap-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1"
+                                    className="group flex flex-col items-center justify-center gap-3 bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-600 px-4 py-6 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-200 min-h-[120px] border-2 border-dashed border-gray-300 dark:border-slate-600"
                                 >
-                                    <svg className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                    </svg>
-                                    <span>Create New Session</span>
+                                    <div className="w-10 h-10 bg-gray-50 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                        <svg className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                        </svg>
+                                    </div>
+                                    <span className="text-center text-sm text-gray-900 dark:text-gray-100">Create New Session</span>
                                 </button>
                             </div>
                         </div>
@@ -164,19 +341,46 @@ const Dashboard = () => {
 
                 {/* Enhanced Filter Section */}
                 <div className="container mx-auto px-4 md:px-6 py-8">
-                    <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100/50 p-8 mb-8 hover:shadow-2xl transition-all duration-300">
+                    <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100/50 dark:border-slate-700/50 p-8 mb-8 hover:shadow-2xl transition-all duration-300">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
                                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
                                 </svg>
                             </div>
-                            <h2 className="text-xl font-bold text-gray-800">Filter & Search Sessions</h2>
+                            <h2 className="text-xl font-bold text-gray-800 dark:text-slate-200 transition-colors duration-300">Filter & Search Sessions</h2>
                         </div>
                         <SessionFilter 
                             onFilterChange={updateFilters} 
                             activeFilters={filters}
                         />
+                        
+                        {/* Color Legend */}
+                        <div className="mt-6 pt-6 border-t border-gray-100 dark:border-slate-700 transition-colors duration-300">
+                            <h3 className="text-sm font-semibold text-gray-700 dark:text-slate-300 mb-3 transition-colors duration-300">Session Progress Colors</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 rounded-md" style={{background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)'}}></div>
+                                    <span className="text-gray-600 dark:text-slate-400 transition-colors duration-300">Ready to Start</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 rounded-md" style={{background: 'linear-gradient(135deg, #fff2e9 0%, #fff7ed 100%)'}}></div>
+                                    <span className="text-gray-600 dark:text-slate-400 transition-colors duration-300">Getting Started</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 rounded-md" style={{background: 'linear-gradient(135deg, #f0ecff 0%, #f5f3ff 100%)'}}></div>
+                                    <span className="text-gray-600 dark:text-slate-400 transition-colors duration-300">In Progress</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 rounded-md" style={{background: 'linear-gradient(135deg, #eaf7ff 0%, #f0f9ff 100%)'}}></div>
+                                    <span className="text-gray-600 dark:text-slate-400 transition-colors duration-300">High Progress</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-4 h-4 rounded-md" style={{background: 'linear-gradient(135deg, #e6f8f3 0%, #f0fdf4 100%)'}}></div>
+                                    <span className="text-gray-600 dark:text-slate-400 transition-colors duration-300">Completed</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {/* Sessions Grid */}
@@ -206,7 +410,7 @@ const Dashboard = () => {
                             <SummaryCard
                                 key={data._id}
                                 sessionId={data._id}
-                                colors={CARD_BG[index % CARD_BG.length]} 
+                                colors={getSessionCardColor(data.completionPercentage || 0, data.status || 'Active')} 
                                 role={data.role}
                                 topicsToFocus={data.topicsToFocus}
                                 experience={data.experience}
@@ -215,7 +419,7 @@ const Dashboard = () => {
                                 lastUpdated={moment(data.updatedAt).format("Do MMM YYYY")}
                                 onSelect={() => navigate(`/interview-prep/${data._id}`)}
                                 onDelete={() => setOpenDeleteAlert({ open: true, data })}
-                                // Enhanced props
+                                // Enhanced props with real data
                                 userRating={data.userRating || { overall: 3, difficulty: 3, usefulness: 3 }}
                                 status={data.status || 'Active'}
                                 completionPercentage={data.completionPercentage || 0}
@@ -334,15 +538,11 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
-            <Modal isOpen={openCreateModal} onClose={() => setOpenCreateModal(false)} hideHeader>
-                <CreateSessionForm onSuccess={() => {
-                    setOpenCreateModal(false);
-                    fetchDashboardData();
-                    
-                    // Trigger analytics refresh after creating session
-                    window.dispatchEvent(new Event('analytics-refresh'));
-                }} />
-            </Modal>
+            <CreateInterviewModal 
+                isOpen={openCreateModal} 
+                onClose={() => setOpenCreateModal(false)}
+                onCreateSession={handleCreateSession}
+            />
             <Modal isOpen={openDeleteAlert.open} onClose={() => setOpenDeleteAlert({ open: false, data: null })} title="Delete Session">
                 <div className='w-[30vw]'>
                     <DeleteAlertContent
@@ -360,6 +560,9 @@ const Dashboard = () => {
                 sessionData={ratingModal.session}
                 onSubmit={(ratings) => handleSessionRating(ratingModal.session?.id, ratings)}
             />
+            
+            {/* Study Buddy Chat */}
+            <StudyBuddyChat userId="current-user" />
         </DashboardLayout>
     );
 };

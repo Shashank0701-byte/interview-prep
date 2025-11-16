@@ -3,7 +3,7 @@ import { BASE_URL } from "./apiPaths";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
-  timeout: 80000,
+  timeout: 120000, // 2 minutes for AI question generation
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

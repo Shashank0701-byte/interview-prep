@@ -44,6 +44,12 @@ export const API_PATHS = {
         GET_FILLER_WORDS: "/api/analytics/filler-words",
         GET_DAILY_ACTIVITY: "/api/analytics/daily-activity",
         GET_MASTERY_RATIO: "/api/analytics/mastery-ratio",
+        GET_PROGRESS_STATS: "/api/analytics/progress-stats",
+        GET_STREAK_DATA: "/api/analytics/streak-data",
+        // AI Interview Analytics
+        GET_AI_INTERVIEW_INSIGHTS: "/api/analytics/ai-interview-insights",
+        GET_COMMUNICATION_ANALYSIS: "/api/analytics/communication-analysis",
+        GET_SKILL_GAP_ANALYSIS: "/api/analytics/skill-gap-analysis",
     },
     FEEDBACK: {
         GENERATE: 'api/feedback', // Add this new path
@@ -75,5 +81,33 @@ export const API_PATHS = {
         RECOMMENDATIONS: "/api/learning-path/recommendations",
         COMPLETE_ITEM: "/api/learning-path/complete-item",
     },
-   
+    ROADMAP: {
+        GET_ROLES: "/api/roadmap/roles",
+        GET_PROGRESS: "/api/roadmap/progress",
+        GENERATE: (role) => `/api/roadmap/${encodeURIComponent(role)}`,
+    },
+    ROADMAP_SESSIONS: {
+        CREATE: "/api/roadmap-sessions/create",
+        GET_PHASE_SESSIONS: (role, phaseId) => `/api/roadmap-sessions/phase/${encodeURIComponent(role)}/${phaseId}`,
+        GET_MY_SESSIONS: "/api/roadmap-sessions/my-sessions",
+        GET_ONE: (id) => `/api/roadmap-sessions/${id}`,
+        DELETE: (id) => `/api/roadmap-sessions/${id}`,
+        UPDATE_RATING: (id) => `/api/roadmap-sessions/${id}/rating`,
+        UPDATE_PROGRESS: (id) => `/api/roadmap-sessions/${id}/progress`,
+    },
+    AI_INTERVIEW_COACH: {
+        CREATE: "/api/ai-interview-coach/create",
+        START: (sessionId) => `/api/ai-interview-coach/${sessionId}/start`,
+        COMPLETE: (sessionId) => `/api/ai-interview-coach/${sessionId}/complete`,
+        GET_SESSION: (sessionId) => `/api/ai-interview-coach/${sessionId}`,
+        SUBMIT_ANALYSIS: (sessionId) => `/api/ai-interview-coach/${sessionId}/analysis`,
+        VOICE_RESPONSE: (sessionId) => `/api/ai-interview-coach/${sessionId}/voice-response`,
+        HISTORY: "/api/ai-interview-coach/history",
+    },
+    SALARY_NEGOTIATION: {
+        START: "/api/salary-negotiation/start",
+        SEND_MESSAGE: (negotiationId) => `/api/salary-negotiation/${negotiationId}/message`,
+        FINALIZE: (negotiationId) => `/api/salary-negotiation/${negotiationId}/finalize`,
+        HISTORY: "/api/salary-negotiation/history",
+    },
 };

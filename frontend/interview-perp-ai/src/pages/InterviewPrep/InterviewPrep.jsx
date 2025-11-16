@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
+import { useScrollToTop } from '../../hooks/useScrollToTop';
 import moment from "moment";
 import { AnimatePresence, motion } from "framer-motion";
 import { LuCircleAlert, LuListCollapse } from "react-icons/lu";
@@ -16,6 +17,10 @@ import AIResponsePreview from './components/AIResponsePreview';
 
 const InterviewPrep = () => {
     const { sessionId } = useParams();
+    
+    // Auto scroll to top when navigating to this page or changing sessions
+    useScrollToTop(true, [sessionId]);
+    
     const [sessionData, setSessionData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isUpdateLoader, setIsUpdateLoader] = useState(false);
@@ -84,7 +89,7 @@ const InterviewPrep = () => {
 
     const toggleQuestionPinStatus = async (questionId) => {
         try {
-            await axiosInstance.post(API_PATHS.QUESTION.PIN(questionId));
+            await axiosInstance.put(API_PATHS.QUESTION.PIN(questionId));
             fetchSessionDetailsById();
             
             // Trigger analytics refresh after pinning/unpinning
@@ -130,15 +135,33 @@ const InterviewPrep = () => {
                 topicsToFocus: sessionData?.topicsToFocus,
                 numberOfQuestions: 10,
             });
-            await axiosInstance.post(API_PATHS.QUESTION.ADD_TO_SESSION, {
+            const addQuestionsResponse = await axiosInstance.post(API_PATHS.QUESTION.ADD_TO_SESSION, {
                 sessionId,
                 questions: aiResponse.data,
             });
-            toast.success("Added More Q&A!");
-            fetchSessionDetailsById();
             
-            // Trigger analytics refresh after adding more questions
+            console.log('Questions added, session updated:', addQuestionsResponse.data.session);
+            toast.success("Added More Q&A!");
+            
+            // Wait a bit for backend to fully process, then refresh
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Refresh session data
+            await fetchSessionDetailsById();
+            
+            // Wait another moment, then trigger dashboard refresh
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
+            // Trigger refresh events with proper sequencing
             window.dispatchEvent(new Event('analytics-refresh'));
+            window.dispatchEvent(new Event('dashboard-refresh'));
+            window.dispatchEvent(new Event('session-updated'));
+            
+            // Final refresh with longer delay to ensure everything is updated
+            setTimeout(() => {
+                window.dispatchEvent(new Event('force-dashboard-refresh'));
+                console.log('Final refresh triggered after adding questions');
+            }, 1500);
         } catch (error) {
             setErrorMsg("Something went wrong while loading more questions.");
         } finally {
@@ -165,7 +188,7 @@ const InterviewPrep = () => {
                 lastUpdated={moment(sessionData.updatedAt).format("Do MMM YYYY")}
             />
             <div className='container mx-auto pt-4 pb-4 px-4 md:px-8'>
-                <h2 className='text-lg font-semibold text-black'>Interview Q & A</h2>
+                <h2 className='text-lg font-semibold text-gray-900 dark:text-white'>Interview Q & A</h2>
                 <div className='grid grid-cols-12 gap-4 mt-5 mb-10'>
                     <div className={`col-span-12 ${isFollowUpDrawerOpen ? "md:col-span-7" : "md:col-span-8"}`}>
                         <AnimatePresence>
@@ -203,7 +226,7 @@ const InterviewPrep = () => {
                         </AnimatePresence>
                         <div className='flex items-center justify-center mt-5'>
                             <button
-                                className='flex items-center gap-3 text-sm text-white font-medium bg-black px-5 py-2 rounded cursor-pointer'
+                                className='flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300 font-medium bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700 px-5 py-2 rounded-lg cursor-pointer transition-colors duration-200 disabled:opacity-50'
                                 disabled={isUpdateLoader}
                                 onClick={uploadMoreQuestions}
                             >
