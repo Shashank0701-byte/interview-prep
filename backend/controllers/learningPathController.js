@@ -3,7 +3,7 @@ const LearningPath = require('../models/LearningPath');
 const Company = require('../models/Company');
 const InterviewSession = require('../models/InterviewSession');
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
 // @desc    Create or update personalized learning path
 // @route   POST /api/learning-path/create

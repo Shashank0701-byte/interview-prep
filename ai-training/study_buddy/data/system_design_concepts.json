@@ -1,0 +1,98 @@
+[
+  {
+    "id": "load_balancing",
+    "title": "Load Balancing Fundamentals",
+    "content": "Load balancers distribute incoming requests across multiple servers to prevent overload and ensure high availability. Types: Layer 4 (transport layer) routes based on IP and port, Layer 7 (application layer) routes based on content. Algorithms: Round Robin (sequential), Weighted Round Robin (based on capacity), Least Connections (route to server with fewest active connections), IP Hash (consistent routing). Benefits: improved performance, fault tolerance, scalability.",
+    "metadata": {
+      "type": "system_design_concept",
+      "category": "scalability",
+      "difficulty": "intermediate",
+      "topics": ["load_balancing", "high_availability", "scalability"],
+      "use_cases": ["web_applications", "microservices", "api_gateways"]
+    }
+  },
+  {
+    "id": "caching_strategies",
+    "title": "Caching Strategies and Patterns",
+    "content": "Caching stores frequently accessed data in fast storage to reduce latency. Cache-aside: application manages cache, good for read-heavy workloads. Write-through: write to cache and database simultaneously, ensures consistency. Write-behind: write to cache first, database later, better performance but risk of data loss. Cache levels: Browser cache, CDN, Application cache, Database cache. Eviction policies: LRU (Least Recently Used), LFU (Least Frequently Used), FIFO (First In First Out).",
+    "metadata": {
+      "type": "system_design_concept",
+      "category": "performance",
+      "difficulty": "intermediate",
+      "topics": ["caching", "performance_optimization", "data_storage"],
+      "use_cases": ["web_applications", "databases", "content_delivery"]
+    }
+  },
+  {
+    "id": "database_sharding",
+    "title": "Database Sharding and Partitioning",
+    "content": "Sharding splits large databases across multiple servers to improve performance and scalability. Horizontal sharding: distribute rows across shards based on shard key. Vertical sharding: split tables by feature/domain. Sharding strategies: Range-based (partition by value ranges), Hash-based (use hash function), Directory-based (lookup service). Challenges: cross-shard queries, rebalancing, increased complexity. Consider before sharding: read replicas, caching, query optimization.",
+    "metadata": {
+      "type": "system_design_concept",
+      "category": "databases",
+      "difficulty": "advanced",
+      "topics": ["database_scaling", "sharding", "partitioning"],
+      "use_cases": ["large_scale_applications", "high_traffic_systems"]
+    }
+  },
+  {
+    "id": "microservices_architecture",
+    "title": "Microservices Architecture Principles",
+    "content": "Microservices break applications into small, independent services that communicate over well-defined APIs. Benefits: independent deployment, technology diversity, fault isolation, team autonomy. Challenges: network complexity, data consistency, service discovery, monitoring. Key patterns: API Gateway (single entry point), Service Discovery (locate services), Circuit Breaker (prevent cascade failures), Saga Pattern (distributed transactions). Communication: synchronous (HTTP/REST) vs asynchronous (message queues).",
+    "metadata": {
+      "type": "system_design_concept",
+      "category": "architecture",
+      "difficulty": "advanced",
+      "topics": ["microservices", "distributed_systems", "service_architecture"],
+      "use_cases": ["enterprise_applications", "scalable_systems"]
+    }
+  },
+  {
+    "id": "cap_theorem",
+    "title": "CAP Theorem and Distributed Systems",
+    "content": "CAP Theorem states that distributed systems can guarantee at most 2 of 3 properties: Consistency (all nodes see same data simultaneously), Availability (system remains operational), Partition tolerance (system continues despite network failures). In practice, partition tolerance is required, so choose between CP (consistent but may be unavailable) or AP (available but may be inconsistent). Examples: CP systems (traditional RDBMS), AP systems (DNS, web caching), BASE (Basically Available, Soft state, Eventual consistency) vs ACID.",
+    "metadata": {
+      "type": "system_design_concept",
+      "category": "distributed_systems",
+      "difficulty": "advanced",
+      "topics": ["cap_theorem", "consistency", "availability", "distributed_systems"],
+      "use_cases": ["distributed_databases", "cloud_systems"]
+    }
+  },
+  {
+    "id": "message_queues",
+    "title": "Message Queues and Asynchronous Processing",
+    "content": "Message queues enable asynchronous communication between services, improving system resilience and scalability. Producer sends messages to queue, consumer processes them independently. Benefits: decoupling, reliability, scalability, load leveling. Patterns: Point-to-point (one consumer), Publish-Subscribe (multiple consumers), Request-Reply (synchronous-like). Popular systems: RabbitMQ, Apache Kafka, Amazon SQS. Considerations: message ordering, durability, delivery guarantees (at-least-once, at-most-once, exactly-once).",
+    "metadata": {
+      "type": "system_design_concept",
+      "category": "messaging",
+      "difficulty": "intermediate",
+      "topics": ["message_queues", "asynchronous_processing", "event_driven"],
+      "use_cases": ["microservices", "event_processing", "background_jobs"]
+    }
+  },
+  {
+    "id": "cdn_content_delivery",
+    "title": "Content Delivery Networks (CDN)",
+    "content": "CDNs distribute content across geographically dispersed servers to reduce latency and improve user experience. Edge servers cache static content (images, CSS, JS) closer to users. Benefits: reduced latency, decreased server load, improved availability, DDoS protection. Push CDN: content uploaded to CDN servers proactively. Pull CDN: content cached on first request. Considerations: cache invalidation, dynamic content, cost optimization. Popular CDNs: CloudFlare, Amazon CloudFront, Akamai.",
+    "metadata": {
+      "type": "system_design_concept",
+      "category": "performance",
+      "difficulty": "intermediate",
+      "topics": ["cdn", "content_delivery", "performance_optimization"],
+      "use_cases": ["web_applications", "media_streaming", "global_applications"]
+    }
+  },
+  {
+    "id": "api_design_patterns",
+    "title": "API Design Patterns and Best Practices",
+    "content": "Well-designed APIs are intuitive, consistent, and scalable. REST principles: stateless, resource-based URLs, HTTP methods (GET, POST, PUT, DELETE), standard status codes. GraphQL: single endpoint, client specifies data requirements, reduces over-fetching. API versioning: URL versioning (/v1/), header versioning, parameter versioning. Best practices: consistent naming, proper error handling, rate limiting, authentication, documentation, pagination for large datasets.",
+    "metadata": {
+      "type": "system_design_concept",
+      "category": "api_design",
+      "difficulty": "intermediate",
+      "topics": ["rest_api", "graphql", "api_versioning", "api_best_practices"],
+      "use_cases": ["web_services", "mobile_backends", "integration_platforms"]
+    }
+  }
+]

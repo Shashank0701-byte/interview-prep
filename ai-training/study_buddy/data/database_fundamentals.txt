@@ -1,0 +1,323 @@
+# Database Fundamentals and SQL Mastery
+
+## Relational Database Concepts
+
+### ACID Properties
+ACID is a set of properties that guarantee database transactions are processed reliably:
+
+- **Atomicity**: All operations in a transaction succeed or none do
+- **Consistency**: Database remains in a valid state before and after transaction
+- **Isolation**: Concurrent transactions don't interfere with each other
+- **Durability**: Committed transactions remain permanent even after system failure
+
+### Normalization
+Normalization organizes data to reduce redundancy and improve data integrity:
+
+#### First Normal Form (1NF)
+- Eliminate repeating groups
+- Create separate tables for related data
+- Identify primary keys
+
+#### Second Normal Form (2NF)
+- Must be in 1NF
+- Remove partial dependencies
+- All non-key attributes depend on entire primary key
+
+#### Third Normal Form (3NF)
+- Must be in 2NF
+- Remove transitive dependencies
+- Non-key attributes depend only on primary key
+
+### Database Indexing
+Indexes improve query performance but add overhead to write operations:
+
+#### Types of Indexes
+- **B-Tree Index**: Default for most databases, good for range queries
+- **Hash Index**: Fast for exact matches, not good for ranges
+- **Bitmap Index**: Good for low-cardinality columns
+- **Full-Text Index**: For text searching
+
+#### Index Design Principles
+- Index frequently queried columns
+- Consider composite indexes for multi-column queries
+- Avoid over-indexing (impacts write performance)
+- Monitor index usage and remove unused indexes
+
+## SQL Query Optimization
+
+### Query Execution Plan
+Understanding how databases execute queries:
+
+```sql
+EXPLAIN SELECT * FROM users WHERE email = 'user@example.com';
+```
+
+#### Common Performance Issues
+- **Full Table Scans**: Query reads entire table
+- **Missing Indexes**: No index for WHERE clause columns
+- **Poor Join Order**: Inefficient table joining sequence
+- **Cartesian Products**: Unintentional cross joins
+
+### Optimization Techniques
+
+#### WHERE Clause Optimization
+- Use indexed columns in WHERE clauses
+- Avoid functions on indexed columns (WHERE UPPER(name) = 'JOHN')
+- Use specific column lists instead of SELECT *
+- Use LIMIT for large result sets
+
+#### JOIN Optimization
+- Use appropriate join types (INNER, LEFT, RIGHT)
+- Ensure join columns are indexed
+- Consider denormalization for complex queries
+- Use EXISTS instead of IN for subqueries
+
+#### Subquery Optimization
+- Convert subqueries to JOINs when possible
+- Use correlated subqueries sparingly
+- Consider temporary tables for complex subqueries
+
+## Database Design Patterns
+
+### Entity-Relationship Design
+#### Cardinality Relationships
+- **One-to-One**: One entity relates to exactly one other
+- **One-to-Many**: One entity relates to many others
+- **Many-to-Many**: Many entities relate to many others
+
+#### Relationship Implementation
+```sql
+-- One-to-Many
+CREATE TABLE departments (
+    id INT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+CREATE TABLE employees (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    department_id INT,
+    FOREIGN KEY (department_id) REFERENCES departments(id)
+);
+
+-- Many-to-Many (through junction table)
+CREATE TABLE students (
+    id INT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+CREATE TABLE courses (
+    id INT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+CREATE TABLE student_courses (
+    student_id INT,
+    course_id INT,
+    PRIMARY KEY (student_id, course_id),
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (course_id) REFERENCES courses(id)
+);
+```
+
+### Database Partitioning
+Partitioning divides large tables into smaller, more manageable pieces:
+
+#### Horizontal Partitioning
+- Split rows across multiple partitions
+- Good for time-series data
+- Improves query performance on specific time ranges
+
+#### Vertical Partitioning
+- Split columns into separate tables
+- Good for tables with many rarely used columns
+- Reduces I/O for frequent queries
+
+## Advanced SQL Features
+
+### Window Functions
+Window functions perform calculations across a set of table rows:
+
+```sql
+-- Calculate running total
+SELECT 
+    order_date,
+    amount,
+    SUM(amount) OVER (ORDER BY order_date) as running_total
+FROM orders;
+
+-- Rank employees by salary within department
+SELECT 
+    employee_name,
+    department,
+    salary,
+    RANK() OVER (PARTITION BY department ORDER BY salary DESC) as dept_rank
+FROM employees;
+```
+
+### Common Table Expressions (CTEs)
+CTEs improve query readability and organization:
+
+```sql
+WITH department_stats AS (
+    SELECT 
+        department,
+        COUNT(*) as employee_count,
+        AVG(salary) as avg_salary
+    FROM employees
+    GROUP BY department
+)
+SELECT 
+    d.name,
+    ds.employee_count,
+    ds.avg_salary
+FROM departments d
+JOIN department_stats ds ON d.id = ds.department_id
+WHERE ds.employee_count > 10;
+```
+
+### Recursive Queries
+Recursive queries handle hierarchical data:
+
+```sql
+WITH RECURSIVE employee_hierarchy AS (
+    -- Base case: top-level managers
+    SELECT id, name, manager_id, 1 as level
+    FROM employees
+    WHERE manager_id IS NULL
+    
+    UNION ALL
+    
+    -- Recursive case: find subordinates
+    SELECT e.id, e.name, e.manager_id, eh.level + 1
+    FROM employees e
+    JOIN employee_hierarchy eh ON e.manager_id = eh.id
+)
+SELECT * FROM employee_hierarchy
+ORDER BY level, name;
+```
+
+## NoSQL Databases
+
+### Types of NoSQL Databases
+
+#### Document Databases (MongoDB)
+- Store data in flexible, JSON-like documents
+- Schema-less design
+- Good for content management and catalogs
+
+#### Key-Value Stores (Redis)
+- Simple key-value pairs
+- Extremely fast for simple operations
+- Good for caching and session storage
+
+#### Column-Family Stores (Cassandra)
+- Wide-column storage
+- High scalability
+- Good for time-series and analytics
+
+#### Graph Databases (Neo4j)
+- Store relationships between entities
+- Native graph processing
+- Good for social networks and recommendation engines
+
+### When to Use NoSQL
+- **Schema Flexibility**: Evolving data structures
+- **Horizontal Scalability**: Need to scale across multiple servers
+- **High Performance**: Specific access patterns
+- **Complex Relationships**: Graph-like data structures
+
+## Database Performance Monitoring
+
+### Key Performance Metrics
+- **Query Response Time**: How long queries take to execute
+- **Throughput**: Number of queries per second
+- **Connection Pool Usage**: Database connection efficiency
+- **Cache Hit Ratio**: Effectiveness of query caching
+- **Disk I/O**: Database read/write operations
+
+### Monitoring Tools
+- **Database-specific tools**: MySQL Workbench, pgAdmin
+- **APM tools**: New Relic, Datadog
+- **Custom monitoring**: Database-specific metrics collection
+
+### Performance Tuning Process
+1. **Identify slow queries**: Use query logs and monitoring
+2. **Analyze execution plans**: Understand query optimization
+3. **Optimize indexes**: Add or modify indexes as needed
+4. **Rewrite queries**: Improve query structure and logic
+5. **Database configuration**: Tune database parameters
+6. **Hardware optimization**: Consider memory and disk upgrades
+
+## Database Security
+
+### Security Best Practices
+- **Principle of Least Privilege**: Grant minimum necessary permissions
+- **Encryption**: Encrypt sensitive data at rest and in transit
+- **Authentication**: Strong user authentication mechanisms
+- **Auditing**: Log database access and changes
+- **Regular Updates**: Keep database software updated
+
+### Common Security Vulnerabilities
+- **SQL Injection**: Malicious SQL code in input
+- **Unauthorized Access**: Weak authentication and authorization
+- **Data Exposure**: Unencrypted sensitive information
+- **Backup Exposure**: Unprotected database backups
+
+### Security Implementation
+```sql
+-- Create user with limited permissions
+CREATE USER 'app_user'@'localhost' IDENTIFIED BY 'strong_password';
+GRANT SELECT, INSERT, UPDATE ON app_db.* TO 'app_user'@'localhost';
+
+-- Implement row-level security
+CREATE POLICY user_data_policy ON user_data
+    FOR ALL TO app_user
+    USING (user_id = current_user_id());
+```
+
+## Database Interview Questions
+
+### Technical Questions
+1. Explain ACID properties and their importance
+2. What are database indexes and how do they work?
+3. Describe the difference between INNER JOIN and LEFT JOIN
+4. How would you optimize a slow database query?
+5. What is database normalization and why is it important?
+
+### Design Questions
+1. Design a database schema for an e-commerce platform
+2. How would you handle user authentication and authorization?
+3. Design a system for storing and retrieving user activity logs
+4. How would you implement a messaging system database?
+5. Design a database for a social media platform
+
+### Scenario Questions
+1. Database is running slowly, how would you troubleshoot?
+2. How would you migrate from a relational to NoSQL database?
+3. Database is experiencing deadlocks, how would you resolve?
+4. How would you handle database backups and recovery?
+5. Database needs to scale for 10x traffic, what's your approach?
+
+## Best Practices
+
+### Development Best Practices
+- Use parameterized queries to prevent SQL injection
+- Implement proper error handling and logging
+- Use connection pooling for better performance
+- Write clear, documented SQL code
+- Test database changes in staging environment
+
+### Deployment Best Practices
+- Implement database migrations for schema changes
+- Use read replicas for scaling read operations
+- Monitor database performance continuously
+- Plan for disaster recovery and backups
+- Document database architecture and design decisions
+
+### Maintenance Best Practices
+- Regular database maintenance and optimization
+- Monitor and clean up unused indexes
+- Archive old data to improve performance
+- Regular security audits and updates
+- Performance testing for capacity planning

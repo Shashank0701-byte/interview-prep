@@ -1,0 +1,1766 @@
+# Blockchain and Web3 Development Interview Preparation
+
+## Blockchain Fundamentals
+
+### What is Blockchain?
+Blockchain is a distributed ledger technology that maintains a continuously growing list of records (blocks) linked and secured using cryptography. Each block contains a cryptographic hash of the previous block, a timestamp, and transaction data.
+
+#### Key Characteristics
+- **Decentralization**: No single point of control or failure
+- **Immutability**: Once data is recorded, it cannot be altered
+- **Transparency**: All participants can view the entire chain
+- **Security**: Cryptographic techniques ensure data integrity
+- **Consensus**: Network participants agree on the validity of transactions
+
+#### Blockchain Structure
+```javascript
+// Basic Block Structure
+class Block {
+    constructor(index, timestamp, data, previousHash = '') {
+        this.index = index;
+        this.timestamp = timestamp;
+        this.data = data;
+        this.previousHash = previousHash;
+        this.hash = this.calculateHash();
+        this.nonce = 0;
+    }
+    
+    calculateHash() {
+        return SHA256(this.index + this.previousHash + this.timestamp + 
+                     JSON.stringify(this.data) + this.nonce).toString();
+    }
+    
+    mineBlock(difficulty) {
+        const target = Array(difficulty + 1).join("0");
+        
+        while (this.hash.substring(0, difficulty) !== target) {
+            this.nonce++;
+            this.hash = this.calculateHash();
+        }
+        
+        console.log(`Block mined: ${this.hash}`);
+    }
+}
+
+// Blockchain Implementation
+class Blockchain {
+    constructor() {
+        this.chain = [this.createGenesisBlock()];
+        this.difficulty = 4;
+        this.pendingTransactions = [];
+        this.miningReward = 100;
+    }
+    
+    createGenesisBlock() {
+        return new Block(0, "01/01/2024", "Genesis Block", "0");
+    }
+    
+    getLatestBlock() {
+        return this.chain[this.chain.length - 1];
+    }
+    
+    addBlock(newBlock) {
+        newBlock.previousHash = this.getLatestBlock().hash;
+        newBlock.mineBlock(this.difficulty);
+        this.chain.push(newBlock);
+    }
+    
+    isChainValid() {
+        for (let i = 1; i < this.chain.length; i++) {
+            const currentBlock = this.chain[i];
+            const previousBlock = this.chain[i - 1];
+            
+            if (currentBlock.hash !== currentBlock.calculateHash()) {
+                return false;
+            }
+            
+            if (currentBlock.previousHash !== previousBlock.hash) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+}
+```
+
+### Cryptographic Hash Functions
+Hash functions are fundamental to blockchain security, providing data integrity and linking blocks together.
+
+#### SHA-256 Implementation
+```javascript
+const crypto = require('crypto');
+
+class CryptoUtils {
+    static hash(data) {
+        return crypto.createHash('sha256').update(data).digest('hex');
+    }
+    
+    static merkleRoot(transactions) {
+        if (transactions.length === 0) return '';
+        
+        let hashArray = transactions.map(tx => this.hash(tx));
+        
+        while (hashArray.length > 1) {
+            const nextLevel = [];
+            
+            for (let i = 0; i < hashArray.length; i += 2) {
+                const combined = hashArray[i] + (hashArray[i + 1] || hashArray[i]);
+                nextLevel.push(this.hash(combined));
+            }
+            
+            hashArray = nextLevel;
+        }
+        
+        return hashArray[0];
+    }
+    
+    static verifySignature(message, signature, publicKey) {
+        const verifier = crypto.createVerify('SHA256');
+        verifier.update(message);
+        return verifier.verify(publicKey, signature, 'hex');
+    }
+}
+
+// Digital Signature Implementation
+class DigitalSignature {
+    constructor() {
+        this.keyPair = crypto.generateKeyPairSync('rsa', {
+            modulusLength: 2048,
+            publicKeyEncoding: { type: 'spki', format: 'pem' },
+            privateKeyEncoding: { type: 'pkcs8', format: 'pem' }
+        });
+    }
+    
+    sign(message) {
+        const sign = crypto.createSign('SHA256');
+        sign.update(message);
+        return sign.sign(this.keyPair.privateKey, 'hex');
+    }
+    
+    verify(message, signature, publicKey) {
+        const verify = crypto.createVerify('SHA256');
+        verify.update(message);
+        return verify.verify(publicKey, signature, 'hex');
+    }
+}
+```
+
+## Smart Contract Development
+
+### Solidity Fundamentals
+Solidity is the most popular programming language for writing smart contracts on Ethereum and other EVM-compatible blockchains.
+
+#### Basic Smart Contract Structure
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+contract SimpleStorage {
+    // State variables
+    uint256 private storedData;
+    address public owner;
+    
+    // Events
+    event DataStored(uint256 indexed newValue, address indexed storedBy);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    
+    // Modifiers
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can call this function");
+        _;
+    }
+    
+    // Constructor
+    constructor() {
+        owner = msg.sender;
+    }
+    
+    // Functions
+    function set(uint256 _value) public onlyOwner {
+        storedData = _value;
+        emit DataStored(_value, msg.sender);
+    }
+    
+    function get() public view returns (uint256) {
+        return storedData;
+    }
+    
+    function transferOwnership(address _newOwner) public onlyOwner {
+        require(_newOwner != address(0), "New owner cannot be zero address");
+        address previousOwner = owner;
+        owner = _newOwner;
+        emit OwnershipTransferred(previousOwner, _newOwner);
+    }
+}
+```
+
+#### ERC20 Token Implementation
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+interface IERC20 {
+    function totalSupply() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address to, uint256 amount) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
+    
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+}
+
+contract ERC20 is IERC20 {
+    mapping(address => uint256) private _balances;
+    mapping(address => mapping(address => uint256)) private _allowances;
+    
+    uint256 private _totalSupply;
+    string public name;
+    string public symbol;
+    uint8 public decimals;
+    
+    constructor(string memory _name, string memory _symbol, uint256 initialSupply) {
+        name = _name;
+        symbol = _symbol;
+        decimals = 18;
+        _totalSupply = initialSupply * (10 ** decimals);
+        _balances[msg.sender] = _totalSupply;
+        emit Transfer(address(0), msg.sender, _totalSupply);
+    }
+    
+    function totalSupply() public view override returns (uint256) {
+        return _totalSupply;
+    }
+    
+    function balanceOf(address account) public view override returns (uint256) {
+        return _balances[account];
+    }
+    
+    function transfer(address to, uint256 amount) public override returns (bool) {
+        address owner = msg.sender;
+        _transfer(owner, to, amount);
+        return true;
+    }
+    
+    function allowance(address owner, address spender) public view override returns (uint256) {
+        return _allowances[owner][spender];
+    }
+    
+    function approve(address spender, uint256 amount) public override returns (bool) {
+        address owner = msg.sender;
+        _approve(owner, spender, amount);
+        return true;
+    }
+    
+    function transferFrom(address from, address to, uint256 amount) public override returns (bool) {
+        address spender = msg.sender;
+        _spendAllowance(from, spender, amount);
+        _transfer(from, to, amount);
+        return true;
+    }
+    
+    function _transfer(address from, address to, uint256 amount) internal {
+        require(from != address(0), "ERC20: transfer from the zero address");
+        require(to != address(0), "ERC20: transfer to the zero address");
+        
+        uint256 fromBalance = _balances[from];
+        require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
+        
+        _balances[from] = fromBalance - amount;
+        _balances[to] += amount;
+        
+        emit Transfer(from, to, amount);
+    }
+    
+    function _approve(address owner, address spender, uint256 amount) internal {
+        require(owner != address(0), "ERC20: approve from the zero address");
+        require(spender != address(0), "ERC20: approve to the zero address");
+        
+        _allowances[owner][spender] = amount;
+        emit Approval(owner, spender, amount);
+    }
+    
+    function _spendAllowance(address owner, address spender, uint256 amount) internal {
+        uint256 current = _allowances[owner][spender];
+        if (current != type(uint256).max) {
+            require(current >= amount, "ERC20: insufficient allowance");
+            _allowances[owner][spender] = current - amount;
+        }
+    }
+}
+```
+
+#### NFT (ERC721) Implementation
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+
+contract NFTCollection is ERC721URIStorage, Ownable {
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIdCounter;
+    
+    uint256 public constant MAX_SUPPLY = 10000;
+    uint256 public constant MINT_PRICE = 0.01 ether;
+    
+    string public baseTokenURI;
+    bool public mintingActive = false;
+    
+    event MintingStatusChanged(bool active);
+    event BaseURIChanged(string newBaseURI);
+    
+    constructor(string memory name, string memory symbol, string memory _baseTokenURI) 
+        ERC721(name, symbol) {
+        baseTokenURI = _baseTokenURI;
+    }
+    
+    function mintNFT(address to, string memory tokenURI) public payable returns (uint256) {
+        require(mintingActive, "Minting is not active");
+        require(msg.value >= MINT_PRICE, "Insufficient payment");
+        require(_tokenIdCounter.current() < MAX_SUPPLY, "Maximum supply reached");
+        
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, tokenURI);
+        
+        return tokenId;
+    }
+    
+    function ownerMint(address to, string memory tokenURI) public onlyOwner returns (uint256) {
+        require(_tokenIdCounter.current() < MAX_SUPPLY, "Maximum supply reached");
+        
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, tokenURI);
+        
+        return tokenId;
+    }
+    
+    function setMintingActive(bool _active) public onlyOwner {
+        mintingActive = _active;
+        emit MintingStatusChanged(_active);
+    }
+    
+    function setBaseURI(string memory _baseTokenURI) public onlyOwner {
+        baseTokenURI = _baseTokenURI;
+        emit BaseURIChanged(_baseTokenURI);
+    }
+    
+    function withdraw() public onlyOwner {
+        uint256 balance = address(this).balance;
+        payable(owner()).transfer(balance);
+    }
+    
+    function totalSupply() public view returns (uint256) {
+        return _tokenIdCounter.current();
+    }
+    
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        require(_exists(tokenId), "URI query for nonexistent token");
+        
+        string memory _tokenURI = _tokenURIs[tokenId];
+        string memory base = _baseURI();
+        
+        if (bytes(base).length == 0) {
+            return _tokenURI;
+        }
+        
+        if (bytes(_tokenURI).length > 0) {
+            return string(abi.encodePacked(base, _tokenURI));
+        }
+        
+        return super.tokenURI(tokenId);
+    }
+    
+    function _baseURI() internal view override returns (string memory) {
+        return baseTokenURI;
+    }
+}
+```
+
+## Web3 Development with JavaScript
+
+### Ethereum Interaction with Web3.js
+Web3.js is a JavaScript library that allows interaction with Ethereum blockchain.
+
+#### Smart Contract Interaction
+```javascript
+const Web3 = require('web3');
+const contractABI = require('./contractABI.json');
+
+class Web3Manager {
+    constructor(providerUrl, contractAddress) {
+        this.web3 = new Web3(providerUrl);
+        this.contractAddress = contractAddress;
+        this.contract = new this.web3.eth.Contract(contractABI, contractAddress);
+    }
+    
+    // Connect to MetaMask
+    async connectWallet() {
+        if (typeof window.ethereum !== 'undefined') {
+            try {
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                this.web3 = new Web3(window.ethereum);
+                const accounts = await this.web3.eth.getAccounts();
+                this.currentAccount = accounts[0];
+                return this.currentAccount;
+            } catch (error) {
+                console.error('Error connecting to wallet:', error);
+                throw error;
+            }
+        } else {
+            throw new Error('MetaMask is not installed');
+        }
+    }
+    
+    // Get account balance
+    async getBalance(address) {
+        const balanceWei = await this.web3.eth.getBalance(address);
+        return this.web3.utils.fromWei(balanceWei, 'ether');
+    }
+    
+    // Send transaction
+    async sendTransaction(to, amountInEther) {
+        const amountInWei = this.web3.utils.toWei(amountInEther.toString(), 'ether');
+        
+        const txParams = {
+            from: this.currentAccount,
+            to: to,
+            value: amountInWei,
+            gas: 21000
+        };
+        
+        try {
+            const txHash = await this.web3.eth.sendTransaction(txParams);
+            return txHash.transactionHash;
+        } catch (error) {
+            console.error('Transaction failed:', error);
+            throw error;
+        }
+    }
+    
+    // Call smart contract function (read)
+    async contractRead(functionName, parameters = []) {
+        try {
+            const result = await this.contract.methods[functionName](...parameters).call();
+            return result;
+        } catch (error) {
+            console.error('Contract read failed:', error);
+            throw error;
+        }
+    }
+    
+    // Call smart contract function (write)
+    async contractWrite(functionName, parameters = [], value = 0) {
+        try {
+            const gasEstimate = await this.contract.methods[functionName](...parameters)
+                .estimateGas({ from: this.currentAccount, value: value });
+            
+            const gasPrice = await this.web3.eth.getGasPrice();
+            
+            const txParams = {
+                from: this.currentAccount,
+                to: this.contractAddress,
+                gas: gasEstimate,
+                gasPrice: gasPrice,
+                value: value,
+                data: this.contract.methods[functionName](...parameters).encodeABI()
+            };
+            
+            const txHash = await this.web3.eth.sendTransaction(txParams);
+            return txHash.transactionHash;
+        } catch (error) {
+            console.error('Contract write failed:', error);
+            throw error;
+        }
+    }
+    
+    // Listen to contract events
+    listenToEvents(eventName, callback) {
+        this.contract.events[eventName()
+            .on('data', (event) => callback(event))
+            .on('error', (error) => console.error('Event error:', error));
+    }
+    
+    // Get transaction receipt
+    async getTransactionReceipt(txHash) {
+        try {
+            const receipt = await this.web3.eth.getTransactionReceipt(txHash);
+            return receipt;
+        } catch (error) {
+            console.error('Error getting transaction receipt:', error);
+            throw error;
+        }
+    }
+    
+    // Wait for transaction confirmation
+    async waitForTransaction(txHash, confirmations = 1) {
+        return new Promise((resolve, reject) => {
+            const filter = this.web3.eth.subscribe('newBlockHeaders');
+            
+            filter.on('data', async (blockHeader) => {
+                try {
+                    const receipt = await this.web3.eth.getTransactionReceipt(txHash);
+                    
+                    if (receipt && receipt.blockNumber <= blockHeader.number) {
+                        const currentBlock = await this.web3.eth.getBlockNumber();
+                        const confirmationsCount = currentBlock - receipt.blockNumber;
+                        
+                        if (confirmationsCount >= confirmations) {
+                            await filter.unsubscribe();
+                            resolve(receipt);
+                        }
+                    }
+                } catch (error) {
+                    await filter.unsubscribe();
+                    reject(error);
+                }
+            });
+            
+            filter.on('error', (error) => {
+                filter.unsubscribe();
+                reject(error);
+            });
+        });
+    }
+}
+
+// Usage Example
+const web3Manager = new Web3Manager(
+    'https://mainnet.infura.io/v3/YOUR_PROJECT_ID',
+    '0x1234567890123456789012345678901234567890'
+);
+
+// Connect wallet and interact
+web3Manager.connectWallet()
+    .then(account => {
+        console.log('Connected account:', account);
+        
+        // Read from contract
+        return web3Manager.contractRead('balanceOf', [account]);
+    })
+    .then(balance => {
+        console.log('Token balance:', balance);
+        
+        // Write to contract
+        return web3Manager.contractWrite('transfer', ['0xrecipient_address', 100]);
+    })
+    .then(txHash => {
+        console.log('Transaction hash:', txHash);
+        return web3Manager.waitForTransaction(txHash, 3);
+    })
+    .then(receipt => {
+        console.log('Transaction confirmed:', receipt);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+```
+
+### Ethers.js Implementation
+Ethers.js is a modern, complete, and compact library for interacting with the Ethereum Blockchain.
+
+#### Ethers.js Smart Contract Interaction
+```javascript
+const { ethers } = require('ethers');
+
+class EthersManager {
+    constructor(rpcUrl, contractAddress, contractABI) {
+        this.provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+        this.contractAddress = contractAddress;
+        this.contractABI = contractABI;
+        this.contract = new ethers.Contract(contractAddress, contractABI, this.provider);
+    }
+    
+    // Connect to MetaMask
+    async connectWallet() {
+        if (typeof window.ethereum !== 'undefined') {
+            try {
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                this.provider = new ethers.providers.Web3Provider(window.ethereum);
+                this.signer = this.provider.getSigner();
+                this.contract = new ethers.Contract(this.contractAddress, this.contractABI, this.signer);
+                
+                const address = await this.signer.getAddress();
+                return address;
+            } catch (error) {
+                console.error('Error connecting to wallet:', error);
+                throw error;
+            }
+        } else {
+            throw new Error('MetaMask is not installed');
+        }
+    }
+    
+    // Get account balance
+    async getBalance(address) {
+        const balance = await this.provider.getBalance(address);
+        return ethers.utils.formatEther(balance);
+    }
+    
+    // Send transaction
+    async sendTransaction(to, amountInEther) {
+        try {
+            const tx = await this.signer.sendTransaction({
+                to: to,
+                value: ethers.utils.parseEther(amountInEther.toString())
+            });
+            
+            const receipt = await tx.wait();
+            return receipt.transactionHash;
+        } catch (error) {
+            console.error('Transaction failed:', error);
+            throw error;
+        }
+    }
+    
+    // Call smart contract function (read)
+    async contractRead(functionName, parameters = []) {
+        try {
+            const result = await this.contract[functionName](...parameters);
+            return result;
+        } catch (error) {
+            console.error('Contract read failed:', error);
+            throw error;
+        }
+    }
+    
+    // Call smart contract function (write)
+    async contractWrite(functionName, parameters = [], value = 0) {
+        try {
+            const tx = await this.contract[functionName](...parameters, {
+                value: ethers.utils.parseEther(value.toString())
+            });
+            
+            const receipt = await tx.wait();
+            return receipt.transactionHash;
+        } catch (error) {
+            console.error('Contract write failed:', error);
+            throw error;
+        }
+    }
+    
+    // Estimate gas
+    async estimateGas(functionName, parameters = [], value = 0) {
+        try {
+            const gasEstimate = await this.contract.estimateGas[functionName](...parameters, {
+                value: ethers.utils.parseEther(value.toString())
+            });
+            
+            return gasEstimate.toString();
+        } catch (error) {
+            console.error('Gas estimation failed:', error);
+            throw error;
+        }
+    }
+    
+    // Get current gas price
+    async getGasPrice() {
+        const gasPrice = await this.provider.getGasPrice();
+        return ethers.utils.formatUnits(gasPrice, 'gwei');
+    }
+    
+    // Listen to contract events
+    listenToEvents(eventName, fromBlock = 0, callback) {
+        const filter = this.contract.filters[eventName]();
+        
+        this.contract.on(filter, (event) => {
+            callback(event);
+        });
+        
+        // Get past events
+        this.contract.queryFilter(filter, fromBlock)
+            .then(events => {
+                events.forEach(event => callback(event));
+            })
+            .catch(error => console.error('Error querying past events:', error));
+    }
+    
+    // Get transaction details
+    async getTransaction(txHash) {
+        try {
+            const tx = await this.provider.getTransaction(txHash);
+            return tx;
+        } catch (error) {
+            console.error('Error getting transaction:', error);
+            throw error;
+        }
+    }
+    
+    // Get transaction receipt
+    async getTransactionReceipt(txHash) {
+        try {
+            const receipt = await this.provider.getTransactionReceipt(txHash);
+            return receipt;
+        } catch (error) {
+            console.error('Error getting transaction receipt:', error);
+            throw error;
+        }
+    }
+}
+
+// Usage Example
+const ethersManager = new EthersManager(
+    'https://mainnet.infura.io/v3/YOUR_PROJECT_ID',
+    '0x1234567890123456789012345678901234567890',
+    contractABI
+);
+
+ethersManager.connectWallet()
+    .then(account => {
+        console.log('Connected account:', account);
+        return ethersManager.contractRead('balanceOf', [account]);
+    })
+    .then(balance => {
+        console.log('Token balance:', balance);
+        return ethersManager.contractWrite('transfer', ['0xrecipient_address', 100]);
+    })
+    .then(txHash => {
+        console.log('Transaction hash:', txHash);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+```
+
+## Decentralized Application (DApp) Development
+
+### React DApp Frontend
+Building a modern React frontend for decentralized applications.
+
+#### DApp Component Structure
+```jsx
+import React, { useState, useEffect } from 'react';
+import { ethers } from 'ethers';
+import Web3Manager from './Web3Manager';
+import TokenContract from './contracts/TokenContract.json';
+
+const DApp = () => {
+    const [account, setAccount] = useState(null);
+    const [balance, setBalance] = useState('0');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [web3Manager, setWeb3Manager] = useState(null);
+    const [contract, setContract] = useState(null);
+    
+    const contractAddress = '0x1234567890123456789012345678901234567890';
+    const contractABI = TokenContract.abi;
+    
+    useEffect(() => {
+        initializeDApp();
+    }, []);
+    
+    const initializeDApp = async () => {
+        try {
+            const manager = new Web3Manager(
+                'https://mainnet.infura.io/v3/YOUR_PROJECT_ID',
+                contractAddress
+            );
+            
+            setWeb3Manager(manager);
+            
+            // Check if wallet is connected
+            if (window.ethereum && window.ethereum.selectedAddress) {
+                const connectedAccount = await manager.connectWallet();
+                setAccount(connectedAccount);
+                await updateBalance(connectedAccount);
+            }
+            
+            // Listen for account changes
+            window.ethereum.on('accountsChanged', handleAccountChange);
+            window.ethereum.on('chainChanged', handleChainChange);
+            
+        } catch (error) {
+            setError('Failed to initialize DApp');
+            console.error('Initialization error:', error);
+        }
+    };
+    
+    const handleAccountChange = (accounts) => {
+        if (accounts.length > 0) {
+            setAccount(accounts[0]);
+            updateBalance(accounts[0]);
+        } else {
+            setAccount(null);
+            setBalance('0');
+        }
+    };
+    
+    const handleChainChange = () => {
+        window.location.reload();
+    };
+    
+    const connectWallet = async () => {
+        setLoading(true);
+        setError(null);
+        
+        try {
+            const connectedAccount = await web3Manager.connectWallet();
+            setAccount(connectedAccount);
+            await updateBalance(connectedAccount);
+        } catch (error) {
+            setError('Failed to connect wallet');
+            console.error('Connection error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    const updateBalance = async (address) => {
+        try {
+            const tokenBalance = await web3Manager.contractRead('balanceOf', [address]);
+            setBalance(ethers.utils.formatEther(tokenBalance));
+        } catch (error) {
+            console.error('Error updating balance:', error);
+        }
+    };
+    
+    const transferTokens = async (to, amount) => {
+        setLoading(true);
+        setError(null);
+        
+        try {
+            const amountInWei = ethers.utils.parseEther(amount.toString());
+            const txHash = await web3Manager.contractWrite('transfer', [to, amountInWei.toString()]);
+            
+            // Wait for confirmation
+            await web3Manager.waitForTransaction(txHash, 2);
+            
+            // Update balance
+            await updateBalance(account);
+            
+            return txHash;
+        } catch (error) {
+            setError('Transfer failed');
+            console.error('Transfer error:', error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    const approveTokens = async (spender, amount) => {
+        setLoading(true);
+        setError(null);
+        
+        try {
+            const amountInWei = ethers.utils.parseEther(amount.toString());
+            const txHash = await web3Manager.contractWrite('approve', [spender, amountInWei.toString()]);
+            
+            await web3Manager.waitForTransaction(txHash, 2);
+            
+            return txHash;
+        } catch (error) {
+            setError('Approval failed');
+            console.error('Approval error:', error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    const formatAddress = (address) => {
+        if (!address) return '';
+        return `${address.slice(0, 6)}...${address.slice(-4)}`;
+    };
+    
+    return (
+        <div className="dapp-container">
+            <header className="dapp-header">
+                <h1>Web3 Token DApp</h1>
+                {account ? (
+                    <div className="wallet-info">
+                        <span className="account">{formatAddress(account)}</span>
+                        <span className="balance">{balance} Tokens</span>
+                    </div>
+                ) : (
+                    <button className="connect-btn" onClick={connectWallet} disabled={loading}>
+                        {loading ? 'Connecting...' : 'Connect Wallet'}
+                    </button>
+                )}
+            </header>
+            
+            <main className="dapp-main">
+                {error && <div className="error-message">{error}</div>}
+                
+                {account ? (
+                    <div className="dapp-content">
+                        <TransferForm 
+                            onTransfer={transferTokens}
+                            onApprove={approveTokens}
+                            loading={loading}
+                        />
+                        <TransactionHistory account={account} />
+                    </div>
+                ) : (
+                    <div className="welcome-message">
+                        <h2>Welcome to Web3 Token DApp</h2>
+                        <p>Please connect your wallet to get started</p>
+                    </div>
+                )}
+            </main>
+        </div>
+    );
+};
+
+const TransferForm = ({ onTransfer, onApprove, loading }) => {
+    const [recipient, setRecipient] = useState('');
+    const [amount, setAmount] = useState('');
+    const [action, setAction] = useState('transfer');
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (!recipient || !amount) {
+            alert('Please fill in all fields');
+            return;
+        }
+        
+        try {
+            if (action === 'transfer') {
+                await onTransfer(recipient, amount);
+            } else {
+                await onApprove(recipient, amount);
+            }
+            
+            // Reset form
+            setRecipient('');
+            setAmount('');
+            
+            alert('Transaction successful!');
+        } catch (error) {
+            alert('Transaction failed!');
+        }
+    };
+    
+    return (
+        <form className="transfer-form" onSubmit={handleSubmit}>
+            <h3>Token Operations</h3>
+            
+            <div className="form-group">
+                <label>Action Type:</label>
+                <select value={action} onChange={(e) => setAction(e.target.value)}>
+                    <option value="transfer">Transfer</option>
+                    <option value="approve">Approve</option>
+                </select>
+            </div>
+            
+            <div className="form-group">
+                <label>Recipient Address:</label>
+                <input
+                    type="text"
+                    value={recipient}
+                    onChange={(e) => setRecipient(e.target.value)}
+                    placeholder="0x..."
+                />
+            </div>
+            
+            <div className="form-group">
+                <label>Amount:</label>
+                <input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="0.0"
+                    step="0.001"
+                />
+            </div>
+            
+            <button type="submit" disabled={loading}>
+                {loading ? 'Processing...' : `${action === 'transfer' ? 'Transfer' : 'Approve'} Tokens`}
+            </button>
+        </form>
+    );
+};
+
+const TransactionHistory = ({ account }) => {
+    const [transactions, setTransactions] = useState([]);
+    const [loading, setLoading] = useState(false);
+    
+    useEffect(() => {
+        if (account) {
+            loadTransactionHistory();
+        }
+    }, [account]);
+    
+    const loadTransactionHistory = async () => {
+        setLoading(true);
+        try {
+            // This would typically fetch from an API or blockchain
+            const mockTransactions = [
+                {
+                    hash: '0x1234567890123456789012345678901234567890123456789012345678901234',
+                    type: 'transfer',
+                    amount: '100',
+                    from: account,
+                    to: '0xabcdef1234567890123456789012345678901234',
+                    timestamp: Date.now() - 3600000,
+                    status: 'confirmed'
+                }
+            ];
+            
+            setTransactions(mockTransactions);
+        } catch (error) {
+            console.error('Error loading transactions:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    return (
+        <div className="transaction-history">
+            <h3>Transaction History</h3>
+            {loading ? (
+                <p>Loading transactions...</p>
+            ) : transactions.length === 0 ? (
+                <p>No transactions found</p>
+            ) : (
+                <div className="transaction-list">
+                    {transactions.map((tx, index) => (
+                        <div key={index} className="transaction-item">
+                            <div className="transaction-details">
+                                <span className="transaction-type">{tx.type}</span>
+                                <span className="transaction-amount">{tx.amount} tokens</span>
+                            </div>
+                            <div className="transaction-meta">
+                                <span className="transaction-hash">
+                                    {tx.hash.slice(0, 10)}...{tx.hash.slice(-8)}
+                                </span>
+                                <span className="transaction-time">
+                                    {new Date(tx.timestamp).toLocaleString()}
+                                </span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default DApp;
+```
+
+## DeFi (Decentralized Finance)
+
+### DeFi Protocols and Concepts
+DeFi refers to financial applications built on blockchain technology that operate without traditional financial intermediaries.
+
+#### Uniswap-like AMM Implementation
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
+contract SimpleAMM {
+    using SafeERC20 for IERC20;
+    
+    IERC20 public tokenA;
+    IERC20 public tokenB;
+    
+    uint256 public reserveA;
+    uint256 public reserveB;
+    
+    uint256 public constant FEE_DENOMINATOR = 1000;
+    uint256 public fee = 3; // 0.3%
+    
+    mapping(address => uint256) public liquidity;
+    
+    event LiquidityAdded(address indexed provider, uint256 amountA, uint256 amountB, uint256 liquidity);
+    event LiquidityRemoved(address indexed provider, uint256 amountA, uint256 amountB, uint256 liquidity);
+    event TokensSwapped(address indexed user, uint256 amountIn, uint256 amountOut, address tokenIn);
+    
+    constructor(address _tokenA, address _tokenB) {
+        tokenA = IERC20(_tokenA);
+        tokenB = IERC20(_tokenB);
+    }
+    
+    function addLiquidity(uint256 amountA, uint256 amountB) external {
+        require(amountA > 0 && amountB > 0, "Amounts must be greater than 0");
+        
+        // Calculate optimal amount based on current reserves
+        uint256 optimalAmountB = getOptimalAmountB(amountA);
+        
+        if (reserveA == 0 && reserveB == 0) {
+            optimalAmountB = amountB;
+        }
+        
+        require(amountB >= optimalAmountB, "Insufficient amountB");
+        
+        // Transfer tokens from user to contract
+        tokenA.safeTransferFrom(msg.sender, address(this), amountA);
+        tokenB.safeTransferFrom(msg.sender, address(this), amountB);
+        
+        // Calculate liquidity
+        uint256 liquidityAmount;
+        if (liquidity[msg.sender] == 0) {
+            liquidityAmount = sqrt(amountA * amountB);
+        } else {
+            liquidityAmount = min(
+                (amountA * liquidity[msg.sender]) / reserveA,
+                (amountB * liquidity[msg.sender]) / reserveB
+            );
+        }
+        
+        // Update reserves and liquidity
+        reserveA += amountA;
+        reserveB += amountB;
+        liquidity[msg.sender] += liquidityAmount;
+        
+        emit LiquidityAdded(msg.sender, amountA, amountB, liquidityAmount);
+    }
+    
+    function removeLiquidity(uint256 liquidityAmount) external {
+        require(liquidityAmount > 0, "Liquidity amount must be greater than 0");
+        require(liquidity[msg.sender] >= liquidityAmount, "Insufficient liquidity");
+        
+        // Calculate amounts to return
+        uint256 amountA = (liquidityAmount * reserveA) / getTotalLiquidity();
+        uint256 amountB = (liquidityAmount * reserveB) / getTotalLiquidity();
+        
+        // Update reserves and liquidity
+        reserveA -= amountA;
+        reserveB -= amountB;
+        liquidity[msg.sender] -= liquidityAmount;
+        
+        // Transfer tokens back to user
+        tokenA.safeTransfer(msg.sender, amountA);
+        tokenB.safeTransfer(msg.sender, amountB);
+        
+        emit LiquidityRemoved(msg.sender, amountA, amountB, liquidityAmount);
+    }
+    
+    function swapTokens(address tokenIn, uint256 amountIn) external {
+        require(amountIn > 0, "Amount must be greater than 0");
+        require(tokenIn == address(tokenA) || tokenIn == address(tokenB), "Invalid token");
+        
+        (IERC20 tokenOut, uint256 reserveIn, uint256 reserveOut) = tokenIn == address(tokenA) 
+            ? (tokenB, reserveA, reserveB) 
+            : (tokenA, reserveB, reserveA);
+        
+        // Calculate amount out with fee
+        uint256 amountInWithFee = amountIn * (FEE_DENOMINATOR - fee);
+        uint256 numerator = amountInWithFee * reserveOut;
+        uint256 denominator = (reserveIn * FEE_DENOMINATOR) + amountInWithFee;
+        uint256 amountOut = numerator / denominator;
+        
+        require(amountOut > 0, "Insufficient output amount");
+        require(amountOut < reserveOut, "Insufficient liquidity");
+        
+        // Transfer tokens
+        IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountIn);
+        tokenOut.safeTransfer(msg.sender, amountOut);
+        
+        // Update reserves
+        if (tokenIn == address(tokenA)) {
+            reserveA += amountIn;
+            reserveB -= amountOut;
+        } else {
+            reserveB += amountIn;
+            reserveA -= amountOut;
+        }
+        
+        emit TokensSwapped(msg.sender, amountIn, amountOut, tokenIn);
+    }
+    
+    function getOptimalAmountB(uint256 amountA) public view returns (uint256) {
+        if (reserveA == 0 || reserveB == 0) return 0;
+        return (amountA * reserveB) / reserveA;
+    }
+    
+    function getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) 
+        public pure returns (uint256) {
+        require(amountIn > 0, "Amount must be greater than 0");
+        require(reserveIn > 0 && reserveOut > 0, "Insufficient liquidity");
+        
+        uint256 amountInWithFee = amountIn * (FEE_DENOMINATOR - fee);
+        uint256 numerator = amountInWithFee * reserveOut;
+        uint256 denominator = (reserveIn * FEE_DENOMINATOR) + amountInWithFee;
+        
+        return numerator / denominator;
+    }
+    
+    function getTotalLiquidity() public view returns (uint256) {
+        return liquidity[msg.sender];
+    }
+    
+    function sqrt(uint256 y) internal pure returns (uint256 z) {
+        if (y > 3) {
+            z = y;
+            uint256 x = y / 2 + 1;
+            while (x < z) {
+                z = x;
+                x = (y / x + x) / 2;
+            }
+        } else if (y != 0) {
+            z = 1;
+        }
+    }
+    
+    function min(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a < b ? a : b;
+    }
+}
+```
+
+#### Lending Protocol Implementation
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
+contract LendingProtocol is ReentrancyGuard {
+    using SafeERC20 for IERC20;
+    
+    struct Asset {
+        IERC20 token;
+        uint256 totalDeposits;
+        uint256 totalBorrows;
+        uint256 depositRate;
+        uint256 borrowRate;
+        uint256 collateralFactor;
+        mapping(address => uint256) deposits;
+        mapping(address => uint256) borrows;
+    }
+    
+    mapping(address => Asset) public assets;
+    address[] public supportedAssets;
+    
+    mapping(address => uint256) public userCollateralValue;
+    uint256 public constant PRECISION = 1e18;
+    
+    event Deposited(address indexed user, address indexed asset, uint256 amount);
+    event Withdrawn(address indexed user, address indexed asset, uint256 amount);
+    event Borrowed(address indexed user, address indexed asset, uint256 amount);
+    event Repaid(address indexed user, address indexed asset, uint256 amount);
+    
+    function addAsset(address tokenAddress, uint256 depositRate, uint256 borrowRate, uint256 collateralFactor) external {
+        require(tokenAddress != address(0), "Invalid token address");
+        require(collateralFactor <= 10000, "Collateral factor too high");
+        
+        Asset storage asset = assets[tokenAddress];
+        require(address(asset.token) == address(0), "Asset already exists");
+        
+        asset.token = IERC20(tokenAddress);
+        asset.depositRate = depositRate;
+        asset.borrowRate = borrowRate;
+        asset.collateralFactor = collateralFactor;
+        
+        supportedAssets.push(tokenAddress);
+    }
+    
+    function deposit(address tokenAddress, uint256 amount) external nonReentrant {
+        require(amount > 0, "Amount must be greater than 0");
+        require(assets[tokenAddress].collateralFactor > 0, "Asset not supported");
+        
+        Asset storage asset = assets[tokenAddress];
+        
+        // Transfer tokens to contract
+        asset.token.safeTransferFrom(msg.sender, address(this), amount);
+        
+        // Update deposit
+        asset.deposits[msg.sender] += amount;
+        asset.totalDeposits += amount;
+        
+        // Update user collateral value
+        userCollateralValue[msg.sender] += calculateCollateralValue(tokenAddress, amount);
+        
+        emit Deposited(msg.sender, tokenAddress, amount);
+    }
+    
+    function withdraw(address tokenAddress, uint256 amount) external nonReentrant {
+        require(amount > 0, "Amount must be greater than 0");
+        
+        Asset storage asset = assets[tokenAddress];
+        require(asset.deposits[msg.sender] >= amount, "Insufficient deposit");
+        
+        // Check if withdrawal would cause liquidation
+        uint256 newCollateralValue = userCollateralValue[msg.sender] - 
+                                   calculateCollateralValue(tokenAddress, amount);
+        uint256 borrowValue = calculateTotalBorrowValue(msg.sender);
+        
+        require(newCollateralValue >= borrowValue, "Insufficient collateral");
+        
+        // Update deposit and collateral
+        asset.deposits[msg.sender] -= amount;
+        asset.totalDeposits -= amount;
+        userCollateralValue[msg.sender] -= calculateCollateralValue(tokenAddress, amount);
+        
+        // Transfer tokens to user
+        asset.token.safeTransfer(msg.sender, amount);
+        
+        emit Withdrawn(msg.sender, tokenAddress, amount);
+    }
+    
+    function borrow(address tokenAddress, uint256 amount) external nonReentrant {
+        require(amount > 0, "Amount must be greater than 0");
+        
+        Asset storage asset = assets[tokenAddress];
+        require(asset.totalDeposits >= asset.totalBorrows + amount, "Insufficient liquidity");
+        
+        // Check collateral requirement
+        uint256 borrowValue = calculateTokenValue(tokenAddress, amount);
+        uint256 currentBorrowValue = calculateTotalBorrowValue(msg.sender);
+        uint256 collateralValue = userCollateralValue[msg.sender];
+        
+        require(collateralValue >= currentBorrowValue + borrowValue, "Insufficient collateral");
+        
+        // Update borrow
+        asset.borrows[msg.sender] += amount;
+        asset.totalBorrows += amount;
+        
+        // Transfer tokens to user
+        asset.token.safeTransfer(msg.sender, amount);
+        
+        emit Borrowed(msg.sender, tokenAddress, amount);
+    }
+    
+    function repay(address tokenAddress, uint256 amount) external nonReentrant {
+        require(amount > 0, "Amount must be greater than 0");
+        
+        Asset storage asset = assets[tokenAddress];
+        uint256 borrowAmount = min(amount, asset.borrows[msg.sender]);
+        
+        require(borrowAmount > 0, "No borrow to repay");
+        
+        // Transfer tokens from user
+        asset.token.safeTransferFrom(msg.sender, address(this), borrowAmount);
+        
+        // Update borrow
+        asset.borrows[msg.sender] -= borrowAmount;
+        asset.totalBorrows -= borrowAmount;
+        
+        emit Repaid(msg.sender, tokenAddress, borrowAmount);
+    }
+    
+    function liquidate(address borrower, address collateralToken, address debtToken, uint256 debtAmount) external nonReentrant {
+        require(borrower != msg.sender, "Cannot liquidate yourself");
+        
+        Asset storage collateralAsset = assets[collateralToken];
+        Asset storage debtAsset = assets[debtToken];
+        
+        uint256 borrowAmount = min(debtAmount, debtAsset.borrows[borrower]);
+        require(borrowAmount > 0, "No borrow to liquidate");
+        
+        // Check if borrower is undercollateralized
+        uint256 collateralValue = calculateTotalCollateralValue(borrower);
+        uint256 borrowValue = calculateTotalBorrowValue(borrower);
+        
+        require(borrowValue > collateralValue, "Borrower not undercollateralized");
+        
+        // Calculate liquidation bonus
+        uint256 liquidationBonus = 500; // 5%
+        uint256 collateralToSeize = (borrowAmount * PRECISION * (10000 + liquidationBonus)) / 
+                                  (10000 * getCollateralFactor(collateralToken));
+        
+        require(collateralAsset.deposits[borrower] >= collateralToSeize, "Insufficient collateral");
+        
+        // Transfer debt tokens from liquidator
+        debtAsset.token.safeTransferFrom(msg.sender, address(this), borrowAmount);
+        
+        // Update borrow
+        debtAsset.borrows[borrower] -= borrowAmount;
+        debtAsset.totalBorrows -= borrowAmount;
+        
+        // Update collateral
+        collateralAsset.deposits[borrower] -= collateralToSeize;
+        collateralAsset.totalDeposits -= collateralToSeize;
+        collateralAsset.deposits[msg.sender] += collateralToSeize;
+        
+        // Update collateral values
+        userCollateralValue[borrower] -= calculateCollateralValue(collateralToken, collateralToSeize);
+        userCollateralValue[msg.sender] += calculateCollateralValue(collateralToken, collateralToSeize);
+    }
+    
+    function calculateCollateralValue(address tokenAddress, uint256 amount) public view returns (uint256) {
+        uint256 collateralFactor = assets[tokenAddress].collateralFactor;
+        return (amount * collateralFactor) / 10000;
+    }
+    
+    function calculateTokenValue(address tokenAddress, uint256 amount) public pure returns (uint256) {
+        // In a real implementation, this would use price oracles
+        return amount;
+    }
+    
+    function calculateTotalCollateralValue(address user) public view returns (uint256) {
+        uint256 totalValue = 0;
+        
+        for (uint256 i = 0; i < supportedAssets.length; i++) {
+            address tokenAddress = supportedAssets[i];
+            uint256 deposit = assets[tokenAddress].deposits[user];
+            if (deposit > 0) {
+                totalValue += calculateCollateralValue(tokenAddress, deposit);
+            }
+        }
+        
+        return totalValue;
+    }
+    
+    function calculateTotalBorrowValue(address user) public view returns (uint256) {
+        uint256 totalValue = 0;
+        
+        for (uint256 i = 0; i < supportedAssets.length; i++) {
+            address tokenAddress = supportedAssets[i];
+            uint256 borrow = assets[tokenAddress].borrows[user];
+            if (borrow > 0) {
+                totalValue += calculateTokenValue(tokenAddress, borrow);
+            }
+        }
+        
+        return totalValue;
+    }
+    
+    function getCollateralFactor(address tokenAddress) public view returns (uint256) {
+        return assets[tokenAddress].collateralFactor;
+    }
+    
+    function min(uint256 a, uint256 b) internal pure returns (uint256) {
+        return a < b ? a : b;
+    }
+}
+```
+
+## Blockchain Security
+
+### Common Smart Contract Vulnerabilities
+
+#### Reentrancy Attack Prevention
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
+contract SecureVault is ReentrancyGuard {
+    using SafeERC20 for IERC20;
+    
+    mapping(address => uint256) public balances;
+    IERC20 public token;
+    
+    event Deposited(address indexed user, uint256 amount);
+    event Withdrawn(address indexed user, uint256 amount);
+    
+    constructor(address _token) {
+        token = IERC20(_token);
+    }
+    
+    function deposit(uint256 amount) external {
+        require(amount > 0, "Amount must be greater than 0");
+        
+        // Update balance before external call (Checks-Effects-Interactions pattern)
+        balances[msg.sender] += amount;
+        
+        // Transfer tokens from user
+        token.safeTransferFrom(msg.sender, address(this), amount);
+        
+        emit Deposited(msg.sender, amount);
+    }
+    
+    function withdraw(uint256 amount) external nonReentrant {
+        require(amount > 0, "Amount must be greater than 0");
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        
+        // Update balance before external call
+        balances[msg.sender] -= amount;
+        
+        // Transfer tokens to user
+        token.safeTransfer(msg.sender, amount);
+        
+        emit Withdrawn(msg.sender, amount);
+    }
+    
+    // Vulnerable version for demonstration
+    function vulnerableWithdraw(uint256 amount) external {
+        require(amount > 0, "Amount must be greater than 0");
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        
+        // External call before state update (VULNERABLE!)
+        token.transfer(msg.sender, amount);
+        
+        // State update after external call
+        balances[msg.sender] -= amount;
+        
+        emit Withdrawn(msg.sender, amount);
+    }
+}
+```
+
+#### Integer Overflow/Underflow Protection
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
+contract SafeMathContract is ReentrancyGuard {
+    uint256 public totalSupply;
+    mapping(address => uint256) public balances;
+    
+    event Minted(address indexed to, uint256 amount);
+    event Burned(address indexed from, uint256 amount);
+    event Transferred(address indexed from, address indexed to, uint256 amount);
+    
+    function mint(address to, uint256 amount) external {
+        require(to != address(0), "Invalid address");
+        require(amount > 0, "Amount must be greater than 0");
+        
+        // Check for overflow before updating
+        uint256 newBalance = balances[to] + amount;
+        require(newBalance > balances[to], "Overflow detected");
+        
+        uint256 newTotalSupply = totalSupply + amount;
+        require(newTotalSupply > totalSupply, "Total supply overflow");
+        
+        balances[to] = newBalance;
+        totalSupply = newTotalSupply;
+        
+        emit Minted(to, amount);
+    }
+    
+    function burn(uint256 amount) external {
+        require(amount > 0, "Amount must be greater than 0");
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        
+        // Check for underflow
+        uint256 newBalance = balances[msg.sender] - amount;
+        uint256 newTotalSupply = totalSupply - amount;
+        
+        balances[msg.sender] = newBalance;
+        totalSupply = newTotalSupply;
+        
+        emit Burned(msg.sender, amount);
+    }
+    
+    function transfer(address to, uint256 amount) external nonReentrant {
+        require(to != address(0), "Invalid address");
+        require(amount > 0, "Amount must be greater than 0");
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        
+        // Check for overflow
+        uint256 newBalance = balances[to] + amount;
+        require(newBalance > balances[to], "Overflow detected");
+        
+        balances[msg.sender] -= amount;
+        balances[to] = newBalance;
+        
+        emit Transferred(msg.sender, to, amount);
+    }
+    
+    // Using SafeMath for additional protection (Solidity < 0.8.0)
+    function safeTransfer(address to, uint256 amount) external nonReentrant {
+        require(to != address(0), "Invalid address");
+        require(amount > 0, "Amount must be greater than 0");
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        
+        balances[msg.sender] = balances[msg.sender].sub(amount);
+        balances[to] = balances[to].add(amount);
+        
+        emit Transferred(msg.sender, to, amount);
+    }
+}
+
+// SafeMath library for older Solidity versions
+library SafeMath {
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b <= a, "SafeMath: subtraction underflow");
+        return a - b;
+    }
+    
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a + b;
+        require(c >= a, "SafeMath: addition overflow");
+        return c;
+    }
+    
+    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+        if (a == 0) return 0;
+        uint256 c = a * b;
+        require(c / a == b, "SafeMath: multiplication overflow");
+        return c;
+    }
+    
+    function div(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b > 0, "SafeMath: division by zero");
+        return a / b;
+    }
+}
+```
+
+#### Access Control Implementation
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
+contract RoleBasedAccess is AccessControl, ReentrancyGuard {
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+    bytes32 public constant MANAGER_ROLE = keccak256("MANAGER_ROLE");
+    bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
+    
+    mapping(address => bool) public authorizedUsers;
+    mapping(address => uint256) public userLevels;
+    
+    event UserAuthorized(address indexed user, uint256 level);
+    event UserDeauthorized(address indexed user);
+    event LevelChanged(address indexed user, uint256 newLevel);
+    
+    constructor() {
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(ADMIN_ROLE, msg.sender);
+        authorizedUsers[msg.sender] = true;
+        userLevels[msg.sender] = 3; // Highest level
+    }
+    
+    modifier onlyAuthorized() {
+        require(authorizedUsers[msg.sender], "Not authorized");
+        _;
+    }
+    
+    modifier onlyLevel(uint256 requiredLevel) {
+        require(userLevels[msg.sender] >= requiredLevel, "Insufficient level");
+        _;
+    }
+    
+    modifier onlyRole(bytes32 role) {
+        require(hasRole(role, msg.sender), "Insufficient role");
+        _;
+    }
+    
+    function authorizeUser(address user, uint256 level) external onlyRole(ADMIN_ROLE) {
+        require(user != address(0), "Invalid address");
+        require(level <= 3, "Invalid level");
+        
+        authorizedUsers[user] = true;
+        userLevels[user] = level;
+        
+        emit UserAuthorized(user, level);
+    }
+    
+    function deauthorizeUser(address user) external onlyRole(ADMIN_ROLE) {
+        require(user != msg.sender, "Cannot deauthorize yourself");
+        require(authorizedUsers[user], "User not authorized");
+        
+        authorizedUsers[user] = false;
+        userLevels[user] = 0;
+        
+        emit UserDeauthorized(user);
+    }
+    
+    function changeUserLevel(address user, uint256 newLevel) external onlyRole(MANAGER_ROLE) {
+        require(authorizedUsers[user], "User not authorized");
+        require(newLevel <= 3, "Invalid level");
+        require(newLevel != userLevels[user], "Same level");
+        
+        userLevels[user] = newLevel;
+        
+        emit LevelChanged(user, newLevel);
+    }
+    
+    function grantManagerRole(address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        _grantRole(MANAGER_ROLE, account);
+    }
+    
+    function grantOperatorRole(address account) external onlyRole(MANAGER_ROLE) {
+        _grantRole(OPERATOR_ROLE, account);
+    }
+    
+    function revokeRole(bytes32 role, address account) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        _revokeRole(role, account);
+    }
+    
+    // Example functions with different access levels
+    function level1Operation() external onlyAuthorized onlyLevel(1) {
+        // Level 1 operation
+    }
+    
+    function level2Operation() external onlyAuthorized onlyLevel(2) {
+        // Level 2 operation
+    }
+    
+    function level3Operation() external onlyAuthorized onlyLevel(3) {
+        // Level 3 operation (highest)
+    }
+    
+    function adminOperation() external onlyRole(ADMIN_ROLE) {
+        // Admin only operation
+    }
+    
+    function managerOperation() external onlyRole(MANAGER_ROLE) {
+        // Manager only operation
+    }
+    
+    function operatorOperation() external onlyRole(OPERATOR_ROLE) {
+        // Operator only operation
+    }
+}
+```
+
+## Blockchain Interview Questions
+
+### Blockchain Fundamentals
+**Q: What is the difference between public, private, and consortium blockchains?**
+A: Public blockchains are open to anyone (Bitcoin, Ethereum), private blockchains are controlled by a single organization, and consortium blockchains are governed by a group of organizations.
+
+**Q: Explain the concept of consensus mechanisms.**
+A: Consensus mechanisms ensure all nodes agree on the blockchain state. Common types include Proof of Work (PoW), Proof of Stake (PoS), Delegated Proof of Stake (DPoS), and Practical Byzantine Fault Tolerance (PBFT).
+
+### Smart Contracts
+**Q: What are the main security vulnerabilities in smart contracts?**
+A: Reentrancy attacks, integer overflow/underflow, access control issues, front-running, timestamp dependency, and gas limit issues.
+
+**Q: What is the difference between ERC20, ERC721, and ERC1155?**
+A: ERC20 is for fungible tokens, ERC721 is for non-fungible tokens (NFTs), and ERC1155 supports both fungible and non-fungible tokens in a single contract.
+
+### Web3 Development
+**Q: What is the difference between Web3.js and Ethers.js?**
+A: Web3.js is the original Ethereum JavaScript library, while Ethers.js is a more modern, compact, and complete library with better TypeScript support and cleaner API design.
+
+**Q: Explain the concept of gas in Ethereum.**
+A: Gas is the unit used to measure the computational effort required to execute operations on Ethereum. Users pay gas fees to compensate validators for processing transactions and smart contracts.
+
+### DeFi
+**Q: What is an Automated Market Maker (AMM)?**
+A: AMMs are decentralized exchanges that use mathematical formulas to price assets instead of traditional order books, enabling liquidity pools and automated trading.
+
+**Q: Explain the concept of impermanent loss.**
+A: Impermanent loss occurs when providing liquidity to AMMs, where the value of deposited assets decreases compared to simply holding them due to price volatility.
+
+### Security
+**Q: What is a 51% attack?**
+A: A 51% attack occurs when a single entity controls over 50% of the network's mining power, allowing them to manipulate transactions and potentially double-spend coins.
+
+**Q: How do you prevent reentrancy attacks in smart contracts?**
+A: Use the Checks-Effects-Interactions pattern, implement reentrancy guards, and use OpenZeppelin's ReentrancyGuard contract.
+
+## Conclusion
+
+Blockchain and Web3 development require understanding of distributed systems, cryptography, smart contract programming, and decentralized application architecture. Key areas to master include:
+
+1. **Blockchain Fundamentals**: Distributed ledgers, consensus mechanisms, cryptographic principles
+2. **Smart Contract Development**: Solidity programming, security patterns, token standards
+3. **Web3 Integration**: JavaScript libraries, wallet integration, transaction management
+4. **DeFi Protocols**: AMMs, lending protocols, yield farming, liquidity provision
+5. **Security**: Common vulnerabilities, best practices, audit techniques
+6. **DApp Architecture**: Frontend integration, backend services, user experience
+7. **Tooling**: Development frameworks, testing tools, deployment strategies
+
+The blockchain ecosystem continues to evolve rapidly with new platforms, protocols, and use cases emerging regularly. Continuous learning, practical development experience, and staying current with security best practices are essential for success in blockchain development roles and interview preparation.

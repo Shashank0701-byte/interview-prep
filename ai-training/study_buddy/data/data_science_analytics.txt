@@ -1,0 +1,1447 @@
+# Data Science and Analytics Interview Preparation
+
+## Data Science Fundamentals
+
+### What is Data Science?
+Data Science is an interdisciplinary field that uses scientific methods, processes, algorithms, and systems to extract knowledge and insights from structured and unstructured data. It combines statistics, mathematics, computer science, and domain expertise.
+
+#### Key Components
+- **Data Collection**: Gathering relevant data from various sources
+- **Data Cleaning**: Preprocessing and handling missing values
+- **Exploratory Data Analysis (EDA)**: Understanding data patterns and relationships
+- **Model Building**: Creating predictive and descriptive models
+- **Model Evaluation**: Assessing model performance and accuracy
+- **Deployment**: Implementing models in production environments
+- **Monitoring**: Tracking model performance over time
+
+#### Data Science Workflow
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+import warnings
+warnings.filterwarnings('ignore')
+
+class DataScienceWorkflow:
+    def __init__(self, data_path):
+        self.data_path = data_path
+        self.data = None
+        self.X_train = None
+        self.X_test = None
+        self.y_train = None
+        self.y_test = None
+        self.model = None
+        self.scaler = None
+        
+    def load_data(self):
+        """Load and initial data inspection"""
+        self.data = pd.read_csv(self.data_path)
+        print(f"Dataset shape: {self.data.shape}")
+        print(f"Columns: {list(self.data.columns)}")
+        print("\nFirst 5 rows:")
+        print(self.data.head())
+        print("\nData types:")
+        print(self.data.dtypes)
+        print("\nMissing values:")
+        print(self.data.isnull().sum())
+        return self.data
+    
+    def exploratory_data_analysis(self):
+        """Perform EDA with visualizations"""
+        print("\n=== EXPLORATORY DATA ANALYSIS ===")
+        
+        # Basic statistics
+        print("\nDescriptive Statistics:")
+        print(self.data.describe())
+        
+        # Correlation matrix for numerical columns
+        numerical_cols = self.data.select_dtypes(include=[np.number]).columns
+        if len(numerical_cols) > 1:
+            plt.figure(figsize=(12, 8))
+            correlation_matrix = self.data[numerical_cols].corr()
+            sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', center=0)
+            plt.title('Correlation Matrix')
+            plt.tight_layout()
+            plt.show()
+        
+        # Distribution of numerical features
+        for col in numerical_cols:
+            plt.figure(figsize=(10, 4))
+            plt.subplot(1, 2, 1)
+            sns.histplot(self.data[col].dropna(), kde=True)
+            plt.title(f'Distribution of {col}')
+            
+            plt.subplot(1, 2, 2)
+            sns.boxplot(y=self.data[col])
+            plt.title(f'Boxplot of {col}')
+            plt.tight_layout()
+            plt.show()
+        
+        # Categorical features analysis
+        categorical_cols = self.data.select_dtypes(include=['object']).columns
+        for col in categorical_cols:
+            plt.figure(figsize=(10, 4))
+            value_counts = self.data[col].value_counts()
+            plt.subplot(1, 2, 1)
+            value_counts.plot(kind='bar')
+            plt.title(f'Count of {col}')
+            plt.xticks(rotation=45)
+            
+            plt.subplot(1, 2, 2)
+            plt.pie(value_counts, labels=value_counts.index, autopct='%1.1f%%')
+            plt.title(f'Distribution of {col}')
+            plt.tight_layout()
+            plt.show()
+    
+    def data_cleaning(self):
+        """Handle missing values and outliers"""
+        print("\n=== DATA CLEANING ===")
+        
+        # Handle missing values
+        for col in self.data.columns:
+            missing_pct = (self.data[col].isnull().sum() / len(self.data)) * 100
+            print(f"{col}: {missing_pct:.2f}% missing")
+            
+            if missing_pct > 0:
+                if self.data[col].dtype in ['int64', 'float64']:
+                    # Fill numerical columns with median
+                    self.data[col].fillna(self.data[col].median(), inplace=True)
+                else:
+                    # Fill categorical columns with mode
+                    self.data[col].fillna(self.data[col].mode()[0], inplace=True)
+        
+        # Handle outliers using IQR method
+        numerical_cols = self.data.select_dtypes(include=[np.number]).columns
+        for col in numerical_cols:
+            Q1 = self.data[col].quantile(0.25)
+            Q3 = self.data[col].quantile(0.75)
+            IQR = Q3 - Q1
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
+            
+            outliers = self.data[(self.data[col] < lower_bound) | (self.data[col] > upper_bound)]
+            print(f"{col}: {len(outliers)} outliers detected")
+            
+            # Cap outliers
+            self.data[col] = np.clip(self.data[col], lower_bound, upper_bound)
+        
+        print("Data cleaning completed!")
+    
+    def feature_engineering(self, target_column):
+        """Create new features and encode categorical variables"""
+        print("\n=== FEATURE ENGINEERING ===")
+        
+        # Separate features and target
+        X = self.data.drop(columns=[target_column])
+        y = self.data[target_column]
+        
+        # Encode categorical variables
+        categorical_cols = X.select_dtypes(include=['object']).columns
+        for col in categorical_cols:
+            # One-hot encoding for low cardinality
+            if X[col].nunique() <= 10:
+                dummies = pd.get_dummies(X[col], prefix=col, drop_first=True)
+                X = pd.concat([X.drop(columns=[col]), dummies], axis=1)
+            else:
+                # Label encoding for high cardinality
+                X[col] = pd.factorize(X[col])[0]
+        
+        # Feature scaling
+        numerical_cols = X.select_dtypes(include=[np.number]).columns
+        self.scaler = StandardScaler()
+        X[numerical_cols] = self.scaler.fit_transform(X[numerical_cols])
+        
+        # Create interaction features
+        if len(numerical_cols) >= 2:
+            for i, col1 in enumerate(numerical_cols[:3]):
+                for col2 in numerical_cols[i+1:4]:
+                    X[f'{col1}_{col2}_interaction'] = X[col1] * X[col2]
+        
+        print(f"Feature engineering completed! New shape: {X.shape}")
+        return X, y
+    
+    def split_data(self, X, y, test_size=0.2, random_state=42):
+        """Split data into training and testing sets"""
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
+            X, y, test_size=test_size, random_state=random_state, stratify=y
+        )
+        
+        print(f"Training set size: {self.X_train.shape}")
+        print(f"Testing set size: {self.X_test.shape}")
+        print(f"Target distribution - Train: {self.y_train.value_counts(normalize=True)}")
+        print(f"Target distribution - Test: {self.y_test.value_counts(normalize=True)}")
+    
+    def build_model(self, model_type='random_forest'):
+        """Build and train machine learning model"""
+        print(f"\n=== MODEL BUILDING ({model_type.upper()}) ===")
+        
+        if model_type == 'random_forest':
+            self.model = RandomForestClassifier(
+                n_estimators=100,
+                random_state=42,
+                max_depth=10,
+                min_samples_split=5,
+                min_samples_leaf=2
+            )
+        elif model_type == 'logistic_regression':
+            from sklearn.linear_model import LogisticRegression
+            self.model = LogisticRegression(random_state=42, max_iter=1000)
+        elif model_type == 'svm':
+            from sklearn.svm import SVC
+            self.model = SVC(random_state=42, probability=True)
+        else:
+            raise ValueError("Unsupported model type")
+        
+        # Train model
+        self.model.fit(self.X_train, self.y_train)
+        print("Model training completed!")
+    
+    def evaluate_model(self):
+        """Evaluate model performance"""
+        print("\n=== MODEL EVALUATION ===")
+        
+        # Predictions
+        y_train_pred = self.model.predict(self.X_train)
+        y_test_pred = self.model.predict(self.X_test)
+        
+        # Training performance
+        print("Training Performance:")
+        print(classification_report(self.y_train, y_train_pred))
+        
+        # Testing performance
+        print("\nTesting Performance:")
+        print(classification_report(self.y_test, y_test_pred))
+        
+        # Confusion matrix
+        plt.figure(figsize=(8, 6))
+        cm = confusion_matrix(self.y_test, y_test_pred)
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+        plt.title('Confusion Matrix')
+        plt.ylabel('Actual')
+        plt.xlabel('Predicted')
+        plt.show()
+        
+        # Feature importance (for tree-based models)
+        if hasattr(self.model, 'feature_importances_'):
+            feature_importance = pd.DataFrame({
+                'feature': self.X_train.columns,
+                'importance': self.model.feature_importances_
+            }).sort_values('importance', ascending=False)
+            
+            plt.figure(figsize=(12, 8))
+            top_features = feature_importance.head(15)
+            sns.barplot(data=top_features, x='importance', y='feature')
+            plt.title('Top 15 Feature Importances')
+            plt.tight_layout()
+            plt.show()
+            
+            print("\nTop 10 Important Features:")
+            print(feature_importance.head(10))
+    
+    def predict_new_data(self, new_data):
+        """Make predictions on new data"""
+        if self.model is None:
+            raise ValueError("Model not trained yet")
+        
+        # Preprocess new data
+        new_data_processed = self.scaler.transform(new_data)
+        predictions = self.model.predict(new_data_processed)
+        probabilities = self.model.predict_proba(new_data_processed)
+        
+        return predictions, probabilities
+
+# Usage Example
+# workflow = DataScienceWorkflow('data.csv')
+# workflow.load_data()
+# workflow.exploratory_data_analysis()
+# workflow.data_cleaning()
+# X, y = workflow.feature_engineering('target_column')
+# workflow.split_data(X, y)
+# workflow.build_model('random_forest')
+# workflow.evaluate_model()
+```
+
+## Statistics and Probability
+
+### Statistical Concepts
+Statistics provides the mathematical foundation for data science, enabling us to make inferences and predictions from data.
+
+#### Descriptive Statistics
+```python
+import numpy as np
+import pandas as pd
+from scipy import stats
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+class StatisticalAnalysis:
+    def __init__(self, data):
+        self.data = data
+        
+    def descriptive_statistics(self):
+        """Calculate comprehensive descriptive statistics"""
+        stats_dict = {}
+        
+        for column in self.data.select_dtypes(include=[np.number]).columns:
+            col_data = self.data[column].dropna()
+            
+            stats_dict[column] = {
+                'count': len(col_data),
+                'mean': np.mean(col_data),
+                'median': np.median(col_data),
+                'mode': stats.mode(col_data, keepdims=True)[0][0],
+                'std': np.std(col_data),
+                'var': np.var(col_data),
+                'min': np.min(col_data),
+                'max': np.max(col_data),
+                'q1': np.percentile(col_data, 25),
+                'q3': np.percentile(col_data, 75),
+                'iqr': np.percentile(col_data, 75) - np.percentile(col_data, 25),
+                'skewness': stats.skew(col_data),
+                'kurtosis': stats.kurtosis(col_data),
+                'range': np.max(col_data) - np.min(col_data)
+            }
+        
+        return pd.DataFrame(stats_dict).T
+    
+    def hypothesis_testing(self, column1, column2, test_type='two_sample'):
+        """Perform hypothesis testing"""
+        data1 = self.data[column1].dropna()
+        data2 = self.data[column2].dropna()
+        
+        if test_type == 'two_sample':
+            # Two-sample t-test
+            t_stat, p_value = stats.ttest_ind(data1, data2)
+            test_name = "Two-Sample T-Test"
+        elif test_type == 'paired':
+            # Paired t-test
+            t_stat, p_value = stats.ttest_rel(data1, data2)
+            test_name = "Paired T-Test"
+        elif test_type == 'anova':
+            # One-way ANOVA
+            groups = [self.data[self.data[column2] == cat][column1].dropna() 
+                     for cat in self.data[column2].unique()]
+            f_stat, p_value = stats.f_oneway(*groups)
+            t_stat = f_stat
+            test_name = "One-Way ANOVA"
+        else:
+            raise ValueError("Unsupported test type")
+        
+        alpha = 0.05
+        result = "Reject null hypothesis" if p_value < alpha else "Fail to reject null hypothesis"
+        
+        return {
+            'test': test_name,
+            'statistic': t_stat,
+            'p_value': p_value,
+            'alpha': alpha,
+            'result': result,
+            'interpretation': f"There is {'a significant' if p_value < alpha else 'no significant'} difference"
+        }
+    
+    def correlation_analysis(self):
+        """Perform correlation analysis"""
+        numerical_data = self.data.select_dtypes(include=[np.number])
+        
+        # Pearson correlation
+        pearson_corr = numerical_data.corr(method='pearson')
+        
+        # Spearman correlation
+        spearman_corr = numerical_data.corr(method='spearman')
+        
+        # Kendall correlation
+        kendall_corr = numerical_data.corr(method='kendall')
+        
+        return {
+            'pearson': pearson_corr,
+            'spearman': spearman_corr,
+            'kendall': kendall_corr
+        }
+    
+    def probability_distributions(self, column):
+        """Analyze probability distributions"""
+        data = self.data[column].dropna()
+        
+        # Fit different distributions
+        distributions = {
+            'normal': stats.norm,
+            'exponential': stats.expon,
+            'gamma': stats.gamma,
+            'beta': stats.beta,
+            'lognormal': stats.lognorm
+        }
+        
+        results = {}
+        
+        for dist_name, dist in distributions.items():
+            try:
+                # Fit distribution
+                params = dist.fit(data)
+                
+                # Calculate Kolmogorov-Smirnov test
+                ks_stat, ks_p = stats.kstest(data, lambda x: dist.cdf(x, *params))
+                
+                # Calculate AIC
+                log_likelihood = np.sum(dist.logpdf(data, *params))
+                aic = 2 * len(params) - 2 * log_likelihood
+                
+                results[dist_name] = {
+                    'params': params,
+                    'ks_statistic': ks_stat,
+                    'ks_p_value': ks_p,
+                    'aic': aic
+                }
+            except:
+                continue
+        
+        # Find best fitting distribution
+        best_dist = min(results.keys(), key=lambda x: results[x]['aic'])
+        
+        return results, best_dist
+    
+    def confidence_intervals(self, column, confidence=0.95):
+        """Calculate confidence intervals"""
+        data = self.data[column].dropna()
+        n = len(data)
+        mean = np.mean(data)
+        std_err = stats.sem(data)
+        
+        # Calculate confidence interval
+        ci = stats.t.interval(confidence, n-1, loc=mean, scale=std_err)
+        
+        return {
+            'mean': mean,
+            'std_error': std_err,
+            'confidence_level': confidence,
+            'ci_lower': ci[0],
+            'ci_upper': ci[1],
+            'margin_of_error': (ci[1] - ci[0]) / 2
+        }
+    
+    def statistical_power_analysis(self, effect_size, sample_size, alpha=0.05, power=0.8):
+        """Perform statistical power analysis"""
+        from statsmodels.stats.power import TTestIndPower
+        
+        power_analysis = TTestIndPower()
+        
+        # Calculate required sample size
+        required_n = power_analysis.solve_power(
+            effect_size=effect_size,
+            alpha=alpha,
+            power=power,
+            alternative='two-sided'
+        )
+        
+        # Calculate actual power with given sample size
+        actual_power = power_analysis.power(
+            effect_size=effect_size,
+            nobs1=sample_size,
+            alpha=alpha,
+            alternative='two-sided'
+        )
+        
+        return {
+            'effect_size': effect_size,
+            'required_sample_size': required_n,
+            'actual_sample_size': sample_size,
+            'actual_power': actual_power,
+            'alpha': alpha,
+            'target_power': power
+        }
+
+# Example usage
+# data = pd.read_csv('dataset.csv')
+# stats_analysis = StatisticalAnalysis(data)
+# 
+# # Descriptive statistics
+# desc_stats = stats_analysis.descriptive_statistics()
+# 
+# # Hypothesis testing
+# hypothesis_result = stats_analysis.hypothesis_testing('column1', 'column2', 'two_sample')
+# 
+# # Correlation analysis
+# correlations = stats_analysis.correlation_analysis()
+# 
+# # Distribution fitting
+# dist_results, best_dist = stats_analysis.probability_distributions('column')
+```
+
+## Machine Learning Algorithms
+
+### Supervised Learning
+Supervised learning algorithms learn from labeled data to make predictions on new, unseen data.
+
+#### Random Forest Implementation
+```python
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.model_selection import cross_val_score, GridSearchCV
+from sklearn.metrics import accuracy_score, mean_squared_error, classification_report
+import matplotlib.pyplot as plt
+
+class CustomRandomForest:
+    def __init__(self, n_estimators=100, max_depth=None, random_state=42):
+        self.n_estimators = n_estimators
+        self.max_depth = max_depth
+        self.random_state = random_state
+        self.model = None
+        self.feature_importance = None
+        
+    def train_classifier(self, X_train, y_train):
+        """Train Random Forest Classifier"""
+        self.model = RandomForestClassifier(
+            n_estimators=self.n_estimators,
+            max_depth=self.max_depth,
+            random_state=self.random_state
+        )
+        
+        self.model.fit(X_train, y_train)
+        self.feature_importance = pd.DataFrame({
+            'feature': X_train.columns,
+            'importance': self.model.feature_importances_
+        }).sort_values('importance', ascending=False)
+        
+        return self.model
+    
+    def train_regressor(self, X_train, y_train):
+        """Train Random Forest Regressor"""
+        self.model = RandomForestRegressor(
+            n_estimators=self.n_estimators,
+            max_depth=self.max_depth,
+            random_state=self.random_state
+        )
+        
+        self.model.fit(X_train, y_train)
+        self.feature_importance = pd.DataFrame({
+            'feature': X_train.columns,
+            'importance': self.model.feature_importances_
+        }).sort_values('importance', ascending=False)
+        
+        return self.model
+    
+    def cross_validate(self, X, y, cv=5):
+        """Perform cross-validation"""
+        if isinstance(self.model, RandomForestClassifier):
+            scores = cross_val_score(self.model, X, y, cv=cv, scoring='accuracy')
+        else:
+            scores = cross_val_score(self.model, X, y, cv=cv, scoring='neg_mean_squared_error')
+            scores = -scores  # Convert to positive MSE
+        
+        return {
+            'scores': scores,
+            'mean_score': np.mean(scores),
+            'std_score': np.std(scores)
+        }
+    
+    def hyperparameter_tuning(self, X_train, y_train, param_grid=None):
+        """Perform hyperparameter tuning"""
+        if param_grid is None:
+            param_grid = {
+                'n_estimators': [50, 100, 200],
+                'max_depth': [None, 10, 20, 30],
+                'min_samples_split': [2, 5, 10],
+                'min_samples_leaf': [1, 2, 4]
+            }
+        
+        if isinstance(self.model, RandomForestClassifier):
+            grid_search = GridSearchCV(
+                RandomForestClassifier(random_state=self.random_state),
+                param_grid,
+                cv=5,
+                scoring='accuracy',
+                n_jobs=-1
+            )
+        else:
+            grid_search = GridSearchCV(
+                RandomForestRegressor(random_state=self.random_state),
+                param_grid,
+                cv=5,
+                scoring='neg_mean_squared_error',
+                n_jobs=-1
+            )
+        
+        grid_search.fit(X_train, y_train)
+        
+        self.model = grid_search.best_estimator_
+        
+        return {
+            'best_params': grid_search.best_params_,
+            'best_score': grid_search.best_score_,
+            'best_model': grid_search.best_estimator_
+        }
+    
+    def predict(self, X_test):
+        """Make predictions"""
+        return self.model.predict(X_test)
+    
+    def predict_proba(self, X_test):
+        """Predict probabilities (for classification)"""
+        if hasattr(self.model, 'predict_proba'):
+            return self.model.predict_proba(X_test)
+        else:
+            raise AttributeError("Model does not support probability prediction")
+    
+    def evaluate(self, X_test, y_test):
+        """Evaluate model performance"""
+        predictions = self.predict(X_test)
+        
+        if isinstance(self.model, RandomForestClassifier):
+            accuracy = accuracy_score(y_test, predictions)
+            report = classification_report(y_test, predictions, output_dict=True)
+            
+            return {
+                'accuracy': accuracy,
+                'classification_report': report,
+                'predictions': predictions
+            }
+        else:
+            mse = mean_squared_error(y_test, predictions)
+            rmse = np.sqrt(mse)
+            
+            return {
+                'mse': mse,
+                'rmse': rmse,
+                'predictions': predictions
+            }
+    
+    def plot_feature_importance(self, top_n=20):
+        """Plot feature importance"""
+        if self.feature_importance is None:
+            raise ValueError("Model not trained yet")
+        
+        plt.figure(figsize=(12, 8))
+        top_features = self.feature_importance.head(top_n)
+        
+        plt.barh(range(len(top_features)), top_features['importance'])
+        plt.yticks(range(len(top_features)), top_features['feature'])
+        plt.xlabel('Feature Importance')
+        plt.title(f'Top {top_n} Feature Importances')
+        plt.gca().invert_yaxis()
+        plt.tight_layout()
+        plt.show()
+```
+
+#### Gradient Boosting Implementation
+```python
+from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
+from sklearn.model_selection import learning_curve
+import numpy as np
+
+class GradientBoostingModel:
+    def __init__(self, learning_rate=0.1, n_estimators=100, max_depth=3):
+        self.learning_rate = learning_rate
+        self.n_estimators = n_estimators
+        self.max_depth = max_depth
+        self.model = None
+        
+    def train_classifier(self, X_train, y_train):
+        """Train Gradient Boosting Classifier"""
+        self.model = GradientBoostingClassifier(
+            learning_rate=self.learning_rate,
+            n_estimators=self.n_estimators,
+            max_depth=self.max_depth,
+            random_state=42
+        )
+        
+        self.model.fit(X_train, y_train)
+        return self.model
+    
+    def train_regressor(self, X_train, y_train):
+        """Train Gradient Boosting Regressor"""
+        self.model = GradientBoostingRegressor(
+            learning_rate=self.learning_rate,
+            n_estimators=self.n_estimators,
+            max_depth=self.max_depth,
+            random_state=42
+        )
+        
+        self.model.fit(X_train, y_train)
+        return self.model
+    
+    def plot_learning_curve(self, X, y):
+        """Plot learning curve"""
+        train_sizes, train_scores, test_scores = learning_curve(
+            self.model, X, y, cv=5, n_jobs=-1, 
+            train_sizes=np.linspace(0.1, 1.0, 10)
+        )
+        
+        train_mean = np.mean(train_scores, axis=1)
+        train_std = np.std(train_scores, axis=1)
+        test_mean = np.mean(test_scores, axis=1)
+        test_std = np.std(test_scores, axis=1)
+        
+        plt.figure(figsize=(10, 6))
+        plt.plot(train_sizes, train_mean, 'o-', color='blue', label='Training Score')
+        plt.fill_between(train_sizes, train_mean - train_std, train_mean + train_std, alpha=0.1, color='blue')
+        
+        plt.plot(train_sizes, test_mean, 'o-', color='red', label='Cross-validation Score')
+        plt.fill_between(train_sizes, test_mean - test_std, test_mean + test_std, alpha=0.1, color='red')
+        
+        plt.xlabel('Training Examples')
+        plt.ylabel('Score')
+        plt.title('Learning Curve')
+        plt.legend(loc='best')
+        plt.grid(True)
+        plt.show()
+```
+
+### Unsupervised Learning
+Unsupervised learning algorithms find patterns in unlabeled data.
+
+#### K-Means Clustering
+```python
+from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
+from sklearn.metrics import silhouette_score, calinski_harabasz_score
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+class ClusteringAnalysis:
+    def __init__(self, data):
+        self.data = data
+        self.scaler = StandardScaler()
+        self.scaled_data = None
+        self.clusters = None
+        self.cluster_labels = None
+        
+    def preprocess_data(self):
+        """Scale the data for clustering"""
+        self.scaled_data = self.scaler.fit_transform(self.data)
+        return self.scaled_data
+    
+    def find_optimal_clusters(self, max_clusters=10):
+        """Find optimal number of clusters using elbow method and silhouette score"""
+        if self.scaled_data is None:
+            self.preprocess_data()
+        
+        # Elbow method
+        inertias = []
+        silhouette_scores = []
+        k_range = range(2, max_clusters + 1)
+        
+        for k in k_range:
+            kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+            cluster_labels = kmeans.fit_predict(self.scaled_data)
+            
+            inertias.append(kmeans.inertia_)
+            silhouette_scores.append(silhouette_score(self.scaled_data, cluster_labels))
+        
+        # Plot elbow method
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
+        
+        ax1.plot(k_range, inertias, 'bo-')
+        ax1.set_xlabel('Number of clusters')
+        ax1.set_ylabel('Inertia')
+        ax1.set_title('Elbow Method')
+        ax1.grid(True)
+        
+        ax2.plot(k_range, silhouette_scores, 'ro-')
+        ax2.set_xlabel('Number of clusters')
+        ax2.set_ylabel('Silhouette Score')
+        ax2.set_title('Silhouette Score Analysis')
+        ax2.grid(True)
+        
+        plt.tight_layout()
+        plt.show()
+        
+        # Find optimal k
+        optimal_k_elbow = self._find_elbow_point(inertias)
+        optimal_k_silhouette = k_range[np.argmax(silhouette_scores)]
+        
+        return {
+            'optimal_k_elbow': optimal_k_elbow,
+            'optimal_k_silhouette': optimal_k_silhouette,
+            'inertias': inertias,
+            'silhouette_scores': silhouette_scores
+        }
+    
+    def _find_elbow_point(self, inertias):
+        """Find the elbow point in the inertia curve"""
+        n_points = len(inertias)
+        all_coord = np.vstack((range(n_points), inertias)).T
+        
+        first_point = all_coord[0]
+        line_vec = all_coord[-1] - first_point
+        line_vec_norm = line_vec / np.sqrt(np.sum(line_vec**2))
+        
+        vec_from_first = all_coord - first_point
+        proj_length = np.dot(vec_from_first, line_vec_norm)
+        proj = proj_length[:, np.newaxis] * line_vec_norm
+        
+        dist = np.sqrt(np.sum((vec_from_first - proj)**2, axis=1))
+        
+        return np.argmax(dist) + 2  # +2 because we start from k=2
+    
+    def kmeans_clustering(self, n_clusters):
+        """Perform K-means clustering"""
+        if self.scaled_data is None:
+            self.preprocess_data()
+        
+        kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
+        self.cluster_labels = kmeans.fit_predict(self.scaled_data)
+        self.clusters = kmeans
+        
+        # Calculate metrics
+        silhouette_avg = silhouette_score(self.scaled_data, self.cluster_labels)
+        calinski_harabasz = calinski_harabasz_score(self.scaled_data, self.cluster_labels)
+        
+        return {
+            'labels': self.cluster_labels,
+            'centers': kmeans.cluster_centers_,
+            'inertia': kmeans.inertia_,
+            'silhouette_score': silhouette_avg,
+            'calinski_harabasz_score': calinski_harabasz
+        }
+    
+    def hierarchical_clustering(self, n_clusters, linkage='ward'):
+        """Perform hierarchical clustering"""
+        if self.scaled_data is None:
+            self.preprocess_data()
+        
+        hierarchical = AgglomerativeClustering(n_clusters=n_clusters, linkage=linkage)
+        self.cluster_labels = hierarchical.fit_predict(self.scaled_data)
+        
+        # Calculate metrics
+        silhouette_avg = silhouette_score(self.scaled_data, self.cluster_labels)
+        calinski_harabasz = calinski_harabasz_score(self.scaled_data, self.cluster_labels)
+        
+        return {
+            'labels': self.cluster_labels,
+            'silhouette_score': silhouette_avg,
+            'calinski_harabasz_score': calinski_harabasz,
+            'linkage': linkage
+        }
+    
+    def dbscan_clustering(self, eps=0.5, min_samples=5):
+        """Perform DBSCAN clustering"""
+        if self.scaled_data is None:
+            self.preprocess_data()
+        
+        dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+        self.cluster_labels = dbscan.fit_predict(self.scaled_data)
+        
+        # Calculate metrics (only if more than 1 cluster found)
+        n_clusters = len(set(self.cluster_labels)) - (1 if -1 in self.cluster_labels else 0)
+        
+        if n_clusters > 1:
+            silhouette_avg = silhouette_score(self.scaled_data, self.cluster_labels)
+            calinski_harabasz = calinski_harabasz_score(self.scaled_data, self.cluster_labels)
+        else:
+            silhouette_avg = 0
+            calinski_harabasz = 0
+        
+        return {
+            'labels': self.cluster_labels,
+            'n_clusters': n_clusters,
+            'n_noise': list(self.cluster_labels).count(-1),
+            'silhouette_score': silhouette_avg,
+            'calinski_harabasz_score': calinski_harabasz,
+            'eps': eps,
+            'min_samples': min_samples
+        }
+    
+    def visualize_clusters(self, method='kmeans', **kwargs):
+        """Visualize clustering results using PCA for dimensionality reduction"""
+        from sklearn.decomposition import PCA
+        
+        if self.scaled_data is None:
+            self.preprocess_data()
+        
+        # Reduce to 2D for visualization
+        pca = PCA(n_components=2)
+        data_2d = pca.fit_transform(self.scaled_data)
+        
+        # Perform clustering if not already done
+        if self.cluster_labels is None:
+            if method == 'kmeans':
+                self.kmeans_clustering(kwargs.get('n_clusters', 3))
+            elif method == 'hierarchical':
+                self.hierarchical_clustering(kwargs.get('n_clusters', 3))
+            elif method == 'dbscan':
+                self.dbscan_clustering(
+                    kwargs.get('eps', 0.5), 
+                    kwargs.get('min_samples', 5)
+                )
+        
+        # Plot results
+        plt.figure(figsize=(12, 8))
+        
+        scatter = plt.scatter(data_2d[:, 0], data_2d[:, 1], 
+                            c=self.cluster_labels, cmap='viridis', 
+                            alpha=0.6, s=50)
+        
+        plt.colorbar(scatter, label='Cluster')
+        plt.xlabel(f'PC1 ({pca.explained_variance_ratio_[0]:.2%} variance)')
+        plt.ylabel(f'PC2 ({pca.explained_variance_ratio_[1]:.2%} variance)')
+        plt.title(f'{method.capitalize()} Clustering Visualization')
+        plt.grid(True, alpha=0.3)
+        plt.show()
+        
+        return {
+            'pca_components': pca.components_,
+            'explained_variance': pca.explained_variance_ratio_,
+            'visualization_data': data_2d
+        }
+    
+    def cluster_analysis(self):
+        """Analyze cluster characteristics"""
+        if self.cluster_labels is None:
+            raise ValueError("No clustering performed yet")
+        
+        # Add cluster labels to original data
+        data_with_clusters = self.data.copy()
+        data_with_clusters['cluster'] = self.cluster_labels
+        
+        # Analyze each cluster
+        cluster_summary = {}
+        
+        for cluster_id in np.unique(self.cluster_labels):
+            cluster_data = data_with_clusters[data_with_clusters['cluster'] == cluster_id]
+            
+            cluster_summary[cluster_id] = {
+                'size': len(cluster_data),
+                'percentage': (len(cluster_data) / len(data_with_clusters)) * 100,
+                'statistics': cluster_data.describe()
+            }
+        
+        return cluster_summary
+```
+
+## Deep Learning
+
+### Neural Networks with TensorFlow/Keras
+Deep learning models can capture complex patterns in data using multiple layers of neural networks.
+
+#### Multi-Layer Perceptron
+```python
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import numpy as np
+import matplotlib.pyplot as plt
+
+class NeuralNetworkModel:
+    def __init__(self, input_shape, num_classes=None):
+        self.input_shape = input_shape
+        self.num_classes = num_classes
+        self.model = None
+        self.history = None
+        
+    def build_mlp_classifier(self, hidden_layers=[128, 64, 32], dropout_rate=0.3):
+        """Build Multi-Layer Perceptron for classification"""
+        model = keras.Sequential()
+        
+        # Input layer
+        model.add(layers.Dense(hidden_layers[0], 
+                              activation='relu', 
+                              input_shape=self.input_shape))
+        model.add(layers.Dropout(dropout_rate))
+        
+        # Hidden layers
+        for units in hidden_layers[1:]:
+            model.add(layers.Dense(units, activation='relu'))
+            model.add(layers.Dropout(dropout_rate))
+        
+        # Output layer
+        if self.num_classes == 2:
+            model.add(layers.Dense(1, activation='sigmoid'))
+        else:
+            model.add(layers.Dense(self.num_classes, activation='softmax'))
+        
+        # Compile model
+        if self.num_classes == 2:
+            model.compile(
+                optimizer='adam',
+                loss='binary_crossentropy',
+                metrics=['accuracy', 'AUC']
+            )
+        else:
+            model.compile(
+                optimizer='adam',
+                loss='sparse_categorical_crossentropy',
+                metrics=['accuracy']
+            )
+        
+        self.model = model
+        return model
+    
+    def build_mlp_regressor(self, hidden_layers=[128, 64, 32], dropout_rate=0.3):
+        """Build Multi-Layer Perceptron for regression"""
+        model = keras.Sequential()
+        
+        # Input layer
+        model.add(layers.Dense(hidden_layers[0], 
+                              activation='relu', 
+                              input_shape=self.input_shape))
+        model.add(layers.Dropout(dropout_rate))
+        
+        # Hidden layers
+        for units in hidden_layers[1:]:
+            model.add(layers.Dense(units, activation='relu'))
+            model.add(layers.Dropout(dropout_rate))
+        
+        # Output layer
+        model.add(layers.Dense(1, activation='linear'))
+        
+        # Compile model
+        model.compile(
+            optimizer='adam',
+            loss='mse',
+            metrics=['mae', 'mse']
+        )
+        
+        self.model = model
+        return model
+    
+    def train(self, X_train, y_train, validation_data=None, epochs=100, batch_size=32, callbacks=None):
+        """Train the neural network"""
+        if callbacks is None:
+            callbacks = [
+                keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True),
+                keras.callbacks.ReduceLROnPlateau(factor=0.2, patience=5)
+            ]
+        
+        self.history = self.model.fit(
+            X_train, y_train,
+            validation_data=validation_data,
+            epochs=epochs,
+            batch_size=batch_size,
+            callbacks=callbacks,
+            verbose=1
+        )
+        
+        return self.history
+    
+    def plot_training_history(self):
+        """Plot training history"""
+        if self.history is None:
+            raise ValueError("Model not trained yet")
+        
+        fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+        
+        # Plot loss
+        axes[0].plot(self.history.history['loss'], label='Training Loss')
+        if 'val_loss' in self.history.history:
+            axes[0].plot(self.history.history['val_loss'], label='Validation Loss')
+        axes[0].set_title('Model Loss')
+        axes[0].set_xlabel('Epoch')
+        axes[0].set_ylabel('Loss')
+        axes[0].legend()
+        axes[0].grid(True)
+        
+        # Plot metrics
+        metrics = [key for key in self.history.history.keys() if 'loss' not in key]
+        for metric in metrics:
+            axes[1].plot(self.history.history[metric], label=f'Training {metric}')
+            if f'val_{metric}' in self.history.history:
+                axes[1].plot(self.history.history[f'val_{metric}'], label=f'Validation {metric}')
+        
+        axes[1].set_title('Model Metrics')
+        axes[1].set_xlabel('Epoch')
+        axes[1].set_ylabel('Metric Value')
+        axes[1].legend()
+        axes[1].grid(True)
+        
+        plt.tight_layout()
+        plt.show()
+    
+    def evaluate(self, X_test, y_test):
+        """Evaluate model performance"""
+        return self.model.evaluate(X_test, y_test, verbose=0)
+    
+    def predict(self, X):
+        """Make predictions"""
+        return self.model.predict(X)
+    
+    def save_model(self, filepath):
+        """Save the model"""
+        self.model.save(filepath)
+    
+    def load_model(self, filepath):
+        """Load a saved model"""
+        self.model = keras.models.load_model(filepath)
+        return self.model
+
+# Example usage
+# nn_model = NeuralNetworkModel(input_shape=(10,), num_classes=3)
+# model = nn_model.build_mlp_classifier(hidden_layers=[64, 32, 16])
+# history = nn_model.train(X_train, y_train, validation_data=(X_val, y_val))
+# nn_model.plot_training_history()
+# evaluation = nn_model.evaluate(X_test, y_test)
+```
+
+#### Convolutional Neural Network (CNN)
+```python
+class CNNModel:
+    def __init__(self, input_shape, num_classes):
+        self.input_shape = input_shape
+        self.num_classes = num_classes
+        self.model = None
+        self.history = None
+        
+    def build_cnn(self, conv_layers=[32, 64, 128], dense_layers=[128, 64], dropout_rate=0.5):
+        """Build CNN for image classification"""
+        model = keras.Sequential()
+        
+        # Convolutional layers
+        for i, filters in enumerate(conv_layers):
+            if i == 0:
+                model.add(layers.Conv2D(filters, (3, 3), activation='relu', 
+                                      input_shape=self.input_shape))
+            else:
+                model.add(layers.Conv2D(filters, (3, 3), activation='relu'))
+            
+            model.add(layers.MaxPooling2D((2, 2)))
+            model.add(layers.BatchNormalization())
+        
+        # Flatten layer
+        model.add(layers.Flatten())
+        
+        # Dense layers
+        for units in dense_layers:
+            model.add(layers.Dense(units, activation='relu'))
+            model.add(layers.Dropout(dropout_rate))
+        
+        # Output layer
+        if self.num_classes == 2:
+            model.add(layers.Dense(1, activation='sigmoid'))
+        else:
+            model.add(layers.Dense(self.num_classes, activation='softmax'))
+        
+        # Compile model
+        if self.num_classes == 2:
+            model.compile(
+                optimizer='adam',
+                loss='binary_crossentropy',
+                metrics=['accuracy']
+            )
+        else:
+            model.compile(
+                optimizer='adam',
+                loss='sparse_categorical_crossentropy',
+                metrics=['accuracy']
+            )
+        
+        self.model = model
+        return model
+    
+    def build_data_augmentation(self):
+        """Build data augmentation pipeline"""
+        return keras.Sequential([
+            layers.RandomFlip("horizontal"),
+            layers.RandomRotation(0.1),
+            layers.RandomZoom(0.1),
+            layers.RandomContrast(0.1),
+        ])
+    
+    def train_with_augmentation(self, X_train, y_train, validation_data=None, 
+                               epochs=50, batch_size=32):
+        """Train model with data augmentation"""
+        data_augmentation = self.build_data_augmentation()
+        
+        # Create augmented dataset
+        train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))
+        train_dataset = train_dataset.shuffle(buffer_size=1000)
+        train_dataset = train_dataset.map(lambda x, y: (data_augmentation(x, training=True), y))
+        train_dataset = train_dataset.batch(batch_size).prefetch(tf.data.AUTOTUNE)
+        
+        if validation_data:
+            val_dataset = tf.data.Dataset.from_tensor_slices(validation_data)
+            val_dataset = val_dataset.batch(batch_size).prefetch(tf.data.AUTOTUNE)
+        else:
+            val_dataset = None
+        
+        callbacks = [
+            keras.callbacks.EarlyStopping(patience=10, restore_best_weights=True),
+            keras.callbacks.ReduceLROnPlateau(factor=0.2, patience=5)
+        ]
+        
+        self.history = self.model.fit(
+            train_dataset,
+            validation_data=val_dataset,
+            epochs=epochs,
+            callbacks=callbacks,
+            verbose=1
+        )
+        
+        return self.history
+```
+
+## Data Visualization
+
+### Advanced Visualization Techniques
+Effective data visualization is crucial for understanding patterns and communicating insights.
+
+#### Interactive Visualizations with Plotly
+```python
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import pandas as pd
+import numpy as np
+
+class DataVisualization:
+    def __init__(self, data):
+        self.data = data
+        
+    def interactive_scatter_plot(self, x_col, y_col, color_col=None, size_col=None, title="Scatter Plot"):
+        """Create interactive scatter plot"""
+        fig = px.scatter(
+            self.data, 
+            x=x_col, 
+            y=y_col,
+            color=color_col,
+            size=size_col,
+            title=title,
+            hover_data=self.data.columns.tolist()
+        )
+        
+        fig.update_layout(
+            width=800,
+            height=600,
+            showlegend=True
+        )
+        
+        fig.show()
+        return fig
+    
+    def interactive_histogram(self, column, bins=30, title="Histogram"):
+        """Create interactive histogram"""
+        fig = px.histogram(
+            self.data,
+            x=column,
+            nbins=bins,
+            title=title,
+            marginal="box"
+        )
+        
+        fig.update_layout(
+            width=800,
+            height=600
+        )
+        
+        fig.show()
+        return fig
+    
+    def interactive_box_plot(self, y_col, x_col=None, title="Box Plot"):
+        """Create interactive box plot"""
+        fig = px.box(
+            self.data,
+            y=y_col,
+            x=x_col,
+            title=title,
+            points="outliers"
+        )
+        
+        fig.update_layout(
+            width=800,
+            height=600
+        )
+        
+        fig.show()
+        return fig
+    
+    def correlation_heatmap(self, title="Correlation Heatmap"):
+        """Create interactive correlation heatmap"""
+        corr_matrix = self.data.corr()
+        
+        fig = px.imshow(
+            corr_matrix,
+            text_auto=True,
+            aspect="auto",
+            title=title,
+            color_continuous_scale='RdBu_r'
+        )
+        
+        fig.update_layout(
+            width=800,
+            height=600
+        )
+        
+        fig.show()
+        return fig
+    
+    def time_series_plot(self, date_col, value_col, title="Time Series"):
+        """Create interactive time series plot"""
+        self.data[date_col] = pd.to_datetime(self.data[date_col])
+        
+        fig = px.line(
+            self.data,
+            x=date_col,
+            y=value_col,
+            title=title
+        )
+        
+        fig.update_layout(
+            width=1000,
+            height=600,
+            xaxis_title="Date",
+            yaxis_title=value_col
+        )
+        
+        fig.show()
+        return fig
+    
+    def multi_axis_plot(self, x_col, y_cols, title="Multi-Axis Plot"):
+        """Create plot with multiple y-axes"""
+        fig = make_subplots(
+            rows=len(y_cols), 
+            cols=1,
+            subplot_titles=y_cols,
+            shared_xaxes=True,
+            vertical_spacing=0.08
+        )
+        
+        for i, y_col in enumerate(y_cols, 1):
+            fig.add_trace(
+                go.Scatter(
+                    x=self.data[x_col],
+                    y=self.data[y_col],
+                    mode='lines',
+                    name=y_col,
+                    line=dict(width=2)
+                ),
+                row=i, col=1
+            )
+        
+        fig.update_layout(
+            height=200*len(y_cols),
+            title_text=title,
+            showlegend=False
+        )
+        
+        fig.show()
+        return fig
+    
+    def 3d_scatter_plot(self, x_col, y_col, z_col, color_col=None, title="3D Scatter Plot"):
+        """Create 3D scatter plot"""
+        fig = px.scatter_3d(
+            self.data,
+            x=x_col,
+            y=y_col,
+            z=z_col,
+            color=color_col,
+            title=title,
+            opacity=0.8
+        )
+        
+        fig.update_layout(
+            width=800,
+            height=600
+        )
+        
+        fig.show()
+        return fig
+    
+    def animated_plot(self, x_col, y_col, animation_frame, color_col=None, title="Animated Plot"):
+        """Create animated plot"""
+        fig = px.scatter(
+            self.data,
+            x=x_col,
+            y=y_col,
+            animation_frame=animation_frame,
+            color=color_col,
+            title=title,
+            range_x=[self.data[x_col].min(), self.data[x_col].max()],
+            range_y=[self.data[y_col].min(), self.data[y_col].max()]
+        )
+        
+        fig.update_layout(
+            width=800,
+            height=600
+        )
+        
+        fig.show()
+        return fig
+    
+    def sunburst_chart(self, path_col, values_col, title="Sunburst Chart"):
+        """Create sunburst chart for hierarchical data"""
+        fig = px.sunburst(
+            self.data,
+            path=path_col,
+            values=values_col,
+            title=title
+        )
+        
+        fig.update_layout(
+            width=800,
+            height=600
+        )
+        
+        fig.show()
+        return fig
+    
+    def treemap(self, path_col, values_col, color_col=None, title="Treemap"):
+        """Create treemap visualization"""
+        fig = px.treemap(
+            self.data,
+            path=path_col,
+            values=values_col,
+            color=color_col,
+            title=title
+        )
+        
+        fig.update_layout(
+            width=800,
+            height=600
+        )
+        
+        fig.show()
+        return fig
+```
+
+## Data Science Interview Questions
+
+### Statistics and Probability
+**Q: What is the difference between Type I and Type II errors?**
+A: Type I error (false positive) occurs when we reject a true null hypothesis. Type II error (false negative) occurs when we fail to reject a false null hypothesis.
+
+**Q: Explain the Central Limit Theorem.**
+A: The Central Limit Theorem states that the sampling distribution of the sample mean approaches a normal distribution as the sample size increases, regardless of the population's distribution.
+
+**Q: What is p-value and how do you interpret it?**
+A: The p-value is the probability of observing results as extreme as, or more extreme than, the observed results under the null hypothesis. A small p-value (typically < 0.05) suggests evidence against the null hypothesis.
+
+### Machine Learning
+**Q: What is the difference between supervised and unsupervised learning?**
+A: Supervised learning learns from labeled data to make predictions (classification, regression), while unsupervised learning finds patterns in unlabeled data (clustering, dimensionality reduction).
+
+**Q: Explain the bias-variance tradeoff.**
+A: Bias is the error from erroneous assumptions in the learning algorithm. Variance is the error from sensitivity to small fluctuations in the training set. There's a tradeoff between reducing bias and variance.
+
+**Q: What is overfitting and how do you prevent it?**
+A: Overfitting occurs when a model learns the training data too well, including noise and random fluctuations. Prevention methods include cross-validation, regularization, early stopping, and increasing training data.
+
+### Deep Learning
+**Q: What is backpropagation?**
+A: Backpropagation is an algorithm used to train neural networks by calculating gradients of the loss function with respect to network parameters, allowing optimization through gradient descent.
+
+**Q: What is the difference between CNN and RNN?**
+A: CNN (Convolutional Neural Network) is designed for processing grid-like data such as images, using convolutional layers. RNN (Recurrent Neural Network) is designed for sequential data, using recurrent connections to maintain memory of previous inputs.
+
+### Data Engineering
+**Q: What is the difference between batch processing and stream processing?**
+A: Batch processing processes data in large groups at scheduled intervals, while stream processing processes data continuously as it arrives in real-time.
+
+**Q: Explain the concept of data normalization.**
+A: Data normalization scales numerical features to a standard range, typically [0, 1] or [-1, 1], to ensure all features contribute equally to the model and improve convergence.
+
+## Conclusion
+
+Data science and analytics require a strong foundation in statistics, programming, machine learning, and domain expertise. Key areas to master include:
+
+1. **Statistical Analysis**: Descriptive statistics, hypothesis testing, probability distributions
+2. **Machine Learning**: Supervised and unsupervised algorithms, model evaluation, hyperparameter tuning
+3. **Deep Learning**: Neural networks, CNNs, RNNs, transfer learning
+4. **Data Engineering**: Data preprocessing, feature engineering, pipeline development
+5. **Visualization**: Creating meaningful visualizations to communicate insights
+6. **Business Acumen**: Understanding business problems and translating data insights into actionable recommendations
+7. **Communication**: Presenting complex findings to non-technical stakeholders
+
+The field continues to evolve rapidly with new algorithms, tools, and applications emerging regularly. Continuous learning, practical experience with real datasets, and staying current with industry trends are essential for success in data science roles and interview preparation.

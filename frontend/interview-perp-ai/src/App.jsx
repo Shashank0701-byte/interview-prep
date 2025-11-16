@@ -6,6 +6,8 @@ import {
   Navigate, // Make sure to import Navigate
 } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import ScrollToTop from './components/ScrollToTop';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Import your page components
 import LandingPage from './pages/LandingPage';
@@ -17,6 +19,28 @@ import SignUp from './pages/Auth/SignUp.jsx';
 import Login from './pages/Auth/Login';
 import AnalyticsDashboard from './pages/Analytics/AnalyticsDashboard';
 import PracticePage from './pages/PracticePage';
+import RoadmapPage from './pages/Roadmap/RoadmapPage';
+import PhaseOverviewPage from './pages/Roadmap/PhaseOverviewPage';
+import PhaseQuizPage from './pages/Roadmap/PhaseQuizPage';
+import PhaseSessionLibrary from './pages/Roadmap/PhaseSessionLibrary';
+import CreateSessionPage from './pages/Roadmap/CreateSessionPage';
+import RoadmapSessionPractice from './pages/Roadmap/RoadmapSessionPractice';
+import CodeReviewSimulator from './pages/CodeReview/CodeReviewSimulator';
+import ScenarioSelector from './pages/CodeReview/ScenarioSelector';
+import MultiFilePRReview from './pages/CodeReview/MultiFilePRReview';
+import SmartResumeBuilder from './pages/Resume/SmartResumeBuilder';
+import LiveCodingPage from './pages/LiveCoding/LiveCodingPage';
+import LiveCodingChallenge from './pages/LiveCoding/LiveCodingChallenge';
+import StudyRoomDashboard from './pages/StudyRoom/StudyRoomDashboard';
+import StudyRoomInterface from './pages/StudyRoom/StudyRoomInterface';
+import StudyRoomJoin from './pages/StudyRoom/StudyRoomJoin';
+import AIInterviewCoach from './pages/AIInterviewCoach/AIInterviewCoach';
+import InterviewInterface from './pages/AIInterviewCoach/InterviewInterface';
+import InterviewReport from './pages/AIInterviewCoach/InterviewReport';
+import SalaryNegotiationPage from './pages/SalaryNegotiation/SalaryNegotiationPage';
+import NegotiationSimulator from './pages/SalaryNegotiation/NegotiationSimulator';
+import NegotiationResults from './pages/SalaryNegotiation/NegotiationResults';
+import NegotiationHistory from './pages/SalaryNegotiation/NegotiationHistory';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -35,9 +59,11 @@ const RedirectIfAuth = ({ children }) => {
 
 const App = () => {
   return (
-    <UserProvider>
-      <div>
-        <Router>
+    <ThemeProvider>
+      <UserProvider>
+        <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
+          <Router>
+          <ScrollToTop />
           <Routes>
             <Route path='/' element={<LandingPage />} />
              <Route 
@@ -48,11 +74,17 @@ const App = () => {
             path="/login" 
             element={<RedirectIfAuth><Login /></RedirectIfAuth>} 
           /> 
-            <Route path="/progress" element={<ProtectedRoute><AnalyticsDashboard /></ProtectedRoute>} />
+            <Route path="/progress" element={<ProtectedRoute><AnalyticsDashboard key="analytics" /></ProtectedRoute>} />
+            <Route path="/roadmap" element={<ProtectedRoute><RoadmapPage key="roadmap" /></ProtectedRoute>} />
+            <Route path="/phase/:role/:phaseId" element={<ProtectedRoute><PhaseOverviewPage key="phase-overview" /></ProtectedRoute>} />
+            <Route path="/phase-quiz/:role/:phaseId" element={<ProtectedRoute><PhaseQuizPage key="phase-quiz" /></ProtectedRoute>} />
+            <Route path="/phase-sessions/:role/:phaseId" element={<ProtectedRoute><PhaseSessionLibrary key="phase-sessions" /></ProtectedRoute>} />
+            <Route path="/create-session/:role/:phaseId" element={<ProtectedRoute><CreateSessionPage key="create-session" /></ProtectedRoute>} />
+            <Route path="/roadmap-session/:sessionId" element={<ProtectedRoute><RoadmapSessionPractice key="roadmap-session" /></ProtectedRoute>} />
             {/* These routes should also be protected */}
             <Route
               path='/dashboard'
-              element={<ProtectedRoute><Dashboard /></ProtectedRoute>}
+              element={<ProtectedRoute><Dashboard key="dashboard" /></ProtectedRoute>}
             />
             <Route
               path='/interview-prep/:sessionId'
@@ -68,6 +100,70 @@ const App = () => {
               path="/review"
               element={<ProtectedRoute><ReviewPage /></ProtectedRoute>}
             />
+            <Route
+              path="/code-review"
+              element={<ProtectedRoute><ScenarioSelector /></ProtectedRoute>}
+            />
+            <Route
+              path="/code-review/:scenarioId"
+              element={<ProtectedRoute><CodeReviewSimulator /></ProtectedRoute>}
+            />
+            <Route
+              path="/multi-file-pr/:prId"
+              element={<ProtectedRoute><MultiFilePRReview /></ProtectedRoute>}
+            />
+            <Route
+              path="/resume-builder"
+              element={<ProtectedRoute><SmartResumeBuilder /></ProtectedRoute>}
+            />
+            <Route
+              path="/salary-negotiation"
+              element={<ProtectedRoute><SalaryNegotiationPage /></ProtectedRoute>}
+            />
+            <Route
+              path="/salary-negotiation/simulator"
+              element={<ProtectedRoute><NegotiationSimulator /></ProtectedRoute>}
+            />
+            <Route
+              path="/salary-negotiation/results"
+              element={<ProtectedRoute><NegotiationResults /></ProtectedRoute>}
+            />
+            <Route
+              path="/salary-negotiation/history"
+              element={<ProtectedRoute><NegotiationHistory /></ProtectedRoute>}
+            />
+            <Route
+              path="/live-coding"
+              element={<ProtectedRoute><LiveCodingPage /></ProtectedRoute>}
+            />
+            <Route
+              path="/live-coding/:challengeId"
+              element={<ProtectedRoute><LiveCodingChallenge /></ProtectedRoute>}
+            />
+            <Route
+              path="/study-rooms"
+              element={<ProtectedRoute><StudyRoomDashboard /></ProtectedRoute>}
+            />
+            <Route
+              path="/study-room/:roomId"
+              element={<ProtectedRoute><StudyRoomInterface /></ProtectedRoute>}
+            />
+            <Route
+              path="/join/:roomId"
+              element={<ProtectedRoute><StudyRoomJoin /></ProtectedRoute>}
+            />
+            <Route
+              path="/ai-interview-coach"
+              element={<ProtectedRoute><AIInterviewCoach /></ProtectedRoute>}
+            />
+            <Route
+              path="/ai-interview/:sessionId"
+              element={<ProtectedRoute><InterviewInterface /></ProtectedRoute>}
+            />
+            <Route
+              path="/ai-interview/:sessionId/report"
+              element={<ProtectedRoute><InterviewReport /></ProtectedRoute>}
+            />
           </Routes>
         </Router>
         <Toaster
@@ -78,8 +174,9 @@ const App = () => {
             },
           }}
         />
-      </div>
-    </UserProvider>
+        </div>
+      </UserProvider>
+    </ThemeProvider>
   );
 };
 
