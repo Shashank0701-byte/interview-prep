@@ -58,7 +58,7 @@ const NegotiationSimulator = () => {
         try {
             const token = localStorage.getItem('token');
             // Use relative URL if VITE_API_URL is not set, otherwise use the full URL
-            const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
             const apiUrl = `${baseUrl}/api/salary-negotiation/start`;
             
             console.log('Starting negotiation with config:', config);
@@ -87,7 +87,7 @@ const NegotiationSimulator = () => {
         setSending(true);
         try {
             const token = localStorage.getItem('token');
-            const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
             const response = await axios.post(
                 `${baseUrl}/api/salary-negotiation/${negotiation.id}/message`,
                 {
@@ -145,7 +145,7 @@ const NegotiationSimulator = () => {
     const finalizeNegotiation = async (action, finalOffer) => {
         try {
             const token = localStorage.getItem('token');
-            const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
             const response = await axios.post(
                 `${baseUrl}/api/salary-negotiation/${negotiation.id}/finalize`,
                 { action, finalOffer },
