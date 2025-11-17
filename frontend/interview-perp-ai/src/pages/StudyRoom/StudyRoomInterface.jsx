@@ -216,7 +216,7 @@ const StudyRoomInterface = () => {
     }
 
     const token = localStorage.getItem('token');
-    socketRef.current = io(import.meta.env.VITE_API_URL || 'http://localhost:8000', {
+    socketRef.current = io(import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000', {
       auth: { token },
       autoConnect: true,
       reconnection: true,
