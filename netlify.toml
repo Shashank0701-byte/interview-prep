@@ -1,34 +1,21 @@
 # Netlify Build Settings
 [build]
-  # Directory to change to before starting a build.
-  # Make sure this is your project's correct folder name.
   base = "frontend/interview-perp-ai"
-
-  # The command to build your site for production.
-  command = "npm install -g npm@latest && npm install -g patch-package && rm -rf node_modules package-lock.json && npm cache clean --force && npm install --legacy-peer-deps && npm rebuild && npm run build"
-
-  # The directory that contains the deploy-ready HTML files and assets.
+  command = "npm install --legacy-peer-deps && npm run build"
   publish = "dist"
 
 [build.environment]
-  # Node.js version for build
-  NODE_VERSION = "20"
-  # Fix npm optional dependencies issue
+  NODE_VERSION = "18"
   NPM_FLAGS = "--legacy-peer-deps"
-  # Omit PORT from secrets scanning (it's just a port number, not a secret)
-  SECRETS_SCAN_OMIT_KEYS = "PORT"
-  # Omit paths that contain salary data and other non-secret numeric values
-  SECRETS_SCAN_OMIT_PATHS = "src/components/Resume/*,public/pdf.worker.min.js,dist/*"
-  # Backend URL for production (using the actual URL from the error)
-  VITE_API_BASE_URL = "https://interview-prep-gbhf.vercel.app"
+  VITE_API_BASE_URL = "https://interview-prep-2-rfzb.onrender.com"
 
-# Redirect rules for Single Page Application (SPA)
+# Redirect SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Headers for security and performance
+# Security Headers
 [[headers]]
   for = "/*"
   [headers.values]
@@ -36,15 +23,3 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-
-# Cache static assets
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-# Cache fonts
-[[headers]]
-  for = "*.woff2"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
