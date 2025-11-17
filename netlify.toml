@@ -5,9 +5,20 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "18"
+  # Required for Vite 5+
+  NODE_VERSION = "22"
+
+  # Fix npm peer dependency issues
   NPM_FLAGS = "--legacy-peer-deps"
+
+  # Your production backend
   VITE_API_BASE_URL = "https://interview-prep-2-rfzb.onrender.com"
+
+  # Ignore PORT as a "secret"
+  SECRETS_SCAN_OMIT_KEYS = "PORT"
+
+  # Ignore paths containing worker/pdf bundles or build output
+  SECRETS_SCAN_OMIT_PATHS = "dist/*,public/*,src/components/Resume/*"
 
 # Redirect SPA
 [[redirects]]
@@ -23,3 +34,15 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Cache static assets (improves performance)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Cache fonts
+[[headers]]
+  for = "*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
