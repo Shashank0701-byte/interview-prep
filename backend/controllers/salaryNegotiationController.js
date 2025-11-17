@@ -1,7 +1,7 @@
 const SalaryNegotiation = require('../models/SalaryNegotiation');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
 // Market data by role, level, and location - Indian market in INR (Lakhs per annum)
 const marketData = {
