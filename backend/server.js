@@ -28,48 +28,56 @@ const feedbackRoutes = require("./routes/feedbackRoutes");
 const { protect } = require("./middlewares/authMiddleware");
 const { generateInterviewQuestions } = require("./controllers/aiController");
 
-// AI Chat integration routes
+// AI RAG Chat routes (Python FastAPI integration)
 const chatAIRoutes = require("../ai-training/nodejs-integration/chat-routes");
 
 const app = express();
 const server = http.createServer(app);
 
+// Logging frontend URL
 console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
 
 // --- CORS CONFIG ---
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://interview-prep-karo.netlify.app",
-    process.env.FRONTEND_URL
-  ].filter(Boolean),
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://interview-prep-karo.netlify.app",
+      process.env.FRONTEND_URL,
+    ].filter(Boolean),
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
+// Connect db
 connectDB();
 
 // SOCKET.IO INITIALIZATION
 const io = socketIo(server, {
   cors: {
-    origin: process.env.FRONTEND_URL,
+    origin: [
+      "http://localhost:5173",
+      "https://interview-prep-karo.netlify.app",
+      process.env.FRONTEND_URL,
+    ].filter(Boolean),
     methods: ["GET", "POST"],
-    credentials: true
-  }
+    credentials: true,
+  },
 });
 new StudyRoomSocket(io);
 
 // Middlewares
 app.use(express.json());
 
-// Debug logging
+// Log all requests for debugging
 app.use((req, res, next) => {
   console.log("[REQUEST]", req.method, req.originalUrl);
   next();
 });
 
-// Static assets
+// Static uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ------------------- API ROUTES -------------------
@@ -89,24 +97,35 @@ app.use("/api/salary-negotiation", salaryNegotiationRoutes);
 app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
 app.use("/api/feedback", feedbackRoutes);
 
-// --- AI CHAT ROUTES (NEW) ---
-app.use("/", chatAIRoutes);
+// --- AI CHAT ROUTES (IMPORTANT FIX) ---
+// OLD ❌ app.use("/", chatAIRoutes)
+app.use("/api/ai", chatAIRoutes);
 
-// HEALTH ROUTES
+// -------------------- HEALTH ROUTES --------------------
 app.get("/", (req, res) => {
-  res.json({ message: "Backend running", status: "healthy", ts: Date.now() });
+  res.json({
+    message: "Backend running",
+    status: "healthy",
+    ts: Date.now(),
+  });
 });
 
 app.get("/api/health", (req, res) => {
-  res.json({ message: "OK", status: "healthy", ts: Date.now() });
+  res.json({
+    message: "OK",
+    status: "healthy",
+    ts: Date.now(),
+  });
 });
 
-// 404 handler
+// 404 Handler
 app.use((req, res) => {
   console.log("404:", req.originalUrl);
   res.status(404).json({ error: "Route not found", path: req.originalUrl });
 });
 
-// Start Server
+// Start server
 const PORT = process.env.PORT || 8000;
-server.listen(PORT, () => console.log(`Server running on ${PORT}`));
+server.listen(PORT, () =>
+  console.log(`🚀 Server running on port ${PORT} with Socket.IO`)
+);
