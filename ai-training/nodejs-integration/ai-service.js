@@ -31,7 +31,7 @@ class AIService {
 
     async healthCheck() {
         try {
-            const response = await this.client.get("/health");
+            const response = await this.client.get("/api/ai/health");
 
             return {
                 success: true,
@@ -64,7 +64,7 @@ class AIService {
 
         for (let attempt = 1; attempt <= this.retries; attempt++) {
             try {
-                const response = await this.client.post("/chat", payload);
+                const response = await this.client.post("/api/ai/chat", payload);
 
                 return {
                     success: true,
@@ -95,7 +95,7 @@ class AIService {
 
     async sendReminder(userContext = {}) {
         try {
-            const res = await this.client.post("/reminder", {
+            const res = await this.client.post("/api/ai/reminder", {
                 user_context: userContext
             });
 
@@ -111,7 +111,7 @@ class AIService {
 
     async celebrate(achievement, userContext = {}) {
         try {
-            const res = await this.client.post("/celebrate", {
+            const res = await this.client.post("/api/ai/celebrate", {
                 achievement,
                 user_context: userContext
             });
