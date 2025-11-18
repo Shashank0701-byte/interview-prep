@@ -1,0 +1,29 @@
+{
+  "name": "smart-study-buddy-integration",
+  "version": "1.0.0",
+  "description": "Node.js integration for Smart Study Buddy RAG system",
+  "main": "ai-service.js",
+  "scripts": {
+    "test": "node test-integration.js",
+    "start": "node example-server.js"
+  },
+  "keywords": [
+    "ai",
+    "rag",
+    "interview-prep",
+    "nodejs",
+    "integration"
+  ],
+  "author": "Smart Study Buddy",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "express": "^4.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

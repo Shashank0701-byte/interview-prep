@@ -195,7 +195,7 @@ test_prompt_improvement.py
 # Week 3 Development and Testing Files (Not needed in production)
 # start_rag_service.py
 test_knowledge_base.py
-nodejs-integration/
+
 
 # Vector Database Storage (Local development)
 chroma_db/
