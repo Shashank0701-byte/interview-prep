@@ -4,11 +4,13 @@ const cors = require("cors");
 const path = require("path");
 const http = require("http");
 const socketIo = require("socket.io");
-// const { connect } = require("http2");
 const connectDB = require("./config/db");
+
 const StudyRoomSocket = require("./socket/studyRoomSocket");
+
+// Normal backend routes
 const aiRoutes = require("./routes/aiRoutes");
-const analyticsRoutes = require('./routes/analyticsRoutes');
+const analyticsRoutes = require("./routes/analyticsRoutes");
 const authRoutes = require("./routes/authRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
 const questionRoutes = require("./routes/questionRoutes");
@@ -21,99 +23,60 @@ const roadmapSessionRoutes = require("./routes/roadmapSessionRoutes");
 const studyRoomRoutes = require("./routes/studyRoomRoutes");
 const aiInterviewCoachRoutes = require("./routes/aiInterviewCoachRoutes");
 const salaryNegotiationRoutes = require("./routes/salaryNegotiationRoutes");
-const {protect} = require("./middlewares/authMiddleware");
-const { generateInterviewQuestions, generateConceptExplanation } = require("./controllers/aiController");
-const feedbackRoutes = require('./routes/feedbackRoutes');
+const feedbackRoutes = require("./routes/feedbackRoutes");
+
+const { protect } = require("./middlewares/authMiddleware");
+const { generateInterviewQuestions } = require("./controllers/aiController");
+
+// AI Chat integration routes
+const chatAIRoutes = require("../ai-training/nodejs-integration/chat-routes");
+
 const app = express();
 const server = http.createServer(app);
 
-// Debug CORS configuration
-console.log('FRONTEND_URL from env:', process.env.FRONTEND_URL);
-console.log('All allowed origins:', [
-  "http://localhost:5173", 
-  "http://localhost:5174", 
-  "http://localhost:5175", 
-  "http://localhost:5176", 
-  "http://localhost:3000", 
-  "http://127.0.0.1:5173",
-  "http://127.0.0.1:5174",
-  "http://127.0.0.1:5175",
-  "http://127.0.0.1:5176",
-  "https://interview-prep-karo.netlify.app",
-  process.env.FRONTEND_URL
-].filter(Boolean));
+console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
 
-// Middleware to handle CORS
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173", 
-      "http://localhost:5174", 
-      "http://localhost:5175", 
-      "http://localhost:5176", 
-      "http://localhost:3000", 
-      "http://127.0.0.1:5173",
-      "http://127.0.0.1:5174",
-      "http://127.0.0.1:5175",
-      "http://127.0.0.1:5176",
-      "https://interview-prep-karo.netlify.app",
-      process.env.FRONTEND_URL
-    ].filter(Boolean),
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true
-  })
-);
+// --- CORS CONFIG ---
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://interview-prep-karo.netlify.app",
+    process.env.FRONTEND_URL
+  ].filter(Boolean),
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
-connectDB()
+connectDB();
 
-// Initialize Socket.IO
+// SOCKET.IO INITIALIZATION
 const io = socketIo(server, {
   cors: {
-    origin: [
-      "http://localhost:5173", 
-      "http://localhost:5174", 
-      "http://localhost:5175", 
-      "http://localhost:5176", 
-      "http://localhost:3000", 
-      "http://127.0.0.1:5173",
-      "http://127.0.0.1:5174",
-      "http://127.0.0.1:5175",
-      "http://127.0.0.1:5176",
-      "https://interview-prep-karo.netlify.app",
-      process.env.FRONTEND_URL
-    ].filter(Boolean),
+    origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST"],
     credentials: true
   }
 });
-
-// Initialize Study Room Socket handlers
 new StudyRoomSocket(io);
 
-// Middleware
+// Middlewares
 app.use(express.json());
 
-// Debugging middleware - logs all requests but doesn't interfere with routing
+// Debug logging
 app.use((req, res, next) => {
-    console.log('Request received for:', req.method, req.originalUrl);
-    next();
+  console.log("[REQUEST]", req.method, req.originalUrl);
+  next();
 });
 
-// Serve uploads folder
-app.use("/uploads", express.static(path.join(__dirname, "uploads"), {}));
+// Static assets
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Debug route to test API connectivity
-app.get('/api/test', (req, res) => {
-    console.log('Test API endpoint hit');
-    res.status(200).json({ message: 'API is working' });
-});
-
-// Routes
+// ------------------- API ROUTES -------------------
 app.use("/api/auth", authRoutes);
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/questions", questionRoutes);
-app.use('/api/analytics', analyticsRoutes);
+app.use("/api/analytics", analyticsRoutes);
 app.use("/api/companies", companyRoutes);
 app.use("/api/ai-interview", aiInterviewRoutes);
 app.use("/api/recruiter", recruiterRoutes);
@@ -124,32 +87,26 @@ app.use("/api/study-rooms", studyRoomRoutes);
 app.use("/api/ai-interview-coach", aiInterviewCoachRoutes);
 app.use("/api/salary-negotiation", salaryNegotiationRoutes);
 app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
-app.use('/api/feedback', feedbackRoutes);
-app.use("/api/ai", aiRoutes);
+app.use("/api/feedback", feedbackRoutes);
 
-// Health check route
-app.get('/', (req, res) => {
-    res.json({ 
-        message: 'Interview Prep AI Backend is running!', 
-        status: 'healthy',
-        timestamp: new Date().toISOString()
-    });
+// --- AI CHAT ROUTES (NEW) ---
+app.use("/", chatAIRoutes);
+
+// HEALTH ROUTES
+app.get("/", (req, res) => {
+  res.json({ message: "Backend running", status: "healthy", ts: Date.now() });
 });
 
-app.get('/api/health', (req, res) => {
-    res.json({ 
-        message: 'API is working!', 
-        status: 'healthy',
-        timestamp: new Date().toISOString()
-    });
+app.get("/api/health", (req, res) => {
+  res.json({ message: "OK", status: "healthy", ts: Date.now() });
 });
 
-// This 404 handler should only run after all other routes have been checked
+// 404 handler
 app.use((req, res) => {
-    console.log('No route found for:', req.originalUrl);
-    res.status(404).json({ message: 'Route not found', path: req.originalUrl });
+  console.log("404:", req.originalUrl);
+  res.status(404).json({ error: "Route not found", path: req.originalUrl });
 });
 
 // Start Server
 const PORT = process.env.PORT || 8000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT} with Socket.IO support`));
+server.listen(PORT, () => console.log(`Server running on ${PORT}`));

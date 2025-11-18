@@ -1,12 +1,12 @@
 /**
- * Frontend Chat Integration (Updated)
+ * Frontend Chat Integration (Updated & FIXED)
  */
 
 const generateResponse = async (userMessage) => {
     try {
         setIsTyping(true);
 
-        const response = await fetch("/api/chat", {
+        const response = await fetch("/api/ai/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -29,7 +29,7 @@ const generateResponse = async (userMessage) => {
 
 const checkAIServiceHealth = async () => {
     try {
-        const response = await fetch("/api/chat/health");
+        const response = await fetch("/api/ai/health");
         const health = await response.json();
 
         return health.success && health.pipelineReady;
