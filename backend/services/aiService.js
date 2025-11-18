@@ -29,7 +29,7 @@ class AIService {
      */
     async healthCheck() {
         try {
-            const response = await this.client.get('/health');
+            const response = await this.client.get('/api/ai/health');
             return {
                 success: true,
                 status: response.data.status,
@@ -66,7 +66,7 @@ class AIService {
             try {
                 console.log(`🤖 Sending to AI Service (attempt ${attempt}): "${message.substring(0, 50)}..."`);
                 
-                const response = await this.client.post('/chat', payload);
+                const response = await this.client.post('/api/ai/chat', payload);
                 
                 console.log(`✅ AI Service response received: ${response.data.context_docs} docs, ${response.data.model_used}`);
                 
@@ -102,7 +102,7 @@ class AIService {
      */
     async sendReminder(userContext = {}) {
         try {
-            const response = await this.client.post('/reminder', {
+            const response = await this.client.post('/api/ai/reminder', {
                 user_context: userContext
             });
             
@@ -122,7 +122,7 @@ class AIService {
      */
     async celebrate(achievement, userContext = {}) {
         try {
-            const response = await this.client.post('/celebrate', {
+            const response = await this.client.post('/api/ai/celebrate', {
                 achievement,
                 user_context: userContext
             });
