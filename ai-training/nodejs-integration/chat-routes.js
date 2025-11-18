@@ -15,7 +15,7 @@ const aiService = new AIService({
 /**
  * POST /api/chat
  */
-router.post("/chat", async (req, res) => {
+router.post("/api/ai/chat", async (req, res) => {
     try {
         const { message, userId, sessionId } = req.body;
 
@@ -61,7 +61,7 @@ router.post("/chat", async (req, res) => {
 /**
  * GET /api/chat/health
  */
-router.get("/health", async (req, res) => {
+router.get("/api/ai/health", async (req, res) => {
     const health = await aiService.healthCheck();
     res.json(health);
 });
@@ -69,7 +69,7 @@ router.get("/health", async (req, res) => {
 /**
  * POST /api/chat/reminder
  */
-router.post("/reminder", async (req, res) => {
+router.post("/api/ai/reminder", async (req, res) => {
     try {
         const { userId } = req.body;
 
@@ -90,7 +90,7 @@ router.post("/reminder", async (req, res) => {
 /**
  * POST /api/chat/celebrate
  */
-router.post("/celebrate", async (req, res) => {
+router.post("/api/ai/celebrate", async (req, res) => {
     try {
         const { userId, achievement } = req.body;
 

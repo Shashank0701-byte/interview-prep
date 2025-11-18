@@ -12,9 +12,9 @@ const AIService = require('../services/aiService');
 const router = express.Router();
 
 // Initialize AI service
-const AI_BOT_URL = process.env.AI_BOT_URL || 'http://localhost:8001';
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8001';
 const aiService = new AIService({
-    baseURL: AI_BOT_URL,
+    baseURL: AI_SERVICE_URL,
     timeout: 30000,
     retries: 3
 });
@@ -28,7 +28,7 @@ const upload = multer({ storage: multer.memoryStorage() });
  * POST /api/ai/chat
  * Main chat endpoint that uses RAG system for intelligent responses
  */
-router.post('/api/ai/chat', async (req, res) => {
+router.post('/chat', async (req, res) => {
     try {
         const { message, userId, sessionId } = req.body;
         
@@ -88,7 +88,7 @@ router.post('/api/ai/chat', async (req, res) => {
  * GET /api/ai/health
  * Check if AI service is available
  */
-router.get('/api/ai/health', async (req, res) => {
+router.get('/health', async (req, res) => {
     try {
         const health = await aiService.healthCheck();
         res.json(health);
@@ -104,7 +104,7 @@ router.get('/api/ai/health', async (req, res) => {
  * POST /api/ai/reminder
  * Send study reminder
  */
-router.post('/api/ai/reminder', async (req, res) => {
+router.post('/reminder', async (req, res) => {
     try {
         const { userId } = req.body;
         
@@ -129,7 +129,7 @@ router.post('/api/ai/reminder', async (req, res) => {
  * POST /api/ai/celebrate
  * Celebrate user achievement
  */
-router.post('/api/ai/celebrate', async (req, res) => {
+router.post('/celebrate', async (req, res) => {
     try {
         const { achievement, userId } = req.body;
         
