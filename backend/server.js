@@ -31,6 +31,8 @@ const { generateInterviewQuestions } = require("./controllers/aiController");
 const app = express();
 const server = http.createServer(app);
 
+console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+
 /* -------------------------
    CORS
 -------------------------- */
@@ -38,12 +40,10 @@ app.use(
     cors({
         origin: [
             "http://localhost:5173",
-            "https://interview-prep-karo.netlify.app",
-            process.env.FRONTEND_URL
+            process.env.FRONTEND_URL,
+            "https://interview-prep-karo.netlify.app"
         ].filter(Boolean),
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE"],
-        allowedHeaders: ["Content-Type", "Authorization"]
+        credentials: true
     })
 );
 
@@ -70,12 +70,12 @@ new StudyRoomSocket(io);
 app.use(express.json());
 
 /* -------------------------
-   STATIC FILES
+   STATIC
 -------------------------- */
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 /* -------------------------
-   CORE API ROUTES
+   API ROUTES
 -------------------------- */
 app.use("/api/auth", authRoutes);
 app.use("/api/sessions", sessionRoutes);
@@ -94,19 +94,19 @@ app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
 app.use("/api/feedback", feedbackRoutes);
 
 /* -------------------------
-   AI CHAT ROUTES (ONLY ONE)
+   🧠 RAG AI ROUTES
 -------------------------- */
 app.use("/api/ai", aiRoutes);
 
 /* -------------------------
-   HEALTH ROUTE
+   HEALTH
 -------------------------- */
 app.get("/", (req, res) => {
     res.json({ message: "Backend running", healthy: true, ts: Date.now() });
 });
 
 /* -------------------------
-   404 HANDLER
+   404
 -------------------------- */
 app.use((req, res) => {
     res.status(404).json({ error: "Route not found", path: req.originalUrl });
