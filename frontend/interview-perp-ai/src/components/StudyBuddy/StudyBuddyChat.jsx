@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, Send, Bot, User, X, Minimize2 } from 'lucide-react';
-import { BASE_URL } from '../../utils/apiPaths';
 import './StudyBuddyChat.css';
 
 const StudyBuddyChat = ({ userId }) => {
@@ -8,12 +7,12 @@ const StudyBuddyChat = ({ userId }) => {
     const [messages, setMessages] = useState([
         {
             id: 1,
-            sender: 'buddy',
+            sender: "buddy",
             message: "Hi there! 👋 I'm your Study Buddy! I'm here to help you with your interview prep journey. How are you feeling about your progress today?",
-            timestamp: new Date().toISOString()
-        }
+            timestamp: new Date().toISOString(),
+        },
     ]);
-    const [inputMessage, setInputMessage] = useState('');
+    const [inputMessage, setInputMessage] = useState("");
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef(null);
 
@@ -25,109 +24,87 @@ const StudyBuddyChat = ({ userId }) => {
         scrollToBottom();
     }, [messages]);
 
-    // Check AI service health on component mount
+    // Check AI service health on mount
     useEffect(() => {
-        checkAIServiceHealth().then(isHealthy => {
-            if (isHealthy) {
-                console.log('✅ AI Service is ready!');
-            } else {
-                console.log('⚠️ AI Service is not ready, using fallback responses');
-            }
+        checkAIServiceHealth().then((healthy) => {
+            console.log(healthy ? "✅ AI Service Ready" : "⚠️ AI Offline (fallback enabled)");
         });
     }, []);
 
-    // AI-powered responses using RAG system
+    // ----------- AI Response (Fixed, Uses Relative API Path) -----------
     const generateResponse = async (userMessage) => {
         try {
             setIsTyping(true);
-            
-            // Call your Node.js backend which connects to Python RAG service
-            const response = await fetch(`${BASE_URL}/api/ai/chat`, {
-                method: 'POST',
+
+            const response = await fetch(`/api/ai/chat`, {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     message: userMessage,
-                    userId: userId || 'anonymous',
-                    sessionId: Date.now().toString() // Simple session ID
-                })
+                    userId: userId || "anonymous",
+                    sessionId: Date.now().toString(),
+                }),
             });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
-                // Log for debugging
-                console.log('AI Response:', {
-                    contextDocs: data.contextDocs,
-                    modelUsed: data.modelUsed,
-                    source: data.source
-                });
-                
+                console.log("AI Response:", data);
                 return data.message;
-            } else {
-                throw new Error(data.error || 'Unknown error');
             }
-            
-        } catch (error) {
-            console.error('Chat API error:', error);
-            
-            // Fallback to local response if API fails
-            return "I'm having trouble connecting to my knowledge base right now. Let me give you a quick response: " + 
-                   "Keep up the great work with your interview prep! Every session brings you closer to success. 💪";
-                   
+            return "Hmm... something went wrong, try again!";
+        } catch (err) {
+            console.error("Chat API error:", err);
+            return "AI is temporarily unavailable — please try again soon! 💛";
         } finally {
             setIsTyping(false);
         }
     };
 
-    // Check AI service health
+    // ----------- Health Check (Fixed URL) -----------
     const checkAIServiceHealth = async () => {
         try {
-            const response = await fetch(`${BASE_URL}/api/ai/health`);
+            const response = await fetch(`/api/ai/health`);
             const health = await response.json();
-            
-            console.log('AI Service Health:', health);
             return health.success && health.pipelineReady;
-            
-        } catch (error) {
-            console.error('Health check failed:', error);
+        } catch (e) {
+            console.error("Health check failed", e);
             return false;
         }
     };
 
+    // ----------- Send Message Handler -----------
     const sendMessage = async () => {
         if (!inputMessage.trim()) return;
 
         const userMessage = {
             id: Date.now(),
-            sender: 'user',
+            sender: "user",
             message: inputMessage,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         };
 
-        setMessages(prev => [...prev, userMessage]);
-        const messageToSend = inputMessage;
-        setInputMessage('');
+        setMessages((prev) => [...prev, userMessage]);
 
-        // Get AI response
-        const response = await generateResponse(messageToSend);
+        const messageToSend = inputMessage;
+        setInputMessage("");
+
+        const aiReply = await generateResponse(messageToSend);
+
         const buddyMessage = {
             id: Date.now() + 1,
-            sender: 'buddy',
-            message: response,
-            timestamp: new Date().toISOString()
+            sender: "buddy",
+            message: aiReply,
+            timestamp: new Date().toISOString(),
         };
 
-        setMessages(prev => [...prev, buddyMessage]);
+        setMessages((prev) => [...prev, buddyMessage]);
     };
 
     const handleKeyPress = (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
+        if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             sendMessage();
         }
@@ -135,7 +112,7 @@ const StudyBuddyChat = ({ userId }) => {
 
     return (
         <>
-            {/* Chat Toggle Button */}
+            {/* Floating Toggle Button */}
             {!isOpen && (
                 <div className="study-buddy-toggle" onClick={() => setIsOpen(true)}>
                     <MessageCircle size={24} />
@@ -171,24 +148,25 @@ const StudyBuddyChat = ({ userId }) => {
                         {messages.map((msg) => (
                             <div key={msg.id} className={`message ${msg.sender}`}>
                                 <div className="message-avatar">
-                                    {msg.sender === 'buddy' ? <Bot size={16} /> : <User size={16} />}
+                                    {msg.sender === "buddy" ? <Bot size={16} /> : <User size={16} />}
                                 </div>
                                 <div className="message-content">
                                     <div className="message-text">
-                                        {msg.message.split('\n').map((line, index) => (
-                                            <div key={index}>{line}</div>
+                                        {msg.message.split("\n").map((line, idx) => (
+                                            <div key={idx}>{line}</div>
                                         ))}
                                     </div>
                                     <div className="message-time">
-                                        {new Date(msg.timestamp).toLocaleTimeString([], { 
-                                            hour: '2-digit', 
-                                            minute: '2-digit' 
+                                        {new Date(msg.timestamp).toLocaleTimeString([], {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
                                         })}
                                     </div>
                                 </div>
                             </div>
                         ))}
-                        
+
+                        {/* Typing Indicator */}
                         {isTyping && (
                             <div className="message buddy">
                                 <div className="message-avatar">
@@ -203,6 +181,7 @@ const StudyBuddyChat = ({ userId }) => {
                                 </div>
                             </div>
                         )}
+
                         <div ref={messagesEndRef} />
                     </div>
 
@@ -213,11 +192,10 @@ const StudyBuddyChat = ({ userId }) => {
                             onChange={(e) => setInputMessage(e.target.value)}
                             onKeyPress={handleKeyPress}
                             placeholder="Ask Study Buddy anything..."
-                            rows={1}
                             className="input-field"
                         />
-                        <button 
-                            onClick={sendMessage} 
+                        <button
+                            onClick={sendMessage}
                             disabled={!inputMessage.trim() || isTyping}
                             className="send-button"
                         >

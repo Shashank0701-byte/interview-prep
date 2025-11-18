@@ -1,5 +1,5 @@
 /**
- * AI Service Integration (FINAL)
+ * AI Service Integration (FINAL CLEAN VERSION)
  */
 const axios = require("axios");
 
@@ -7,15 +7,16 @@ class AIService {
     constructor(options = {}) {
         this.baseURL =
             options.baseURL ||
-            process.env.AI_BOT_URL ||
-            process.env.AI_SERVICE_URL;
+            process.env.AI_BOT_URL ||    // Render/Python service
+            process.env.AI_SERVICE_URL || 
+            "http://localhost:8001";
 
         if (!this.baseURL) {
-            throw new Error("❌ AI_BOT_URL missing in Render environment variables.");
+            throw new Error("❌ AI_BOT_URL missing in environment variables.");
         }
 
-        this.timeout = options.timeout || 30000;
-        this.retries = options.retries || 3;
+        this.timeout = 30000;
+        this.retries = 3;
 
         this.client = axios.create({
             baseURL: this.baseURL,
@@ -23,21 +24,21 @@ class AIService {
             headers: { "Content-Type": "application/json" }
         });
 
-        console.log(`🔗 AI Service initialized at: ${this.baseURL}`);
+        console.log(`🔗 AI Service initialized → ${this.baseURL}`);
     }
 
     /** HEALTH CHECK */
     async healthCheck() {
         try {
-            const response = await this.client.get("/health"); // FIXED
+            const res = await this.client.get("/health");
             return {
                 success: true,
-                status: response.data.status,
-                pipelineReady: response.data.pipeline_ready ?? true,
-                components: response.data.components ?? {}
+                status: res.data.status,
+                pipelineReady: res.data.pipeline_ready ?? true,
+                components: res.data.components ?? {}
             };
         } catch (err) {
-            console.error("❌ AI Health Check Failed:", err.message);
+            console.error("❌ AI Health Error:", err.message);
             return {
                 success: false,
                 status: "unhealthy",
@@ -48,34 +49,33 @@ class AIService {
 
     /** CHAT */
     async chat(message, userContext = {}) {
-        if (!message) throw new Error("Message is required");
+        if (!message) throw new Error("Message required");
 
         const payload = { message, user_context: userContext };
-
         let lastError;
 
         for (let attempt = 1; attempt <= this.retries; attempt++) {
             try {
-                const response = await this.client.post("/chat", payload); // FIXED
+                const res = await this.client.post("/chat", payload);
                 return {
                     success: true,
-                    response: response.data.response,
-                    timestamp: response.data.timestamp,
-                    contextDocs: response.data.context_docs,
-                    modelUsed: response.data.model_used
+                    response: res.data.response,
+                    timestamp: res.data.timestamp,
+                    contextDocs: res.data.context_docs,
+                    modelUsed: res.data.model_used
                 };
             } catch (err) {
                 lastError = err;
-                console.log(`❌ Attempt ${attempt} failed: ${err.message}`);
+                console.log(`❌ Chat attempt ${attempt} failed: ${err.message}`);
+
+                // retry with exponential backoff
                 if (attempt < this.retries) {
-                    await new Promise(r =>
-                        setTimeout(r, Math.pow(2, attempt) * 500)
-                    );
+                    await new Promise(res => setTimeout(res, attempt * 1000));
                 }
             }
         }
 
-        throw new Error(`AI failed after ${this.retries} attempts: ${lastError.message}`);
+        throw new Error(`AI failed after retries: ${lastError.message}`);
     }
 
     /** REMINDER */
@@ -95,15 +95,15 @@ class AIService {
         return { success: true, ...res.data };
     }
 
-    /** FALLBACK */
+    /** FALLBACK RESPONSES */
     getFallbackResponse() {
-        const fallbacks = [
-            "My AI brain is restarting — try again soon! ⚡",
+        const msgs = [
+            "My AI brain is restarting — try again soon!",
             "I'm temporarily offline — give me a moment!",
-            "The knowledge engine is warming up — try again!",
+            "Knowledge engine warming up — try again!",
             "Small delay! Ask again in a few seconds 😊"
         ];
-        return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+        return msgs[Math.floor(Math.random() * msgs.length)];
     }
 }
 
