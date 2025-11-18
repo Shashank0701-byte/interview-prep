@@ -38,10 +38,12 @@ app.use(
     cors({
         origin: [
             "http://localhost:5173",
-            process.env.FRONTEND_URL,
-            "https://interview-prep-karo.netlify.app"
+            "https://interview-prep-karo.netlify.app",
+            process.env.FRONTEND_URL
         ].filter(Boolean),
-        credentials: true
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"]
     })
 );
 
@@ -68,12 +70,12 @@ new StudyRoomSocket(io);
 app.use(express.json());
 
 /* -------------------------
-   STATIC
+   STATIC FILES
 -------------------------- */
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 /* -------------------------
-   API ROUTES
+   CORE API ROUTES
 -------------------------- */
 app.use("/api/auth", authRoutes);
 app.use("/api/sessions", sessionRoutes);
@@ -91,18 +93,20 @@ app.use("/api/salary-negotiation", salaryNegotiationRoutes);
 app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
 app.use("/api/feedback", feedbackRoutes);
 
-// Correct AI chat integration
+/* -------------------------
+   AI CHAT ROUTES (ONLY ONE)
+-------------------------- */
 app.use("/api/ai", aiRoutes);
 
 /* -------------------------
-   HEALTH
+   HEALTH ROUTE
 -------------------------- */
 app.get("/", (req, res) => {
     res.json({ message: "Backend running", healthy: true, ts: Date.now() });
 });
 
 /* -------------------------
-   404
+   404 HANDLER
 -------------------------- */
 app.use((req, res) => {
     res.status(404).json({ error: "Route not found", path: req.originalUrl });

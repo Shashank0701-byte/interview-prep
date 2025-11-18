@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
-const { 
+
+const {
     getPracticeFeedback,
     generateFollowUpQuestion,
     generateCompanyQuestions,
@@ -26,7 +27,9 @@ const aiService = new AIService({
 router.post("/chat", async (req, res) => {
     try {
         const { message, userId, sessionId } = req.body;
-        if (!message) return res.status(400).json({ success: false, error: "Message required" });
+        if (!message) {
+            return res.status(400).json({ success: false, error: "Message required" });
+        }
 
         const userContext = {
             userId: userId || "anonymous",
@@ -36,6 +39,7 @@ router.post("/chat", async (req, res) => {
 
         try {
             const out = await aiService.chat(message, userContext);
+
             res.json({
                 success: true,
                 message: out.response,
@@ -44,12 +48,14 @@ router.post("/chat", async (req, res) => {
                 modelUsed: out.modelUsed,
                 source: "ai_rag"
             });
+
         } catch (err) {
-            console.error("AI Error:", err.message);
+            console.error("AI Chat Error:", err.message);
             res.json({
                 success: true,
                 message: aiService.getFallbackResponse(),
-                source: "fallback"
+                source: "fallback",
+                modelUsed: "fallback"
             });
         }
 
@@ -80,8 +86,9 @@ router.post("/reminder", async (req, res) => {
 /** POST /api/ai/celebrate */
 router.post("/celebrate", async (req, res) => {
     try {
-        if (!req.body.achievement)
+        if (!req.body.achievement) {
             return res.status(400).json({ success: false, error: "Achievement required" });
+        }
 
         const out = await aiService.celebrate(req.body.achievement, {
             userId: req.body.userId || "anonymous",
@@ -89,6 +96,7 @@ router.post("/celebrate", async (req, res) => {
         });
 
         res.json(out);
+
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
@@ -97,7 +105,6 @@ router.post("/celebrate", async (req, res) => {
 /* ===============================
    OLD INTERVIEW AI ROUTES
 ================================== */
-
 router.post("/generate-questions", protect, generateInterviewQuestions);
 router.post("/practice-feedback", protect, upload.single("audio"), getPracticeFeedback);
 router.post("/follow-up", protect, generateFollowUpQuestion);
