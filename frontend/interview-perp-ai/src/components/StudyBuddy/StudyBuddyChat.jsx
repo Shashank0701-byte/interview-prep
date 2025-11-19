@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Send, Bot, User, X, Minimize2 } from 'lucide-react';
-import './StudyBuddyChat.css';
+import React, { useState, useEffect, useRef } from "react";
+import { MessageCircle, Send, Bot, User, X, Minimize2 } from "lucide-react";
+import { BASE_URL } from "../../utils/apiPaths";
+import "./StudyBuddyChat.css";
 
 const StudyBuddyChat = ({ userId }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -8,7 +9,8 @@ const StudyBuddyChat = ({ userId }) => {
         {
             id: 1,
             sender: "buddy",
-            message: "Hi there! 👋 I'm your Study Buddy! I'm here to help you with your interview prep journey. How are you feeling about your progress today?",
+            message:
+                "Hi there! 👋 I'm your Study Buddy! I'm here to help you with your interview prep journey. How are you feeling about your progress today?",
             timestamp: new Date().toISOString(),
         },
     ]);
@@ -16,6 +18,7 @@ const StudyBuddyChat = ({ userId }) => {
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef(null);
 
+    /* Scroll chat to bottom */
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
@@ -24,23 +27,27 @@ const StudyBuddyChat = ({ userId }) => {
         scrollToBottom();
     }, [messages]);
 
-    // Check AI service health on mount
+    /* Health Check (fixed with BASE_URL) */
     useEffect(() => {
         checkAIServiceHealth().then((healthy) => {
-            console.log(healthy ? "✅ AI Service Ready" : "⚠️ AI Offline (fallback enabled)");
+            console.log(
+                healthy
+                    ? "✅ AI Service Ready"
+                    : "⚠️ AI Offline (fallback enabled)"
+            );
         });
     }, []);
 
-    // ----------- AI Response (Fixed, Uses Relative API Path) -----------
+    /* -------------------------------
+       AI CHAT REQUEST (FIXED)
+    --------------------------------*/
     const generateResponse = async (userMessage) => {
         try {
             setIsTyping(true);
 
-            const response = await fetch(`/api/ai/chat`, {
+            const response = await fetch(`${BASE_URL}/api/ai/chat`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     message: userMessage,
                     userId: userId || "anonymous",
@@ -51,31 +58,36 @@ const StudyBuddyChat = ({ userId }) => {
             const data = await response.json();
 
             if (data.success) {
-                console.log("AI Response:", data);
                 return data.message;
             }
-            return "Hmm... something went wrong, try again!";
+
+            return "Hmm... something went wrong. Try again!";
         } catch (err) {
             console.error("Chat API error:", err);
-            return "AI is temporarily unavailable — please try again soon! 💛";
+            return "AI is temporarily unavailable — please try again soon! ⚠️";
         } finally {
             setIsTyping(false);
         }
     };
 
-    // ----------- Health Check (Fixed URL) -----------
+    /* -------------------------------
+       HEALTH CHECK (FIXED)
+    --------------------------------*/
     const checkAIServiceHealth = async () => {
         try {
-            const response = await fetch(`/api/ai/health`);
+            const response = await fetch(`${BASE_URL}/api/ai/health`);
             const health = await response.json();
+
             return health.success && health.pipelineReady;
-        } catch (e) {
-            console.error("Health check failed", e);
+        } catch (err) {
+            console.error("Health check failed:", err);
             return false;
         }
     };
 
-    // ----------- Send Message Handler -----------
+    /* -------------------------------
+       Send Message Handler
+    --------------------------------*/
     const sendMessage = async () => {
         if (!inputMessage.trim()) return;
 
@@ -87,11 +99,10 @@ const StudyBuddyChat = ({ userId }) => {
         };
 
         setMessages((prev) => [...prev, userMessage]);
-
-        const messageToSend = inputMessage;
+        const textToSend = inputMessage;
         setInputMessage("");
 
-        const aiReply = await generateResponse(messageToSend);
+        const aiReply = await generateResponse(textToSend);
 
         const buddyMessage = {
             id: Date.now() + 1,
@@ -103,6 +114,7 @@ const StudyBuddyChat = ({ userId }) => {
         setMessages((prev) => [...prev, buddyMessage]);
     };
 
+    /* Press Enter to send */
     const handleKeyPress = (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
@@ -114,7 +126,10 @@ const StudyBuddyChat = ({ userId }) => {
         <>
             {/* Floating Toggle Button */}
             {!isOpen && (
-                <div className="study-buddy-toggle" onClick={() => setIsOpen(true)}>
+                <div
+                    className="study-buddy-toggle"
+                    onClick={() => setIsOpen(true)}
+                >
                     <MessageCircle size={24} />
                     <span className="toggle-text">Study Buddy</span>
                     <div className="notification-dot"></div>
@@ -130,14 +145,22 @@ const StudyBuddyChat = ({ userId }) => {
                             <Bot size={20} />
                             <div>
                                 <h3>Study Buddy</h3>
-                                <span className="status">Online • Ready to help!</span>
+                                <span className="status">
+                                    Online • Ready to help!
+                                </span>
                             </div>
                         </div>
                         <div className="header-actions">
-                            <button onClick={() => setIsOpen(false)} className="header-btn">
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                className="header-btn"
+                            >
                                 <Minimize2 size={16} />
                             </button>
-                            <button onClick={() => setIsOpen(false)} className="header-btn">
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                className="header-btn"
+                            >
                                 <X size={16} />
                             </button>
                         </div>
@@ -146,18 +169,31 @@ const StudyBuddyChat = ({ userId }) => {
                     {/* Messages */}
                     <div className="chat-messages">
                         {messages.map((msg) => (
-                            <div key={msg.id} className={`message ${msg.sender}`}>
+                            <div
+                                key={msg.id}
+                                className={`message ${msg.sender}`}
+                            >
                                 <div className="message-avatar">
-                                    {msg.sender === "buddy" ? <Bot size={16} /> : <User size={16} />}
+                                    {msg.sender === "buddy" ? (
+                                        <Bot size={16} />
+                                    ) : (
+                                        <User size={16} />
+                                    )}
                                 </div>
+
                                 <div className="message-content">
                                     <div className="message-text">
-                                        {msg.message.split("\n").map((line, idx) => (
-                                            <div key={idx}>{line}</div>
-                                        ))}
+                                        {msg.message
+                                            .split("\n")
+                                            .map((line, i) => (
+                                                <div key={i}>{line}</div>
+                                            ))}
                                     </div>
+
                                     <div className="message-time">
-                                        {new Date(msg.timestamp).toLocaleTimeString([], {
+                                        {new Date(
+                                            msg.timestamp
+                                        ).toLocaleTimeString([], {
                                             hour: "2-digit",
                                             minute: "2-digit",
                                         })}
@@ -166,7 +202,7 @@ const StudyBuddyChat = ({ userId }) => {
                             </div>
                         ))}
 
-                        {/* Typing Indicator */}
+                        {/* Typing indicator */}
                         {isTyping && (
                             <div className="message buddy">
                                 <div className="message-avatar">
@@ -185,15 +221,18 @@ const StudyBuddyChat = ({ userId }) => {
                         <div ref={messagesEndRef} />
                     </div>
 
-                    {/* Input */}
+                    {/* Input Section */}
                     <div className="chat-input">
                         <textarea
                             value={inputMessage}
-                            onChange={(e) => setInputMessage(e.target.value)}
+                            onChange={(e) =>
+                                setInputMessage(e.target.value)
+                            }
                             onKeyPress={handleKeyPress}
                             placeholder="Ask Study Buddy anything..."
                             className="input-field"
-                        />
+                        ></textarea>
+
                         <button
                             onClick={sendMessage}
                             disabled={!inputMessage.trim() || isTyping}
