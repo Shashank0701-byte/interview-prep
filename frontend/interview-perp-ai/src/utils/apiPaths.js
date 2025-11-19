@@ -52,7 +52,7 @@ export const API_PATHS = {
         GET_MASTERY_RATIO: "/api/analytics/mastery-ratio",
         GET_PROGRESS_STATS: "/api/analytics/progress-stats",
         GET_STREAK_DATA: "/api/analytics/streak-data",
-
+        // AI Interview Analytics
         GET_AI_INTERVIEW_INSIGHTS: "/api/analytics/ai-interview-insights",
         GET_COMMUNICATION_ANALYSIS: "/api/analytics/communication-analysis",
         GET_SKILL_GAP_ANALYSIS: "/api/analytics/skill-gap-analysis",
@@ -109,7 +109,6 @@ export const API_PATHS = {
         UPDATE_RATING: (id) => `/api/roadmap-sessions/${id}/rating`,
         UPDATE_PROGRESS: (id) => `/api/roadmap-sessions/${id}/progress`,
     },
-
     AI_INTERVIEW_COACH: {
         CREATE: "/api/ai-interview-coach/create",
         START: (sessionId) => `/api/ai-interview-coach/${sessionId}/start`,
@@ -119,11 +118,10 @@ export const API_PATHS = {
         VOICE_RESPONSE: (sessionId) => `/api/ai-interview-coach/${sessionId}/voice-response`,
         HISTORY: "/api/ai-interview-coach/history",
     },
-
     SALARY_NEGOTIATION: {
         START: "/api/salary-negotiation/start",
-        SEND_MESSAGE: (id) => `/api/salary-negotiation/${id}/message`,
-        FINALIZE: (id) => `/api/salary-negotiation/${id}/finalize`,
+        SEND_MESSAGE: (negotiationId) => `/api/salary-negotiation/${negotiationId}/message`,
+        FINALIZE: (negotiationId) => `/api/salary-negotiation/${negotiationId}/finalize`,
         HISTORY: "/api/salary-negotiation/history",
     },
 };
