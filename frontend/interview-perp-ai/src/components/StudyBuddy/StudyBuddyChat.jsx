@@ -16,36 +16,47 @@ const StudyBuddyChat = ({ userId }) => {
     ]);
     const [inputMessage, setInputMessage] = useState("");
     const [isTyping, setIsTyping] = useState(false);
+
     const messagesEndRef = useRef(null);
 
-    /* Scroll chat to bottom */
+    /* Scroll to bottom */
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
+    useEffect(scrollToBottom, [messages]);
 
+    /* -------------------------------------
+       HEALTH CHECK (with BASE_URL)
+    ------------------------------------- */
     useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
-
-    /* Health Check (fixed with BASE_URL) */
-    useEffect(() => {
-        checkAIServiceHealth().then((healthy) => {
+        checkAIHealth().then((healthy) => {
             console.log(
                 healthy
-                    ? "✅ AI Service Ready"
-                    : "⚠️ AI Offline (fallback enabled)"
+                    ? "✅ AI service ready"
+                    : "⚠️ AI offline → fallback enabled"
             );
         });
     }, []);
 
-    /* -------------------------------
-       AI CHAT REQUEST (FIXED)
-    --------------------------------*/
+    const checkAIHealth = async () => {
+        try {
+            const res = await fetch(`${BASE_URL}/api/ai/health`);
+            const data = await res.json();
+            return data.success && data.pipelineReady;
+        } catch (err) {
+            console.error("Health error:", err);
+            return false;
+        }
+    };
+
+    /* -------------------------------------
+       SEND MESSAGE TO BACKEND
+    ------------------------------------- */
     const generateResponse = async (userMessage) => {
         try {
             setIsTyping(true);
 
-            const response = await fetch(`${BASE_URL}/api/ai/chat`, {
+            const res = await fetch(`${BASE_URL}/api/ai/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -55,13 +66,11 @@ const StudyBuddyChat = ({ userId }) => {
                 }),
             });
 
-            const data = await response.json();
+            const data = await res.json();
 
-            if (data.success) {
-                return data.message;
-            }
+            if (data.success) return data.message;
 
-            return "Hmm... something went wrong. Try again!";
+            return "Hmm... something went wrong — try again!";
         } catch (err) {
             console.error("Chat API error:", err);
             return "AI is temporarily unavailable — please try again soon! ⚠️";
@@ -70,51 +79,36 @@ const StudyBuddyChat = ({ userId }) => {
         }
     };
 
-    /* -------------------------------
-       HEALTH CHECK (FIXED)
-    --------------------------------*/
-    const checkAIServiceHealth = async () => {
-        try {
-            const response = await fetch(`${BASE_URL}/api/ai/health`);
-            const health = await response.json();
-
-            return health.success && health.pipelineReady;
-        } catch (err) {
-            console.error("Health check failed:", err);
-            return false;
-        }
-    };
-
-    /* -------------------------------
-       Send Message Handler
-    --------------------------------*/
+    /* -------------------------------------
+       HANDLE SEND
+    ------------------------------------- */
     const sendMessage = async () => {
         if (!inputMessage.trim()) return;
 
-        const userMessage = {
+        const text = inputMessage;
+
+        const userMsg = {
             id: Date.now(),
             sender: "user",
-            message: inputMessage,
+            message: text,
             timestamp: new Date().toISOString(),
         };
 
-        setMessages((prev) => [...prev, userMessage]);
-        const textToSend = inputMessage;
+        setMessages((prev) => [...prev, userMsg]);
         setInputMessage("");
 
-        const aiReply = await generateResponse(textToSend);
+        const reply = await generateResponse(text);
 
-        const buddyMessage = {
+        const botMsg = {
             id: Date.now() + 1,
             sender: "buddy",
-            message: aiReply,
+            message: reply,
             timestamp: new Date().toISOString(),
         };
 
-        setMessages((prev) => [...prev, buddyMessage]);
+        setMessages((prev) => [...prev, botMsg]);
     };
 
-    /* Press Enter to send */
     const handleKeyPress = (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
@@ -124,12 +118,9 @@ const StudyBuddyChat = ({ userId }) => {
 
     return (
         <>
-            {/* Floating Toggle Button */}
+            {/* Floating Button */}
             {!isOpen && (
-                <div
-                    className="study-buddy-toggle"
-                    onClick={() => setIsOpen(true)}
-                >
+                <div className="study-buddy-toggle" onClick={() => setIsOpen(true)}>
                     <MessageCircle size={24} />
                     <span className="toggle-text">Study Buddy</span>
                     <div className="notification-dot"></div>
@@ -145,22 +136,15 @@ const StudyBuddyChat = ({ userId }) => {
                             <Bot size={20} />
                             <div>
                                 <h3>Study Buddy</h3>
-                                <span className="status">
-                                    Online • Ready to help!
-                                </span>
+                                <span className="status">Online • Ready to help!</span>
                             </div>
                         </div>
+
                         <div className="header-actions">
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="header-btn"
-                            >
+                            <button className="header-btn" onClick={() => setIsOpen(false)}>
                                 <Minimize2 size={16} />
                             </button>
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="header-btn"
-                            >
+                            <button className="header-btn" onClick={() => setIsOpen(false)}>
                                 <X size={16} />
                             </button>
                         </div>
@@ -169,31 +153,20 @@ const StudyBuddyChat = ({ userId }) => {
                     {/* Messages */}
                     <div className="chat-messages">
                         {messages.map((msg) => (
-                            <div
-                                key={msg.id}
-                                className={`message ${msg.sender}`}
-                            >
+                            <div key={msg.id} className={`message ${msg.sender}`}>
                                 <div className="message-avatar">
-                                    {msg.sender === "buddy" ? (
-                                        <Bot size={16} />
-                                    ) : (
-                                        <User size={16} />
-                                    )}
+                                    {msg.sender === "buddy" ? <Bot size={16} /> : <User size={16} />}
                                 </div>
 
                                 <div className="message-content">
                                     <div className="message-text">
-                                        {msg.message
-                                            .split("\n")
-                                            .map((line, i) => (
-                                                <div key={i}>{line}</div>
-                                            ))}
+                                        {msg.message.split("\n").map((line, i) => (
+                                            <div key={i}>{line}</div>
+                                        ))}
                                     </div>
 
                                     <div className="message-time">
-                                        {new Date(
-                                            msg.timestamp
-                                        ).toLocaleTimeString([], {
+                                        {new Date(msg.timestamp).toLocaleTimeString([], {
                                             hour: "2-digit",
                                             minute: "2-digit",
                                         })}
@@ -221,13 +194,11 @@ const StudyBuddyChat = ({ userId }) => {
                         <div ref={messagesEndRef} />
                     </div>
 
-                    {/* Input Section */}
+                    {/* Input box */}
                     <div className="chat-input">
                         <textarea
                             value={inputMessage}
-                            onChange={(e) =>
-                                setInputMessage(e.target.value)
-                            }
+                            onChange={(e) => setInputMessage(e.target.value)}
                             onKeyPress={handleKeyPress}
                             placeholder="Ask Study Buddy anything..."
                             className="input-field"

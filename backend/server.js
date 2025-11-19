@@ -1,3 +1,4 @@
+// ./server.js
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -31,20 +32,32 @@ const { generateInterviewQuestions } = require("./controllers/aiController");
 const app = express();
 const server = http.createServer(app);
 
-console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+const FRONTEND_URL = process.env.FRONTEND_URL || process.env.VITE_API_BASE_URL || null;
+console.log("FRONTEND_URL:", FRONTEND_URL);
 
 /* -------------------------
    CORS
 -------------------------- */
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:3000",
+  "https://interview-prep-karo.netlify.app",
+  FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
-    cors({
-        origin: [
-            "http://localhost:5173",
-            process.env.FRONTEND_URL,
-            "https://interview-prep-karo.netlify.app"
-        ].filter(Boolean),
-        credentials: true
-    })
+  cors({
+    origin: function (origin, cb) {
+      // allow requests with no origin (mobile apps, curl, postman)
+      if (!origin) return cb(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1) return cb(null, true);
+      return cb(new Error("CORS policy: origin not allowed"), false);
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
 );
 
 /* -------------------------
@@ -55,12 +68,13 @@ connectDB();
 /* -------------------------
    SOCKET.IO
 -------------------------- */
+const socketOrigins = FRONTEND_URL ? [FRONTEND_URL] : allowedOrigins;
 const io = socketIo(server, {
-    cors: {
-        origin: process.env.FRONTEND_URL,
-        methods: ["GET", "POST"],
-        credentials: true
-    }
+  cors: {
+    origin: socketOrigins,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
 });
 new StudyRoomSocket(io);
 
@@ -94,7 +108,7 @@ app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
 app.use("/api/feedback", feedbackRoutes);
 
 /* -------------------------
-   🧠 RAG AI ROUTES
+   RAG AI ROUTES
 -------------------------- */
 app.use("/api/ai", aiRoutes);
 
@@ -102,14 +116,18 @@ app.use("/api/ai", aiRoutes);
    HEALTH
 -------------------------- */
 app.get("/", (req, res) => {
-    res.json({ message: "Backend running", healthy: true, ts: Date.now() });
+  res.json({ message: "Backend running", healthy: true, ts: Date.now() });
 });
+
+app.get("/api/health", (req, res) =>
+  res.json({ message: "OK", status: "healthy", ts: Date.now() })
+);
 
 /* -------------------------
    404
 -------------------------- */
 app.use((req, res) => {
-    res.status(404).json({ error: "Route not found", path: req.originalUrl });
+  res.status(404).json({ error: "Route not found", path: req.originalUrl });
 });
 
 /* -------------------------

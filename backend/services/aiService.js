@@ -1,98 +1,120 @@
+// ./services/aiService.js
 const axios = require("axios");
 
 class AIService {
-    constructor(options = {}) {
-        this.baseURL =
-            options.baseURL ||
-            process.env.AI_BOT_URL ||
-            process.env.AI_SERVICE_URL;
+  constructor(options = {}) {
+    this.baseURL =
+      options.baseURL ||
+      process.env.AI_BOT_URL ||
+      process.env.AI_SERVICE_URL ||
+      "http://localhost:8001"; // fallback for local dev
 
-        if (!this.baseURL) {
-            throw new Error("❌ AI_BOT_URL missing in environment variables.");
-        }
+    this.timeout = options.timeout || 30000;
+    this.retries = options.retries ?? 3;
+    this.persona = process.env.STUDY_BUDDY_PERSONA || "friendly_study_buddy_v1";
 
-        this.timeout = options.timeout || 30000;
-        this.retries = options.retries || 3;
+    this.client = axios.create({
+      baseURL: this.baseURL,
+      timeout: this.timeout,
+      headers: { "Content-Type": "application/json" },
+    });
 
-        this.client = axios.create({
-            baseURL: this.baseURL,
-            timeout: this.timeout,
-            headers: { "Content-Type": "application/json" }
-        });
+    console.log(`🔗 AI Service initialized at: ${this.baseURL}`);
+  }
 
-        console.log(`🔗 AI Service initialized at: ${this.baseURL}`);
-    }
-
-    /* ------------------------- HEALTH ------------------------- */
-    async healthCheck() {
-        try {
-            const response = await this.client.get("/health");
-            return {
-                success: true,
-                status: response.data.status || "ok",
-                pipelineReady: response.data.pipeline_ready ?? true,
-                components: response.data.components || {}
-            };
-        } catch (err) {
-            return {
-                success: false,
-                status: "unhealthy",
-                error: err.message
-            };
-        }
-    }
-
-    /* ------------------------- CHAT ------------------------- */
-    async chat(message, userContext = {}) {
-        if (!message) throw new Error("Message is required");
-
-        const payload = { message, user_context: userContext };
-        let lastError;
-
-        for (let attempt = 1; attempt <= this.retries; attempt++) {
-            try {
-                const res = await this.client.post("/chat", payload);
-                return {
-                    success: true,
-                    response: res.data.response,
-                    timestamp: res.data.timestamp,
-                    contextDocs: res.data.context_docs,
-                    modelUsed: res.data.model_used
-                };
-            } catch (err) {
-                lastError = err;
-                if (attempt < this.retries)
-                    await new Promise(r => setTimeout(r, attempt * 1000));
-            }
-        }
-
-        throw new Error(lastError.message);
-    }
-
-    /* ------------------------- REMINDER ------------------------- */
-    async sendReminder(ctx = {}) {
-        const res = await this.client.post("/reminder", { user_context: ctx });
+  async _requestWithRetries(method, path, data = {}) {
+    let lastErr;
+    for (let attempt = 1; attempt <= this.retries; attempt++) {
+      try {
+        const res =
+          method === "get"
+            ? await this.client.get(path)
+            : await this.client.post(path, data);
         return res.data;
+      } catch (err) {
+        lastErr = err;
+        console.warn(
+          `AIService ${method.toUpperCase()} ${path} attempt ${attempt} failed: ${err.message}`
+        );
+        if (attempt < this.retries) {
+          await new Promise((r) => setTimeout(r, attempt * 500));
+        }
+      }
+    }
+    const message = lastErr?.message || "unknown error";
+    throw new Error(message);
+  }
+
+  /**
+   * Health check the upstream RAG service.
+   */
+  async healthCheck() {
+    try {
+      const data = await this._requestWithRetries("get", "/health");
+      // normalize
+      return {
+        success: true,
+        status: data.status ?? "ok",
+        pipelineReady: data.pipeline_ready ?? true,
+        components: data.components ?? {},
+      };
+    } catch (err) {
+      return { success: false, status: "unhealthy", error: err.message };
+    }
+  }
+
+  /**
+   * Chat call.
+   * userContext can include: userId, memory (array), persona overrides, etc.
+   */
+  async chat(message, userContext = {}) {
+    if (!message || typeof message !== "string") {
+      throw new Error("Message must be a non-empty string");
     }
 
-    /* ------------------------- CELEBRATE ------------------------- */
-    async celebrate(achievement, ctx = {}) {
-        const res = await this.client.post("/celebrate", {
-            achievement,
-            user_context: ctx
-        });
-        return res.data;
-    }
+    // Attach persona default (can be overridden in userContext)
+    const payload = {
+      query: message,
+      user_context: {
+        ...userContext,
+        persona: userContext.persona || this.persona,
+      },
+    };
 
-    /* ------------------------- FALLBACK ------------------------- */
-    getFallbackResponse() {
-        const msgs = [
-            "My AI engine is taking a short break — try again soon!",
-            "I'm temporarily offline. Give me a moment! 💭",
-            "Hang tight! I'm reconnecting to my knowledge base. ⚡"
-        ];
-        return msgs[Math.floor(Math.random() * msgs.length)];
-    }
+    const data = await this._requestWithRetries("post", "/chat", payload);
+
+    // normalize expected fields
+    return {
+      success: true,
+      response: data.response ?? data.text ?? "",
+      timestamp: data.timestamp ?? new Date().toISOString(),
+      contextDocs: data.context_docs ?? data.contextDocs ?? 0,
+      modelUsed: data.model_used ?? data.model ?? "unknown",
+      raw: data,
+    };
+  }
+
+  async sendReminder(userContext = {}) {
+    const payload = { user_context: userContext };
+    const data = await this._requestWithRetries("post", "/reminder", payload);
+    return { success: true, ...data };
+  }
+
+  async celebrate(achievement = {}, userContext = {}) {
+    const payload = { achievement, user_context: userContext };
+    const data = await this._requestWithRetries("post", "/celebrate", payload);
+    return { success: true, ...data };
+  }
+
+  getFallbackResponse() {
+    const fallbacks = [
+      "My AI brain is restarting — try again soon! ⚡",
+      "I'm temporarily offline — give me a moment!",
+      "The knowledge engine is warming up — try again!",
+      "Small delay! Ask again in a few seconds 😊",
+    ];
+    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+  }
 }
 
 module.exports = AIService;
