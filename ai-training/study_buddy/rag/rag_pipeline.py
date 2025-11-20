@@ -92,11 +92,11 @@ class RAGPipeline:
             raise
     
     def chat(self, query: str, user_context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-        """Main chat interface for the study buddy.
+        """Main chat interface for the study buddy with persistent memory support.
         
         Args:
             query: User query
-            user_context: User context information
+            user_context: User context information (includes persistent memory)
             
         Returns:
             Chat response with metadata
@@ -105,12 +105,11 @@ class RAGPipeline:
             return self._create_error_response("RAG pipeline not ready")
         
         try:
-            # Add to conversation history
-            self.conversation_history.append({
-                'type': 'user',
-                'content': query,
-                'timestamp': self._get_timestamp()
-            })
+            # Extract conversation memory from user context (persistent storage)
+            conversation_memory = []
+            if user_context and 'memory' in user_context:
+                conversation_memory = user_context['memory']
+                logger.info(f"Using {len(conversation_memory)} messages from persistent memory")
             
             # Retrieve relevant documents
             retrieved_docs = self.retriever.retrieve_with_context(
@@ -122,27 +121,14 @@ class RAGPipeline:
             # Determine if we should use fast model
             use_fast_model = self._should_use_fast_model(query)
             
-            # Generate response
+            # Generate response WITH conversation memory
             response = self.generator.generate_response(
                 query=query,
                 retrieved_docs=retrieved_docs,
                 user_context=user_context,
+                conversation_memory=conversation_memory,
                 use_fast_model=use_fast_model
             )
-            
-            # Add to conversation history
-            self.conversation_history.append({
-                'type': 'assistant',
-                'content': response['response'],
-                'timestamp': self._get_timestamp(),
-                'metadata': {
-                    'retrieved_docs': len(retrieved_docs),
-                    'model_used': response['model_used']
-                }
-            })
-            
-            # Limit conversation history
-            self._trim_conversation_history()
             
             return response
             

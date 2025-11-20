@@ -38,14 +38,16 @@ class Generator:
         query: str, 
         retrieved_docs: List[Dict[str, Any]], 
         user_context: Optional[Dict[str, Any]] = None,
+        conversation_memory: Optional[List[Dict[str, Any]]] = None,
         use_fast_model: bool = False
     ) -> Dict[str, Any]:
-        """Generate response using retrieved documents and user context.
+        """Generate response using retrieved documents, user context, and conversation memory.
         
         Args:
             query: User query
             retrieved_docs: Retrieved documents from RAG
             user_context: User context information
+            conversation_memory: Previous conversation messages for context
             use_fast_model: Whether to use fast model for quick responses
             
         Returns:
@@ -55,8 +57,8 @@ class Generator:
             # Build context from retrieved documents
             context = self._build_context(retrieved_docs)
             
-            # Create prompt
-            prompt = self._create_prompt(query, context, user_context)
+            # Create prompt with conversation memory
+            prompt = self._create_prompt(query, context, user_context, conversation_memory)
             
             # Choose model based on complexity
             model = self.fast_model_instance if use_fast_model else self.model
@@ -159,23 +161,39 @@ class Generator:
         
         return "\n\n".join(context_parts)
     
-    def _create_prompt(self, query: str, context: str, user_context: Optional[Dict[str, Any]]) -> str:
-        """Create prompt for response generation.
+    def _create_prompt(self, query: str, context: str, user_context: Optional[Dict[str, Any]], conversation_memory: Optional[List[Dict[str, Any]]] = None) -> str:
+        """Create prompt for response generation with conversation history.
         
         Args:
             query: User query
             context: Retrieved context
             user_context: User context information
+            conversation_memory: Previous conversation messages
             
         Returns:
             Generated prompt
         """
+        # Build conversation history section
+        history_section = ""
+        if conversation_memory and len(conversation_memory) > 0:
+            history_section = "\n\nRECENT CONVERSATION HISTORY:\n"
+            # Use last 10 messages for context
+            recent_messages = conversation_memory[-10:]
+            for msg in recent_messages:
+                role = msg.get('role', 'user')
+                text = msg.get('text', '')
+                if role == 'user':
+                    history_section += f"User: {text}\n"
+                elif role == 'assistant':
+                    history_section += f"Assistant: {text}\n"
+            history_section += "\n"
+        
         # Base prompt template
         prompt_template = """You are a Smart Study Buddy AI, a knowledgeable companion that helps users with interview preparation. You provide accurate, helpful information while being encouraging and supportive.
 
 CONTEXT FROM KNOWLEDGE BASE:
 {context}
-
+{history}
 USER INFORMATION:
 {user_info}
 
@@ -183,6 +201,7 @@ USER QUERY: {query}
 
 INSTRUCTIONS:
 - FIRST: Answer the user's question directly and accurately using the context provided
+- If the user is referencing previous conversation, use the conversation history to understand context
 - Provide clear, specific explanations with examples when helpful
 - Use the context information to give comprehensive, factual answers
 - THEN: Add encouragement and reference user progress when relevant
@@ -203,6 +222,7 @@ RESPONSE:"""
         
         return prompt_template.format(
             context=context,
+            history=history_section,
             user_info=user_info,
             query=query
         )

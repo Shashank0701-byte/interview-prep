@@ -17,6 +17,7 @@ const StudyBuddyChat = ({ userId }) => {
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   const messagesEndRef = useRef(null);
 
@@ -36,6 +37,45 @@ const StudyBuddyChat = ({ userId }) => {
       );
     });
   }, []);
+
+  // Load conversation history on mount
+  useEffect(() => {
+    const loadConversationHistory = async () => {
+      if (!userId || userId === "anonymous") {
+        console.log("Skipping history load for anonymous user");
+        return;
+      }
+
+      try {
+        setIsLoadingHistory(true);
+        const res = await fetch(`${BASE_URL}/api/ai/memory/${userId}`);
+        const data = await res.json();
+
+        if (data.success && data.memory && data.memory.length > 0) {
+          console.log(`📚 Loaded ${data.memory.length} previous messages`);
+
+          // Convert backend memory format to UI message format
+          const historicalMessages = data.memory.map((entry, idx) => ({
+            id: `history-${idx}-${Date.now()}`,
+            sender: entry.role === "user" ? "user" : "buddy",
+            message: entry.text,
+            timestamp: entry.ts || new Date().toISOString(),
+          }));
+
+          // Replace messages with welcome + history
+          setMessages([messages[0], ...historicalMessages]);
+        } else {
+          console.log("No previous conversation history found");
+        }
+      } catch (err) {
+        console.error("Failed to load conversation history:", err);
+      } finally {
+        setIsLoadingHistory(false);
+      }
+    };
+
+    loadConversationHistory();
+  }, [userId]);
 
   const checkAIHealth = async () => {
     try {
@@ -154,6 +194,19 @@ const StudyBuddyChat = ({ userId }) => {
 
           {/* Messages */}
           <div className="chat-messages">
+            {isLoadingHistory && (
+              <div className="message buddy">
+                <div className="message-avatar">
+                  <Bot size={16} />
+                </div>
+                <div className="message-content">
+                  <div className="message-text">
+                    Loading previous conversation...
+                  </div>
+                </div>
+              </div>
+            )}
+
             {messages.map((msg) => (
               <div key={msg.id} className={`message ${msg.sender}`}>
                 <div className="message-avatar">
