@@ -1,6 +1,8 @@
 // ./src/components/StudyBuddyChat/StudyBuddyChat.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { MessageCircle, Send, Bot, User, X, Minimize2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { BASE_URL } from "../../utils/apiPaths";
 import "./StudyBuddyChat.css";
 
@@ -20,12 +22,23 @@ const StudyBuddyChat = ({ userId }) => {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   const messagesEndRef = useRef(null);
+  const lastMessageRef = useRef(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // Smart scrolling logic
+  useEffect(() => {
+    if (messages.length === 0) return;
 
-  useEffect(scrollToBottom, [messages]);
+    const lastMsg = messages[messages.length - 1];
+
+    // If the last message is from the bot, scroll to its start so the user sees the beginning
+    if (lastMsg.sender === "buddy" && lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    // If it's from the user, scroll to the bottom to see the input area/response
+    else if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   // Health check on mount
   useEffect(() => {
@@ -207,8 +220,12 @@ const StudyBuddyChat = ({ userId }) => {
               </div>
             )}
 
-            {messages.map((msg) => (
-              <div key={msg.id} className={`message ${msg.sender}`}>
+            {messages.map((msg, index) => (
+              <div
+                key={msg.id}
+                className={`message ${msg.sender}`}
+                ref={index === messages.length - 1 ? lastMessageRef : null}
+              >
                 <div className="message-avatar">
                   {msg.sender === "buddy" ? (
                     <Bot size={16} />
@@ -219,9 +236,16 @@ const StudyBuddyChat = ({ userId }) => {
 
                 <div className="message-content">
                   <div className="message-text">
-                    {msg.message.split("\n").map((line, i) => (
-                      <div key={i}>{line}</div>
-                    ))}
+                    {msg.sender === "buddy" ? (
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        className="markdown-content"
+                      >
+                        {msg.message}
+                      </ReactMarkdown>
+                    ) : (
+                      msg.message
+                    )}
                   </div>
 
                   <div className="message-time">
