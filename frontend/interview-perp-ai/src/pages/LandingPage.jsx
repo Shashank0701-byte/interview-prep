@@ -28,14 +28,14 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="bg-[#FFFCEF] text-black" style={{ backgroundColor: '#FFFCEF', color: '#000000' }}>
-      <div className='w-full min-h-full bg-[#FFFCEF]' style={{ backgroundColor: '#FFFCEF' }}>
-        <div className='w-[500px] h-[500px] bg-amber-200/20 blur-[65px] absolute top-0 left-0' />
+    <div className="bg-[#FFFCEF] text-black overflow-x-hidden" style={{ backgroundColor: '#FFFCEF', color: '#000000' }}>
+      <div className='w-full min-h-full bg-[#FFFCEF] relative' style={{ backgroundColor: '#FFFCEF' }}>
+        <div className='w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-amber-200/20 blur-[65px] absolute top-0 left-0 pointer-events-none' />
         <div className='container mx-auto px-4 pt-6 pb-[200px] relative z-10'>
           {/* Header */}
           {/* Corrected: "items-center" and "mb-16" */}
-          <header className='flex justify-between items-center mb-16'>
-            <div className='text-xl font-bold' style={{ color: '#000000' }}>
+          <header className='flex justify-between items-center mb-12 md:mb-16'>
+            <div className='text-lg md:text-xl font-bold' style={{ color: '#000000' }}>
               Interview Prep AI
             </div>
             {/* Auth button */}
@@ -43,7 +43,7 @@ const LandingPage = () => {
               <ProfileInfoCard />
             ) : (
               <button
-                className='bg-gradient-to-r from-[#FF9324] to-[#e99a4b] text-sm font-semibold text-white px-7 py-2.5 rounded-full hover:bg-black hover:text-white border border-white transition-colors cursor-pointer'
+                className='bg-gradient-to-r from-[#FF9324] to-[#e99a4b] text-xs md:text-sm font-semibold text-white px-5 py-2 md:px-7 md:py-2.5 rounded-full hover:bg-black hover:text-white border border-white transition-colors cursor-pointer'
                 style={{
                   background: 'linear-gradient(to right, #FF9324, #e99a4b)',
                   color: '#ffffff',
@@ -63,7 +63,7 @@ const LandingPage = () => {
                   <LuSparkles />AI Powered
                 </div>
               </div>
-              <h1 className='text-4xl md:text-5xl lg:text-6xl font-medium mb-6 leading-tight' style={{ color: '#000000' }}>
+              <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium mb-6 leading-tight' style={{ color: '#000000' }}>
                 Ace Interviews with <br />
                 <span className='text-transparent bg-clip-text bg-[radial-gradient(circle,_#FF9324_0%,_#FCD760_100%)] bg-[length:200%_200%] animate-text-shine font-semibold'>
                   AI-Powered
