@@ -26,13 +26,10 @@ const aiInterviewCoachRoutes = require("./routes/aiInterviewCoachRoutes");
 const salaryNegotiationRoutes = require("./routes/salaryNegotiationRoutes");
 const feedbackRoutes = require("./routes/feedbackRoutes");
 
-const { protect } = require("./middlewares/authMiddleware");
-const { generateInterviewQuestions } = require("./controllers/aiController");
-
 const app = express();
 const server = http.createServer(app);
 
-const FRONTEND_URL = process.env.FRONTEND_URL || process.env.VITE_API_BASE_URL || null;
+const FRONTEND_URL = process.env.FRONTEND_URL || null;
 console.log("FRONTEND_URL:", FRONTEND_URL);
 
 /* -------------------------
@@ -48,10 +45,9 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: function (origin, cb) {
-      // allow requests with no origin (mobile apps, curl, postman)
-      if (!origin) return cb(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1) return cb(null, true);
+    origin(origin, cb) {
+      if (!origin) return cb(null, true); // Postman / curl / SSR etc.
+      if (allowedOrigins.includes(origin)) return cb(null, true);
       return cb(new Error("CORS policy: origin not allowed"), false);
     },
     credentials: true,
@@ -104,22 +100,19 @@ app.use("/api/roadmap-sessions", roadmapSessionRoutes);
 app.use("/api/study-rooms", studyRoomRoutes);
 app.use("/api/ai-interview-coach", aiInterviewCoachRoutes);
 app.use("/api/salary-negotiation", salaryNegotiationRoutes);
-app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
 app.use("/api/feedback", feedbackRoutes);
 
-/* -------------------------
-   RAG AI ROUTES
--------------------------- */
+// 🧠 RAG + legacy AI endpoints
 app.use("/api/ai", aiRoutes);
 
 /* -------------------------
    HEALTH
 -------------------------- */
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.json({ message: "Backend running", healthy: true, ts: Date.now() });
 });
 
-app.get("/api/health", (req, res) =>
+app.get("/api/health", (_req, res) =>
   res.json({ message: "OK", status: "healthy", ts: Date.now() })
 );
 
@@ -134,4 +127,6 @@ app.use((req, res) => {
    START SERVER
 -------------------------- */
 const PORT = process.env.PORT || 8000;
-server.listen(PORT, () => console.log(`🚀 Backend running on port ${PORT}`));
+server.listen(PORT, () =>
+  console.log(`🚀 Backend running on port ${PORT}`)
+);

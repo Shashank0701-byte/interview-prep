@@ -1,221 +1,226 @@
+// ./src/components/StudyBuddyChat/StudyBuddyChat.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { MessageCircle, Send, Bot, User, X, Minimize2 } from "lucide-react";
 import { BASE_URL } from "../../utils/apiPaths";
 import "./StudyBuddyChat.css";
 
 const StudyBuddyChat = ({ userId }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState([
-        {
-            id: 1,
-            sender: "buddy",
-            message:
-                "Hi there! 👋 I'm your Study Buddy! I'm here to help you with your interview prep journey. How are you feeling about your progress today?",
-            timestamp: new Date().toISOString(),
-        },
-    ]);
-    const [inputMessage, setInputMessage] = useState("");
-    const [isTyping, setIsTyping] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    {
+      id: 1,
+      sender: "buddy",
+      message:
+        "Hi there! 👋 I'm your Study Buddy! I'm here to help you with your interview prep journey. How are you feeling about your progress today?",
+      timestamp: new Date().toISOString(),
+    },
+  ]);
+  const [inputMessage, setInputMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
-    const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef(null);
 
-    /* Scroll to bottom */
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-    useEffect(scrollToBottom, [messages]);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-    /* -------------------------------------
-       HEALTH CHECK (with BASE_URL)
-    ------------------------------------- */
-    useEffect(() => {
-        checkAIHealth().then((healthy) => {
-            console.log(
-                healthy
-                    ? "✅ AI service ready"
-                    : "⚠️ AI offline → fallback enabled"
-            );
-        });
-    }, []);
+  useEffect(scrollToBottom, [messages]);
 
-    const checkAIHealth = async () => {
-        try {
-            const res = await fetch(`${BASE_URL}/api/ai/health`);
-            const data = await res.json();
-            return data.success && data.pipelineReady;
-        } catch (err) {
-            console.error("Health error:", err);
-            return false;
-        }
-    };
+  // Health check on mount
+  useEffect(() => {
+    checkAIHealth().then((healthy) => {
+      console.log(
+        healthy
+          ? "✅ AI service ready"
+          : "⚠️ AI offline → fallback enabled"
+      );
+    });
+  }, []);
 
-    /* -------------------------------------
-       SEND MESSAGE TO BACKEND
-    ------------------------------------- */
-    const generateResponse = async (userMessage) => {
-        try {
-            setIsTyping(true);
+  const checkAIHealth = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/ai/health`);
+      const data = await res.json();
+      return data.success && data.pipelineReady;
+    } catch (err) {
+      console.error("Health error:", err);
+      return false;
+    }
+  };
 
-            const res = await fetch(`${BASE_URL}/api/ai/chat`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: userMessage,
-                    userId: userId || "anonymous",
-                    sessionId: Date.now().toString(),
-                }),
-            });
+  const generateResponse = async (userMessage) => {
+    try {
+      setIsTyping(true);
 
-            const data = await res.json();
+      const res = await fetch(`${BASE_URL}/api/ai/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: userMessage,
+          userId: userId || "anonymous",
+          sessionId: Date.now().toString(),
+        }),
+      });
 
-            if (data.success) return data.message;
+      const data = await res.json();
 
-            return "Hmm... something went wrong — try again!";
-        } catch (err) {
-            console.error("Chat API error:", err);
-            return "AI is temporarily unavailable — please try again soon! ⚠️";
-        } finally {
-            setIsTyping(false);
-        }
-    };
+      if (data.success) {
+        return data.message;
+      }
 
-    /* -------------------------------------
-       HANDLE SEND
-    ------------------------------------- */
-    const sendMessage = async () => {
-        if (!inputMessage.trim()) return;
+      return "Hmm... something went wrong — try again!";
+    } catch (err) {
+      console.error("Chat API error:", err);
+      return "AI is temporarily unavailable — please try again soon! ⚠️";
+    } finally {
+      setIsTyping(false);
+    }
+  };
 
-        const text = inputMessage;
+  const sendMessage = async () => {
+    if (!inputMessage.trim()) return;
 
-        const userMsg = {
-            id: Date.now(),
-            sender: "user",
-            message: text,
-            timestamp: new Date().toISOString(),
-        };
+    const text = inputMessage;
 
-        setMessages((prev) => [...prev, userMsg]);
-        setInputMessage("");
-
-        const reply = await generateResponse(text);
-
-        const botMsg = {
-            id: Date.now() + 1,
-            sender: "buddy",
-            message: reply,
-            timestamp: new Date().toISOString(),
-        };
-
-        setMessages((prev) => [...prev, botMsg]);
+    const userMsg = {
+      id: Date.now(),
+      sender: "user",
+      message: text,
+      timestamp: new Date().toISOString(),
     };
 
-    const handleKeyPress = (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
+    setMessages((prev) => [...prev, userMsg]);
+    setInputMessage("");
+
+    const reply = await generateResponse(text);
+
+    const botMsg = {
+      id: Date.now() + 1,
+      sender: "buddy",
+      message: reply,
+      timestamp: new Date().toISOString(),
     };
 
-    return (
-        <>
-            {/* Floating Button */}
-            {!isOpen && (
-                <div className="study-buddy-toggle" onClick={() => setIsOpen(true)}>
-                    <MessageCircle size={24} />
-                    <span className="toggle-text">Study Buddy</span>
-                    <div className="notification-dot"></div>
+    setMessages((prev) => [...prev, botMsg]);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  return (
+    <>
+      {!isOpen && (
+        <div
+          className="study-buddy-toggle"
+          onClick={() => setIsOpen(true)}
+        >
+          <MessageCircle size={24} />
+          <span className="toggle-text">Study Buddy</span>
+          <div className="notification-dot"></div>
+        </div>
+      )}
+
+      {isOpen && (
+        <div className="study-buddy-chat">
+          {/* Header */}
+          <div className="chat-header">
+            <div className="header-info">
+              <Bot size={20} />
+              <div>
+                <h3>Study Buddy</h3>
+                <span className="status">Online • Ready to help!</span>
+              </div>
+            </div>
+
+            <div className="header-actions">
+              <button
+                className="header-btn"
+                onClick={() => setIsOpen(false)}
+              >
+                <Minimize2 size={16} />
+              </button>
+              <button
+                className="header-btn"
+                onClick={() => setIsOpen(false)}
+              >
+                <X size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* Messages */}
+          <div className="chat-messages">
+            {messages.map((msg) => (
+              <div key={msg.id} className={`message ${msg.sender}`}>
+                <div className="message-avatar">
+                  {msg.sender === "buddy" ? (
+                    <Bot size={16} />
+                  ) : (
+                    <User size={16} />
+                  )}
                 </div>
+
+                <div className="message-content">
+                  <div className="message-text">
+                    {msg.message.split("\n").map((line, i) => (
+                      <div key={i}>{line}</div>
+                    ))}
+                  </div>
+
+                  <div className="message-time">
+                    {new Date(msg.timestamp).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {isTyping && (
+              <div className="message buddy">
+                <div className="message-avatar">
+                  <Bot size={16} />
+                </div>
+                <div className="message-content">
+                  <div className="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
             )}
 
-            {/* Chat Window */}
-            {isOpen && (
-                <div className="study-buddy-chat">
-                    {/* Header */}
-                    <div className="chat-header">
-                        <div className="header-info">
-                            <Bot size={20} />
-                            <div>
-                                <h3>Study Buddy</h3>
-                                <span className="status">Online • Ready to help!</span>
-                            </div>
-                        </div>
+            <div ref={messagesEndRef} />
+          </div>
 
-                        <div className="header-actions">
-                            <button className="header-btn" onClick={() => setIsOpen(false)}>
-                                <Minimize2 size={16} />
-                            </button>
-                            <button className="header-btn" onClick={() => setIsOpen(false)}>
-                                <X size={16} />
-                            </button>
-                        </div>
-                    </div>
+          {/* Input */}
+          <div className="chat-input">
+            <textarea
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Ask Study Buddy anything..."
+              className="input-field"
+            ></textarea>
 
-                    {/* Messages */}
-                    <div className="chat-messages">
-                        {messages.map((msg) => (
-                            <div key={msg.id} className={`message ${msg.sender}`}>
-                                <div className="message-avatar">
-                                    {msg.sender === "buddy" ? <Bot size={16} /> : <User size={16} />}
-                                </div>
-
-                                <div className="message-content">
-                                    <div className="message-text">
-                                        {msg.message.split("\n").map((line, i) => (
-                                            <div key={i}>{line}</div>
-                                        ))}
-                                    </div>
-
-                                    <div className="message-time">
-                                        {new Date(msg.timestamp).toLocaleTimeString([], {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-
-                        {/* Typing indicator */}
-                        {isTyping && (
-                            <div className="message buddy">
-                                <div className="message-avatar">
-                                    <Bot size={16} />
-                                </div>
-                                <div className="message-content">
-                                    <div className="typing-indicator">
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        <div ref={messagesEndRef} />
-                    </div>
-
-                    {/* Input box */}
-                    <div className="chat-input">
-                        <textarea
-                            value={inputMessage}
-                            onChange={(e) => setInputMessage(e.target.value)}
-                            onKeyPress={handleKeyPress}
-                            placeholder="Ask Study Buddy anything..."
-                            className="input-field"
-                        ></textarea>
-
-                        <button
-                            onClick={sendMessage}
-                            disabled={!inputMessage.trim() || isTyping}
-                            className="send-button"
-                        >
-                            <Send size={18} />
-                        </button>
-                    </div>
-                </div>
-            )}
-        </>
-    );
+            <button
+              onClick={sendMessage}
+              disabled={!inputMessage.trim() || isTyping}
+              className="send-button"
+            >
+              <Send size={18} />
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default StudyBuddyChat;
