@@ -27,15 +27,8 @@ class DocumentProcessor:
         new_documents = []
         
         # Define new document files
-        new_doc_files = [
-            "advanced_algorithms.txt",
-            "system_design_interviews.txt", 
-            "behavioral_interview_mastery.txt",
-            "coding_interview_patterns.txt",
-            "company_specific_guides.txt",
-            "resume_optimization.txt",
-            "negotiation_strategies.txt"
-        ]
+        # Dynamically find all .txt files in the directory
+        new_doc_files = [f.name for f in self.new_docs_dir.glob("*.txt")]
         
         for doc_file in new_doc_files:
             doc_path = self.new_docs_dir / doc_file

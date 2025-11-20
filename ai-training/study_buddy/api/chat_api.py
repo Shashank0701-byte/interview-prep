@@ -286,6 +286,21 @@ class ChatAPI:
                 data = json.load(open(reminders))
                 documents.extend(self._convert_reminders_data(data))
 
+            # enhanced training data
+            enhanced_data = data_dir / "processed" / "enhanced_training_data.json"
+            if enhanced_data.exists():
+                try:
+                    data = json.load(open(enhanced_data, encoding='utf-8'))
+                    # Map chunk_id to id for vector store
+                    for item in data:
+                        if 'id' not in item and 'chunk_id' in item:
+                            item['id'] = item['chunk_id']
+                    
+                    documents.extend(data)
+                    logger.info(f"Loaded {len(data)} enhanced training documents")
+                except Exception as e:
+                    logger.error(f"Error loading enhanced data: {e}")
+
             if documents:
                 self.rag_pipeline.add_documents(documents)
                 logger.info(f"Loaded {len(documents)} documents into RAG")
