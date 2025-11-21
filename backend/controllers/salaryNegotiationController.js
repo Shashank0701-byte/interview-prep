@@ -379,9 +379,9 @@ Be ${personality.tone}. Use Indian salary terminology (CTC, LPA, fixed vs variab
         const bonusChange = newOffer.signingBonus - lastOffer.signingBonus;
 
         const improved = baseChange > 0 || equityChange > 0 || bonusChange > 0;
-        const matched = context.counterOffer &&
-            newOffer.baseSalary >= context.counterOffer.baseSalary &&
-            newOffer.equity >= context.counterOffer.equity;
+
+        // Check if user actually gave a number
+        const userGaveNumber = context.counterOffer || /\d/.test(context.userMessage);
 
         prompt = `You are ${negotiation.recruiterName}, a ${personality.tone} recruiter for ${negotiation.companyName}. 
 The candidate just said: "${context.userMessage}"
@@ -399,12 +399,16 @@ HERE IS YOUR NEW OFFICIAL OFFER (You MUST stick to these numbers):
 
 INSTRUCTIONS:
 1. Acknowledge their points.
-2. State clearly whether you could match their request or not.
-   - If you improved the offer: Explain WHY you could improve it (e.g., "Given your experience...", "We really want you on board...").
-   - If you could NOT match fully: Explain WHY (e.g., "This is the top of our band for this level", "We have strict equity policies", "Internal parity with other engineers").
-   - If you didn't move at all: Be firm but polite (e.g., "We believe this offer is very competitive given the market...").
-3. Present the new numbers clearly.
-4. Ask for their thoughts.
+2. CRITICAL: If the user did NOT provide a specific number or expectation in their message, you MUST ask them: "What are you considering to be a good salary?" or "What number do you have in mind?".
+3. If they DID provide a number (or if you are making a counter-offer):
+   - State clearly whether you could match their request or not.
+   - If you improved the offer: Explain WHY (e.g., "We really want you...", "We moved funds from...").
+   - If you could NOT match fully: You MUST give a specific reason. Examples:
+     * "This exceeds the band for this level."
+     * "We have to maintain internal equity with the team."
+     * "Our budget for this role is capped at [Amount]."
+   - If you didn't move at all: Be firm but polite. Explain that the current offer is competitive based on market data.
+4. Present the new numbers clearly.
 
 Tone: ${personality.tone}.
 ${personality.pushback > 0.7 ? 'Be tough. Emphasize that budget is tight.' : 'Be collaborative.'}
@@ -495,7 +499,11 @@ function generateCounterOffer(negotiation, userCounterOffer, analysis, personali
         }
     }
 
-    if (!userCounterOffer) return lastOffer; // No counter from user, keep same offer
+    // If no explicit counter offer, try to parse from text? 
+    // For now, if no counter offer, we assume they just want "more" but didn't specify, 
+    // so we might make a small gesture if they were polite, or stay firm.
+    // But to be safe, if no number is given, we usually don't move.
+    if (!userCounterOffer) return lastOffer;
 
     // Calculate negotiation room (max budget is typically p75 or p90 depending on personality)
     const maxBudget = personality.openness > 0.7 ? negotiation.marketData.p90 : negotiation.marketData.p75;

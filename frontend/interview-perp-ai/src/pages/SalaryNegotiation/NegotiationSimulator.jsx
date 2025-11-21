@@ -392,8 +392,8 @@ const NegotiationSimulator = () => {
                                                 className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                                             >
                                                 <div className={`max-w-[80%] ${msg.sender === 'user'
-                                                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white'
-                                                        : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white'
+                                                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white'
+                                                    : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white'
                                                     } rounded-2xl p-4 shadow-md`}>
                                                     <div className="text-sm font-semibold mb-2">
                                                         {msg.sender === 'user' ? 'You' : 'Recruiter'}
@@ -411,6 +411,20 @@ const NegotiationSimulator = () => {
                                                 </div>
                                             </div>
                                         ))}
+
+                                        {/* Recruiter Typing/Reviewing Indicator */}
+                                        {sending && (
+                                            <div className="flex justify-start animate-pulse">
+                                                <div className="max-w-[80%] bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white rounded-2xl p-4 shadow-md">
+                                                    <div className="text-sm font-semibold mb-2">Recruiter</div>
+                                                    <div className="text-sm italic flex items-center gap-2">
+                                                        <LuLoader className="w-4 h-4 animate-spin" />
+                                                        Reviewing your request with the team...
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
                                         <div ref={messagesEndRef} />
                                     </div>
 
