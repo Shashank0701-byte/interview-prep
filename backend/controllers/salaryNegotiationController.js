@@ -361,8 +361,8 @@ exports.getNegotiationHistory = async (req, res) => {
 };
 // Helper: Generate recruiter message using AI
 async function generateRecruiterMessage(type, negotiation, personality, context) {
-    // Use gemini-1.5-flash for better performance and reliability
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    // Reverting to gemini-pro as gemini-1.5-flash was not found
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
     let prompt = '';
 
