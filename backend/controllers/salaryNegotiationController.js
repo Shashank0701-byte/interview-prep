@@ -402,17 +402,16 @@ INSTRUCTIONS:
 2. CRITICAL: If the user did NOT provide a specific number or expectation in their message, you MUST ask them: "What are you considering to be a good salary?" or "What number do you have in mind?".
 3. If they DID provide a number (or if you are making a counter-offer):
    - State clearly whether you could match their request or not.
-   - If you improved the offer: Explain WHY (e.g., "We really want you...", "We moved funds from...").
-   - If you could NOT match fully: You MUST give a specific reason. Examples:
-     * "This exceeds the band for this level."
-     * "We have to maintain internal equity with the team."
-     * "Our budget for this role is capped at [Amount]."
-   - If you didn't move at all: Be firm but polite. Explain that the current offer is competitive based on market data.
+   - **PROVIDE DETAILED REASONING based on the company type:**
+     * If this is a **Startup**: Talk about "runway", "equity upside", "future growth", or "we are all building this together". Explain that cash is tight but equity is the real value.
+     * If this is a **Large Company/MNC**: Talk about "salary bands", "internal parity", "HR policies", or "standard grids". Explain that you cannot break the structure for one person.
+   - If you improved the offer: Explain specifically what changed (e.g., "I spoke to the VP and got approval for...", "We moved some signing bonus budget to base...").
+   - If you didn't move at all: Be firm but polite. Explain that the current offer is competitive based on market data and the company's specific compensation philosophy.
 4. Present the new numbers clearly.
 
 Tone: ${personality.tone}.
 ${personality.pushback > 0.7 ? 'Be tough. Emphasize that budget is tight.' : 'Be collaborative.'}
-Use Indian salary terminology (CTC, LPA). ${isEmail ? 'Keep it under 150 words.' : 'Keep it under 100 words.'}`;
+Use Indian salary terminology (CTC, LPA). ${isEmail ? 'Keep it under 200 words.' : 'Keep it under 150 words.'} Make the explanation feel real and educational for the candidate.`;
     }
 
     try {
@@ -489,7 +488,7 @@ function analyzeUserMessage(message, counterOffer, negotiation) {
 }
 
 // Helper: Generate counter-offer from recruiter
-function generateCounterOffer(negotiation, userCounterOffer, analysis, personality) {
+function generateCounterOffer(negotiation, userCounterOffer, analysis, personality, userMessage = '') {
     // Get the absolute latest offer from history
     let lastOffer = negotiation.initialOffer;
     for (let i = negotiation.conversationHistory.length - 1; i >= 0; i--) {
@@ -499,11 +498,36 @@ function generateCounterOffer(negotiation, userCounterOffer, analysis, personali
         }
     }
 
-    // If no explicit counter offer, try to parse from text? 
-    // For now, if no counter offer, we assume they just want "more" but didn't specify, 
-    // so we might make a small gesture if they were polite, or stay firm.
-    // But to be safe, if no number is given, we usually don't move.
-    if (!userCounterOffer) return lastOffer;
+    let requestedBase = null;
+    let requestedEquity = null;
+    let requestedBonus = null;
+
+    // 1. Try to get values from structured counter offer
+    if (userCounterOffer) {
+        requestedBase = userCounterOffer.baseSalary;
+        requestedEquity = userCounterOffer.equity;
+        requestedBonus = userCounterOffer.signingBonus;
+    }
+    // 2. If no structured offer, try to parse from text
+    else if (userMessage) {
+        // Look for patterns like "20 LPA", "20 lakhs", "20L"
+        // We assume the first number mentioned with these units is the base salary request
+        const baseMatch = userMessage.match(/(\d+(?:\.\d+)?)\s*(?:lpa|lakhs?|l)\b/i);
+        if (baseMatch) {
+            // Convert to absolute number (assuming input is in Lakhs)
+            requestedBase = parseFloat(baseMatch[1]) * 100000;
+        }
+    }
+
+    // If we still have no request, we can't negotiate effectively, so we hold the line
+    if (!requestedBase && !requestedEquity && !requestedBonus) {
+        return lastOffer;
+    }
+
+    // Use current values if request is missing specific components
+    requestedBase = requestedBase || lastOffer.baseSalary;
+    requestedEquity = requestedEquity || lastOffer.equity;
+    requestedBonus = requestedBonus || lastOffer.signingBonus;
 
     // Calculate negotiation room (max budget is typically p75 or p90 depending on personality)
     const maxBudget = personality.openness > 0.7 ? negotiation.marketData.p90 : negotiation.marketData.p75;
@@ -519,8 +543,6 @@ function generateCounterOffer(negotiation, userCounterOffer, analysis, personali
 
     // Calculate potential new base
     const currentBase = lastOffer.baseSalary;
-    const requestedBase = userCounterOffer.baseSalary || currentBase;
-
     let newBase = currentBase;
 
     if (requestedBase > currentBase) {
@@ -539,20 +561,20 @@ function generateCounterOffer(negotiation, userCounterOffer, analysis, personali
 
     // Handle Equity and Bonus
     let newEquity = lastOffer.equity;
-    if (userCounterOffer.equity > lastOffer.equity) {
+    if (requestedEquity > lastOffer.equity) {
         // Equity is harder to move, usually fixed pools
-        newEquity = lastOffer.equity + ((userCounterOffer.equity - lastOffer.equity) * 0.2 * willingnessToMove);
+        newEquity = lastOffer.equity + ((requestedEquity - lastOffer.equity) * 0.2 * willingnessToMove);
     }
 
     let newBonus = lastOffer.signingBonus;
-    if (userCounterOffer.signingBonus > lastOffer.signingBonus) {
+    if (requestedBonus > lastOffer.signingBonus) {
         // Signing bonus is often used as a lever when base can't move
         const baseGap = requestedBase - newBase;
         if (baseGap > 0) {
             // Compensate for missing base with one-time bonus
             newBonus += baseGap * 0.5;
         }
-        newBonus += (userCounterOffer.signingBonus - lastOffer.signingBonus) * 0.3 * willingnessToMove;
+        newBonus += (requestedBonus - lastOffer.signingBonus) * 0.3 * willingnessToMove;
     }
 
     return {
