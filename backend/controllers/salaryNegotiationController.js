@@ -295,7 +295,47 @@ exports.sendMessage = async (req, res) => {
     }
 };
 
-// ... (finalizeNegotiation and getNegotiationHistory remain unchanged) ...
+// Accept or reject offer
+exports.finalizeNegotiation = async (req, res) => {
+    try {
+        const { negotiationId } = req.params;
+        const { action, finalOffer } = req.body; // action: 'accept', 'reject', 'walk-away'
+
+        const negotiation = await SalaryNegotiation.findOne({
+            _id: negotiationId,
+            user: req.user._id
+        });
+
+        if (!negotiation) {
+            return res.status(404).json({ success: false, message: 'Negotiation not found' });
+        }
+
+        negotiation.status = action === 'accept' ? 'accepted' : action === 'reject' ? 'rejected' : 'walked-away';
+        negotiation.finalOffer = finalOffer;
+        negotiation.completedAt = new Date();
+        negotiation.duration = Math.round((negotiation.completedAt - negotiation.startedAt) / 1000);
+
+        // Calculate final performance
+        const improvement = negotiation.calculateImprovement();
+        negotiation.performance.improvementGained = improvement;
+        negotiation.performance.confidenceScore = calculateConfidenceScore(negotiation);
+        negotiation.performance.finalResult = getFinalResult(negotiation, improvement);
+
+        await negotiation.save();
+
+        // Generate detailed feedback
+        const feedback = generateFeedback(negotiation);
+
+        res.json({
+            success: true,
+            summary: negotiation.getSummary(),
+            feedback
+        });
+    } catch (error) {
+        console.error('Error finalizing negotiation:', error);
+        res.status(500).json({ success: false, message: 'Failed to finalize negotiation' });
+    }
+};
 
 // Helper: Generate recruiter message using AI
 async function generateRecruiterMessage(type, negotiation, personality, context) {
