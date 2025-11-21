@@ -336,18 +336,42 @@ exports.finalizeNegotiation = async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to finalize negotiation' });
     }
 };
+// Get user's negotiation history
+exports.getNegotiationHistory = async (req, res) => {
+    try {
+        const negotiations = await SalaryNegotiation.find({ user: req.user._id })
+            .sort({ createdAt: -1 })
+            .limit(20);
 
+        const summary = negotiations.map(n => n.getSummary());
+
+        res.json({
+            success: true,
+            negotiations: summary,
+            stats: {
+                totalNegotiations: negotiations.length,
+                averageImprovement: negotiations.reduce((sum, n) => sum + parseFloat(n.calculateImprovement() || 0), 0) / (negotiations.length || 1),
+                acceptedOffers: negotiations.filter(n => n.status === 'accepted').length
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching negotiation history:', error);
+        res.status(500).json({ success: false, message: 'Failed to fetch history' });
+    }
+};
 // Helper: Generate recruiter message using AI
 async function generateRecruiterMessage(type, negotiation, personality, context) {
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    // Use gemini-1.5-flash for better performance and reliability
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     let prompt = '';
 
-    if (type === 'opening') {
-        const isNoticePeriod = negotiation.scenario === 'notice-period-buyout';
-        const isEmail = negotiation.communicationMode === 'email';
+    try {
+        if (type === 'opening') {
+            const isNoticePeriod = negotiation.scenario === 'notice-period-buyout';
+            const isEmail = negotiation.communicationMode === 'email';
 
-        prompt = `You are ${negotiation.recruiterName}, a ${personality.tone} recruiter for ${negotiation.companyName} in India. 
+            prompt = `You are ${negotiation.recruiterName}, a ${personality.tone} recruiter for ${negotiation.companyName} in India. 
 Generate an opening ${isEmail ? 'email' : 'message'} for a ${isNoticePeriod ? 'notice period buyout' : 'salary'} negotiation with a ${negotiation.level} ${negotiation.role} in ${negotiation.location}.
 
 ${isEmail ? `Format as a professional email with:
@@ -368,22 +392,22 @@ ${isNoticePeriod ? `- Current Notice Period: ${negotiation.initialOffer.noticePe
 
 ${isNoticePeriod ? 'Mention that you need them to join quickly and are willing to discuss notice period buyout options.' : ''}
 Be ${personality.tone}. Use Indian salary terminology (CTC, LPA, fixed vs variable). ${isEmail ? 'Keep it under 150 words.' : 'Keep it under 100 words.'} Make it realistic and professional.`;
-    } else {
-        const lastOffer = negotiation.conversationHistory[negotiation.conversationHistory.length - 1].offer;
-        const isEmail = negotiation.communicationMode === 'email';
-        const newOffer = context.newOffer; // This is the offer we MUST present
+        } else {
+            const lastOffer = negotiation.conversationHistory[negotiation.conversationHistory.length - 1].offer;
+            const isEmail = negotiation.communicationMode === 'email';
+            const newOffer = context.newOffer; // This is the offer we MUST present
 
-        // Calculate changes to explain them
-        const baseChange = newOffer.baseSalary - lastOffer.baseSalary;
-        const equityChange = newOffer.equity - lastOffer.equity;
-        const bonusChange = newOffer.signingBonus - lastOffer.signingBonus;
+            // Calculate changes to explain them
+            const baseChange = newOffer.baseSalary - lastOffer.baseSalary;
+            const equityChange = newOffer.equity - lastOffer.equity;
+            const bonusChange = newOffer.signingBonus - lastOffer.signingBonus;
 
-        const improved = baseChange > 0 || equityChange > 0 || bonusChange > 0;
+            const improved = baseChange > 0 || equityChange > 0 || bonusChange > 0;
 
-        // Check if user actually gave a number
-        const userGaveNumber = context.counterOffer || /\d/.test(context.userMessage);
+            // Check if user actually gave a number
+            const userGaveNumber = context.counterOffer || /\d/.test(context.userMessage);
 
-        prompt = `You are ${negotiation.recruiterName}, a ${personality.tone} recruiter for ${negotiation.companyName}. 
+            prompt = `You are ${negotiation.recruiterName}, a ${personality.tone} recruiter for ${negotiation.companyName}. 
 The candidate just said: "${context.userMessage}"
 
 ${context.counterOffer ? `They asked for:
@@ -412,13 +436,13 @@ INSTRUCTIONS:
 Tone: ${personality.tone}.
 ${personality.pushback > 0.7 ? 'Be tough. Emphasize that budget is tight.' : 'Be collaborative.'}
 Use Indian salary terminology (CTC, LPA). ${isEmail ? 'Keep it under 200 words.' : 'Keep it under 150 words.'} Make the explanation feel real and educational for the candidate.`;
-    }
+        }
 
-    try {
         const result = await model.generateContent(prompt);
         return result.response.text();
     } catch (error) {
         console.error('AI generation error:', error);
+        console.error('Prompt that failed:', prompt);
         // Fallback responses
         if (type === 'opening') {
             return `Hi! I'm excited to extend an offer for the ${negotiation.role} position. We're offering ₹${(negotiation.initialOffer.baseSalary / 100000).toFixed(2)} LPA fixed...`;
