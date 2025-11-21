@@ -23,7 +23,7 @@ const NegotiationSimulator = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const messagesEndRef = useRef(null);
-    
+
     const [negotiation, setNegotiation] = useState(null);
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
@@ -60,16 +60,16 @@ const NegotiationSimulator = () => {
             // Use relative URL if VITE_API_URL is not set, otherwise use the full URL
             const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
             const apiUrl = `${baseUrl}/api/salary-negotiation/start`;
-            
+
             console.log('Starting negotiation with config:', config);
             console.log('API URL:', apiUrl);
-            
+
             const response = await axios.post(
                 apiUrl,
                 config,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            
+
             console.log('Negotiation started:', response.data);
             setNegotiation(response.data.negotiation);
             setLoading(false);
@@ -83,12 +83,16 @@ const NegotiationSimulator = () => {
 
     const handleSendMessage = async () => {
         if (!userMessage.trim() && !showCounterOffer) return;
-        
+
         setSending(true);
         try {
             const token = localStorage.getItem('token');
             const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
-            const response = await axios.post(
+
+            // Create a minimum delay to simulate "reviewing" time (2.5 seconds)
+            const minDelay = new Promise(resolve => setTimeout(resolve, 2500));
+
+            const apiCall = axios.post(
                 `${baseUrl}/api/salary-negotiation/${negotiation.id}/message`,
                 {
                     message: userMessage,
@@ -100,7 +104,10 @@ const NegotiationSimulator = () => {
                 },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            
+
+            // Wait for both the API and the delay
+            const [response] = await Promise.all([apiCall, minDelay]);
+
             // Update conversation history
             setNegotiation(prev => ({
                 ...prev,
@@ -122,7 +129,7 @@ const NegotiationSimulator = () => {
                     }
                 ]
             }));
-            
+
             setAnalysis(response.data.analysis);
             setUserMessage('');
             setCounterOffer({ baseSalary: '', equity: '', signingBonus: '' });
@@ -151,7 +158,7 @@ const NegotiationSimulator = () => {
                 { action, finalOffer },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            
+
             navigate('/salary-negotiation/results', {
                 state: {
                     summary: response.data.summary,
@@ -187,7 +194,7 @@ const NegotiationSimulator = () => {
     const getMarketPosition = (salary) => {
         const market = negotiation?.marketData;
         if (!market) return null;
-        
+
         if (salary >= market.p90) return { label: 'Top 10%', color: 'emerald', percentile: 90 };
         if (salary >= market.p75) return { label: 'Top 25%', color: 'blue', percentile: 75 };
         if (salary >= market.p50) return { label: 'Above Median', color: 'indigo', percentile: 50 };
@@ -255,7 +262,7 @@ const NegotiationSimulator = () => {
                                     <LuDollarSign className="w-5 h-5 text-indigo-600" />
                                     Current Offer
                                 </h3>
-                                
+
                                 <div className="space-y-4">
                                     <div>
                                         <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">Base Salary</div>
@@ -263,7 +270,7 @@ const NegotiationSimulator = () => {
                                             {formatCurrency(currentOffer?.baseSalary || 0)}
                                         </div>
                                     </div>
-                                    
+
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">Equity</div>
@@ -278,7 +285,7 @@ const NegotiationSimulator = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
                                         <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">Total Compensation</div>
                                         <div className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
@@ -294,7 +301,7 @@ const NegotiationSimulator = () => {
                                     <LuActivity className="w-5 h-5 text-indigo-600" />
                                     Market Data
                                 </h3>
-                                
+
                                 {marketPosition && (
                                     <div className={`mb-4 p-3 bg-${marketPosition.color}-100 rounded-xl`}>
                                         <div className={`text-sm font-semibold text-${marketPosition.color}-800`}>
@@ -305,7 +312,7 @@ const NegotiationSimulator = () => {
                                         </div>
                                     </div>
                                 )}
-                                
+
                                 <div className="space-y-2 text-sm">
                                     <div className="flex justify-between">
                                         <span className="text-slate-600 dark:text-slate-300">90th percentile:</span>
@@ -333,7 +340,7 @@ const NegotiationSimulator = () => {
                                         <LuSparkles className="w-5 h-5 text-indigo-600" />
                                         AI Analysis
                                     </h3>
-                                    
+
                                     {analysis.tacticsDetected?.length > 0 && (
                                         <div className="mb-4">
                                             <div className="text-sm font-semibold text-emerald-700 mb-2">✓ Good Tactics</div>
@@ -347,7 +354,7 @@ const NegotiationSimulator = () => {
                                             </div>
                                         </div>
                                     )}
-                                    
+
                                     {analysis.suggestions?.length > 0 && (
                                         <div>
                                             <div className="text-sm font-semibold text-amber-700 mb-2">💡 Suggestions</div>
@@ -376,127 +383,126 @@ const NegotiationSimulator = () => {
                                     />
                                 </div>
                             ) : (
-                            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg h-[calc(100vh-12rem)] flex flex-col">
-                                {/* Messages */}
-                                <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                                    {negotiation.conversationHistory?.map((msg, idx) => (
-                                        <div
-                                            key={idx}
-                                            className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                                        >
-                                            <div className={`max-w-[80%] ${
-                                                msg.sender === 'user'
-                                                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white'
-                                                    : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white'
-                                            } rounded-2xl p-4 shadow-md`}>
-                                                <div className="text-sm font-semibold mb-2">
-                                                    {msg.sender === 'user' ? 'You' : 'Recruiter'}
-                                                </div>
-                                                <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                                                    {msg.message}
-                                                </div>
-                                                {msg.offer && (
-                                                    <div className="mt-3 pt-3 border-t border-white/20 text-sm space-y-1">
-                                                        <div>Base: {formatCurrency(msg.offer.baseSalary)}</div>
-                                                        {msg.offer.equity > 0 && <div>Equity: {formatCurrency(msg.offer.equity)}</div>}
-                                                        {msg.offer.signingBonus > 0 && <div>Signing: {formatCurrency(msg.offer.signingBonus)}</div>}
+                                <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg h-[calc(100vh-12rem)] flex flex-col">
+                                    {/* Messages */}
+                                    <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                                        {negotiation.conversationHistory?.map((msg, idx) => (
+                                            <div
+                                                key={idx}
+                                                className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                                            >
+                                                <div className={`max-w-[80%] ${msg.sender === 'user'
+                                                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white'
+                                                        : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white'
+                                                    } rounded-2xl p-4 shadow-md`}>
+                                                    <div className="text-sm font-semibold mb-2">
+                                                        {msg.sender === 'user' ? 'You' : 'Recruiter'}
                                                     </div>
-                                                )}
+                                                    <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                                                        {msg.message}
+                                                    </div>
+                                                    {msg.offer && (
+                                                        <div className="mt-3 pt-3 border-t border-white/20 text-sm space-y-1">
+                                                            <div>Base: {formatCurrency(msg.offer.baseSalary)}</div>
+                                                            {msg.offer.equity > 0 && <div>Equity: {formatCurrency(msg.offer.equity)}</div>}
+                                                            {msg.offer.signingBonus > 0 && <div>Signing: {formatCurrency(msg.offer.signingBonus)}</div>}
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                    <div ref={messagesEndRef} />
-                                </div>
+                                        ))}
+                                        <div ref={messagesEndRef} />
+                                    </div>
 
-                                {/* Input Area */}
-                                <div className="border-t border-slate-200 dark:border-slate-700 p-6">
-                                    {showCounterOffer && (
-                                        <div className="mb-4 p-4 bg-indigo-50 dark:bg-slate-700 rounded-xl">
-                                            <div className="text-sm font-semibold text-indigo-900 dark:text-indigo-300 mb-3">Counter Offer (in Lakhs)</div>
-                                            <div className="grid grid-cols-3 gap-3">
-                                                <div>
-                                                    <label className="text-xs text-slate-600 dark:text-slate-400 mb-1 block">Base (LPA)</label>
-                                                    <input
-                                                        type="number"
-                                                        placeholder="e.g. 12"
-                                                        value={counterOffer.baseSalary}
-                                                        onChange={(e) => setCounterOffer({ ...counterOffer, baseSalary: e.target.value })}
-                                                        className="w-full px-3 py-2 border border-indigo-200 dark:border-slate-600 dark:bg-slate-600 dark:text-white rounded-lg text-sm"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="text-xs text-slate-600 dark:text-slate-400 mb-1 block">Equity (LPA)</label>
-                                                    <input
-                                                        type="number"
-                                                        placeholder="e.g. 2"
-                                                        value={counterOffer.equity}
-                                                        onChange={(e) => setCounterOffer({ ...counterOffer, equity: e.target.value })}
-                                                        className="w-full px-3 py-2 border border-indigo-200 dark:border-slate-600 dark:bg-slate-600 dark:text-white rounded-lg text-sm"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="text-xs text-slate-600 dark:text-slate-400 mb-1 block">Signing (LPA)</label>
-                                                    <input
-                                                        type="number"
-                                                        placeholder="e.g. 1"
-                                                        value={counterOffer.signingBonus}
-                                                        onChange={(e) => setCounterOffer({ ...counterOffer, signingBonus: e.target.value })}
-                                                        className="w-full px-3 py-2 border border-indigo-200 dark:border-slate-600 dark:bg-slate-600 dark:text-white rounded-lg text-sm"
-                                                    />
+                                    {/* Input Area */}
+                                    <div className="border-t border-slate-200 dark:border-slate-700 p-6">
+                                        {showCounterOffer && (
+                                            <div className="mb-4 p-4 bg-indigo-50 dark:bg-slate-700 rounded-xl">
+                                                <div className="text-sm font-semibold text-indigo-900 dark:text-indigo-300 mb-3">Counter Offer (in Lakhs)</div>
+                                                <div className="grid grid-cols-3 gap-3">
+                                                    <div>
+                                                        <label className="text-xs text-slate-600 dark:text-slate-400 mb-1 block">Base (LPA)</label>
+                                                        <input
+                                                            type="number"
+                                                            placeholder="e.g. 12"
+                                                            value={counterOffer.baseSalary}
+                                                            onChange={(e) => setCounterOffer({ ...counterOffer, baseSalary: e.target.value })}
+                                                            className="w-full px-3 py-2 border border-indigo-200 dark:border-slate-600 dark:bg-slate-600 dark:text-white rounded-lg text-sm"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-xs text-slate-600 dark:text-slate-400 mb-1 block">Equity (LPA)</label>
+                                                        <input
+                                                            type="number"
+                                                            placeholder="e.g. 2"
+                                                            value={counterOffer.equity}
+                                                            onChange={(e) => setCounterOffer({ ...counterOffer, equity: e.target.value })}
+                                                            className="w-full px-3 py-2 border border-indigo-200 dark:border-slate-600 dark:bg-slate-600 dark:text-white rounded-lg text-sm"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-xs text-slate-600 dark:text-slate-400 mb-1 block">Signing (LPA)</label>
+                                                        <input
+                                                            type="number"
+                                                            placeholder="e.g. 1"
+                                                            value={counterOffer.signingBonus}
+                                                            onChange={(e) => setCounterOffer({ ...counterOffer, signingBonus: e.target.value })}
+                                                            className="w-full px-3 py-2 border border-indigo-200 dark:border-slate-600 dark:bg-slate-600 dark:text-white rounded-lg text-sm"
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
+                                        )}
+
+                                        <div className="flex gap-3">
+                                            <textarea
+                                                value={userMessage}
+                                                onChange={(e) => setUserMessage(e.target.value)}
+                                                onKeyPress={(e) => {
+                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                        e.preventDefault();
+                                                        handleSendMessage();
+                                                    }
+                                                }}
+                                                placeholder="Type your response... (Shift+Enter for new line)"
+                                                className="flex-1 px-4 py-3 border-2 border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-xl resize-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all"
+                                                rows="3"
+                                            />
+                                            <div className="flex flex-col gap-2">
+                                                <button
+                                                    onClick={handleSendMessage}
+                                                    disabled={sending || (!userMessage.trim() && !showCounterOffer)}
+                                                    className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                                >
+                                                    {sending ? <LuLoader className="w-5 h-5 animate-spin" /> : <LuSend className="w-5 h-5" />}
+                                                </button>
+                                                <button
+                                                    onClick={() => setShowCounterOffer(!showCounterOffer)}
+                                                    className="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-white rounded-xl font-semibold hover:bg-slate-200 dark:hover:bg-slate-600 transition-all text-sm"
+                                                >
+                                                    {showCounterOffer ? 'Cancel' : 'Counter'}
+                                                </button>
+                                            </div>
                                         </div>
-                                    )}
-                                    
-                                    <div className="flex gap-3">
-                                        <textarea
-                                            value={userMessage}
-                                            onChange={(e) => setUserMessage(e.target.value)}
-                                            onKeyPress={(e) => {
-                                                if (e.key === 'Enter' && !e.shiftKey) {
-                                                    e.preventDefault();
-                                                    handleSendMessage();
-                                                }
-                                            }}
-                                            placeholder="Type your response... (Shift+Enter for new line)"
-                                            className="flex-1 px-4 py-3 border-2 border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-xl resize-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all"
-                                            rows="3"
-                                        />
-                                        <div className="flex flex-col gap-2">
+
+                                        <div className="flex gap-3 mt-3">
                                             <button
-                                                onClick={handleSendMessage}
-                                                disabled={sending || (!userMessage.trim() && !showCounterOffer)}
-                                                className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                                onClick={handleAcceptOffer}
+                                                className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-all flex items-center justify-center gap-2"
                                             >
-                                                {sending ? <LuLoader className="w-5 h-5 animate-spin" /> : <LuSend className="w-5 h-5" />}
+                                                <LuCheck className="w-4 h-4" />
+                                                Accept Offer
                                             </button>
                                             <button
-                                                onClick={() => setShowCounterOffer(!showCounterOffer)}
-                                                className="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-white rounded-xl font-semibold hover:bg-slate-200 dark:hover:bg-slate-600 transition-all text-sm"
+                                                onClick={handleRejectOffer}
+                                                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-all flex items-center justify-center gap-2"
                                             >
-                                                {showCounterOffer ? 'Cancel' : 'Counter'}
+                                                <LuX className="w-4 h-4" />
+                                                Reject & Walk Away
                                             </button>
                                         </div>
-                                    </div>
-                                    
-                                    <div className="flex gap-3 mt-3">
-                                        <button
-                                            onClick={handleAcceptOffer}
-                                            className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-all flex items-center justify-center gap-2"
-                                        >
-                                            <LuCheck className="w-4 h-4" />
-                                            Accept Offer
-                                        </button>
-                                        <button
-                                            onClick={handleRejectOffer}
-                                            className="flex-1 px-4 py-2 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-all flex items-center justify-center gap-2"
-                                        >
-                                            <LuX className="w-4 h-4" />
-                                            Reject & Walk Away
-                                        </button>
                                     </div>
                                 </div>
-                            </div>
                             )}
                         </div>
                     </div>
