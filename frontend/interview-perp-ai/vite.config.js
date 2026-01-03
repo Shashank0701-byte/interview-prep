@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  server: {
+
+  // 🚨 Only proxy in local dev mode — NEVER in production
+  server: mode === 'development' ? {
     proxy: {
       '/api': {
         target: 'http://localhost:8000',
@@ -12,9 +13,11 @@ export default defineConfig({
         secure: false,
       }
     }
-  },
+  } : undefined,
+
   optimizeDeps: {
     include: ['pdfjs-dist']
   },
+
   assetsInclude: ['**/*.worker.js']
-})
+}))

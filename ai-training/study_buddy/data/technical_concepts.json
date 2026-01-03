@@ -1,0 +1,106 @@
+[
+  {
+    "id": "ds_array_basics",
+    "title": "Array Data Structure Fundamentals",
+    "content": "Arrays are contiguous memory locations storing elements of the same data type. Key characteristics: O(1) random access by index, O(n) insertion/deletion in middle, O(1) append (amortized). Common operations include traversal, searching, sorting. Arrays are cache-friendly due to spatial locality. Dynamic arrays (like Python lists, JavaScript arrays) automatically resize when capacity is exceeded.",
+    "metadata": {
+      "type": "technical_concept",
+      "category": "data_structures",
+      "difficulty": "beginner",
+      "topics": ["arrays", "memory", "time_complexity"],
+      "languages": ["python", "javascript", "java", "cpp"],
+      "interview_frequency": "very_high"
+    }
+  },
+  {
+    "id": "algo_binary_search",
+    "title": "Binary Search Algorithm",
+    "content": "Binary search efficiently finds elements in sorted arrays with O(log n) time complexity. Algorithm: Compare target with middle element, eliminate half the search space, repeat. Requirements: sorted input array. Implementation tips: handle integer overflow with mid = left + (right - left) / 2, be careful with boundary conditions. Variations include finding first/last occurrence, search in rotated arrays.",
+    "metadata": {
+      "type": "algorithm_explanation",
+      "category": "searching",
+      "difficulty": "beginner",
+      "topics": ["binary_search", "divide_conquer", "logarithmic_time"],
+      "languages": ["python", "java", "cpp"],
+      "interview_frequency": "very_high"
+    }
+  },
+  {
+    "id": "system_design_scalability",
+    "title": "System Design: Scalability Principles",
+    "content": "Scalability is the ability to handle increased load gracefully. Horizontal scaling (scale out): add more servers, better fault tolerance, more complex. Vertical scaling (scale up): upgrade hardware, simpler but limited. Key patterns: Load balancing distributes requests, Database sharding splits data, Caching reduces database load, CDNs serve static content globally. Consider CAP theorem: Consistency, Availability, Partition tolerance - choose two.",
+    "metadata": {
+      "type": "system_design",
+      "category": "scalability",
+      "difficulty": "intermediate",
+      "topics": ["horizontal_scaling", "load_balancing", "caching", "cap_theorem"],
+      "languages": ["general"],
+      "interview_frequency": "high"
+    }
+  },
+  {
+    "id": "oop_principles",
+    "title": "Object-Oriented Programming Principles",
+    "content": "Four pillars of OOP: 1) Encapsulation - bundling data and methods, hiding internal details. 2) Inheritance - creating new classes based on existing ones, promotes code reuse. 3) Polymorphism - same interface, different implementations, enables flexible code. 4) Abstraction - hiding complex implementation details, showing only essential features. Benefits include modularity, reusability, maintainability. Common patterns: Factory, Observer, Strategy.",
+    "metadata": {
+      "type": "programming_concept",
+      "category": "object_oriented",
+      "difficulty": "intermediate",
+      "topics": ["encapsulation", "inheritance", "polymorphism", "abstraction"],
+      "languages": ["java", "cpp", "python", "csharp"],
+      "interview_frequency": "high"
+    }
+  },
+  {
+    "id": "big_o_complexity",
+    "title": "Big O Notation and Time Complexity",
+    "content": "Big O describes the upper bound of algorithm performance as input size grows. Common complexities: O(1) constant - hash table lookup, O(log n) logarithmic - binary search, O(n) linear - array traversal, O(n log n) linearithmic - merge sort, O(n²) quadratic - nested loops, O(2^n) exponential - recursive fibonacci. Focus on worst-case scenario. Space complexity is equally important. Optimize for the bottleneck operation.",
+    "metadata": {
+      "type": "algorithm_analysis",
+      "category": "complexity_analysis",
+      "difficulty": "beginner",
+      "topics": ["time_complexity", "space_complexity", "algorithm_analysis"],
+      "languages": ["general"],
+      "interview_frequency": "very_high"
+    }
+  },
+  {
+    "id": "database_indexing",
+    "title": "Database Indexing Fundamentals",
+    "content": "Database indexes improve query performance by creating shortcuts to data. B-tree indexes: balanced tree structure, good for range queries, most common type. Hash indexes: O(1) lookup for equality, no range queries. Bitmap indexes: efficient for low-cardinality data. Trade-offs: faster reads vs slower writes, additional storage overhead. Choose indexed columns based on query patterns. Composite indexes for multi-column queries.",
+    "metadata": {
+      "type": "database_concept",
+      "category": "database_optimization",
+      "difficulty": "intermediate",
+      "topics": ["indexing", "btree", "query_optimization", "database_performance"],
+      "languages": ["sql"],
+      "interview_frequency": "high"
+    }
+  },
+  {
+    "id": "rest_api_design",
+    "title": "RESTful API Design Principles",
+    "content": "REST (Representational State Transfer) principles: 1) Stateless - each request contains all necessary information. 2) Resource-based URLs - /users/123, not /getUser?id=123. 3) HTTP methods - GET (read), POST (create), PUT (update), DELETE (remove). 4) Standard status codes - 200 OK, 201 Created, 400 Bad Request, 404 Not Found, 500 Server Error. 5) JSON for data exchange. Best practices: versioning (/v1/), pagination, filtering, proper error handling.",
+    "metadata": {
+      "type": "api_design",
+      "category": "web_development",
+      "difficulty": "intermediate",
+      "topics": ["rest", "http_methods", "api_design", "web_services"],
+      "languages": ["general"],
+      "interview_frequency": "high"
+    }
+  },
+  {
+    "id": "async_programming",
+    "title": "Asynchronous Programming Concepts",
+    "content": "Asynchronous programming allows non-blocking execution. Key concepts: Callbacks - functions passed as arguments, can lead to callback hell. Promises - represent future values, chainable with .then(). Async/await - syntactic sugar for promises, makes async code look synchronous. Event loop - manages execution of async operations. Benefits: better resource utilization, improved user experience, handling I/O operations efficiently. Common in JavaScript, Python asyncio, C# async/await.",
+    "metadata": {
+      "type": "programming_concept",
+      "category": "concurrency",
+      "difficulty": "intermediate",
+      "topics": ["async_await", "promises", "callbacks", "event_loop"],
+      "languages": ["javascript", "python", "csharp"],
+      "interview_frequency": "high"
+    }
+  }
+]

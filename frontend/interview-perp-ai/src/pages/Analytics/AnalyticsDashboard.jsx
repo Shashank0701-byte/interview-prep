@@ -308,18 +308,12 @@ const AnalyticsDashboard = () => {
                 {isLoading ? (
                     <div className="text-center py-16">
                         <div className="space-y-6">
-                            <div className="relative mx-auto w-20 h-20">
-                                <div className="animate-spin rounded-full h-20 w-20 border-4 border-blue-200 border-t-blue-600"></div>
-                                <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-indigo-400 animate-spin" style={{animationDelay: '0.2s', animationDuration: '2s'}}></div>
+                            <div className="relative mx-auto w-16 h-16">
+                                <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 dark:border-slate-700 border-t-gray-600 dark:border-t-slate-400"></div>
                             </div>
                             <div className="space-y-3">
-                                <p className="text-xl font-semibold text-gray-800">Preparing your progress insights...</p>
-                                <p className="text-gray-600">We're gathering your learning data with care</p>
-                                <div className="flex items-center justify-center gap-1 mt-4">
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                                    <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                                    <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                                </div>
+                                <p className="text-xl font-semibold text-gray-900 dark:text-white">Loading analytics...</p>
+                                <p className="text-gray-600 dark:text-gray-400">Gathering your progress data</p>
                             </div>
                         </div>
                     </div>
@@ -336,56 +330,56 @@ const AnalyticsDashboard = () => {
                             ) : (
                                 <div className="space-y-8">
                                     {/* Progress Rings Section */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                        <div className="bg-white p-6 rounded-3xl shadow-lg border border-gray-100/50 hover:shadow-xl transition-all duration-500">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-all duration-200">
                                             <ProgressRing 
                                                 progress={progressStats.overallProgress} 
-                                                color="emerald"
+                                                color="gray"
                                                 label="Overall Progress"
-                                                size={140}
+                                                size={120}
                                             />
                                         </div>
                                         
-                                        <div className="bg-white p-6 rounded-3xl shadow-lg border border-gray-100/50 hover:shadow-xl transition-all duration-500">
+                                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-all duration-200">
                                             <ProgressRing 
                                                 progress={progressStats.totalQuestions > 0 ? (progressStats.masteredQuestions / progressStats.totalQuestions) * 100 : 0} 
-                                                color="blue"
+                                                color="gray"
                                                 label="Questions Mastered"
-                                                size={140}
+                                                size={120}
                                             />
                                         </div>
                                         
-                                        <div className="bg-white p-6 rounded-3xl shadow-lg border border-gray-100/50 hover:shadow-xl transition-all duration-500">
+                                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-all duration-200">
                                             <ProgressRing 
                                                 progress={progressStats.totalSessions > 0 ? (progressStats.completedSessions / progressStats.totalSessions) * 100 : 0} 
-                                                color="purple"
+                                                color="gray"
                                                 label="Sessions Completed"
-                                                size={140}
+                                                size={120}
                                             />
                                         </div>
                                     </div>
 
                                     {/* Progress Wave */}
-                                    <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100/50">
+                                    <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
                                         <div className="text-center mb-8">
-                                            <h2 className="text-2xl font-bold text-gray-800 mb-2">Your Learning Journey</h2>
-                                            <p className="text-gray-600">Watch your progress flow like a gentle wave</p>
+                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Learning Progress</h2>
+                                            <p className="text-gray-600 dark:text-gray-400">Your overall progress overview</p>
                                         </div>
                                         <div className="flex justify-center">
                                             <ProgressWave 
                                                 progress={progressStats.overallProgress} 
                                                 width={400} 
                                                 height={150}
-                                                color="blue"
+                                                color="gray"
                                             />
                                         </div>
                                     </div>
 
                                     {/* Milestones */}
-                                    <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100/50">
+                                    <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
                                         <div className="text-center mb-8">
-                                            <h2 className="text-2xl font-bold text-gray-800 mb-2">Learning Milestones</h2>
-                                            <p className="text-gray-600">Celebrate every step of your progress</p>
+                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Learning Milestones</h2>
+                                            <p className="text-gray-600 dark:text-gray-400">Track your progress milestones</p>
                                         </div>
                                         <ProgressMilestones progress={progressStats.overallProgress} />
                                     </div>
@@ -406,19 +400,19 @@ const AnalyticsDashboard = () => {
                                 />
                             ) : (
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                    <div className="lg:col-span-2 bg-white p-4 sm:p-6 rounded-3xl shadow-lg border border-gray-100/50 hover:shadow-xl transition-all duration-500">
+                                    <div className="lg:col-span-2 bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-all duration-200">
                                         <div className="flex items-center gap-3 mb-6">
                                             <span className="text-2xl">📊</span>
-                                            <h2 className="text-xl font-bold text-slate-900">Performance by Topic</h2>
+                                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Performance by Topic</h2>
                                         </div>
                                         <div className="h-96 w-full">
                                             <Bar options={barChartOptions} data={performanceData} />
                                         </div>
                                     </div>
-                                     <div className="bg-white p-4 sm:p-6 rounded-3xl shadow-lg border border-gray-100/50 hover:shadow-xl transition-all duration-500">
+                                     <div className="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-all duration-200">
                                         <div className="flex items-center gap-3 mb-6">
                                             <span className="text-2xl">📈</span>
-                                            <h2 className="text-xl font-bold text-slate-900">Progress Over Time</h2>
+                                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Progress Over Time</h2>
                                         </div>
                                         <div className="h-96 w-full">
                                             <Line options={lineChartOptions} data={progressData} />

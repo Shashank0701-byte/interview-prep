@@ -1,0 +1,388 @@
+System Design Interview Guide
+
+1. Design Patterns and Principles
+=================================
+
+Load Balancing
+-------------
+Purpose: Distribute incoming traffic across multiple servers.
+Types:
+- Round Robin: Sequential distribution
+- Least Connections: Route to server with fewest active connections
+- IP Hash: Route based on client IP
+- Weighted Round Robin: Assign weights based on server capacity
+
+Implementation Considerations:
+- Health checks to detect failed servers
+- Session persistence (sticky sessions)
+- Geographic load balancing for global applications
+- Auto-scaling integration
+
+Caching Strategies
+-----------------
+Multi-level Caching:
+1. Browser Cache: Client-side caching
+2. CDN Cache: Edge locations globally
+3. Application Cache: In-memory (Redis, Memcached)
+4. Database Cache: Query result caching
+
+Cache Invalidation Patterns:
+- Time-based expiration
+- Write-through: Update cache when updating database
+- Write-behind: Update cache immediately, database asynchronously
+- Cache-aside: Application manages cache
+
+Cache Distribution:
+- Consistent hashing for even distribution
+- Cache warming strategies
+- Cache hit ratio monitoring
+
+Database Design
+---------------
+Sharding Strategies:
+- Horizontal sharding: Split data by rows
+- Vertical sharding: Split data by columns
+- Functional sharding: Split by business function
+
+Sharding Keys:
+- User ID for user-specific data
+- Geographic location for geo-distributed systems
+- Time-based for temporal data
+- Hash-based for even distribution
+
+Replication:
+- Master-slave: Read scalability
+- Master-master: Write scalability
+- Multi-master: High availability
+
+CAP Theorem:
+- Consistency: All nodes see same data simultaneously
+- Availability: System remains operational
+- Partition Tolerance: System continues despite network partitions
+Choose 2 out of 3 based on requirements
+
+2. Scalability Patterns
+======================
+
+Horizontal Scaling
+------------------
+Add more machines to handle load.
+Benefits:
+- Better fault tolerance
+- Linear scalability potential
+- Cost-effective with commodity hardware
+
+Challenges:
+- Distributed complexity
+- Data consistency
+- Network overhead
+- Load balancing requirements
+
+Vertical Scaling
+---------------
+Upgrade existing machine resources.
+Benefits:
+- Simpler architecture
+- No distributed complexity
+- Better single-machine performance
+
+Limitations:
+- Upper bound on hardware
+- Single point of failure
+- Expensive for large scale
+
+Microservices Architecture
+--------------------------
+Decompose application into small, independent services.
+Benefits:
+- Independent deployment
+- Technology diversity
+- Team autonomy
+- Fault isolation
+
+Challenges:
+- Service discovery
+- Inter-service communication
+- Data consistency
+- Operational complexity
+
+Event-Driven Architecture
+------------------------
+Components communicate through events.
+Benefits:
+- Loose coupling
+- Scalability
+- Flexibility
+- Real-time processing
+
+Components:
+- Event producers
+- Event brokers (Kafka, RabbitMQ)
+- Event consumers
+- Event stores
+
+3. Performance Optimization
+==========================
+
+Database Optimization
+--------------------
+Indexing:
+- B-tree indexes for range queries
+- Hash indexes for equality queries
+- Composite indexes for multi-column queries
+- Covering indexes to avoid table lookups
+
+Query Optimization:
+- EXPLAIN plan analysis
+- Avoid N+1 queries
+- Batch operations
+- Connection pooling
+
+Connection Pooling:
+- Reduce connection overhead
+- Configurable pool size
+- Connection timeout handling
+- Health monitoring
+
+API Design
+----------
+REST vs GraphQL:
+- REST: Resource-oriented, multiple endpoints
+- GraphQL: Single endpoint, flexible queries
+
+Rate Limiting:
+- Token bucket algorithm
+- Fixed window counter
+- Sliding window log
+- Distributed rate limiting
+
+API Gateway:
+- Request routing
+- Authentication
+- Rate limiting
+- Response aggregation
+
+4. High Availability and Reliability
+=====================================
+
+Redundancy Patterns
+------------------
+Active-Active: All servers handle traffic
+Active-Passive: Backup servers on standby
+Multi-datacenter: Geographic redundancy
+
+Failover Strategies:
+- Automatic failover
+- Manual failover
+- Graceful degradation
+- Circuit breakers
+
+Disaster Recovery:
+- Backup strategies
+- Point-in-time recovery
+- Cross-region replication
+- Recovery Time Objective (RTO)
+- Recovery Point Objective (RPO)
+
+Monitoring and Alerting
+-----------------------
+Metrics to Monitor:
+- Response time
+- Error rate
+- Throughput
+- Resource utilization
+- Business metrics
+
+Alerting Strategy:
+- Threshold-based alerts
+- Anomaly detection
+- Escalation policies
+- On-call rotations
+
+5. Security Considerations
+==========================
+
+Authentication:
+- OAuth 2.0
+- JWT tokens
+- Multi-factor authentication
+- SSO integration
+
+Authorization:
+- Role-based access control (RBAC)
+- Attribute-based access control (ABAC)
+- Principle of least privilege
+
+Data Security:
+- Encryption at rest
+- Encryption in transit
+- Key management
+- Data masking
+
+Network Security:
+- Firewalls
+- DDoS protection
+- VPN
+- API security
+
+6. Common System Design Questions
+==================================
+
+Design a URL Shortener
+----------------------
+Requirements:
+- Generate short URLs from long URLs
+- Redirect short URLs to original URLs
+- Handle high traffic volume
+- Persist URLs for long periods
+
+Components:
+- Encoding service (Base62)
+- Database (distributed key-value store)
+- Cache layer (Redis)
+- Load balancer
+- Analytics service
+
+Scaling Considerations:
+- Pre-generate short codes
+- Use CDN for redirects
+- Batch writes to database
+- Geographic distribution
+
+Design a Social Media Feed
+--------------------------
+Requirements:
+- Real-time feed updates
+- Personalized content
+- High read/write ratio
+- Support for likes, comments
+
+Components:
+- Feed generation service
+- Content delivery network
+- Real-time notifications
+- User engagement tracking
+- Content moderation
+
+Architecture:
+- Fan-out on write approach
+- Materialized views for feeds
+- Hot/cold data separation
+- Graph database for relationships
+
+Design a Ride-sharing Service
+-----------------------------
+Requirements:
+- Real-time location tracking
+- Driver-passenger matching
+- Dynamic pricing
+- Payment processing
+
+Components:
+- Location service
+- Matching algorithm
+- Pricing engine
+- Payment gateway
+- Notification service
+
+Technical Challenges:
+- Real-time geospatial queries
+- ETA calculation
+- Surge pricing algorithms
+- Trip state management
+
+Design a Messaging System
+-------------------------
+Requirements:
+- Real-time message delivery
+- Message ordering
+- Offline message storage
+- Group conversations
+
+Components:
+- Message broker (Kafka)
+- Real-time server (WebSocket)
+- Message storage
+- Push notification service
+- Presence service
+
+Scalability:
+- Message partitioning
+- Consumer groups
+- Message deduplication
+- Message compression
+
+7. Trade-offs and Decision Making
+=================================
+
+Performance vs Consistency:
+- Strong consistency: Slower, more complex
+- Eventual consistency: Faster, simpler
+- Choose based on business requirements
+
+Cost vs Performance:
+- On-demand instances: Higher cost, flexible
+- Reserved instances: Lower cost, committed
+- Spot instances: Lowest cost, unreliable
+
+Latency vs Throughput:
+- Low latency: Optimized for response time
+- High throughput: Optimized for volume
+- Balance based on use case
+
+Simplicity vs Features:
+- Start simple, add complexity as needed
+- YAGNI principle (You Ain't Gonna Need It)
+- Technical debt management
+
+8. Documentation and Communication
+=================================
+
+System Design Document Structure:
+- Overview and requirements
+- Architecture diagram
+- Component descriptions
+- Data models
+- API specifications
+- Deployment architecture
+- Monitoring and alerting
+- Disaster recovery plan
+
+Communication Strategies:
+- Technical design reviews
+- Architecture decision records (ADRs)
+- Runbooks for operations
+- Post-incident reviews
+
+9. Interview Preparation Tips
+============================
+
+Framework for Answering:
+1. Clarify requirements and constraints
+2. Estimate scale and identify bottlenecks
+3. High-level design with components
+4. Deep dive into critical components
+5. Identify trade-offs and improvements
+6. Discuss scalability and reliability
+
+Key Questions to Ask:
+- Expected scale (users, requests per second)
+- Consistency requirements
+- Availability targets
+- Budget constraints
+- Team size and expertise
+
+Common Pitfalls:
+- Jumping to solutions without understanding requirements
+- Over-engineering for simplicity
+- Ignoring edge cases and failure modes
+- Not considering operational aspects
+
+Practice Topics:
+- Design a web crawler
+- Design a notification system
+- Design a video streaming platform
+- Design a distributed key-value store
+- Design a content delivery network
+
+Remember: System design is about making informed trade-offs. There's rarely a single "correct" answer. Focus on explaining your reasoning and considering different perspectives.

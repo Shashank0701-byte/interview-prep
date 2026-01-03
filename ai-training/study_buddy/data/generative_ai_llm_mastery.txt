@@ -1,0 +1,127 @@
+# Generative AI and Large Language Models (LLM) Mastery
+
+## Transformer Architecture
+
+### Core Concepts
+- **Attention Mechanism**: Allows the model to weigh the importance of different words in a sentence regardless of their distance.
+- **Self-Attention**: Mechanism relating different positions of a single sequence to compute a representation of the sequence.
+- **Multi-Head Attention**: Running multiple attention mechanisms in parallel to capture different types of relationships.
+- **Positional Encodings**: Injected information about the relative or absolute position of tokens in the sequence.
+- **Encoder-Decoder**: 
+  - **Encoder**: Processes the input sequence (e.g., BERT).
+  - **Decoder**: Generates the output sequence (e.g., GPT).
+  - **Encoder-Decoder**: Uses both (e.g., T5, BART).
+
+### Key Models
+- **BERT (Bidirectional Encoder Representations from Transformers)**: Masked language modeling, good for understanding/classification.
+- **GPT (Generative Pre-trained Transformer)**: Autoregressive language modeling, good for generation.
+- **T5 (Text-to-Text Transfer Transformer)**: Treats every NLP problem as a text-to-text task.
+- **Llama**: Open-source efficient foundation models by Meta.
+
+## LLM Training Pipeline
+
+### 1. Pre-training
+- **Objective**: Learn statistical patterns of language from massive datasets.
+- **Task**: Next-token prediction (Causal LM) or Masked token prediction (Masked LM).
+- **Compute**: Requires thousands of GPUs and months of time.
+
+### 2. Supervised Fine-Tuning (SFT)
+- **Objective**: Adapt the base model to follow instructions or specific tasks.
+- **Data**: High-quality instruction-response pairs (e.g., "Summarize this article" -> "Summary...").
+- **Techniques**: Full fine-tuning vs. PEFT (Parameter-Efficient Fine-Tuning).
+
+### 3. RLHF (Reinforcement Learning from Human Feedback)
+- **Reward Model**: Trained to predict human preference between two model outputs.
+- **PPO (Proximal Policy Optimization)**: Optimizes the policy (LLM) to maximize reward while staying close to the initial model.
+- **DPO (Direct Preference Optimization)**: Optimizes policy directly from preferences without a separate reward model.
+
+## Retrieval Augmented Generation (RAG)
+
+### Architecture
+- **Retriever**: Finds relevant documents from a knowledge base given a query.
+- **Generator**: Uses the retrieved context + query to generate an answer.
+- **Vector Database**: Stores embeddings of documents for fast similarity search (e.g., Pinecone, Chroma, Milvus).
+
+### RAG Techniques
+- **Chunking**: Splitting documents into smaller, meaningful pieces (Fixed-size, Semantic, Recursive).
+- **Hybrid Search**: Combining Keyword search (BM25) with Semantic search (Vector/Cosine Similarity).
+- **Re-ranking**: Using a cross-encoder to re-score the top-k retrieved documents for better precision.
+- **Query Expansion**: Generating synonyms or related questions to improve retrieval recall.
+
+## Prompt Engineering
+
+### Strategies
+- **Zero-shot**: Asking the model to perform a task without examples.
+- **Few-shot**: Providing 1-3 examples of input-output pairs before the actual task.
+- **Chain-of-Thought (CoT)**: Encouraging the model to "think step-by-step" to improve reasoning.
+- **ReAct**: Combining Reasoning and Acting (using tools) to solve complex tasks.
+- **System Prompts**: Setting the persona, constraints, and tone of the AI.
+
+## Efficient Deployment
+
+### Quantization
+- **FP16/BF16**: Half-precision training/inference.
+- **INT8/INT4**: Reducing weights to 8-bit or 4-bit integers to save memory with minimal accuracy loss.
+- **GPTQ / AWQ**: Advanced quantization techniques for Transformers.
+
+### Optimization Techniques
+- **KV Cache**: Caching Key and Value matrices during generation to avoid re-computation.
+- **Flash Attention**: IO-aware exact attention algorithm that speeds up training and inference.
+- **Speculative Decoding**: Using a small model to draft tokens and a large model to verify them.
+
+## Interview Questions
+
+### Conceptual
+1. **Explain the difference between Encoder-only, Decoder-only, and Encoder-Decoder architectures.**
+   - Encoder-only (BERT) is bi-directional, good for understanding. Decoder-only (GPT) is uni-directional, good for generation. Encoder-Decoder (T5) combines both for translation/summarization.
+
+2. **What is the "Context Window" and why is it a limitation?**
+   - It's the maximum number of tokens the model can process at once. Quadratic complexity of attention ($O(N^2)$) makes large windows computationally expensive.
+
+3. **How does RAG solve the hallucination problem?**
+   - By grounding the generation in retrieved, factual context rather than relying solely on the model's internal parametric memory.
+
+4. **What is LoRA (Low-Rank Adaptation)?**
+   - A PEFT technique that freezes pre-trained weights and injects trainable low-rank decomposition matrices, reducing trainable parameters by 99%.
+
+### Practical
+1. **How would you build a Q&A bot for a private company documentation?**
+   - Ingest docs -> Chunking -> Embeddings -> Vector DB.
+   - Query -> Embed -> Retrieve Top-K -> LLM Generation with Context.
+
+2. **Compare Vector Search vs. Keyword Search.**
+   - Vector search captures semantic meaning (e.g., "canine" matches "dog"). Keyword search matches exact tokens. Hybrid is often best.
+
+3. **How do you evaluate an LLM application?**
+   - **RAGAS**: Metrics for RAG (Faithfulness, Answer Relevance, Context Precision).
+   - **LLM-as-a-Judge**: Using a stronger model (GPT-4) to grade responses.
+   - **Human Eval**: Gold standard but expensive.
+
+### Code Snippet: Simple RAG with LangChain
+```python
+from langchain.vectorstores import Chroma
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import RetrievalQA
+
+# 1. Setup Vector DB
+embeddings = OpenAIEmbeddings()
+vectordb = Chroma(persist_directory="./db", embedding_function=embeddings)
+
+# 2. Setup Retriever
+retriever = vectordb.as_retriever(search_kwargs={"k": 3})
+
+# 3. Setup LLM
+llm = ChatOpenAI(model_name="gpt-3.5-turbo")
+
+# 4. Create Chain
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",
+    retriever=retriever
+)
+
+# 5. Ask Question
+response = qa_chain.run("How does the attention mechanism work?")
+print(response)
+```

@@ -89,7 +89,7 @@ const InterviewPrep = () => {
 
     const toggleQuestionPinStatus = async (questionId) => {
         try {
-            await axiosInstance.post(API_PATHS.QUESTION.PIN(questionId));
+            await axiosInstance.put(API_PATHS.QUESTION.PIN(questionId));
             fetchSessionDetailsById();
             
             // Trigger analytics refresh after pinning/unpinning
@@ -188,7 +188,7 @@ const InterviewPrep = () => {
                 lastUpdated={moment(sessionData.updatedAt).format("Do MMM YYYY")}
             />
             <div className='container mx-auto pt-4 pb-4 px-4 md:px-8'>
-                <h2 className='text-lg font-semibold text-black'>Interview Q & A</h2>
+                <h2 className='text-lg font-semibold text-gray-900 dark:text-white'>Interview Q & A</h2>
                 <div className='grid grid-cols-12 gap-4 mt-5 mb-10'>
                     <div className={`col-span-12 ${isFollowUpDrawerOpen ? "md:col-span-7" : "md:col-span-8"}`}>
                         <AnimatePresence>
@@ -226,7 +226,7 @@ const InterviewPrep = () => {
                         </AnimatePresence>
                         <div className='flex items-center justify-center mt-5'>
                             <button
-                                className='flex items-center gap-3 text-sm text-white font-medium bg-black px-5 py-2 rounded cursor-pointer'
+                                className='flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300 font-medium bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-700 px-5 py-2 rounded-lg cursor-pointer transition-colors duration-200 disabled:opacity-50'
                                 disabled={isUpdateLoader}
                                 onClick={uploadMoreQuestions}
                             >

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useScrollToTop } from '../../hooks/useScrollToTop';
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import * as pdfjsLib from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { 
     LuFileText, 
     LuCheck, 
@@ -15,8 +16,8 @@ import {
     LuCopy
 } from 'react-icons/lu';
 
-// Configure PDF.js worker - using local worker file for reliability
-pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
+// Configure PDF.js worker using the bundled worker file
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const SmartResumeBuilder = () => {
     const navigate = useNavigate();
@@ -47,49 +48,85 @@ const SmartResumeBuilder = () => {
             metrics: {}
         };
 
-        // Check for essential sections
+        // Check for essential sections (strict matching for section headers)
         const sections = {
-            contact: /contact|email|phone|linkedin|github/i.test(text),
-            summary: /summary|objective|profile/i.test(text),
-            experience: /experience|work|employment|job/i.test(text),
-            education: /education|degree|university|college/i.test(text),
-            skills: /skills|technologies|technical|programming/i.test(text)
+            contact: /@|email|phone|\d{3}[-.]?\d{3}[-.]?\d{4}|linkedin|github/i.test(text),
+            summary: /^\s*(professional\s+)?summary|^\s*objective|^\s*profile/im.test(text),
+            experience: /^\s*(work\s+)?experience|^\s*employment\s+history|^\s*professional\s+experience/im.test(text),
+            education: /^\s*education/im.test(text),
+            skills: /^\s*(technical\s+)?skills|^\s*technologies|^\s*core\s+competencies/im.test(text),
+            projects: /^\s*projects|^\s*key\s+projects/im.test(text)
         };
 
-        // Calculate ATS score based on sections (more realistic scoring)
+        // Calculate ATS score based on sections (realistic scoring)
         let score = 0;
         
-        // Essential sections (70 points total)
-        if (sections.contact) score += 15;
-        if (sections.experience) score += 30; // Most important - increased weight
+        // Essential sections (60 points total)
+        if (sections.contact) score += 10;
+        if (sections.summary) score += 10; // Professional summary is important
+        if (sections.experience) score += 25; // Most important for experienced roles
         if (sections.education) score += 10;
         if (sections.skills) score += 15;
         
-        // Check for quantifiable achievements (20 points)
-        const hasMetrics = /\d+%|\$\d+|increased|decreased|improved|reduced|managed \d+|led \d+|\d+\+?\s*(years?|months?)|saved|generated|built|created \d+/i.test(text);
-        if (hasMetrics) {
-            score += 20;
+        // Projects can partially substitute for experience (for students/new grads)
+        if (!sections.experience && sections.projects) {
+            score += 10; // Partial credit, but not full experience points
+        }
+        
+        // Check for quantifiable achievements (15 points) - stricter detection
+        const hasPercentages = /%|percent/i.test(text);
+        const hasUserMetrics = /\d+[,.]?\d*\s*[kK]?\+?\s*(users?|customers?|clients?)/i.test(text);
+        const hasPerformanceMetrics = /(improved|increased|reduced|decreased|optimized)\s+.*?\d+/i.test(text);
+        const hasTeamMetrics = /(led|managed|mentored)\s+.*?\d+/i.test(text);
+        
+        const metricsCount = [hasPercentages, hasUserMetrics, hasPerformanceMetrics, hasTeamMetrics].filter(Boolean).length;
+        
+        if (metricsCount >= 2) {
+            score += 15;
             analysis.strengths.push({
                 id: 'metrics',
                 title: 'Quantifiable Achievements Present',
                 description: 'Great job including measurable results and metrics in your experience!'
             });
+        } else if (metricsCount === 1) {
+            score += 7;
+            analysis.improvements.push({
+                id: 'more-metrics',
+                title: 'Add More Quantifiable Achievements',
+                description: 'Include more specific numbers: user counts, performance improvements (%), team sizes, revenue impact.',
+                priority: 'High'
+            });
         } else {
             analysis.improvements.push({
                 id: 'metrics',
                 title: 'Add Quantifiable Achievements',
-                description: 'Include specific numbers, percentages, and metrics to demonstrate your impact.',
-                priority: 'High'
+                description: 'Include specific numbers, percentages, and metrics to demonstrate your impact. Examples: "Improved performance by 40%", "Served 10K+ users", "Led team of 5"',
+                priority: 'Critical'
             });
         }
 
         // Penalize missing critical sections
-        if (!sections.experience) {
-            score -= 50; // Severe penalty for no experience - this should make it impossible to get 100
+        if (!sections.experience && !sections.projects) {
+            analysis.improvements.push({
+                id: 'no-experience-or-projects',
+                title: 'Missing Work Experience or Projects',
+                description: 'Add a Work Experience section or Projects section with specific achievements and impact.',
+                priority: 'Critical'
+            });
+        } else if (!sections.experience && sections.projects) {
             analysis.improvements.push({
                 id: 'no-experience',
                 title: 'Missing Work Experience Section',
-                description: 'Your resume must include a work experience section with job titles, companies, and achievements.',
+                description: 'Consider adding internships, freelance work, or part-time jobs. For entry-level roles, strong projects can help, but work experience is preferred.',
+                priority: 'High'
+            });
+        }
+        
+        if (!sections.summary) {
+            analysis.improvements.push({
+                id: 'no-summary',
+                title: 'Missing Professional Summary',
+                description: 'Add a 2-3 sentence professional summary at the top highlighting your expertise and career goals.',
                 priority: 'High'
             });
         }
@@ -123,65 +160,69 @@ const SmartResumeBuilder = () => {
             });
         }
 
-        // Check for technical skills (10 points)
-        const techKeywords = ['javascript', 'python', 'react', 'node', 'sql', 'aws', 'docker', 'kubernetes', 'git', 'java', 'cplusplus', 'html', 'css'];
+        // Check for technical skills (15 points) - expanded keyword list
+        const techKeywords = [
+            'javascript', 'python', 'react', 'node', 'sql', 'aws', 'docker', 'kubernetes', 'git', 'java', 'cplusplus',
+            'typescript', 'mongodb', 'postgresql', 'redis', 'graphql', 'express', 'flask', 'django', 'spring',
+            'angular', 'vue', 'tailwind', 'bootstrap', 'jest', 'cypress', 'webpack', 'azure', 'gcp'
+        ];
         const foundTechSkills = techKeywords.filter(skill => {
-            // Handle special cases for regex-unsafe characters
             if (skill === 'cplusplus') {
                 return /\bc\+\+\b/i.test(text);
             }
             return new RegExp(`\\b${skill}\\b`, 'i').test(text);
         });
 
-        if (foundTechSkills.length >= 3) {
+        if (foundTechSkills.length >= 6) {
             const displaySkills = foundTechSkills.slice(0, 3).map(skill => 
                 skill === 'cplusplus' ? 'C++' : skill
             );
             analysis.strengths.push({
                 id: 'tech-skills',
                 title: 'Technical Skills Present',
-                description: `Good job including relevant technical skills: ${displaySkills.join(', ')}`
+                description: `Good job including relevant technical skills: ${displaySkills.join(', ')}, and ${foundTechSkills.length - 3} more`
             });
+            score += 15;
+        } else if (foundTechSkills.length >= 3) {
             score += 10;
-        } else if (foundTechSkills.length > 0) {
+            analysis.improvements.push({
+                id: 'more-tech-skills',
+                title: 'Add More Technical Keywords',
+                description: 'Include 2-3 more trending technical skills from job descriptions (TypeScript, Docker, AWS, etc.).',
+                priority: 'Medium'
+            });
+        } else {
             score += 5;
             analysis.improvements.push({
                 id: 'tech-skills',
                 title: 'Add More Technical Keywords',
-                description: 'Include more job-specific technical keywords to pass ATS filters.',
-                priority: 'Medium'
-            });
-        } else {
-            analysis.improvements.push({
-                id: 'tech-skills',
-                title: 'Add Technical Keywords',
-                description: 'Include relevant technical skills and keywords for your target role.',
+                description: 'Include more job-specific technical keywords to pass ATS filters. Aim for 6+ relevant technologies.',
                 priority: 'High'
             });
         }
 
         // Check resume length (10 points)
         const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
-        if (wordCount < 150) {
+        if (wordCount < 250) {
             analysis.improvements.push({
                 id: 'length',
                 title: 'Resume Too Short',
-                description: `Your resume has only ${wordCount} words. Add more detail about your experience and achievements.`,
+                description: `Your resume has only ${wordCount} words (need 400+). Add more detail: quantify achievements, expand project descriptions, include relevant coursework.`,
                 priority: 'High'
             });
-            score -= 10;
-        } else if (wordCount > 1000) {
+            score += Math.round((wordCount / 400) * 10); // Partial credit based on length
+        } else if (wordCount > 900) {
             analysis.improvements.push({
                 id: 'length',
                 title: 'Resume Too Long',
-                description: `Your resume has ${wordCount} words. Consider shortening to focus on the most relevant information.`,
+                description: `Your resume has ${wordCount} words. Consider shortening to 600-700 words to focus on the most impactful information.`,
                 priority: 'Medium'
             });
-            score -= 5;
-        } else if (wordCount >= 200 && wordCount <= 600) {
+            score += 7;
+        } else if (wordCount >= 400 && wordCount <= 700) {
             score += 10; // Optimal length
         } else {
-            score += 5; // Acceptable length
+            score += 8; // Acceptable length
         }
 
         // Check for formatting issues (basic)
@@ -201,16 +242,33 @@ const SmartResumeBuilder = () => {
         }
 
         // Apply realistic scoring rules
-        // Without experience section, maximum possible score should be 60
-        if (!sections.experience) {
-            score = Math.min(score, 60);
+        // Without experience section, maximum possible score should be 70 (for students with strong projects)
+        if (!sections.experience && sections.projects) {
+            score = Math.min(score, 70);
+        } else if (!sections.experience && !sections.projects) {
+            score = Math.min(score, 40); // Very low without either
+        }
+        
+        // Without professional summary, cap at 85
+        if (!sections.summary) {
+            score = Math.min(score, 85);
+        }
+        
+        // Without metrics, cap at 75
+        if (metricsCount === 0) {
+            score = Math.min(score, 75);
         }
         
         // Ensure score is not negative and cap at 100
         analysis.atsScore = Math.max(0, Math.min(score, 100));
         analysis.sections = sections;
         analysis.keywords = foundTechSkills.map(skill => skill === 'cplusplus' ? 'C++' : skill);
-        analysis.metrics = { wordCount, sectionsFound: Object.values(sections).filter(Boolean).length };
+        analysis.metrics = { 
+            wordCount, 
+            sectionsFound: Object.values(sections).filter(Boolean).length,
+            metricsCount,
+            techSkillsCount: foundTechSkills.length
+        };
 
         return analysis;
     };

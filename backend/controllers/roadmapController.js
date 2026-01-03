@@ -1,4 +1,5 @@
 const Session = require('../models/Session');
+const RoadmapSession = require('../models/RoadmapSession');
 const Question = require('../models/Question');
 
 // Role-specific learning path templates
@@ -177,14 +178,25 @@ const generateRoadmap = async (req, res) => {
         console.log('Generating roadmap for role:', decodedRole);
         console.log('Available roles:', Object.keys(ROLE_ROADMAPS));
 
-        // Get user's existing sessions for this role
+        // Get user's existing sessions for this role (both regular and roadmap sessions)
         console.log('Fetching sessions for user:', userId, 'and role:', decodedRole);
-        const userSessions = await Session.find({ 
+        
+        // Fetch regular sessions
+        const regularSessions = await Session.find({ 
             user: userId,
             role: { $regex: new RegExp(decodedRole, 'i') }
         }).populate('questions');
         
-        console.log('Found sessions:', userSessions.length);
+        // Fetch roadmap sessions for this role
+        const roadmapSessions = await RoadmapSession.find({ 
+            user: userId,
+            roadmapRole: { $regex: new RegExp(decodedRole, 'i') }
+        }).populate('questions');
+        
+        // Combine both types of sessions
+        const userSessions = [...regularSessions, ...roadmapSessions];
+        
+        console.log('Found sessions:', userSessions.length, '(Regular:', regularSessions.length, ', Roadmap:', roadmapSessions.length, ')');
 
         // Get the roadmap template for this role
         const roadmapTemplate = ROLE_ROADMAPS[decodedRole] || ROLE_ROADMAPS['Software Engineer'];
@@ -195,9 +207,18 @@ const generateRoadmap = async (req, res) => {
 
         // Calculate progress for each phase - First pass: calculate completion percentages
         const phasesWithProgress = roadmapTemplate.phases.map((phase, index) => {
-            // Find sessions that match this phase's topics
+            const phaseId = `phase-${index + 1}`;
+            
+            // Find sessions that match this phase
             const relevantSessions = userSessions.filter(session => {
-                // Handle cases where topicsToFocus might be null/undefined
+                // For RoadmapSession: match by phaseId
+                if (session.phaseId) {
+                    const matches = session.phaseId === phaseId;
+                    console.log(`Session ${session._id} phaseId: ${session.phaseId}, looking for: ${phaseId}, matches: ${matches}`);
+                    return matches;
+                }
+                
+                // For regular Session: match by topics
                 if (!session.topicsToFocus || !Array.isArray(session.topicsToFocus)) {
                     return false;
                 }
@@ -210,6 +231,8 @@ const generateRoadmap = async (req, res) => {
                     )
                 );
             });
+            
+            console.log(`Phase ${phaseId} (${phase.name}): Found ${relevantSessions.length} sessions`);
 
             // Calculate completion percentage
             const totalQuestions = relevantSessions.reduce((sum, session) => sum + session.questions.length, 0);

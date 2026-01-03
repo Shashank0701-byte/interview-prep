@@ -12,7 +12,7 @@ import ProfileInfoCard from '../components/Cards/ProfileInfoCard';
 
 const LandingPage = () => {
 
-  const {user} = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
   const [openAuthModal, setOpenAuthModal] = useState(false);
@@ -20,22 +20,22 @@ const LandingPage = () => {
 
   // Made the "Get Started" button open the modal
   const handleCTA = () => {
-    if(!user){
-    setOpenAuthModal(true);
-    } else{
+    if (!user) {
+      setOpenAuthModal(true);
+    } else {
       navigate("/dashboard");
     }
   };
 
   return (
-    <div className="bg-[#FFFCEF] text-black" style={{ backgroundColor: '#FFFCEF', color: '#000000' }}>
-      <div className='w-full min-h-full bg-[#FFFCEF]' style={{ backgroundColor: '#FFFCEF' }}>
-        <div className='w-[500px] h-[500px] bg-amber-200/20 blur-[65px] absolute top-0 left-0' />
+    <div className="bg-[#FFFCEF] text-black overflow-x-hidden" style={{ backgroundColor: '#FFFCEF', color: '#000000' }}>
+      <div className='w-full min-h-full bg-[#FFFCEF] relative' style={{ backgroundColor: '#FFFCEF' }}>
+        <div className='w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-amber-200/20 blur-[65px] absolute top-0 left-0 pointer-events-none' />
         <div className='container mx-auto px-4 pt-6 pb-[200px] relative z-10'>
           {/* Header */}
           {/* Corrected: "items-center" and "mb-16" */}
-          <header className='flex justify-between items-center mb-16'>
-            <div className='text-xl font-bold' style={{ color: '#000000' }}>
+          <header className='flex justify-between items-center mb-12 md:mb-16'>
+            <div className='text-lg md:text-xl font-bold' style={{ color: '#000000' }}>
               Interview Prep AI
             </div>
             {/* Auth button */}
@@ -43,8 +43,8 @@ const LandingPage = () => {
               <ProfileInfoCard />
             ) : (
               <button
-                className='bg-gradient-to-r from-[#FF9324] to-[#e99a4b] text-sm font-semibold text-white px-7 py-2.5 rounded-full hover:bg-black hover:text-white border border-white transition-colors cursor-pointer'
-                style={{ 
+                className='bg-gradient-to-r from-[#FF9324] to-[#e99a4b] text-xs md:text-sm font-semibold text-white px-5 py-2 md:px-7 md:py-2.5 rounded-full hover:bg-black hover:text-white border border-white transition-colors cursor-pointer'
+                style={{
                   background: 'linear-gradient(to right, #FF9324, #e99a4b)',
                   color: '#ffffff',
                   border: '1px solid #ffffff'
@@ -57,13 +57,13 @@ const LandingPage = () => {
           </header>
           {/* Hero Content */}
           <div className='flex flex-col md:flex-row items-center'>
-            <div className='w-full md:w-1/2 pr-4 mb-8 md:mb-0'>
-              <div className='flex items-center justify-left mb-2'>
-                <div className='flex items-center gap-2 text-[13px] text-amber-600 font-semibold bg-amber-100 px-3 py-1 rounded-full border border-amber-300'>
+            <div className='w-full md:w-1/2 pr-0 md:pr-4 mb-8 md:mb-0 text-center md:text-left'>
+              <div className='flex items-center justify-center md:justify-start mb-4'>
+                <div className='flex items-center gap-2 text-xs md:text-[13px] text-amber-600 font-semibold bg-amber-100 px-3 py-1 rounded-full border border-amber-300'>
                   <LuSparkles />AI Powered
                 </div>
               </div>
-              <h1 className='text-5xl font-medium mb-6 leading-tight' style={{ color: '#000000' }}>
+              <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium mb-6 leading-tight' style={{ color: '#000000' }}>
                 Ace Interviews with <br />
                 <span className='text-transparent bg-clip-text bg-[radial-gradient(circle,_#FF9324_0%,_#FCD760_100%)] bg-[length:200%_200%] animate-text-shine font-semibold'>
                   AI-Powered
@@ -71,14 +71,14 @@ const LandingPage = () => {
                 Learning
               </h1>
             </div>
-            <div className='w-full md:w-1/2'>
-              <p className='text-[17px] mr-0 md:mr-20 mb-6' style={{ color: '#111827' }}>Get role-specific questions, expand answers when you need them,
+            <div className='w-full md:w-1/2 text-center md:text-left'>
+              <p className='text-base md:text-lg mr-0 md:mr-20 mb-8' style={{ color: '#111827' }}>Get role-specific questions, expand answers when you need them,
                 dive deeper into concepts and organise everything your way.
                 From preparation to mastery - your ultimate interview toolkit is
                 here.
               </p>
               <button
-                className='bg-black text-sm font-semibold text-white px-7 py-2.5 rounded-full hover:bg-yellow-100 hover:text-black border border-yellow-50 hover:border-yellow-300 transition-colors cursor-pointer'
+                className='bg-black text-sm font-semibold text-white px-8 py-3 rounded-full hover:bg-yellow-100 hover:text-black border border-yellow-50 hover:border-yellow-300 transition-colors cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200'
                 onClick={handleCTA}
               >
                 Get Started
@@ -89,11 +89,11 @@ const LandingPage = () => {
       </div>
       <div className='w-full min-h-full relative z-10'>
         <div>
-          <section className='flex items-center justify-center -mt-36'>
+          <section className='flex items-center justify-center mt-8 md:-mt-36 px-4'>
             <img
               src={HERO_IMG}
               alt='Hero Image'
-              className='w-[80vw] rounded-lg'
+              className='w-full md:w-[80vw] rounded-xl shadow-2xl border-4 border-white/50'
             />
           </section>
         </div>

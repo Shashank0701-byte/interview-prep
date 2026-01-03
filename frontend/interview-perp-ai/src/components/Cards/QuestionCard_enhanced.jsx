@@ -51,22 +51,11 @@ const QuestionCard = ({
     };
 
     const getDifficultyColor = (diff) => {
-        switch (diff) {
-            case 'Easy': return 'bg-green-100 text-green-800 border-green-200';
-            case 'Medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-            case 'Hard': return 'bg-red-100 text-red-800 border-red-200';
-            default: return 'bg-gray-100 text-gray-800 border-gray-200';
-        }
+        return 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-slate-600';
     };
 
     const getProbabilityColor = (prob) => {
-        switch (prob) {
-            case 'Very High': return 'bg-red-100 text-red-800 border-red-200';
-            case 'High': return 'bg-orange-100 text-orange-800 border-orange-200';
-            case 'Medium': return 'bg-blue-100 text-blue-800 border-blue-200';
-            case 'Low': return 'bg-gray-100 text-gray-800 border-gray-200';
-            default: return 'bg-gray-100 text-gray-800 border-gray-200';
-        }
+        return 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-slate-600';
     };
 
     const getInterviewTypeIcon = (type) => {
@@ -82,7 +71,7 @@ const QuestionCard = ({
     const avgRating = userRating ? (userRating.difficulty + userRating.usefulness + userRating.clarity) / 3 : 0;
 
     return (
-        <div className="bg-white rounded-xl mb-6 overflow-hidden shadow-lg border border-gray-100 group hover:shadow-xl transition-all duration-300">
+        <div className="bg-white dark:bg-slate-800 rounded-xl mb-6 overflow-hidden shadow-sm border border-gray-200 dark:border-slate-700 group hover:shadow-md transition-all duration-200">
             {/* Header with badges */}
             <div className="px-6 pt-4 pb-2">
                 <div className="flex flex-wrap gap-2 mb-3">
@@ -92,7 +81,7 @@ const QuestionCard = ({
                         </span>
                     )}
                     {justification?.interviewType && (
-                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200">
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-slate-600">
                             {getInterviewTypeIcon(justification.interviewType)} {justification.interviewType}
                         </span>
                     )}
@@ -102,7 +91,7 @@ const QuestionCard = ({
                         </span>
                     )}
                     {category && (
-                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800 border border-purple-200">
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-slate-600">
                             {category}
                         </span>
                     )}
@@ -113,15 +102,15 @@ const QuestionCard = ({
             <div className="px-6 pb-4">
                 <div className="flex items-start justify-between cursor-pointer" onClick={toggleExpand}>
                     <div className="flex items-start gap-4 flex-1">
-                        <span className="text-sm font-bold text-blue-600 mt-1">Q</span>
+                        <span className="text-sm font-bold text-gray-600 dark:text-gray-400 mt-1">Q</span>
                         <div className="flex-1">
-                            <h3 className="text-sm font-semibold text-gray-800 leading-relaxed mb-2">
+                            <h3 className="text-sm font-semibold text-gray-900 dark:text-white leading-relaxed mb-2">
                                 {question}
                             </h3>
                             
                             {/* Justification preview */}
                             {justification?.reasoning && (
-                                <p className="text-xs text-gray-600 bg-blue-50 px-3 py-2 rounded-lg mb-2">
+                                <p className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-slate-700 px-3 py-2 rounded-lg mb-2">
                                     💡 {justification.reasoning.substring(0, 100)}...
                                 </p>
                             )}
@@ -153,8 +142,8 @@ const QuestionCard = ({
                             <button
                                 className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded border transition-all ${
                                     isMastered
-                                    ? 'bg-green-100 text-green-800 border-green-200 hover:border-green-300'
-                                    : 'bg-gray-100 text-gray-600 border-gray-200 hover:border-gray-300'
+                                    ? 'bg-gray-200 dark:bg-slate-600 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-slate-500'
+                                    : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500'
                                 }`}
                                 onClick={(e) => { e.stopPropagation(); onToggleMastered(); }}
                             >
@@ -163,21 +152,21 @@ const QuestionCard = ({
                             </button>
                             
                             <button
-                                className="flex items-center gap-1 text-xs text-indigo-800 font-medium bg-indigo-50 px-2 py-1 rounded border border-indigo-100 hover:border-indigo-200 transition-all"
+                                className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 font-medium bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded border border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500 transition-all"
                                 onClick={(e) => { e.stopPropagation(); onTogglePin(); }}
                             >
                                 {isPinned ? <LuPinOff className="w-3 h-3" /> : <LuPin className="w-3 h-3" />}
                             </button>
                             
                             <button
-                                className="flex items-center gap-1 text-xs text-cyan-800 font-medium bg-cyan-50 px-2 py-1 rounded border border-cyan-100 hover:border-cyan-200 transition-all"
+                                className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 font-medium bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded border border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500 transition-all"
                                 onClick={(e) => { e.stopPropagation(); onAskFollowUp(); }}
                             >
                                 <LuMessageSquarePlus className="w-3 h-3" />
                             </button>
 
                             <button
-                                className="flex items-center gap-1 text-xs text-yellow-800 font-medium bg-yellow-50 px-2 py-1 rounded border border-yellow-100 hover:border-yellow-200 transition-all"
+                                className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 font-medium bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded border border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500 transition-all"
                                 onClick={(e) => { e.stopPropagation(); setShowRatingModal(true); }}
                             >
                                 <LuStar className="w-3 h-3" />

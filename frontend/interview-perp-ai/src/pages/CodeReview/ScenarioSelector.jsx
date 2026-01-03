@@ -34,15 +34,15 @@ const ScenarioSelector = () => {
     const [scenarioScores, setScenarioScores] = useState({});
 
     const difficultyColors = {
-        'Beginner': 'from-emerald-400 to-teal-400',
-        'Intermediate': 'from-amber-400 to-orange-400', 
-        'Advanced': 'from-rose-400 to-pink-400'
+        'Beginner': 'from-slate-500 to-slate-600',
+        'Intermediate': 'from-slate-600 to-slate-700', 
+        'Advanced': 'from-slate-700 to-slate-800'
     };
 
     const difficultyColorsAccessible = {
-        'Beginner': 'from-emerald-600 to-teal-600',
-        'Intermediate': 'from-amber-600 to-orange-600',
-        'Advanced': 'from-rose-600 to-pink-600'
+        'Beginner': 'from-slate-600 to-slate-700',
+        'Intermediate': 'from-slate-700 to-slate-800',
+        'Advanced': 'from-slate-800 to-slate-900'
     };
 
     const difficultyIcons = {
@@ -169,9 +169,9 @@ const ScenarioSelector = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/20">
+            <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                <div className="bg-slate-800 dark:bg-slate-900 text-white">
                     <div className="container mx-auto px-4 md:px-6 py-8">
                         <div className="max-w-6xl mx-auto">
                             <div className="flex items-center gap-4 mb-6">
@@ -247,11 +247,11 @@ const ScenarioSelector = () => {
                 <div className="container mx-auto px-4 md:px-6 py-8">
                     <div className="max-w-6xl mx-auto">
                         {/* Enhanced Filtering Section */}
-                        <div className="bg-white rounded-2xl shadow-lg border border-slate-200/60 p-6 mb-8">
+                        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200/60 dark:border-slate-700 p-6 mb-8">
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
-                                    <LuFilter className="w-5 h-5 text-indigo-600" />
-                                    <h2 className="text-xl font-semibold text-slate-800">Filters & Search</h2>
+                                    <LuFilter className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+                                    <h2 className="text-xl font-semibold text-slate-800 dark:text-white">Filters & Search</h2>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <button
@@ -280,7 +280,7 @@ const ScenarioSelector = () => {
                                     placeholder="Search scenarios..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                    className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
                                 />
                             </div>
 
@@ -289,7 +289,7 @@ const ScenarioSelector = () => {
                                 <select
                                     value={selectedDifficulty}
                                     onChange={(e) => setSelectedDifficulty(e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent appearance-none bg-white"
+                                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent appearance-none"
                                 >
                                     <option value="all">All Difficulties</option>
                                     <option value="beginner">Beginner</option>
@@ -304,7 +304,7 @@ const ScenarioSelector = () => {
                                 <select
                                     value={selectedTag}
                                     onChange={(e) => setSelectedTag(e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent appearance-none bg-white"
+                                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent appearance-none"
                                 >
                                     <option value="">All Tags</option>
                                     {getAllTags().map(tag => (
@@ -319,7 +319,7 @@ const ScenarioSelector = () => {
                                 <select
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value)}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent appearance-none bg-white"
+                                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent appearance-none"
                                 >
                                     <option value="latest">Latest First</option>
                                     <option value="difficulty-easy">Easiest First</option>
@@ -347,14 +347,14 @@ const ScenarioSelector = () => {
                         return (
                             <div
                                 key={scenario.id}
-                                className={`bg-white rounded-2xl shadow-lg border border-slate-200/60 overflow-hidden hover:shadow-xl transition-all duration-300 group relative ${
+                                className={`bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200/60 dark:border-slate-700 overflow-hidden hover:shadow-xl transition-all duration-300 group relative ${
                                     isCompleted ? 'opacity-90' : ''
                                 }`}
                             >
                                 {/* Completion Badge */}
                                 {isCompleted && (
                                     <div className="absolute top-4 right-4 z-10">
-                                        <div className="flex items-center gap-1 bg-emerald-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                                        <div className="flex items-center gap-1 bg-slate-600 text-white px-2 py-1 rounded-full text-xs font-medium">
                                             <LuCheck className="w-3 h-3" />
                                             {score ? `${score.overall}%` : 'Completed'}
                                         </div>
@@ -379,7 +379,7 @@ const ScenarioSelector = () => {
 
                                 {/* Content */}
                                 <div className="p-6">
-                                    <div className="flex items-center gap-2 text-sm text-slate-600 mb-4">
+                                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 mb-4">
                                         <LuUser className="w-4 h-4" />
                                         <span>by {scenario.author}</span>
                                     </div>
@@ -392,8 +392,8 @@ const ScenarioSelector = () => {
                                                 onClick={() => setSelectedTag(selectedTag === tag ? '' : tag)}
                                                 className={`px-2 py-1 text-xs rounded-md transition-colors hover:scale-105 ${
                                                     selectedTag === tag 
-                                                        ? 'bg-indigo-100 text-indigo-700 border border-indigo-300' 
-                                                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                                        ? 'bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-500' 
+                                                        : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
                                                 }`}
                                             >
                                                 {tag}
@@ -405,7 +405,7 @@ const ScenarioSelector = () => {
                                     </div>
 
                                     {/* Stats */}
-                                    <div className="flex items-center justify-between text-sm text-slate-600 mb-6">
+                                    <div className="flex items-center justify-between text-sm text-slate-600 dark:text-slate-400 mb-6">
                                         <div className="flex items-center gap-1">
                                             <LuTarget className="w-4 h-4" />
                                             <span>
@@ -425,12 +425,12 @@ const ScenarioSelector = () => {
 
                                     {/* Score Display */}
                                     {score && (
-                                        <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                                        <div className="mb-4 p-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg">
                                             <div className="flex items-center justify-between text-sm">
-                                                <span className="text-emerald-700 font-medium">Last Score:</span>
+                                                <span className="text-slate-700 dark:text-slate-300 font-medium">Last Score:</span>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-emerald-800 font-bold">{score.overall}%</span>
-                                                    <span className="text-emerald-600">({score.issuesFound}/{score.totalIssues} issues)</span>
+                                                    <span className="text-slate-800 dark:text-slate-200 font-bold">{score.overall}%</span>
+                                                    <span className="text-slate-600 dark:text-slate-400">({score.issuesFound}/{score.totalIssues} issues)</span>
                                                 </div>
                                             </div>
                                         </div>

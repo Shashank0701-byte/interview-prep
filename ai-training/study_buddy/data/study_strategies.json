@@ -1,0 +1,154 @@
+[
+  {
+    "id": "spaced_repetition_method",
+    "title": "Spaced Repetition for Technical Concepts",
+    "content": "Spaced repetition optimizes long-term retention by reviewing material at increasing intervals. For coding interviews: Day 1 - learn new concept, Day 3 - first review, Day 7 - second review, Day 14 - third review, Day 30 - final review. Apply to: algorithm patterns, system design concepts, behavioral stories. Use active recall: explain concepts without looking, implement algorithms from memory, draw system diagrams. Track difficulty: easy concepts get longer intervals, hard concepts get shorter intervals.",
+    "when_to_use": "Long-term preparation (2+ months), retaining large amounts of information, preventing forgetting of previously learned concepts",
+    "implementation_tips": [
+      "Use flashcards for quick concept reviews",
+      "Schedule reviews in calendar",
+      "Focus on weak areas more frequently",
+      "Combine with active practice"
+    ],
+    "metadata": {
+      "type": "study_strategy",
+      "category": "memory_retention",
+      "difficulty": "beginner",
+      "time_investment": "15-30 minutes daily",
+      "effectiveness": "very_high"
+    }
+  },
+  {
+    "id": "pomodoro_coding_practice",
+    "title": "Pomodoro Technique for Coding Practice",
+    "content": "Use focused 25-minute coding sessions with 5-minute breaks to maintain concentration and prevent burnout. Structure: 25 min problem-solving → 5 min break → 25 min implementation → 5 min break → 25 min optimization → 15 min break. During breaks: stretch, hydrate, avoid screens. After 4 pomodoros, take longer 15-30 minute break. Track progress: problems solved per session, concepts learned, areas of struggle. Adjust timing based on problem complexity.",
+    "when_to_use": "Daily practice sessions, maintaining focus during long study periods, preventing mental fatigue",
+    "implementation_tips": [
+      "Use timer app with notifications",
+      "Prepare problems in advance",
+      "Keep break activities ready",
+      "Track session effectiveness"
+    ],
+    "metadata": {
+      "type": "study_strategy",
+      "category": "time_management",
+      "difficulty": "beginner",
+      "time_investment": "2-4 hours daily",
+      "effectiveness": "high"
+    }
+  },
+  {
+    "id": "mock_interview_progression",
+    "title": "Progressive Mock Interview Strategy",
+    "content": "Build interview confidence through structured mock interview progression. Week 1-2: Solo practice with timer, focus on problem-solving approach. Week 3-4: Record yourself explaining solutions, review communication clarity. Week 5-6: Practice with friends or online platforms, get feedback. Week 7-8: Professional mock interviews with experienced engineers. Focus areas: problem understanding, solution approach, code implementation, optimization discussion, time management.",
+    "when_to_use": "Final 2 months of preparation, building interview confidence, practicing communication skills",
+    "implementation_tips": [
+      "Start with easier problems for confidence",
+      "Practice explaining thought process aloud",
+      "Get feedback on communication style",
+      "Simulate real interview conditions"
+    ],
+    "metadata": {
+      "type": "study_strategy",
+      "category": "interview_simulation",
+      "difficulty": "intermediate",
+      "time_investment": "2-3 hours weekly",
+      "effectiveness": "very_high"
+    }
+  },
+  {
+    "id": "pattern_recognition_method",
+    "title": "Algorithm Pattern Recognition Training",
+    "content": "Master common algorithm patterns to quickly identify solution approaches. Core patterns: Two Pointers, Sliding Window, Fast & Slow Pointers, Merge Intervals, Cyclic Sort, Tree BFS/DFS, Binary Search, Top K Elements, K-way Merge, Dynamic Programming. Study method: learn pattern → solve 5-10 similar problems → identify pattern variations → practice mixed problems. Create pattern cheat sheet with templates and example problems.",
+    "when_to_use": "Building problem-solving speed, recognizing solution patterns quickly, systematic algorithm learning",
+    "implementation_tips": [
+      "Create pattern template library",
+      "Practice identifying patterns in new problems",
+      "Time yourself on pattern recognition",
+      "Review patterns before interviews"
+    ],
+    "metadata": {
+      "type": "study_strategy",
+      "category": "problem_solving",
+      "difficulty": "intermediate",
+      "time_investment": "1-2 hours daily",
+      "effectiveness": "very_high"
+    }
+  },
+  {
+    "id": "system_design_building_blocks",
+    "title": "System Design Building Blocks Approach",
+    "content": "Master system design by learning fundamental building blocks, then combining them for complex systems. Core blocks: Load Balancers, Databases (SQL/NoSQL), Caches, Message Queues, CDNs, API Gateways, Microservices. Study approach: understand each component deeply → learn when to use each → practice combining components → design complete systems. Create reference architecture diagrams for common patterns.",
+    "when_to_use": "Preparing for senior roles, system design interviews, understanding large-scale architecture",
+    "implementation_tips": [
+      "Draw diagrams for each component",
+      "Study real-world system architectures",
+      "Practice explaining trade-offs",
+      "Start with simple systems, add complexity"
+    ],
+    "metadata": {
+      "type": "study_strategy",
+      "category": "system_design",
+      "difficulty": "advanced",
+      "time_investment": "3-4 hours weekly",
+      "effectiveness": "high"
+    }
+  },
+  {
+    "id": "behavioral_star_method",
+    "title": "STAR Method for Behavioral Questions",
+    "content": "Structure behavioral responses using STAR: Situation (context), Task (your responsibility), Action (what you did), Result (outcome and learning). Prepare 8-10 stories covering: leadership, conflict resolution, failure/learning, innovation, teamwork, challenging project. Each story should be 2-3 minutes, specific and quantifiable. Practice variations: same story for different question types, emphasizing different aspects based on the question focus.",
+    "when_to_use": "Behavioral interview preparation, structuring experience stories, demonstrating soft skills",
+    "implementation_tips": [
+      "Write out stories in STAR format",
+      "Practice telling stories naturally",
+      "Quantify results with metrics",
+      "Prepare follow-up question responses"
+    ],
+    "metadata": {
+      "type": "study_strategy",
+      "category": "behavioral_prep",
+      "difficulty": "beginner",
+      "time_investment": "1-2 hours weekly",
+      "effectiveness": "high"
+    }
+  },
+  {
+    "id": "weakness_focused_practice",
+    "title": "Weakness-Focused Improvement Strategy",
+    "content": "Identify and systematically address weak areas for maximum improvement. Assessment: solve diverse problems, track success rate by topic, identify patterns in mistakes. Focus strategy: spend 60% time on weak areas, 30% on medium areas, 10% on strong areas. Weak area approach: study theory → solve easy problems → gradually increase difficulty → mixed practice. Track progress weekly and adjust focus areas.",
+    "when_to_use": "Targeted skill improvement, efficient use of limited study time, addressing specific knowledge gaps",
+    "implementation_tips": [
+      "Regular self-assessment tests",
+      "Keep detailed progress logs",
+      "Seek help for persistent weak areas",
+      "Balance weakness focus with confidence building"
+    ],
+    "metadata": {
+      "type": "study_strategy",
+      "category": "skill_improvement",
+      "difficulty": "intermediate",
+      "time_investment": "Varies by weakness",
+      "effectiveness": "very_high"
+    }
+  },
+  {
+    "id": "company_research_framework",
+    "title": "Strategic Company Research Framework",
+    "content": "Research target companies systematically to tailor preparation and demonstrate genuine interest. Research areas: company mission/values, recent news/products, engineering culture, interview process, common questions, technology stack. Sources: company website, engineering blogs, Glassdoor, Blind, LinkedIn employees, GitHub repositories. Create company-specific preparation plan: align behavioral stories with company values, practice relevant technical problems, prepare thoughtful questions about the role and team.",
+    "when_to_use": "Targeting specific companies, tailoring interview preparation, demonstrating company knowledge",
+    "implementation_tips": [
+      "Create research template for consistency",
+      "Connect with current employees",
+      "Follow company engineering blogs",
+      "Prepare company-specific questions"
+    ],
+    "metadata": {
+      "type": "study_strategy",
+      "category": "company_preparation",
+      "difficulty": "beginner",
+      "time_investment": "2-3 hours per company",
+      "effectiveness": "high"
+    }
+  }
+]

@@ -34,6 +34,7 @@ const LiveCodingChallenge = () => {
     const [isTimerRunning, setIsTimerRunning] = useState(false);
     const [aiReview, setAiReview] = useState(null);
     const [showHints, setShowHints] = useState(false);
+    const [hasRunCode, setHasRunCode] = useState(false);
 
     // Timer effect
     useEffect(() => {
@@ -46,12 +47,20 @@ const LiveCodingChallenge = () => {
         return () => clearInterval(interval);
     }, [isTimerRunning]);
 
-    // Start timer when user starts typing
+    // Start timer when user starts typing and reset results if code changes significantly
     useEffect(() => {
         if (userCode !== challenge.starterCode && !isTimerRunning) {
             setIsTimerRunning(true);
         }
-    }, [userCode, challenge.starterCode, isTimerRunning]);
+        
+        // Reset results if user makes significant changes after running code
+        if (hasRunCode && analyzeCodeQuality(userCode) === 0) {
+            setHasRunCode(false);
+            setTestResults([]);
+            setAiReview(null);
+            setFeedback(null);
+        }
+    }, [userCode, challenge.starterCode, isTimerRunning, hasRunCode]);
 
     // Format time display
     const formatTime = (seconds) => {
@@ -149,20 +158,79 @@ const LiveCodingChallenge = () => {
         return analysis;
     };
 
+    // Analyze code quality for realistic test simulation
+    const analyzeCodeQuality = (code) => {
+        // Remove comments and whitespace for analysis
+        const cleanCode = code.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '').trim();
+        
+        // Check if it's just starter code or empty
+        if (cleanCode.length < 50) return 0;
+        
+        // Check if it's just a function declaration without implementation
+        const functionPattern = /function\s+\w+\s*\([^)]*\)\s*\{\s*\}/;
+        if (functionPattern.test(cleanCode)) return 0;
+        
+        // Check if it only has comments inside function
+        const hasOnlyComments = /function\s+\w+\s*\([^)]*\)\s*\{\s*(\/\/.*\s*)*\s*\}/.test(code);
+        if (hasOnlyComments) return 0;
+        
+        let quality = 0;
+        
+        // Must have actual implementation (not just function declaration)
+        const hasImplementation = cleanCode.includes('return') && cleanCode.split('\n').length > 3;
+        if (!hasImplementation) return 0;
+        
+        // Check for basic function structure
+        if (code.includes('function') || code.includes('=>') || code.includes('const')) quality += 0.2;
+        
+        // Check for return statement with actual logic
+        if (code.includes('return') && !code.match(/return\s*;?\s*$/m)) quality += 0.3;
+        
+        // Check for proper logic patterns
+        if (code.includes('for') || code.includes('while') || code.includes('map') || code.includes('forEach')) quality += 0.3;
+        
+        // Check for reasonable implementation length
+        if (cleanCode.length > 100) quality += 0.2;
+        
+        return Math.min(quality, 1);
+    };
+
     // Run code and get AI feedback
     const runCode = async () => {
+        if (!userCode.trim()) {
+            setFeedback({
+                success: false,
+                message: 'Please write some code before running tests!',
+                error: 'No code provided'
+            });
+            return;
+        }
+
+        // Check if code is just starter template
+        const codeQuality = analyzeCodeQuality(userCode);
+        if (codeQuality === 0) {
+            setFeedback({
+                success: false,
+                message: 'Please implement the function logic before running tests!',
+                error: 'Only starter code detected - add your implementation inside the function'
+            });
+            return;
+        }
+
         setIsRunning(true);
         setFeedback(null);
         setAiReview(null);
+        setHasRunCode(true);
 
         // Simulate code execution delay
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         try {
-            // Simulate test case execution
+            // Simulate test case execution based on code quality
+            const codeQuality = analyzeCodeQuality(userCode);
             const mockTestResults = challenge.testCases.map((testCase, index) => {
-                // Simple simulation - in real implementation, this would execute the code
-                const passed = Math.random() > 0.3; // 70% pass rate for demo
+                // More realistic simulation based on code content
+                const passed = codeQuality > 0.5 ? Math.random() > 0.2 : Math.random() > 0.7;
                 return {
                     id: index,
                     input: testCase.input,
@@ -202,15 +270,15 @@ const LiveCodingChallenge = () => {
 
     // Get score color
     const getScoreColor = (score) => {
-        if (score >= 80) return 'text-green-600';
-        if (score >= 60) return 'text-yellow-600';
-        return 'text-red-600';
+        if (score >= 80) return 'text-slate-700';
+        if (score >= 60) return 'text-slate-600';
+        return 'text-slate-500';
     };
 
     const getScoreBg = (score) => {
-        if (score >= 80) return 'bg-green-100';
-        if (score >= 60) return 'bg-yellow-100';
-        return 'bg-red-100';
+        if (score >= 80) return 'bg-slate-100';
+        if (score >= 60) return 'bg-slate-50';
+        return 'bg-gray-50';
     };
 
     return (
@@ -337,7 +405,19 @@ const LiveCodingChallenge = () => {
                         {/* Results & AI Review */}
                         <div className="space-y-6">
                             {/* Test Results */}
-                            {testResults.length > 0 && (
+                            {!hasRunCode ? (
+                                <div className="bg-white rounded-xl shadow-lg p-6">
+                                    <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                        <LuTarget className="w-5 h-5 text-gray-400" />
+                                        Test Results
+                                    </h2>
+                                    <div className="text-center py-8">
+                                        <LuPlay className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                                        <p className="text-gray-500 mb-2">No tests run yet</p>
+                                        <p className="text-sm text-gray-400">Write your solution and click "Run Code" to see test results</p>
+                                    </div>
+                                </div>
+                            ) : testResults.length > 0 && (
                                 <div className="bg-white rounded-xl shadow-lg p-6">
                                     <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                                         <LuCheck className="w-5 h-5 text-green-500" />
@@ -375,10 +455,22 @@ const LiveCodingChallenge = () => {
                             )}
 
                             {/* AI Code Review */}
-                            {aiReview && (
+                            {!hasRunCode ? (
                                 <div className="bg-white rounded-xl shadow-lg p-6">
                                     <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                        <LuBrain className="w-5 h-5 text-purple-500" />
+                                        <LuBrain className="w-5 h-5 text-gray-400" />
+                                        AI Code Review
+                                    </h2>
+                                    <div className="text-center py-8">
+                                        <LuBrain className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                                        <p className="text-gray-500 mb-2">No code analysis yet</p>
+                                        <p className="text-sm text-gray-400">Run your code to get AI feedback on correctness, efficiency, and style</p>
+                                    </div>
+                                </div>
+                            ) : aiReview && (
+                                <div className="bg-white rounded-xl shadow-lg p-6">
+                                    <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                        <LuBrain className="w-5 h-5 text-slate-600" />
                                         AI Code Review
                                     </h2>
 

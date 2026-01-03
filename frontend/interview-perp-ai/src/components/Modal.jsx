@@ -8,32 +8,29 @@ const Modal = ({ children, isOpen, onClose, title, hideHeader }) => {
   }
 
   return (
-    <div className='fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black/40'>
-      {/* Corrected: "relative" */}
+    <div className='fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black/50 backdrop-blur-sm p-2 sm:p-4'>
+      {/* Enhanced modal with better mobile responsiveness */}
       <div
-        className={`relative flex flex-col bg-white shadow-lg rounded-lg overflow-hidden`}
+        className={`relative flex flex-col bg-white shadow-2xl rounded-2xl overflow-hidden w-full max-w-md mx-auto transform transition-all duration-300 ease-out max-h-[95vh] sm:max-h-[90vh] min-h-0`}
       >
         {!hideHeader && (
-          // Corrected: "items-center"
-          <div className='flex items-center justify-between p-4 border-b border-gray-200'>
-            <h3 className='md:text-lg font-medium text-gray-900'>{title}</h3>
+          <div className='flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100'>
+            <h3 className='text-lg sm:text-xl font-semibold text-gray-900 pr-8'>{title}</h3>
           </div>
         )}
 
         <button
           type='button'
-          // Corrected: "absolute"
-          className='text-gray-400 bg-transparent hover:bg-orange-100 hover:text-gray-900 rounded-lg text-sm w-8 h-8 flex justify-center items-center absolute top-3.5 right-3.5 cursor-pointer'
+          className='text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-600 rounded-full text-sm w-10 h-10 sm:w-10 sm:h-10 flex justify-center items-center absolute top-2 right-2 sm:top-4 sm:right-4 cursor-pointer transition-all duration-200 ease-in-out z-10 touch-manipulation'
           onClick={onClose}
         >
           <svg
-            className='w-3 h-3'
+            className='w-3 h-3 sm:w-4 sm:h-4'
             aria-hidden="true"
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
             viewBox='0 0 14 14'
           >
-            {/* Corrected: SVG path data */}
             <path
               stroke='currentColor'
               strokeLinecap='round'

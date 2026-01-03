@@ -34,6 +34,13 @@ import LiveCodingChallenge from './pages/LiveCoding/LiveCodingChallenge';
 import StudyRoomDashboard from './pages/StudyRoom/StudyRoomDashboard';
 import StudyRoomInterface from './pages/StudyRoom/StudyRoomInterface';
 import StudyRoomJoin from './pages/StudyRoom/StudyRoomJoin';
+import AIInterviewCoach from './pages/AIInterviewCoach/AIInterviewCoach';
+import InterviewInterface from './pages/AIInterviewCoach/InterviewInterface';
+import InterviewReport from './pages/AIInterviewCoach/InterviewReport';
+import SalaryNegotiationPage from './pages/SalaryNegotiation/SalaryNegotiationPage';
+import NegotiationSimulator from './pages/SalaryNegotiation/NegotiationSimulator';
+import NegotiationResults from './pages/SalaryNegotiation/NegotiationResults';
+import NegotiationHistory from './pages/SalaryNegotiation/NegotiationHistory';
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -110,6 +117,22 @@ const App = () => {
               element={<ProtectedRoute><SmartResumeBuilder /></ProtectedRoute>}
             />
             <Route
+              path="/salary-negotiation"
+              element={<ProtectedRoute><SalaryNegotiationPage /></ProtectedRoute>}
+            />
+            <Route
+              path="/salary-negotiation/simulator"
+              element={<ProtectedRoute><NegotiationSimulator /></ProtectedRoute>}
+            />
+            <Route
+              path="/salary-negotiation/results"
+              element={<ProtectedRoute><NegotiationResults /></ProtectedRoute>}
+            />
+            <Route
+              path="/salary-negotiation/history"
+              element={<ProtectedRoute><NegotiationHistory /></ProtectedRoute>}
+            />
+            <Route
               path="/live-coding"
               element={<ProtectedRoute><LiveCodingPage /></ProtectedRoute>}
             />
@@ -128,6 +151,18 @@ const App = () => {
             <Route
               path="/join/:roomId"
               element={<ProtectedRoute><StudyRoomJoin /></ProtectedRoute>}
+            />
+            <Route
+              path="/ai-interview-coach"
+              element={<ProtectedRoute><AIInterviewCoach /></ProtectedRoute>}
+            />
+            <Route
+              path="/ai-interview/:sessionId"
+              element={<ProtectedRoute><InterviewInterface /></ProtectedRoute>}
+            />
+            <Route
+              path="/ai-interview/:sessionId/report"
+              element={<ProtectedRoute><InterviewReport /></ProtectedRoute>}
             />
           </Routes>
         </Router>

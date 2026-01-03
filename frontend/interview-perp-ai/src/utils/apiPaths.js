@@ -1,4 +1,4 @@
-export const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const API_PATHS = {
     AUTH: {
@@ -6,38 +6,44 @@ export const API_PATHS = {
         LOGIN: "/api/auth/login",
         GET_PROFILE: "/api/auth/profile",
     },
+
     IMAGE: {
         UPLOAD_IMAGE: "/api/auth/upload-image",
     },
+
     AI: {
         GENERATE_QUESTIONS: "/api/ai/generate-questions",
         GENERATE_EXPLANATION: "/api/ai/generate-explanation",
-        PRACTICE_FEEDBACK: "/api/ai/practice-feedback", 
+        PRACTICE_FEEDBACK: "/api/ai/practice-feedback",
         COMPANY_TAGS: "/api/ai/company-tags",
         COMPANY_QUESTIONS: "/api/ai/company-questions",
         GENERATE_FOLLOW_UP: "/api/ai/follow-up",
+
+        // 👍 StudyBuddy uses: /api/ai/chat AND /api/ai/health (handled in component)
     },
-    // ✅ FIX: Renamed to SESSIONS for consistency
-    SESSIONS: { 
+
+    SESSIONS: {
         CREATE: "/api/sessions/create",
-        GET_MY_SESSIONS: "/api/sessions/my-sessions", // ✅ FIX: Renamed for clarity
+        GET_MY_SESSIONS: "/api/sessions/my-sessions",
         GET_ONE: (id) => `/api/sessions/${id}`,
         DELETE: (id) => `/api/sessions/${id}`,
         GET_REVIEW_QUEUE: "/api/sessions/review-queue",
         UPDATE_RATING: (id) => `/api/sessions/${id}/rating`,
         UPDATE_PROGRESS: (id) => `/api/sessions/${id}/progress`,
     },
+
     QUESTION: {
         ADD_TO_SESSION: "/api/questions/add",
         PIN: (id) => `/api/questions/${id}/pin`,
-        UPDATE_NOTE: (id) => `/api/questions/${id}/note`, // ✅ FIX: Using one consistent name
+        UPDATE_NOTE: (id) => `/api/questions/${id}/note`,
         TOGGLE_MASTERED: (id) => `/api/questions/${id}/master`,
         GET_QUESTIONS_BY_COMPANY: "/api/questions/by-company",
-        REVIEW: (id) => `/api/questions/${id}/review`, // ✅ FIX: Added the missing REVIEW path
+        REVIEW: (id) => `/api/questions/${id}/review`,
         UPDATE_JUSTIFICATION: (id) => `/api/questions/${id}/justification`,
         UPDATE_RATING: (id) => `/api/questions/${id}/rating`,
         FILTER: "/api/questions/filter",
     },
+
     ANALYTICS: {
         GET_PERFORMANCE_OVER_TIME: "/api/analytics/performance-over-time",
         GET_PERFORMANCE_BY_TOPIC: "/api/analytics/performance-by-topic",
@@ -46,10 +52,16 @@ export const API_PATHS = {
         GET_MASTERY_RATIO: "/api/analytics/mastery-ratio",
         GET_PROGRESS_STATS: "/api/analytics/progress-stats",
         GET_STREAK_DATA: "/api/analytics/streak-data",
+        // AI Interview Analytics
+        GET_AI_INTERVIEW_INSIGHTS: "/api/analytics/ai-interview-insights",
+        GET_COMMUNICATION_ANALYSIS: "/api/analytics/communication-analysis",
+        GET_SKILL_GAP_ANALYSIS: "/api/analytics/skill-gap-analysis",
     },
+
     FEEDBACK: {
-        GENERATE: 'api/feedback', // Add this new path
+        GENERATE: "/api/feedback", // FIXED missing "/"
     },
+
     COMPANIES: {
         GET_ALL: "/api/companies",
         GET_ONE: (id) => `/api/companies/${id}`,
@@ -58,18 +70,21 @@ export const API_PATHS = {
         ADD_QUESTION: (id) => `/api/companies/${id}/questions`,
         GET_STATS: (id) => `/api/companies/${id}/stats`,
     },
+
     AI_INTERVIEW: {
         START: "/api/ai-interview/start",
         SUBMIT_ANSWER: (sessionId) => `/api/ai-interview/${sessionId}/answer`,
         COMPLETE: (sessionId) => `/api/ai-interview/${sessionId}/complete`,
         GET_SESSION: (sessionId) => `/api/ai-interview/${sessionId}`,
     },
+
     RECRUITER: {
         DASHBOARD: "/api/recruiter/dashboard",
         CANDIDATES: "/api/recruiter/candidates",
         CANDIDATE_PROFILE: (candidateId) => `/api/recruiter/candidates/${candidateId}`,
         ANALYTICS: "/api/recruiter/analytics",
     },
+
     LEARNING_PATH: {
         CREATE: "/api/learning-path/create",
         GET: "/api/learning-path",
@@ -77,19 +92,36 @@ export const API_PATHS = {
         RECOMMENDATIONS: "/api/learning-path/recommendations",
         COMPLETE_ITEM: "/api/learning-path/complete-item",
     },
+
     ROADMAP: {
         GET_ROLES: "/api/roadmap/roles",
         GET_PROGRESS: "/api/roadmap/progress",
         GENERATE: (role) => `/api/roadmap/${encodeURIComponent(role)}`,
     },
+
     ROADMAP_SESSIONS: {
         CREATE: "/api/roadmap-sessions/create",
-        GET_PHASE_SESSIONS: (role, phaseId) => `/api/roadmap-sessions/phase/${encodeURIComponent(role)}/${phaseId}`,
+        GET_PHASE_SESSIONS: (role, phaseId) =>
+            `/api/roadmap-sessions/phase/${encodeURIComponent(role)}/${phaseId}`,
         GET_MY_SESSIONS: "/api/roadmap-sessions/my-sessions",
         GET_ONE: (id) => `/api/roadmap-sessions/${id}`,
         DELETE: (id) => `/api/roadmap-sessions/${id}`,
         UPDATE_RATING: (id) => `/api/roadmap-sessions/${id}/rating`,
         UPDATE_PROGRESS: (id) => `/api/roadmap-sessions/${id}/progress`,
     },
-   
+    AI_INTERVIEW_COACH: {
+        CREATE: "/api/ai-interview-coach/create",
+        START: (sessionId) => `/api/ai-interview-coach/${sessionId}/start`,
+        COMPLETE: (sessionId) => `/api/ai-interview-coach/${sessionId}/complete`,
+        GET_SESSION: (sessionId) => `/api/ai-interview-coach/${sessionId}`,
+        SUBMIT_ANALYSIS: (sessionId) => `/api/ai-interview-coach/${sessionId}/analysis`,
+        VOICE_RESPONSE: (sessionId) => `/api/ai-interview-coach/${sessionId}/voice-response`,
+        HISTORY: "/api/ai-interview-coach/history",
+    },
+    SALARY_NEGOTIATION: {
+        START: "/api/salary-negotiation/start",
+        SEND_MESSAGE: (negotiationId) => `/api/salary-negotiation/${negotiationId}/message`,
+        FINALIZE: (negotiationId) => `/api/salary-negotiation/${negotiationId}/finalize`,
+        HISTORY: "/api/salary-negotiation/history",
+    },
 };

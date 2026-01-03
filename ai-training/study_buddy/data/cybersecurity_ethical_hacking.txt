@@ -1,0 +1,1517 @@
+# Cybersecurity and Ethical Hacking Interview Preparation
+
+## Network Security Fundamentals
+
+### OSI Model and Security
+The OSI (Open Systems Interconnection) model provides a framework for understanding network security at different layers.
+
+#### Layer-by-Layer Security Considerations
+- **Layer 1 (Physical)**: Physical access control, cable security, environmental controls
+- **Layer 2 (Data Link)**: MAC filtering, port security, ARP spoofing prevention
+- **Layer 3 (Network)**: IP filtering, routing security, VPN implementation
+- **Layer 4 (Transport)**: Firewalls, port security, TCP/UDP filtering
+- **Layer 5 (Session)**: Session hijacking prevention, secure session management
+- **Layer 6 (Presentation)**: Encryption, data compression security
+- **Layer 7 (Application)**: Application firewalls, input validation, secure coding
+
+#### Network Security Protocols
+```bash
+# IPsec Configuration Example
+# /etc/ipsec.conf
+config setup
+    charondebug="all"
+    uniqueids=yes
+
+conn %default
+    keyexchange=ikev2
+    ike=aes256-sha1-modp2048!
+    esp=aes256-sha1!
+    dpdaction=clear
+    dpddelay=1800s
+    dpdtimeout=5000s
+
+conn vpn-tunnel
+    left=10.0.1.1
+    leftsubnet=10.0.1.0/24
+    leftcert=server.crt
+    leftid=@server.example.com
+    right=0.0.0.0
+    rightid=@client.example.com
+    rightcert=client.crt
+    auto=add
+```
+
+### Firewalls and Network Defense
+Firewalls are network security systems that monitor and control incoming and outgoing network traffic based on predetermined security rules.
+
+#### iptables Configuration
+```bash
+#!/bin/bash
+# Basic firewall configuration script
+
+# Flush existing rules
+iptables -F
+iptables -X
+iptables -t nat -F
+iptables -t nat -X
+
+# Set default policies
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
+
+# Allow loopback traffic
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+
+# Allow established and related connections
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Allow SSH (with rate limiting)
+iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set
+iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 60 --hitcount 4 -j DROP
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+# Allow HTTP/HTTPS
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+# Log and drop other traffic
+iptables -A INPUT -j LOG --log-prefix "INPUT-DROPPED: "
+iptables -A INPUT -j DROP
+
+# Save rules
+iptables-save > /etc/iptables/rules.v4
+```
+
+#### UFW (Uncomplicated Firewall) Configuration
+```bash
+# Enable UFW
+sudo ufw enable
+
+# Default policies
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# Allow specific services
+sudo ufw allow ssh
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+
+# Allow from specific IP ranges
+sudo ufw allow from 192.168.1.0/24 to any port 22
+
+# Rate limiting
+sudo ufw limit ssh
+
+# Check status
+sudo ufw status verbose
+```
+
+## Cryptography and Encryption
+
+### Symmetric Encryption
+Symmetric encryption uses the same key for both encryption and decryption.
+
+#### AES Implementation in Python
+```python
+from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
+from Crypto.Util.Padding import pad, unpad
+
+class AESCipher:
+    def __init__(self, key):
+        self.key = key.encode('utf-8')
+        self.cipher = AES.new(self.key, AES.MODE_CBC)
+    
+    def encrypt(self, plaintext):
+        # Generate random IV
+        iv = get_random_bytes(AES.block_size)
+        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        
+        # Pad and encrypt
+        padded_text = pad(plaintext.encode('utf-8'), AES.block_size)
+        ciphertext = cipher.encrypt(padded_text)
+        
+        # Return IV + ciphertext
+        return iv + ciphertext
+    
+    def decrypt(self, ciphertext):
+        # Extract IV
+        iv = ciphertext[:AES.block_size]
+        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        
+        # Decrypt and unpad
+        decrypted_text = cipher.decrypt(ciphertext[AES.block_size:])
+        plaintext = unpad(decrypted_text, AES.block_size)
+        
+        return plaintext.decode('utf-8')
+
+# Usage
+key = "my-secret-key-32"  # 32 bytes for AES-256
+cipher = AESCipher(key)
+
+# Encrypt
+message = "This is a secret message"
+encrypted = cipher.encrypt(message)
+print(f"Encrypted: {encrypted.hex()}")
+
+# Decrypt
+decrypted = cipher.decrypt(encrypted)
+print(f"Decrypted: {decrypted}")
+```
+
+### Asymmetric Encryption
+Asymmetric encryption uses different keys for encryption and decryption.
+
+#### RSA Implementation
+```python
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
+from Crypto import Random
+
+class RSACipher:
+    def __init__(self, key_size=2048):
+        self.key_size = key_size
+        self.private_key = None
+        self.public_key = None
+    
+    def generate_keys(self):
+        # Generate key pair
+        self.private_key = RSA.generate(self.key_size)
+        self.public_key = self.private_key.publickey()
+        
+        return self.private_key, self.public_key
+    
+    def encrypt(self, plaintext, public_key):
+        cipher = PKCS1_OAEP.new(public_key)
+        ciphertext = cipher.encrypt(plaintext.encode('utf-8'))
+        return ciphertext
+    
+    def decrypt(self, ciphertext, private_key):
+        cipher = PKCS1_OAEP.new(private_key)
+        plaintext = cipher.decrypt(ciphertext)
+        return plaintext.decode('utf-8')
+    
+    def sign(self, message, private_key):
+        from Crypto.Signature import pkcs1_15
+        from Crypto.Hash import SHA256
+        
+        hash_obj = SHA256.new(message.encode('utf-8'))
+        signature = pkcs1_15.new(private_key).sign(hash_obj)
+        return signature
+    
+    def verify(self, message, signature, public_key):
+        from Crypto.Signature import pkcs1_15
+        from Crypto.Hash import SHA256
+        
+        hash_obj = SHA256.new(message.encode('utf-8'))
+        try:
+            pkcs1_15.new(public_key).verify(hash_obj, signature)
+            return True
+        except (ValueError, TypeError):
+            return False
+
+# Usage
+rsa_cipher = RSACipher()
+private_key, public_key = rsa_cipher.generate_keys()
+
+# Encrypt/Decrypt
+message = "Confidential message"
+encrypted = rsa_cipher.encrypt(message, public_key)
+decrypted = rsa_cipher.decrypt(encrypted, private_key)
+
+# Sign/Verify
+signature = rsa_cipher.sign(message, private_key)
+is_valid = rsa_cipher.verify(message, signature, public_key)
+```
+
+### Hash Functions and Digital Signatures
+Hash functions create fixed-size outputs from variable-size inputs, essential for data integrity verification.
+
+#### Hash Functions Implementation
+```python
+import hashlib
+import hmac
+
+class HashUtils:
+    @staticmethod
+    def sha256_hash(data):
+        return hashlib.sha256(data.encode('utf-8')).hexdigest()
+    
+    @staticmethod
+    def sha512_hash(data):
+        return hashlib.sha512(data.encode('utf-8')).hexdigest()
+    
+    @staticmethod
+    def hmac_sha256(key, message):
+        return hmac.new(
+            key.encode('utf-8'),
+            message.encode('utf-8'),
+            hashlib.sha256
+        ).hexdigest()
+    
+    @staticmethod
+    def salted_hash(password, salt=None):
+        if salt is None:
+            salt = get_random_bytes(32)
+        
+        # PBKDF2 with SHA-256
+        hashed = hashlib.pbkdf2_hmac(
+            'sha256',
+            password.encode('utf-8'),
+            salt,
+            100000  # iterations
+        )
+        
+        return salt + hashed
+    
+    @staticmethod
+    def verify_password(password, salted_hash):
+        salt = salted_hash[:32]
+        stored_hash = salted_hash[32:]
+        computed_hash = hashlib.pbkdf2_hmac(
+            'sha256',
+            password.encode('utf-8'),
+            salt,
+            100000
+        )
+        return hmac.compare_digest(stored_hash, computed_hash)
+
+# Usage
+hash_utils = HashUtils()
+
+# Basic hashing
+data = "Important data"
+hash_value = hash_utils.sha256_hash(data)
+
+# HMAC
+key = "secret-key"
+message = "Authenticated message"
+hmac_value = hash_utils.hmac_sha256(key, message)
+
+# Password hashing
+password = "user_password_123"
+salted_password = hash_utils.salted_hash(password)
+is_valid = hash_utils.verify_password(password, salted_password)
+```
+
+## Web Application Security
+
+### OWASP Top 10
+The OWASP Top 10 is a standard awareness document representing a broad consensus about the most critical security risks to web applications.
+
+#### 1. Injection Attacks
+Injection attacks occur when untrusted data is sent to an interpreter as part of a command or query.
+
+```python
+# SQL Injection Prevention
+import sqlite3
+from contextlib import closing
+
+class SecureDatabase:
+    def __init__(self, db_path):
+        self.db_path = db_path
+    
+    def get_user_by_id(self, user_id):
+        # Safe: Using parameterized queries
+        with closing(sqlite3.connect(self.db_path)) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+            return cursor.fetchone()
+    
+    def search_users(self, search_term):
+        # Safe: Parameterized query for search
+        with closing(sqlite3.connect(self.db_path)) as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT * FROM users WHERE username LIKE ?",
+                (f"%{search_term}%",)
+            )
+            return cursor.fetchall()
+
+# Command Injection Prevention
+import subprocess
+import shlex
+
+class SecureCommandExecutor:
+    def safe_execute(self, command, args):
+        # Safe: Using subprocess with proper argument separation
+        try:
+            # Validate command against whitelist
+            allowed_commands = ['ls', 'whoami', 'date']
+            if command not in allowed_commands:
+                raise ValueError("Command not allowed")
+            
+            # Use subprocess.run with argument list
+            result = subprocess.run(
+                [command] + args,
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=True
+            )
+            return result.stdout
+        except subprocess.TimeoutExpired:
+            raise ValueError("Command timed out")
+        except subprocess.CalledProcessError as e:
+            raise ValueError(f"Command failed: {e.stderr}")
+```
+
+#### 2. Broken Authentication
+Authentication and session management should be implemented securely.
+
+```python
+import jwt
+import secrets
+from datetime import datetime, timedelta
+from werkzeug.security import generate_password_hash, check_password_hash
+
+class SecureAuth:
+    def __init__(self, secret_key):
+        self.secret_key = secret_key
+        self.session_tokens = {}
+    
+    def hash_password(self, password):
+        # Use secure password hashing
+        return generate_password_hash(password, method='pbkdf2:sha256')
+    
+    def verify_password(self, password, hashed_password):
+        return check_password_hash(hashed_password, password)
+    
+    def generate_session_token(self, user_id):
+        # Generate secure session token
+        session_id = secrets.token_urlsafe(32)
+        expires = datetime.utcnow() + timedelta(hours=1)
+        
+        self.session_tokens[session_id] = {
+            'user_id': user_id,
+            'expires': expires
+        }
+        
+        return session_id
+    
+    def validate_session(self, session_id):
+        session = self.session_tokens.get(session_id)
+        if not session:
+            return None
+        
+        if datetime.utcnow() > session['expires']:
+            del self.session_tokens[session_id]
+            return None
+        
+        return session['user_id']
+    
+    def generate_jwt_token(self, user_id, expires_in=3600):
+        payload = {
+            'user_id': user_id,
+            'exp': datetime.utcnow() + timedelta(seconds=expires_in),
+            'iat': datetime.utcnow()
+        }
+        return jwt.encode(payload, self.secret_key, algorithm='HS256')
+    
+    def verify_jwt_token(self, token):
+        try:
+            payload = jwt.decode(token, self.secret_key, algorithms=['HS256'])
+            return payload['user_id']
+        except jwt.ExpiredSignatureError:
+            return None
+        except jwt.InvalidTokenError:
+            return None
+```
+
+#### 3. Cross-Site Scripting (XSS) Prevention
+XSS attacks inject malicious scripts into web pages viewed by other users.
+
+```python
+import html
+import bleach
+from markupsafe import Markup
+
+class XSSProtection:
+    def __init__(self):
+        # Allowed HTML tags for content sanitization
+        self.allowed_tags = [
+            'p', 'br', 'strong', 'em', 'u', 'ol', 'ul', 'li',
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote',
+            'code', 'pre'
+        ]
+        
+        self.allowed_attributes = {
+            '*': ['class'],
+            'a': ['href', 'title'],
+            'img': ['src', 'alt', 'width', 'height']
+        }
+    
+    def escape_html(self, user_input):
+        """Escape all HTML characters"""
+        return html.escape(str(user_input))
+    
+    def sanitize_html(self, user_input):
+        """Clean HTML to allow only safe tags"""
+        return bleach.clean(
+            str(user_input),
+            tags=self.allowed_tags,
+            attributes=self.allowed_attributes,
+            strip=True
+        )
+    
+    def safe_render(self, user_input):
+        """Return safe HTML for rendering"""
+        sanitized = self.sanitize_html(user_input)
+        return Markup(sanitized)
+    
+    def set_security_headers(self, response):
+        """Set security headers to prevent XSS"""
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'DENY'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Content-Security-Policy'] = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline'; "
+            "style-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data: https:; "
+            "font-src 'self'; "
+            "connect-src 'self'"
+        )
+        return response
+```
+
+## Ethical Hacking Methodology
+
+### Reconnaissance and Information Gathering
+Reconnaissance involves gathering information about target systems to identify potential vulnerabilities.
+
+#### Passive Reconnaissance
+```python
+import requests
+import dns.resolver
+import whois
+import subprocess
+from bs4 import BeautifulSoup
+
+class PassiveRecon:
+    def __init__(self, target_domain):
+        self.target_domain = target_domain
+        self.findings = {}
+    
+    def whois_lookup(self):
+        """Perform WHOIS lookup"""
+        try:
+            domain_info = whois.whois(self.target_domain)
+            self.findings['whois'] = {
+                'registrar': domain_info.registrar,
+                'creation_date': domain_info.creation_date,
+                'expiration_date': domain_info.expiration_date,
+                'name_servers': domain_info.name_servers,
+                'emails': domain_info.emails
+            }
+        except Exception as e:
+            self.findings['whois'] = f"Error: {e}"
+    
+    def dns_enumeration(self):
+        """Enumerate DNS records"""
+        record_types = ['A', 'AAAA', 'MX', 'NS', 'TXT', 'SOA']
+        dns_records = {}
+        
+        for record_type in record_types:
+            try:
+                answers = dns.resolver.resolve(self.target_domain, record_type)
+                dns_records[record_type] = [str(answer) for answer in answers]
+            except:
+                dns_records[record_type] = []
+        
+        self.findings['dns'] = dns_records
+    
+    def subdomain_enumeration(self):
+        """Find subdomains using certificate transparency"""
+        subdomains = set()
+        
+        # Use certificate transparency logs
+        ct_urls = [
+            f"https://crt.sh/?q=%.{self.target_domain}&output=json",
+            f"https://crt.sh/?q={self.target_domain}&output=json"
+        ]
+        
+        for url in ct_urls:
+            try:
+                response = requests.get(url, timeout=10)
+                if response.status_code == 200:
+                    # Parse JSON response
+                    import json
+                    data = response.json()
+                    for entry in data:
+                        name_value = entry.get('name_value', '')
+                        for name in name_value.split('\n'):
+                            if self.target_domain in name:
+                                subdomains.add(name.strip())
+            except:
+                continue
+        
+        self.findings['subdomains'] = list(subdomains)
+    
+    def technology_identification(self):
+        """Identify technologies used by the website"""
+        try:
+            response = requests.get(f"https://{self.target_domain}", timeout=10)
+            headers = response.headers
+            
+            # Check for common technology indicators
+            technologies = []
+            
+            # Server headers
+            if 'server' in headers:
+                technologies.append(f"Server: {headers['server']}")
+            
+            # X-Powered-By headers
+            if 'x-powered-by' in headers:
+                technologies.append(f"Powered by: {headers['x-powered-by']}")
+            
+            # Check for common CMS patterns
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            # WordPress
+            if 'wp-content' in response.text or 'wp-includes' in response.text:
+                technologies.append("WordPress")
+            
+            # Drupal
+            if 'Drupal.settings' in response.text or 'sites/all' in response.text:
+                technologies.append("Drupal")
+            
+            # Joomla
+            if '/com_' in response.text or 'joomla' in response.text.lower():
+                technologies.append("Joomla")
+            
+            self.findings['technologies'] = technologies
+            
+        except Exception as e:
+            self.findings['technologies'] = f"Error: {e}"
+    
+    def generate_report(self):
+        """Generate reconnaissance report"""
+        report = f"Passive Reconnaissance Report for {self.target_domain}\n"
+        report += "=" * 60 + "\n\n"
+        
+        for category, data in self.findings.items():
+            report += f"{category.upper()}:\n"
+            report += "-" * 20 + "\n"
+            
+            if isinstance(data, dict):
+                for key, value in data.items():
+                    if value:
+                        report += f"  {key}: {value}\n"
+            elif isinstance(data, list):
+                for item in data:
+                    if item:
+                        report += f"  {item}\n"
+            else:
+                report += f"  {data}\n"
+            
+            report += "\n"
+        
+        return report
+
+# Usage
+recon = PassiveRecon("example.com")
+recon.whois_lookup()
+recon.dns_enumeration()
+recon.subdomain_enumeration()
+recon.technology_identification()
+report = recon.generate_report()
+print(report)
+```
+
+#### Active Reconnaissance
+```python
+import nmap
+import socket
+import ssl
+from concurrent.futures import ThreadPoolExecutor
+import requests
+
+class ActiveRecon:
+    def __init__(self, target):
+        self.target = target
+        self.nm = nmap.PortScanner()
+        self.open_ports = []
+        self.services = {}
+    
+    def port_scan(self, ports="1-1000"):
+        """Perform port scanning"""
+        try:
+            result = self.nm.scan(self.target, ports, arguments='-sS -O')
+            
+            for host in self.nm.all_hosts():
+                for proto in self.nm[host].all_protocols():
+                    ports = self.nm[host][proto].keys()
+                    
+                    for port in ports:
+                        port_info = self.nm[host][proto][port]
+                        if port_info['state'] == 'open':
+                            self.open_ports.append(port)
+                            self.services[port] = {
+                                'name': port_info['name'],
+                                'product': port_info['product'],
+                                'version': port_info['version'],
+                                'state': port_info['state']
+                            }
+            
+            return True
+        except Exception as e:
+            print(f"Port scan error: {e}")
+            return False
+    
+    def service_detection(self):
+        """Detect services on open ports"""
+        service_info = {}
+        
+        for port in self.open_ports:
+            try:
+                # HTTP detection
+                if port in [80, 443, 8080, 8443]:
+                    protocol = 'https' if port in [443, 8443] else 'http'
+                    url = f"{protocol}://{self.target}:{port}"
+                    
+                    try:
+                        response = requests.get(url, timeout=5)
+                        service_info[port] = {
+                            'service': 'HTTP',
+                            'status_code': response.status_code,
+                            'server': response.headers.get('server', 'Unknown'),
+                            'title': self.extract_title(response.text)
+                        }
+                    except:
+                        service_info[port] = {'service': 'HTTP', 'error': 'Connection failed'}
+                
+                # SSH detection
+                elif port == 22:
+                    service_info[port] = self.detect_ssh_service()
+                
+                # FTP detection
+                elif port == 21:
+                    service_info[port] = self.detect_ftp_service()
+                
+                # SMTP detection
+                elif port in [25, 587]:
+                    service_info[port] = self.detect_smtp_service()
+                
+            except Exception as e:
+                service_info[port] = {'error': str(e)}
+        
+        return service_info
+    
+    def detect_ssh_service(self):
+        """Detect SSH service version"""
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(5)
+            sock.connect((self.target, 22))
+            banner = sock.recv(1024).decode('utf-8')
+            sock.close()
+            
+            return {
+                'service': 'SSH',
+                'banner': banner.strip()
+            }
+        except:
+            return {'service': 'SSH', 'error': 'Connection failed'}
+    
+    def detect_ftp_service(self):
+        """Detect FTP service"""
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(5)
+            sock.connect((self.target, 21))
+            banner = sock.recv(1024).decode('utf-8')
+            sock.close()
+            
+            return {
+                'service': 'FTP',
+                'banner': banner.strip()
+            }
+        except:
+            return {'service': 'FTP', 'error': 'Connection failed'}
+    
+    def detect_smtp_service(self):
+        """Detect SMTP service"""
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(5)
+            sock.connect((self.target, 25))
+            banner = sock.recv(1024).decode('utf-8')
+            sock.close()
+            
+            return {
+                'service': 'SMTP',
+                'banner': banner.strip()
+            }
+        except:
+            return {'service': 'SMTP', 'error': 'Connection failed'}
+    
+    def extract_title(self, html_content):
+        """Extract title from HTML content"""
+        try:
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(html_content, 'html.parser')
+            title = soup.find('title')
+            return title.text.strip() if title else 'No title'
+        except:
+            return 'Title extraction failed'
+    
+    def web_directory_bruteforce(self, common_paths=None):
+        """Brute force common web directories"""
+        if common_paths is None:
+            common_paths = [
+                '/admin', '/login', '/wp-admin', '/phpmyadmin',
+                '/test', '/dev', '/backup', '/config', '/api',
+                '/robots.txt', '/sitemap.xml', '/.git', '/.env'
+            ]
+        
+        found_paths = []
+        
+        for path in common_paths:
+            try:
+                url = f"http://{self.target}{path}"
+                response = requests.get(url, timeout=5, allow_redirects=False)
+                
+                if response.status_code in [200, 301, 302, 403]:
+                    found_paths.append({
+                        'path': path,
+                        'status_code': response.status_code,
+                        'content_length': len(response.content)
+                    })
+            except:
+                continue
+        
+        return found_paths
+    
+    def generate_report(self):
+        """Generate active reconnaissance report"""
+        report = f"Active Reconnaissance Report for {self.target}\n"
+        report += "=" * 60 + "\n\n"
+        
+        report += f"Open Ports: {len(self.open_ports)}\n"
+        report += "-" * 20 + "\n"
+        for port in sorted(self.open_ports):
+            service = self.services.get(port, {})
+            report += f"  Port {port}: {service.get('name', 'Unknown')} - {service.get('product', 'Unknown')}\n"
+        
+        report += "\n"
+        
+        report += "Service Detection:\n"
+        report += "-" * 20 + "\n"
+        for port, info in self.services.items():
+            report += f"  Port {port}: {info}\n"
+        
+        return report
+
+# Usage
+active_recon = ActiveRecon("target.example.com")
+active_recon.port_scan()
+services = active_recon.service_detection()
+directories = active_recon.web_directory_bruteforce()
+report = active_recon.generate_report()
+print(report)
+```
+
+## Vulnerability Assessment
+
+### Web Vulnerability Scanning
+Automated tools help identify common web application vulnerabilities.
+
+```python
+import requests
+import re
+from urllib.parse import urljoin, urlparse
+from bs4 import BeautifulSoup
+import time
+
+class WebVulnerabilityScanner:
+    def __init__(self, base_url):
+        self.base_url = base_url
+        self.session = requests.Session()
+        self.session.headers.update({
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        })
+        self.vulnerabilities = []
+    
+    def check_sql_injection(self, url):
+        """Check for SQL injection vulnerabilities"""
+        # Test parameters
+        sql_payloads = [
+            "'", '"', "\\", "1' OR '1'='1", "1\" OR \"1\"=\"1",
+            "' UNION SELECT NULL--", "' OR 1=1--"
+        ]
+        
+        try:
+            response = self.session.get(url)
+            
+            # Check for SQL error messages
+            sql_errors = [
+                "SQL syntax", "mysql_fetch", "ORA-", "Microsoft OLE DB",
+                "ODBC Drivers error", "Warning: mysql", "valid MySQL result",
+                "PostgreSQL query failed", "Warning: pg_"
+            ]
+            
+            for payload in sql_payloads:
+                test_url = f"{url}?id={payload}"
+                try:
+                    test_response = self.session.get(test_url, timeout=5)
+                    
+                    for error in sql_errors:
+                        if error.lower() in test_response.text.lower():
+                            self.vulnerabilities.append({
+                                'type': 'SQL Injection',
+                                'url': test_url,
+                                'payload': payload,
+                                'evidence': error,
+                                'severity': 'High'
+                            })
+                            break
+                except:
+                    continue
+                    
+        except Exception as e:
+            pass
+    
+    def check_xss(self, url):
+        """Check for Cross-Site Scripting vulnerabilities"""
+        xss_payloads = [
+            "<script>alert('XSS')</script>",
+            "<img src=x onerror=alert('XSS')>",
+            "javascript:alert('XSS')",
+            "';alert('XSS');//"
+        ]
+        
+        try:
+            response = self.session.get(url)
+            
+            # Find input fields and forms
+            soup = BeautifulSoup(response.text, 'html.parser')
+            forms = soup.find_all('form')
+            inputs = soup.find_all(['input', 'textarea'])
+            
+            for payload in xss_payloads:
+                # Test URL parameters
+                test_url = f"{url}?search={payload}"
+                try:
+                    test_response = self.session.get(test_url, timeout=5)
+                    if payload in test_response.text:
+                        self.vulnerabilities.append({
+                            'type': 'XSS (Reflected)',
+                            'url': test_url,
+                            'payload': payload,
+                            'evidence': 'Payload reflected in response',
+                            'severity': 'High'
+                        })
+                except:
+                    continue
+                    
+        except Exception as e:
+            pass
+    
+    def check_directory_listing(self, url):
+        """Check for directory listing vulnerabilities"""
+        try:
+            response = self.session.get(url)
+            
+            # Check for directory listing indicators
+            listing_indicators = [
+                "Index of /", "Directory Listing", "Parent Directory",
+                "[DIR]", "<pre>", "Apache/2.4"
+            ]
+            
+            for indicator in listing_indicators:
+                if indicator in response.text:
+                    self.vulnerabilities.append({
+                        'type': 'Directory Listing',
+                        'url': url,
+                        'evidence': indicator,
+                        'severity': 'Medium'
+                    })
+                    break
+                    
+        except Exception as e:
+            pass
+    
+    def check_missing_security_headers(self, url):
+        """Check for missing security headers"""
+        try:
+            response = self.session.get(url)
+            headers = response.headers
+            
+            required_headers = [
+                ('X-Frame-Options', 'Clickjacking protection'),
+                ('X-XSS-Protection', 'XSS protection'),
+                ('X-Content-Type-Options', 'MIME type sniffing protection'),
+                ('Strict-Transport-Security', 'HTTPS enforcement'),
+                ('Content-Security-Policy', 'Content injection protection')
+            ]
+            
+            for header, description in required_headers:
+                if header.lower() not in [h.lower() for h in headers.keys()]:
+                    self.vulnerabilities.append({
+                        'type': 'Missing Security Header',
+                        'url': url,
+                        'header': header,
+                        'description': description,
+                        'severity': 'Low'
+                    })
+                    
+        except Exception as e:
+            pass
+    
+    def check_ssl_configuration(self, url):
+        """Check SSL/TLS configuration"""
+        if not url.startswith('https'):
+            return
+        
+        try:
+            parsed_url = urlparse(url)
+            hostname = parsed_url.hostname
+            port = parsed_url.port or 443
+            
+            # Create SSL context
+            context = ssl.create_default_context()
+            
+            # Connect and check certificate
+            with socket.create_connection((hostname, port), timeout=5) as sock:
+                with context.wrap_socket(sock, server_hostname=hostname) as ssock:
+                    cert = ssock.getpeercert()
+                    
+                    # Check certificate expiration
+                    import datetime
+                    expiry_date = datetime.datetime.strptime(
+                        cert['notAfter'], '%b %d %H:%M:%S %Y %Z'
+                    )
+                    
+                    if expiry_date < datetime.datetime.now() + datetime.timedelta(days=30):
+                        self.vulnerabilities.append({
+                            'type': 'SSL Certificate Expiring Soon',
+                            'url': url,
+                            'expiry_date': cert['notAfter'],
+                            'severity': 'Medium'
+                        })
+                    
+                    # Check SSL version
+                    if ssock.version() < ssl.TLSVersion.TLSv1_2:
+                        self.vulnerabilities.append({
+                            'type': 'Weak SSL/TLS Version',
+                            'url': url,
+                            'version': ssock.version(),
+                            'severity': 'High'
+                        })
+                        
+        except Exception as e:
+            self.vulnerabilities.append({
+                'type': 'SSL Configuration Error',
+                'url': url,
+                'error': str(e),
+                'severity': 'Medium'
+            })
+    
+    def scan(self, urls=None):
+        """Perform vulnerability scan"""
+        if urls is None:
+            urls = [self.base_url]
+        
+        for url in urls:
+            print(f"Scanning {url}...")
+            
+            self.check_sql_injection(url)
+            self.check_xss(url)
+            self.check_directory_listing(url)
+            self.check_missing_security_headers(url)
+            self.check_ssl_configuration(url)
+            
+            time.sleep(1)  # Be respectful to the target
+    
+    def generate_report(self):
+        """Generate vulnerability report"""
+        report = f"Vulnerability Scan Report for {self.base_url}\n"
+        report += "=" * 60 + "\n\n"
+        
+        # Group vulnerabilities by severity
+        high_vulns = [v for v in self.vulnerabilities if v['severity'] == 'High']
+        medium_vulns = [v for v in self.vulnerabilities if v['severity'] == 'Medium']
+        low_vulns = [v for v in self.vulnerabilities if v['severity'] == 'Low']
+        
+        for severity, vulns in [('HIGH', high_vulns), ('MEDIUM', medium_vulns), ('LOW', low_vulns)]:
+            if vulns:
+                report += f"{severity} SEVERITY VULNERABILITIES:\n"
+                report += "-" * 40 + "\n"
+                
+                for vuln in vulns:
+                    report += f"  Type: {vuln['type']}\n"
+                    report += f"  URL: {vuln['url']}\n"
+                    
+                    if 'payload' in vuln:
+                        report += f"  Payload: {vuln['payload']}\n"
+                    if 'evidence' in vuln:
+                        report += f"  Evidence: {vuln['evidence']}\n"
+                    if 'header' in vuln:
+                        report += f"  Missing Header: {vuln['header']}\n"
+                    
+                    report += "\n"
+        
+        return report
+
+# Usage
+scanner = WebVulnerabilityScanner("https://example.com")
+scanner.scan()
+report = scanner.generate_report()
+print(report)
+```
+
+## Penetration Testing Tools
+
+### Metasploit Framework
+Metasploit is a powerful penetration testing framework with numerous exploits, payloads, and auxiliary modules.
+
+#### Metasploit Automation Script
+```bash
+#!/bin/bash
+# Metasploit automation script for vulnerability assessment
+
+TARGET="192.168.1.100"
+OUTPUT_DIR="pentest_results"
+DATE=$(date +%Y%m%d_%H%M%S)
+
+# Create output directory
+mkdir -p "$OUTPUT_DIR"
+
+# 1. Port Scanning with Nmap (Metasploit module)
+echo "[*] Starting port scan..."
+msfconsole -q -x "
+use auxiliary/scanner/portscan/tcp
+set RHOSTS $TARGET
+set PORTS 1-1000
+set THREADS 50
+run
+exit
+" > "$OUTPUT_DIR/portscan_$DATE.txt"
+
+# 2. Service Version Detection
+echo "[*] Detecting service versions..."
+msfconsole -q -x "
+use auxiliary/scanner/version/smb_version
+set RHOSTS $TARGET
+run
+exit
+" > "$OUTPUT_DIR/version_scan_$DATE.txt"
+
+# 3. SMB Vulnerability Scanning
+echo "[*] Scanning SMB vulnerabilities..."
+msfconsole -q -x "
+use auxiliary/scanner/smb/smb_ms17_010
+set RHOSTS $TARGET
+run
+exit
+" > "$OUTPUT_DIR/smb_scan_$DATE.txt"
+
+# 4. Web Application Scanning
+echo "[*] Scanning web applications..."
+msfconsole -q -x "
+use auxiliary/scanner/http/http_version
+set RHOSTS $TARGET
+set TARGETURI /
+run
+exit
+" > "$OUTPUT_DIR/web_scan_$DATE.txt"
+
+# 5. SSL/TLS Vulnerability Scanning
+echo "[*] Scanning SSL/TLS vulnerabilities..."
+msfconsole -q -x "
+use auxiliary/scanner/ssl/openssl_heartbleed
+set RHOSTS $TARGET
+set RPORT 443
+run
+exit
+" > "$OUTPUT_DIR/ssl_scan_$DATE.txt"
+
+echo "[*] Scan completed. Results saved in $OUTPUT_DIR"
+```
+
+### Wireshark Network Analysis
+Wireshark is a network protocol analyzer for capturing and inspecting network traffic.
+
+#### Wireshark Capture Filters
+```bash
+# Common capture filters for security analysis
+
+# Capture HTTP traffic
+tcp port 80
+
+# Capture HTTPS traffic
+tcp port 443
+
+# Capture DNS traffic
+udp port 53
+
+# Capture FTP traffic
+tcp port 21
+
+# Capture SSH traffic
+tcp port 22
+
+# Capture traffic from specific IP
+host 192.168.1.100
+
+# Capture traffic between two IPs
+host 192.168.1.100 and host 192.168.1.200
+
+# Capture TCP SYN packets (connection attempts)
+tcp[tcpflags] & tcp-syn != 0
+
+# Capture TCP packets with RST flag (connection reset)
+tcp[tcpflags] & tcp-rst != 0
+
+# Capture ICMP traffic
+icmp
+
+# Capture ARP traffic
+arp
+
+# Capture traffic on specific interface
+interface eth0
+```
+
+#### Display Filters for Security Analysis
+```bash
+# HTTP requests with suspicious parameters
+http.request.uri contains "id=" or http.request.uri contains "admin"
+
+# Failed login attempts
+http.request.method == "POST" and http.response.code >= 400
+
+# SQL injection attempts
+http contains "union" or http contains "select" or http contains "drop"
+
+# XSS attempts
+http contains "<script>" or http contains "javascript:"
+
+# Large HTTP responses (potential data exfiltration)
+http.response.content_length > 100000
+
+# Unusual user agents
+http.user_agent contains "scanner" or http.user_agent contains "bot"
+
+# Suspicious file downloads
+http.file_data contains ".exe" or http.file_data contains ".zip"
+
+# DNS queries for suspicious domains
+dns.qry.name contains "malware" or dns.qry.name contains "phishing"
+
+# TCP retransmissions (potential network issues)
+tcp.analysis.retransmission
+
+# TCP out-of-order packets
+tcp.analysis.out_of_order
+
+# ICMP unreachable messages
+icmp.type == 3
+
+# ARP anomalies (ARP spoofing detection)
+arp.opcode == 2 and not arp.src.hw == eth.src
+
+# DHCP traffic (network configuration analysis)
+bootp.option.type == 53
+```
+
+## Security Best Practices
+
+### Secure Coding Practices
+Implementing secure coding practices prevents common vulnerabilities.
+
+#### Input Validation and Sanitization
+```python
+import re
+import bleach
+from typing import Optional, Union
+
+class InputValidator:
+    def __init__(self):
+        # Regular expressions for common input types
+        self.patterns = {
+            'email': r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+            'username': r'^[a-zA-Z0-9_]{3,20}$',
+            'phone': r'^\+?1?-?\.?\s?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})$',
+            'password': r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
+            'numeric': r'^\d+$',
+            'alphanumeric': r'^[a-zA-Z0-9]+$',
+            'safe_string': r'^[a-zA-Z0-9\s\-_.,!?]+$'
+        }
+    
+    def validate_email(self, email: str) -> bool:
+        """Validate email format"""
+        if not email or len(email) > 254:
+            return False
+        return bool(re.match(self.patterns['email'], email))
+    
+    def validate_username(self, username: str) -> bool:
+        """Validate username format"""
+        if not username or len(username) < 3 or len(username) > 20:
+            return False
+        return bool(re.match(self.patterns['username'], username))
+    
+    def validate_password_strength(self, password: str) -> tuple[bool, list]:
+        """Validate password strength and return issues"""
+        issues = []
+        
+        if len(password) < 8:
+            issues.append("Password must be at least 8 characters long")
+        
+        if not re.search(r'[a-z]', password):
+            issues.append("Password must contain lowercase letters")
+        
+        if not re.search(r'[A-Z]', password):
+            issues.append("Password must contain uppercase letters")
+        
+        if not re.search(r'\d', password):
+            issues.append("Password must contain digits")
+        
+        if not re.search(r'[@$!%*?&]', password):
+            issues.append("Password must contain special characters")
+        
+        return len(issues) == 0, issues
+    
+    def sanitize_input(self, user_input: str, input_type: str = 'safe_string') -> str:
+        """Sanitize user input based on type"""
+        if not user_input:
+            return ""
+        
+        # Basic sanitization
+        sanitized = user_input.strip()
+        
+        # Remove potentially dangerous characters
+        dangerous_chars = ['<', '>', '"', "'", '&', '\x00', '\n', '\r', '\t']
+        for char in dangerous_chars:
+            sanitized = sanitized.replace(char, '')
+        
+        # Validate against pattern
+        if input_type in self.patterns:
+            pattern = self.patterns[input_type]
+            if not re.match(pattern, sanitized):
+                raise ValueError(f"Input does not match {input_type} pattern")
+        
+        return sanitized
+    
+    def validate_file_upload(self, filename: str, file_content: bytes, 
+                           allowed_extensions: list, max_size: int) -> tuple[bool, str]:
+        """Validate uploaded files"""
+        # Check file extension
+        file_extension = filename.lower().split('.')[-1]
+        if file_extension not in allowed_extensions:
+            return False, f"File extension {file_extension} not allowed"
+        
+        # Check file size
+        if len(file_content) > max_size:
+            return False, f"File size exceeds maximum allowed size"
+        
+        # Check for malicious content in file
+        malicious_signatures = [
+            b'<?php', b'<%', b'<script', b'javascript:', b'vbscript:',
+            b'data:text/html', b'eval(', b'base64_decode'
+        ]
+        
+        for signature in malicious_signatures:
+            if signature in file_content.lower():
+                return False, "File contains potentially malicious content"
+        
+        return True, "File validation passed"
+    
+    def prevent_sql_injection(self, user_input: str) -> str:
+        """Prevent SQL injection by escaping dangerous characters"""
+        if not user_input:
+            return ""
+        
+        # Remove SQL keywords and dangerous characters
+        sql_keywords = [
+            'SELECT', 'INSERT', 'UPDATE', 'DELETE', 'DROP', 'UNION',
+            'WHERE', 'OR', 'AND', 'LIKE', 'IN', 'EXISTS', 'HAVING'
+        ]
+        
+        dangerous_chars = ["'", '"', ';', '--', '/*', '*/', 'xp_', 'sp_']
+        
+        sanitized = user_input
+        
+        # Remove SQL keywords
+        for keyword in sql_keywords:
+            sanitized = re.sub(keyword, '', sanitized, flags=re.IGNORECASE)
+        
+        # Remove dangerous characters
+        for char in dangerous_chars:
+            sanitized = sanitized.replace(char, '')
+        
+        return sanitized.strip()
+    
+    def rate_limit_check(self, user_id: str, action: str, 
+                        max_attempts: int = 5, window_minutes: int = 15) -> tuple[bool, int]:
+        """Simple rate limiting implementation"""
+        # This would typically use Redis or database
+        # For demonstration, using a simple in-memory structure
+        import time
+        
+        if not hasattr(self, 'rate_limits'):
+            self.rate_limits = {}
+        
+        current_time = time.time()
+        window_start = current_time - (window_minutes * 60)
+        
+        key = f"{user_id}:{action}"
+        
+        if key not in self.rate_limits:
+            self.rate_limits[key] = []
+        
+        # Remove old attempts
+        self.rate_limits[key] = [
+            attempt_time for attempt_time in self.rate_limits[key]
+            if attempt_time > window_start
+        ]
+        
+        # Check if limit exceeded
+        if len(self.rate_limits[key]) >= max_attempts:
+            return False, max_attempts - len(self.rate_limits[key])
+        
+        # Add current attempt
+        self.rate_limits[key].append(current_time)
+        
+        return True, max_attempts - len(self.rate_limits[key])
+
+# Usage example
+validator = InputValidator()
+
+# Validate email
+is_valid_email = validator.validate_email("user@example.com")
+
+# Validate password
+password_ok, password_issues = validator.validate_password_strength("Password123!")
+
+# Sanitize input
+clean_input = validator.sanitize_input("user_input_123", "alphanumeric")
+
+# Rate limiting
+can_proceed, remaining_attempts = validator.rate_limit_check("user123", "login")
+```
+
+### Security Headers Implementation
+Implement proper security headers to protect against various attacks.
+
+```python
+from flask import Flask, make_response
+from functools import wraps
+
+app = Flask(__name__)
+
+class SecurityHeaders:
+    @staticmethod
+    def set_security_headers(response):
+        """Set comprehensive security headers"""
+        
+        # Prevent clickjacking
+        response.headers['X-Frame-Options'] = 'DENY'
+        
+        # Prevent MIME type sniffing
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        
+        # Enable XSS protection in older browsers
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        
+        # Force HTTPS
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        
+        # Content Security Policy
+        csp = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline' https://cdn.trusted.com; "
+            "style-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data: https:; "
+            "font-src 'self'; "
+            "connect-src 'self' https://api.example.com; "
+            "frame-ancestors 'none'; "
+            "base-uri 'self'; "
+            "form-action 'self'"
+        )
+        response.headers['Content-Security-Policy'] = csp
+        
+        # Referrer Policy
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        
+        # Permissions Policy
+        permissions_policy = (
+            "geolocation=(), microphone=(), camera=(), "
+            "payment=(), usb=(), magnetometer=(), gyroscope=()"
+        )
+        response.headers['Permissions-Policy'] = permissions_policy
+        
+        return response
+
+def security_headers_decorator(f):
+    """Decorator to add security headers to Flask responses"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        response = make_response(f(*args, **kwargs))
+        return SecurityHeaders.set_security_headers(response)
+    return decorated_function
+
+@app.route('/')
+@security_headers_decorator
+def home():
+    return "<h1>Secure Home Page</h1>"
+
+@app.route('/api/data')
+@security_headers_decorator
+def api_data():
+    return {"message": "Secure API response"}
+```
+
+## Cybersecurity Interview Questions
+
+### Network Security
+**Q: What is the difference between a firewall and an IDS/IPS?**
+A: A firewall controls network traffic based on predetermined rules, while an IDS (Intrusion Detection System) monitors and alerts on suspicious activity, and an IPS (Intrusion Prevention System) actively blocks detected threats.
+
+**Q: Explain the CIA triad in information security.**
+A: CIA stands for Confidentiality, Integrity, and Availability. Confidentiality ensures data is accessible only to authorized users, Integrity ensures data is accurate and unaltered, and Availability ensures data and systems are accessible when needed.
+
+### Cryptography
+**Q: What is the difference between symmetric and asymmetric encryption?**
+A: Symmetric encryption uses the same key for encryption and decryption (fast, suitable for large data), while asymmetric encryption uses different keys (public and private) for encryption and decryption (secure for key exchange).
+
+**Q: What is a man-in-the-middle attack and how can it be prevented?**
+A: A MITM attack intercepts communication between two parties. Prevention includes using HTTPS/TLS, certificate pinning, VPNs, and implementing proper authentication.
+
+### Web Security
+**Q: What is the OWASP Top 10 and why is it important?**
+A: The OWASP Top 10 lists the most critical web application security risks. It's important because it helps developers focus on the most common and dangerous vulnerabilities.
+
+**Q: Explain Cross-Site Scripting (XSS) and how to prevent it.**
+A: XSS injects malicious scripts into web pages viewed by other users. Prevention includes input validation, output encoding, Content Security Policy, and using secure frameworks.
+
+### Ethical Hacking
+**Q: What is the difference between white hat, black hat, and gray hat hacking?**
+A: White hat hackers have permission and work ethically, black hat hackers act maliciously without permission, and gray hat hackers operate in a morally ambiguous area, sometimes without permission but without malicious intent.
+
+**Q: What are the phases of ethical hacking?**
+A: The phases are: Reconnaissance (information gathering), Scanning (vulnerability identification), Gaining Access (exploitation), Maintaining Access (persistence), and Covering Tracks (evidence removal).
+
+### Security Operations
+**Q: What is a SIEM system and how does it work?**
+A: SIEM (Security Information and Event Management) collects, analyzes, and correlates security event data from multiple sources to provide real-time analysis and alerting of security threats.
+
+**Q: Explain the concept of defense in depth.**
+A: Defense in depth is a layered security approach that uses multiple security controls at different levels to protect against threats, ensuring that if one layer fails, others will still provide protection.
+
+## Conclusion
+
+Cybersecurity and ethical hacking require understanding of network security, cryptography, web application security, penetration testing methodologies, and security best practices. Key areas to master include:
+
+1. **Network Security**: Firewalls, IDS/IPS, VPNs, network protocols
+2. **Cryptography**: Encryption algorithms, digital signatures, key management
+3. **Web Security**: OWASP Top 10, secure coding, security headers
+4. **Penetration Testing**: Reconnaissance, vulnerability assessment, exploitation
+5. **Security Tools**: Metasploit, Wireshark, Nmap, Burp Suite
+6. **Security Operations**: SIEM, incident response, threat hunting
+7. **Compliance and Governance**: Regulations, standards, best practices
+
+The cybersecurity landscape constantly evolves with new threats and technologies. Continuous learning, practical experience, and staying current with security trends are essential for success in cybersecurity roles and interview preparation.

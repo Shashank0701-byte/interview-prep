@@ -33,8 +33,7 @@ const studyRoomSchema = new mongoose.Schema({
   roomId: {
     type: String,
     required: true,
-    unique: true,
-    index: true
+    unique: true
   },
   name: {
     type: String,
@@ -71,6 +70,18 @@ const studyRoomSchema = new mongoose.Schema({
       type: Boolean,
       default: false
     }
+  },
+  topic: {
+    type: String,
+    default: 'javascript'
+  },
+  questions: {
+    type: mongoose.Schema.Types.Mixed,
+    default: []
+  },
+  currentQuestionIndex: {
+    type: Number,
+    default: 0
   },
   sharedCode: {
     content: {
@@ -215,6 +226,16 @@ studyRoomSchema.methods.removeParticipant = function(userId) {
   return this.save();
 };
 
+// Clean up inactive participants (remove all inactive participants immediately)
+studyRoomSchema.methods.cleanupInactiveParticipants = function() {
+  // Simply remove all inactive participants
+  // Active participants are those currently connected via socket
+  this.participants = this.participants.filter(p => p.isActive === true);
+  
+  this.lastActivity = new Date();
+  return this.save();
+};
+
 studyRoomSchema.methods.updateCode = function(content, userId) {
   this.sharedCode.content = content;
   this.sharedCode.lastModified.by = userId;
@@ -237,6 +258,12 @@ studyRoomSchema.methods.addChatMessage = function(userId, username, message, typ
     this.chat = this.chat.slice(-100);
   }
   
+  this.lastActivity = new Date();
+  return this.save();
+};
+
+studyRoomSchema.methods.updateCurrentQuestion = function(questionIndex) {
+  this.currentQuestionIndex = questionIndex;
   this.lastActivity = new Date();
   return this.save();
 };

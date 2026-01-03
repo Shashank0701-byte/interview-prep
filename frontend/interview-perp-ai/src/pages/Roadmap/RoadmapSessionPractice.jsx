@@ -151,6 +151,25 @@ const RoadmapSessionPractice = () => {
         }
     };
 
+    const handleRatingUpdate = async (questionId, ratings) => {
+        try {
+            await axiosInstance.put(API_PATHS.QUESTION.UPDATE_RATING(questionId), ratings);
+            
+            // Update local state
+            setSessionData(prev => ({
+                ...prev,
+                questions: prev.questions.map(q => 
+                    q._id === questionId ? { ...q, userRating: ratings } : q
+                )
+            }));
+            
+            toast.success("Rating updated successfully!");
+        } catch (error) {
+            console.error("Error updating rating:", error);
+            toast.error("Failed to update rating");
+        }
+    };
+
     const getPhaseColor = (color) => {
         const colors = {
             blue: 'from-blue-500 to-cyan-500',
@@ -307,6 +326,7 @@ const RoadmapSessionPractice = () => {
                                         onToggleMastered={() => handleMaster(question._id)}
                                         onTogglePin={() => handlePin(question._id)}
                                         onAskFollowUp={() => handleFollowUp(question._id)}
+                                        onRatingUpdate={(ratings) => handleRatingUpdate(question._id, ratings)}
                                         justification={question.justification}
                                         userRating={question.userRating}
                                         difficulty={question.difficulty}

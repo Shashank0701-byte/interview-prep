@@ -1,5 +1,16 @@
 const RoadmapSession = require("../models/RoadmapSession");
 const Question = require("../models/Question");
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
+// Initialize Gemini AI
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+
+// Log API key status on startup (without exposing the key)
+if (!process.env.GOOGLE_AI_API_KEY) {
+    console.error('❌ GOOGLE_AI_API_KEY is not set in environment variables!');
+} else {
+    console.log('✅ Gemini API key is configured (length:', process.env.GOOGLE_AI_API_KEY.length, 'characters)');
+}
 
 // Create a new roadmap session with curated, phase-specific questions
 const createRoadmapSession = async (req, res) => {
@@ -30,13 +41,14 @@ const createRoadmapSession = async (req, res) => {
             sessionType: 'roadmap'
         });
 
-        // Generate curated, phase-specific questions
+        // Generate curated, phase-specific questions using Gemini AI
         const questionDocs = await generatePhaseSpecificQuestions(
             session._id, 
             roadmapRole, 
             phaseId, 
             phaseName, 
-            experience
+            experience,
+            topicsToFocus
         );
 
         // Update session with questions
@@ -250,33 +262,208 @@ const updateRoadmapSessionProgress = async (req, res) => {
     }
 };
 
-// Generate curated, phase-specific questions based on role and phase
-const generatePhaseSpecificQuestions = async (sessionId, roadmapRole, phaseId, phaseName, experience) => {
-    const questionSets = getPhaseQuestionSets(roadmapRole, phaseName);
+// Generate curated, phase-specific questions based on role and phase using Gemini AI
+const generatePhaseSpecificQuestions = async (sessionId, roadmapRole, phaseId, phaseName, experience, topicsToFocus) => {
     const questions = [];
     
-    // Generate a balanced mix of difficulties: 40% Easy, 40% Medium, 20% Hard
-    const totalQuestions = 10; // Fixed number for curated experience
-    const easyCount = Math.ceil(totalQuestions * 0.4);
-    const mediumCount = Math.ceil(totalQuestions * 0.4);
-    const hardCount = totalQuestions - easyCount - mediumCount;
-    
-    // Create questions with balanced difficulty distribution
-    for (let i = 0; i < totalQuestions; i++) {
-        let difficulty;
-        if (i < easyCount) difficulty = 'Easy';
-        else if (i < easyCount + mediumCount) difficulty = 'Medium';
-        else difficulty = 'Hard';
+    try {
+        // Generate a balanced mix of difficulties: 40% Easy, 40% Medium, 20% Hard
+        // Reduced to 5 questions for faster generation
+        const totalQuestions = 5;
+        const easyCount = 2;
+        const mediumCount = 2;
+        const hardCount = 1;
         
-        const questionData = questionSets[i % questionSets.length];
+        // Determine if this is a coding-focused phase
+        const codingPhases = ['Foundation', 'Problem Solving', 'Core Technologies', 'Framework Mastery'];
+        const isCodingPhase = codingPhases.includes(phaseName);
+        
+        // Generate questions for each difficulty level
+        const difficulties = [
+            ...Array(easyCount).fill('Easy'),
+            ...Array(mediumCount).fill('Medium'),
+            ...Array(hardCount).fill('Hard')
+        ];
+        
+        console.log(`🤖 Starting Gemini question generation for ${phaseName} phase...`);
+        
+        for (let i = 0; i < difficulties.length; i++) {
+            const difficulty = difficulties[i];
+            const isCodingQuestion = isCodingPhase && (i % 3 === 0); // Every 3rd question is coding
+            
+            console.log(`Generating question ${i + 1}/${difficulties.length} - ${difficulty} ${isCodingQuestion ? '(Coding)' : '(Conceptual)'}`);
+            
+            const questionData = await generateQuestionWithGemini(
+                roadmapRole,
+                phaseName,
+                difficulty,
+                topicsToFocus,
+                experience,
+                isCodingQuestion,
+                i + 1
+            );
+            
+            if (questionData) {
+                const question = await Question.create({
+                    session: sessionId,
+                    question: questionData.question,
+                    answer: questionData.answer,
+                    difficulty: difficulty,
+                    category: questionData.category,
+                    tags: questionData.tags || [phaseName, roadmapRole],
+                    interviewType: questionData.interviewType || 'Technical'
+                });
+                
+                questions.push(question);
+                console.log(`✓ Question ${i + 1} created successfully`);
+            } else {
+                console.error(`✗ Failed to generate question ${i + 1}`);
+            }
+        }
+        
+        console.log(`✅ Generated ${questions.length}/${totalQuestions} questions successfully`);
+        
+        if (questions.length === 0) {
+            console.error('❌ No questions were generated! Check Gemini API key and quota.');
+        }
+        
+        return questions;
+    } catch (error) {
+        console.error('Error generating questions with Gemini:', error);
+        // Fallback to basic questions if Gemini fails
+        return generateFallbackQuestions(sessionId, roadmapRole, phaseName, experience, topicsToFocus);
+    }
+};
+
+// Generate a single question using Gemini AI with retry logic
+const generateQuestionWithGemini = async (role, phase, difficulty, topics, experience, isCoding, questionNumber, retries = 2) => {
+    const topicsString = Array.isArray(topics) ? topics.join(', ') : topics;
+    
+    // Try multiple model configurations (same as questionController.js)
+    const modelConfigs = [
+        { name: "gemini-2.0-flash-exp", config: {} },
+        { name: "gemini-1.5-flash-latest", config: {} },
+        { name: "gemini-1.5-flash", config: {} },
+        { name: "gemini-1.5-pro-latest", config: {} },
+    ];
+    
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        for (const { name, config } of modelConfigs) {
+            try {
+                const model = genAI.getGenerativeModel({
+                    model: name,
+                    generationConfig: config,
+                });
+            
+            const prompt = isCoding ? 
+                `Generate a unique ${difficulty} level coding interview question for a ${role} position, focusing on the ${phase} phase.
+                
+                Topics to cover: ${topicsString}
+                Experience level: ${experience} years
+                Question number: ${questionNumber}
+                
+                Requirements:
+                1. Create a UNIQUE coding problem (not a common LeetCode problem)
+                2. Include a clear problem statement
+                3. Provide example input/output
+                4. Include edge cases to consider
+                5. Provide a detailed solution with code implementation
+                6. Explain time and space complexity
+                7. Make it practical and interview-relevant
+                
+                Format your response STRICTLY as valid JSON (no markdown, no code blocks):
+                {
+                    "question": "Problem statement with examples",
+                    "answer": "Detailed solution with code, complexity analysis, and explanation",
+                    "category": "Specific category like 'Arrays', 'Dynamic Programming', etc.",
+                    "tags": ["tag1", "tag2", "tag3"],
+                    "interviewType": "Coding"
+                }` 
+                : 
+                `Generate a unique ${difficulty} level interview question for a ${role} position, focusing on the ${phase} phase.
+                
+                Topics to cover: ${topicsString}
+                Experience level: ${experience} years
+                Question number: ${questionNumber}
+                
+                Requirements:
+                1. Create a UNIQUE question (not commonly asked)
+                2. Make it relevant to real-world scenarios
+                3. Ensure it tests deep understanding, not just memorization
+                4. Provide a comprehensive answer with examples
+                5. Include practical insights and best practices
+                
+                Format your response STRICTLY as valid JSON (no markdown, no code blocks):
+                {
+                    "question": "Your unique interview question",
+                    "answer": "Comprehensive answer with examples and explanations",
+                    "category": "Specific category",
+                    "tags": ["tag1", "tag2", "tag3"],
+                    "interviewType": "Technical"
+                }`;
+            
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            let text = response.text();
+            
+            // Clean up the response - remove markdown code blocks if present
+            text = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+            
+            // Extract JSON from response
+            const jsonMatch = text.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                const questionData = JSON.parse(jsonMatch[0]);
+                
+                // Validate required fields
+                if (questionData.question && questionData.answer && questionData.category) {
+                    console.log(`✓ Successfully generated ${difficulty} question ${questionNumber} with model ${name} (attempt ${attempt})`);
+                    return questionData;
+                }
+            }
+            
+            // If this model didn't work, try the next one
+            console.warn(`Model ${name} didn't return valid data, trying next model...`);
+            
+        } catch (error) {
+            // If this model failed, try the next one
+            console.log(`Model ${name} failed: ${error.message}, trying next model...`);
+            continue; // Try next model
+        }
+        }
+        
+        // If all models failed for this attempt, wait before retrying
+        if (attempt < retries) {
+            console.log(`All models failed for attempt ${attempt}, waiting ${1000 * attempt}ms before retry...`);
+            await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+    }
+    
+    console.error('All retry attempts and models failed for question generation');
+    return null;
+};
+
+// Fallback function to generate basic questions if Gemini fails
+const generateFallbackQuestions = async (sessionId, roadmapRole, phaseName, experience, topicsToFocus) => {
+    const questions = [];
+    
+    console.warn('Gemini API failed, generating basic fallback questions');
+    
+    const totalQuestions = 5;
+    const difficulties = ['Easy', 'Easy', 'Medium', 'Medium', 'Hard'];
+    const topicsArray = Array.isArray(topicsToFocus) ? topicsToFocus : topicsToFocus.split(',').map(t => t.trim());
+    
+    for (let i = 0; i < totalQuestions; i++) {
+        const difficulty = difficulties[i];
+        const topic = topicsArray[i % topicsArray.length];
         
         const question = await Question.create({
             session: sessionId,
-            question: questionData.question,
-            answer: questionData.answer,
+            question: `${difficulty} level question about ${topic} for ${roadmapRole} - ${phaseName} phase`,
+            answer: `This is a placeholder answer. Please regenerate questions with a valid Gemini API key for detailed content.`,
             difficulty: difficulty,
-            category: questionData.category,
-            tags: questionData.tags || [phaseName, roadmapRole]
+            category: topic,
+            tags: [phaseName, roadmapRole, topic],
+            interviewType: 'Technical'
         });
         
         questions.push(question);
@@ -285,178 +472,7 @@ const generatePhaseSpecificQuestions = async (sessionId, roadmapRole, phaseId, p
     return questions;
 };
 
-// Get phase-specific question sets for each role and phase combination
-const getPhaseQuestionSets = (roadmapRole, phaseName) => {
-    const questionDatabase = {
-        'Software Engineer': {
-            'Foundation': [
-                {
-                    question: "What are the fundamental data structures every software engineer should know, and when would you use each one?",
-                    answer: "The fundamental data structures include: Arrays (for sequential data with index access), Linked Lists (for dynamic size and insertion/deletion), Stacks (LIFO operations like function calls), Queues (FIFO operations like task scheduling), Hash Tables (for fast key-value lookups), Trees (for hierarchical data and searching), and Graphs (for network relationships). Each serves specific use cases based on access patterns and performance requirements.",
-                    category: "Data Structures",
-                    tags: ["Foundation", "Data Structures", "Software Engineering"]
-                },
-                {
-                    question: "Explain the difference between procedural, object-oriented, and functional programming paradigms.",
-                    answer: "Procedural programming organizes code into functions that operate on data. Object-oriented programming encapsulates data and behavior into objects with inheritance and polymorphism. Functional programming treats computation as evaluation of mathematical functions, emphasizing immutability and avoiding side effects. Each paradigm offers different approaches to problem-solving and code organization.",
-                    category: "Programming Paradigms",
-                    tags: ["Foundation", "Programming Paradigms", "Software Engineering"]
-                },
-                {
-                    question: "What is Big O notation and why is it important for algorithm analysis?",
-                    answer: "Big O notation describes the upper bound of algorithm complexity in terms of time and space as input size grows. It helps compare algorithm efficiency and predict performance at scale. Common complexities include O(1) constant, O(log n) logarithmic, O(n) linear, O(n²) quadratic. It's crucial for making informed decisions about algorithm selection and optimization.",
-                    category: "Algorithm Analysis",
-                    tags: ["Foundation", "Algorithms", "Complexity Analysis"]
-                }
-            ],
-            'Problem Solving': [
-                {
-                    question: "How would you approach solving a complex algorithmic problem you've never seen before?",
-                    answer: "1) Understand the problem thoroughly with examples. 2) Identify patterns and similar problems. 3) Break down into smaller subproblems. 4) Choose appropriate data structures and algorithms. 5) Implement a brute force solution first. 6) Optimize iteratively. 7) Test with edge cases. 8) Analyze time/space complexity. This systematic approach ensures thorough problem-solving.",
-                    category: "Problem Solving Strategy",
-                    tags: ["Problem Solving", "Algorithms", "Strategy"]
-                },
-                {
-                    question: "Implement a function to find the longest palindromic substring in a given string.",
-                    answer: "Use the expand-around-centers approach: For each character (and between characters for even-length palindromes), expand outward while characters match. Track the longest palindrome found. Time complexity: O(n²), Space: O(1). Alternative: Manacher's algorithm for O(n) time complexity.",
-                    category: "String Algorithms",
-                    tags: ["Problem Solving", "Strings", "Algorithms"]
-                },
-                {
-                    question: "Design an algorithm to detect if a linked list has a cycle and find the starting point of the cycle.",
-                    answer: "Use Floyd's Cycle Detection (tortoise and hare): 1) Use two pointers, slow (moves 1 step) and fast (moves 2 steps). 2) If they meet, a cycle exists. 3) To find cycle start, reset one pointer to head and move both one step at a time until they meet again. The meeting point is the cycle start. Time: O(n), Space: O(1).",
-                    category: "Linked Lists",
-                    tags: ["Problem Solving", "Linked Lists", "Cycle Detection"]
-                }
-            ],
-            'System Design': [
-                {
-                    question: "Design a URL shortening service like bit.ly. What are the key components and considerations?",
-                    answer: "Key components: 1) URL encoding service (base62 encoding), 2) Database for URL mappings, 3) Cache layer (Redis), 4) Load balancers, 5) Analytics service. Considerations: Scalability (handle millions of URLs), Custom aliases, Expiration, Rate limiting, Analytics tracking, Database sharding, CDN for global access. Architecture should support high read/write ratios.",
-                    category: "System Architecture",
-                    tags: ["System Design", "Scalability", "Web Services"]
-                },
-                {
-                    question: "How would you design a chat application that supports millions of users?",
-                    answer: "Architecture: 1) WebSocket servers for real-time communication, 2) Message queue (Kafka) for reliable delivery, 3) Database sharding for user data and messages, 4) Cache layer for active conversations, 5) CDN for media files, 6) Load balancers, 7) Notification service. Key considerations: Message ordering, Delivery guarantees, Online presence, Group chats, Media handling, End-to-end encryption.",
-                    category: "Distributed Systems",
-                    tags: ["System Design", "Real-time Systems", "Scalability"]
-                },
-                {
-                    question: "Explain the trade-offs between SQL and NoSQL databases in system design.",
-                    answer: "SQL databases offer ACID properties, strong consistency, complex queries, and mature ecosystem. Best for: Financial systems, complex relationships, transactions. NoSQL offers horizontal scalability, flexible schema, high performance for simple queries. Best for: Big data, rapid development, distributed systems. Trade-offs: Consistency vs Availability (CAP theorem), Query complexity vs Scalability, Schema flexibility vs Data integrity.",
-                    category: "Database Design",
-                    tags: ["System Design", "Databases", "Trade-offs"]
-                }
-            ],
-            'Behavioral': [
-                {
-                    question: "Tell me about a time when you had to debug a complex production issue under pressure.",
-                    answer: "Structure using STAR method: Situation (production outage affecting users), Task (identify and fix the issue quickly), Action (systematic debugging approach, log analysis, team collaboration, communication with stakeholders), Result (issue resolved, post-mortem conducted, preventive measures implemented). Emphasize problem-solving skills, communication, and learning from the experience.",
-                    category: "Problem Solving",
-                    tags: ["Behavioral", "Debugging", "Production Issues"]
-                },
-                {
-                    question: "Describe a situation where you had to learn a new technology quickly for a project.",
-                    answer: "Use STAR format: Situation (new project requiring unfamiliar technology), Task (become proficient quickly), Action (structured learning plan, documentation study, hands-on practice, seeking mentorship, building small projects), Result (successful project delivery, became team expert). Highlight learning agility, resourcefulness, and knowledge sharing with the team.",
-                    category: "Learning Agility",
-                    tags: ["Behavioral", "Learning", "Adaptability"]
-                },
-                {
-                    question: "How do you handle conflicting priorities and tight deadlines in software development?",
-                    answer: "Approach: 1) Assess and prioritize based on business impact, 2) Communicate with stakeholders about trade-offs, 3) Break down tasks and identify dependencies, 4) Negotiate scope or timeline when necessary, 5) Focus on MVP and iterative delivery, 6) Maintain code quality standards. Emphasize communication, prioritization skills, and stakeholder management.",
-                    category: "Project Management",
-                    tags: ["Behavioral", "Prioritization", "Time Management"]
-                }
-            ]
-        },
-        'Frontend Developer': {
-            'Core Technologies': [
-                {
-                    question: "Explain the difference between var, let, and const in JavaScript and when to use each.",
-                    answer: "var: Function-scoped, hoisted, can be redeclared and updated. let: Block-scoped, hoisted but not initialized, can be updated but not redeclared. const: Block-scoped, hoisted but not initialized, cannot be updated or redeclared (but objects/arrays can be mutated). Use const by default, let when reassignment is needed, avoid var in modern JavaScript.",
-                    category: "JavaScript Fundamentals",
-                    tags: ["Core Technologies", "JavaScript", "Variables"]
-                },
-                {
-                    question: "What is the CSS Box Model and how does it affect element sizing?",
-                    answer: "The CSS Box Model consists of: Content (actual content), Padding (space inside element), Border (element boundary), Margin (space outside element). Total element size = content + padding + border (in standard box model). box-sizing: border-box includes padding and border in the element's total width/height, making layout calculations easier.",
-                    category: "CSS Fundamentals",
-                    tags: ["Core Technologies", "CSS", "Layout"]
-                },
-                {
-                    question: "How does the DOM work and what are efficient ways to manipulate it?",
-                    answer: "DOM (Document Object Model) is a tree-like representation of HTML. Browser parses HTML into DOM nodes. Efficient manipulation: 1) Minimize DOM queries (cache references), 2) Batch DOM updates, 3) Use DocumentFragment for multiple insertions, 4) Avoid layout thrashing, 5) Use event delegation, 6) Consider virtual DOM libraries for complex apps.",
-                    category: "DOM Manipulation",
-                    tags: ["Core Technologies", "DOM", "Performance"]
-                }
-            ],
-            'Framework Mastery': [
-                {
-                    question: "Explain React's Virtual DOM and how it improves performance.",
-                    answer: "Virtual DOM is a JavaScript representation of the actual DOM. React creates a virtual tree, compares it with the previous version (diffing), and updates only the changed parts (reconciliation). Benefits: Batched updates, Minimal DOM manipulation, Predictable performance, Cross-browser compatibility. The diffing algorithm optimizes updates by identifying the minimum changes needed.",
-                    category: "React",
-                    tags: ["Framework Mastery", "React", "Performance"]
-                },
-                {
-                    question: "What are React Hooks and how do they change component development?",
-                    answer: "Hooks are functions that let you use state and lifecycle features in functional components. Key hooks: useState (state management), useEffect (side effects), useContext (context consumption), useMemo/useCallback (performance optimization). Benefits: Reusable stateful logic, Simpler component hierarchy, Better testing, Gradual adoption. They eliminate the need for class components in most cases.",
-                    category: "React Hooks",
-                    tags: ["Framework Mastery", "React", "Hooks"]
-                },
-                {
-                    question: "How do you manage state in large React applications?",
-                    answer: "State management strategies: 1) Local state (useState) for component-specific data, 2) Context API for theme/auth, 3) Redux/Zustand for global state, 4) React Query for server state, 5) URL state for navigation. Choose based on: State complexity, Sharing requirements, Performance needs, Team preferences. Avoid prop drilling and over-centralization.",
-                    category: "State Management",
-                    tags: ["Framework Mastery", "React", "State Management"]
-                }
-            ],
-            'Performance & Tools': [
-                {
-                    question: "What are the key metrics for measuring web performance and how do you optimize them?",
-                    answer: "Core Web Vitals: LCP (Largest Contentful Paint) - loading performance, FID (First Input Delay) - interactivity, CLS (Cumulative Layout Shift) - visual stability. Optimization strategies: Code splitting, Lazy loading, Image optimization, CDN usage, Caching strategies, Bundle analysis, Critical CSS, Service workers. Use tools like Lighthouse, WebPageTest, and browser DevTools.",
-                    category: "Web Performance",
-                    tags: ["Performance & Tools", "Optimization", "Metrics"]
-                },
-                {
-                    question: "Explain the modern JavaScript build process and tools like Webpack, Vite, or Parcel.",
-                    answer: "Build tools transform modern JavaScript into browser-compatible code. Process: 1) Transpilation (Babel), 2) Bundling (combining modules), 3) Minification, 4) Asset optimization. Webpack: Highly configurable, plugin ecosystem. Vite: Fast dev server, ESM-based. Parcel: Zero-config, automatic optimization. Modern tools focus on development speed and optimized production builds.",
-                    category: "Build Tools",
-                    tags: ["Performance & Tools", "Build Process", "Tooling"]
-                },
-                {
-                    question: "How do you implement responsive design and ensure cross-browser compatibility?",
-                    answer: "Responsive design: 1) Mobile-first approach, 2) Flexible grid systems (CSS Grid, Flexbox), 3) Responsive images (srcset, picture element), 4) Media queries for breakpoints, 5) Relative units (rem, em, %). Cross-browser: Feature detection, Progressive enhancement, Polyfills, CSS prefixes, Testing across browsers/devices. Tools: BrowserStack, Can I Use, Autoprefixer.",
-                    category: "Responsive Design",
-                    tags: ["Performance & Tools", "Responsive Design", "Compatibility"]
-                }
-            ],
-            'Behavioral': [
-                {
-                    question: "Describe a challenging UI/UX problem you solved and your approach.",
-                    answer: "Use STAR method: Situation (complex user interface requirement), Task (create intuitive and performant solution), Action (user research, prototyping, iterative design, performance optimization, user testing), Result (improved user satisfaction, better metrics). Emphasize user-centered thinking, collaboration with designers, and technical problem-solving.",
-                    category: "UI/UX Problem Solving",
-                    tags: ["Behavioral", "UI/UX", "Problem Solving"]
-                },
-                {
-                    question: "How do you stay updated with the rapidly changing frontend ecosystem?",
-                    answer: "Learning strategies: 1) Follow industry leaders and blogs, 2) Participate in developer communities, 3) Attend conferences and webinars, 4) Experiment with new technologies in side projects, 5) Contribute to open source, 6) Regular code reviews and knowledge sharing. Balance: Stay informed but avoid chasing every trend. Focus on fundamentals and evaluate new tools based on project needs.",
-                    category: "Continuous Learning",
-                    tags: ["Behavioral", "Learning", "Industry Trends"]
-                },
-                {
-                    question: "Tell me about a time you had to optimize a slow-performing web application.",
-                    answer: "STAR approach: Situation (performance issues affecting user experience), Task (identify bottlenecks and improve performance), Action (performance auditing, code profiling, optimization techniques, monitoring implementation), Result (measurable performance improvements, better user satisfaction). Highlight analytical skills, systematic approach, and impact measurement.",
-                    category: "Performance Optimization",
-                    tags: ["Behavioral", "Performance", "Optimization"]
-                }
-            ]
-        }
-        // Add more roles as needed...
-    };
-    
-    return questionDatabase[roadmapRole]?.[phaseName] || questionDatabase['Software Engineer']['Foundation'];
-};
+// This function has been removed - all questions are now generated dynamically by Gemini AI
 
 // Get pre-defined session templates for a specific role and phase
 const getPhaseSessionTemplates = (role, phaseId) => {
@@ -720,6 +736,92 @@ const getPhaseSessionTemplates = (role, phaseId) => {
                     completionPercentage: 0,
                     questions: { length: 10 }
                 }
+            ],
+            'phase-2': [ // Data & Security
+                {
+                    _id: `template-${role}-${phaseId}-1`,
+                    role: 'Database Optimization',
+                    experience: '3',
+                    topicsToFocus: ['Indexing', 'Query Optimization', 'Performance Tuning'],
+                    description: 'Optimize database queries and improve performance',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 10 }
+                },
+                {
+                    _id: `template-${role}-${phaseId}-2`,
+                    role: 'Security Best Practices',
+                    experience: '3',
+                    topicsToFocus: ['SQL Injection', 'XSS', 'CSRF', 'Security Headers'],
+                    description: 'Implement security measures to protect your applications',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 8 }
+                },
+                {
+                    _id: `template-${role}-${phaseId}-3`,
+                    role: 'Authentication Patterns',
+                    experience: '4',
+                    topicsToFocus: ['OAuth 2.0', 'JWT', 'Session Management', 'SSO'],
+                    description: 'Advanced authentication and authorization patterns',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 12 }
+                }
+            ],
+            'phase-3': [ // Scalability
+                {
+                    _id: `template-${role}-${phaseId}-1`,
+                    role: 'Caching Strategies',
+                    experience: '4',
+                    topicsToFocus: ['Redis', 'Memcached', 'CDN', 'Cache Invalidation'],
+                    description: 'Implement effective caching for better performance',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 10 }
+                },
+                {
+                    _id: `template-${role}-${phaseId}-2`,
+                    role: 'Microservices Architecture',
+                    experience: '5',
+                    topicsToFocus: ['Service Design', 'API Gateway', 'Service Discovery'],
+                    description: 'Design and build scalable microservices',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 12 }
+                },
+                {
+                    _id: `template-${role}-${phaseId}-3`,
+                    role: 'Load Balancing & Scaling',
+                    experience: '5',
+                    topicsToFocus: ['Horizontal Scaling', 'Load Balancers', 'Auto-scaling'],
+                    description: 'Scale applications to handle high traffic',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 8 }
+                }
+            ],
+            'phase-4': [ // Behavioral
+                {
+                    _id: `template-${role}-${phaseId}-1`,
+                    role: 'Technical Leadership',
+                    experience: '4',
+                    topicsToFocus: ['Code Reviews', 'Mentoring', 'Technical Decisions'],
+                    description: 'Lead technical discussions and mentor junior developers',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 8 }
+                },
+                {
+                    _id: `template-${role}-${phaseId}-2`,
+                    role: 'System Design Discussions',
+                    experience: '5',
+                    topicsToFocus: ['Architecture Decisions', 'Trade-offs', 'Scalability'],
+                    description: 'Discuss and defend system design choices',
+                    isTemplate: true,
+                    completionPercentage: 0,
+                    questions: { length: 10 }
+                }
             ]
         },
         'Full Stack Developer': {
@@ -878,6 +980,54 @@ const getDifficultyLevel = (experience) => {
     return 'Hard';
 };
 
+// Regenerate questions for an existing session using Gemini AI
+const regenerateSessionQuestions = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user._id;
+
+        const session = await RoadmapSession.findById(id);
+        if (!session) {
+            return res.status(404).json({ message: "Roadmap session not found" });
+        }
+
+        if (session.user.toString() !== userId.toString()) {
+            return res.status(401).json({ message: "Not authorized" });
+        }
+
+        // Delete old questions
+        await Question.deleteMany({ session: session._id });
+
+        // Generate new questions with Gemini AI
+        const questionDocs = await generatePhaseSpecificQuestions(
+            session._id,
+            session.roadmapRole,
+            session.phaseId,
+            session.phaseName,
+            session.experience,
+            session.topicsToFocus
+        );
+
+        // Update session with new questions
+        session.questions = questionDocs.map(q => q._id);
+        session.masteredQuestions = 0;
+        session.completionPercentage = 0;
+        await session.save();
+
+        // Populate and return
+        const populatedSession = await RoadmapSession.findById(session._id).populate('questions');
+
+        res.status(200).json({
+            success: true,
+            message: "Questions regenerated successfully with Gemini AI",
+            session: populatedSession
+        });
+    } catch (error) {
+        console.error("Error regenerating questions:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
 module.exports = {
     createRoadmapSession,
     getPhaseRoadmapSessions,
@@ -886,4 +1036,5 @@ module.exports = {
     deleteRoadmapSession,
     updateRoadmapSessionRating,
     updateRoadmapSessionProgress,
+    regenerateSessionQuestions,
 };

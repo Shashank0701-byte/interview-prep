@@ -1,0 +1,1160 @@
+# DevOps and Cloud Infrastructure Interview Preparation
+
+## Containerization and Docker
+
+### Docker Fundamentals
+Docker is a platform that uses OS-level virtualization to deliver software in packages called containers. Containers are isolated from each other and bundle their own software, libraries, and configuration files.
+
+#### Key Docker Concepts
+- **Images**: Read-only templates used to create containers
+- **Containers**: Runnable instances of Docker images
+- **Dockerfile**: Text document with instructions to build Docker images
+- **Docker Compose**: Tool for defining and running multi-container applications
+- **Docker Registry**: Repository for storing and distributing Docker images
+
+#### Dockerfile Best Practices
+```dockerfile
+# Use official base images
+FROM node:16-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files first for better caching
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy application code
+COPY . .
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
+
+# Change ownership
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/ || exit 1
+
+# Start application
+CMD ["npm", "start"]
+```
+
+#### Docker Commands
+```bash
+# Build an image
+docker build -t myapp:latest .
+
+# Run a container
+docker run -d -p 8080:80 --name mycontainer myapp:latest
+
+# View running containers
+docker ps
+
+# View logs
+docker logs mycontainer
+
+# Stop and remove container
+docker stop mycontainer
+docker rm mycontainer
+
+# Remove image
+docker rmi myapp:latest
+
+# Execute commands in container
+docker exec -it mycontainer /bin/bash
+
+# Clean up unused resources
+docker system prune -a
+```
+
+### Docker Compose
+Docker Compose is a tool for defining and running multi-container Docker applications using YAML files.
+
+#### Docker Compose Example
+```yaml
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://user:password@db:5432/myapp
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=myapp
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+  redis:
+    image: redis:6-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - web
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+```
+
+## Kubernetes and Container Orchestration
+
+### Kubernetes Fundamentals
+Kubernetes is an open-source container orchestration platform that automates the deployment, scaling, and management of containerized applications.
+
+#### Core Kubernetes Concepts
+- **Pod**: Smallest deployable unit in Kubernetes
+- **Service**: Stable network endpoint for pods
+- **Deployment**: Manages replica sets and rolling updates
+- **Namespace**: Virtual cluster within a physical cluster
+- **ConfigMap**: Configuration data for applications
+- **Secret**: Sensitive information storage
+- **Ingress**: HTTP and HTTPS routing rules
+- **PersistentVolume**: Storage abstraction
+
+#### Kubernetes Deployment Example
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  namespace: production
+  labels:
+    app: web-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: web-app
+        image: myregistry/web-app:v1.2.0
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: database-url
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app-service
+  namespace: production
+spec:
+  selector:
+    app: web-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-app-ingress
+  namespace: production
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+  - hosts:
+    - app.example.com
+    secretName: app-tls
+  rules:
+  - host: app.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web-app-service
+            port:
+              number: 80
+```
+
+#### Kubernetes Commands
+```bash
+# Get cluster information
+kubectl cluster-info
+kubectl get nodes
+
+# View resources
+kubectl get pods
+kubectl get services
+kubectl get deployments
+kubectl get configmaps
+
+# View resources with more details
+kubectl describe pod pod-name
+kubectl logs pod-name
+
+# Apply configuration
+kubectl apply -f deployment.yaml
+
+# Scale deployment
+kubectl scale deployment web-app --replicas=5
+
+# Rolling update
+kubectl set image deployment/web-app web-app=myregistry/web-app:v2.0.0
+
+# Port forwarding
+kubectl port-forward pod-name 8080:3000
+
+# Exec into container
+kubectl exec -it pod-name -- /bin/bash
+
+# Delete resources
+kubectl delete deployment web-app
+kubectl delete -f deployment.yaml
+```
+
+## Cloud Computing Platforms
+
+### Amazon Web Services (AWS)
+AWS is the most comprehensive and broadly adopted cloud platform, offering over 200 fully featured services from data centers globally.
+
+#### Core AWS Services
+- **EC2**: Virtual servers in the cloud
+- **S3**: Scalable object storage
+- **RDS**: Managed relational database service
+- **Lambda**: Serverless compute service
+- **VPC**: Virtual private cloud for networking
+- **CloudWatch**: Monitoring and observability
+- **IAM**: Identity and access management
+- **CloudFormation**: Infrastructure as code
+
+#### AWS Infrastructure as Code (CloudFormation)
+```yaml
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Web application infrastructure'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: production
+    AllowedValues: [development, staging, production]
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: !Sub '${Environment}-vpc'
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs '']
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub '${Environment}-public-subnet-1'
+
+  WebAppSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for web application
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+  WebAppLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      ImageId: ami-0c55b159cbfafe1f0
+      InstanceType: t3.micro
+      SecurityGroups:
+        - !Ref WebAppSecurityGroup
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          apt-get update
+          apt-get install -y docker.io
+          usermod -aG docker ubuntu
+          docker run -d -p 80:3000 myregistry/web-app:latest
+
+  WebAppAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier:
+        - !Ref PublicSubnet1
+      LaunchConfigurationName: !Ref WebAppLaunchConfig
+      MinSize: 2
+      MaxSize: 6
+      DesiredCapacity: 2
+      TargetGroupARNs:
+        - !Ref WebAppTargetGroup
+
+  ApplicationLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: internet-facing
+      Type: application
+      Subnets:
+        - !Ref PublicSubnet1
+      SecurityGroups:
+        - !Ref WebAppSecurityGroup
+
+  WebAppTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      VpcId: !Ref VPC
+      Port: 80
+      Protocol: HTTP
+      HealthCheckPath: /health
+      HealthCheckIntervalSeconds: 30
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 3
+
+Outputs:
+  LoadBalancerDNS:
+    Description: DNS name of the load balancer
+    Value: !GetAtt ApplicationLoadBalancer.DNSName
+    Export:
+      Name: !Sub '${Environment}-alb-dns'
+```
+
+### Microsoft Azure
+Azure is Microsoft's cloud computing platform, providing a wide range of cloud services including compute, analytics, storage, and networking.
+
+#### Key Azure Services
+- **Virtual Machines**: Windows and Linux virtual machines
+- **App Service**: Managed web application hosting
+- **Azure Functions**: Serverless compute service
+- **Azure SQL**: Managed SQL database service
+- **Blob Storage**: Scalable object storage
+- **Virtual Network**: Isolated network environments
+- **Azure DevOps**: CI/CD and project management
+
+#### Azure Resource Manager Template
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "webAppName": {
+      "type": "string",
+      "defaultValue": "[concat('webapp-', uniqueString(resourceGroup().id))]"
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": ["F1", "D1", "B1", "B2", "B3", "S1", "S2", "S3", "P1", "P2", "P3", "P4"]
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2020-12-01",
+      "name": "[parameters('webAppName')]",
+      "location": "[resourceGroup().location]",
+      "kind": "app",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'appserviceplan')]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference('microsoft.insights/components/webappinsights', '2015-05-01').InstrumentationKey]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2020-12-01",
+      "name": "appserviceplan",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "[parameters('sku')]"
+      },
+      "kind": "linux",
+      "properties": {
+        "reserved": true
+      }
+    }
+  ]
+}
+```
+
+### Google Cloud Platform (GCP)
+GCP offers a suite of cloud computing services that runs on the same infrastructure that Google uses internally for its end-user products.
+
+#### Core GCP Services
+- **Compute Engine**: Virtual machines
+- **Cloud Run**: Serverless container platform
+- **Cloud Functions**: Serverless functions
+- **Cloud Storage**: Object storage service
+- **Cloud SQL**: Managed relational databases
+- **Kubernetes Engine**: Managed Kubernetes service
+- **Cloud Build**: CI/CD platform
+
+#### GCP Deployment Manager Template
+```yaml
+imports:
+- path: container_vm.jinja
+
+resources:
+- name: my-container-vm
+  type: container_vm.jinja
+  properties:
+    zone: us-central1-a
+    containerImage: gcr.io/myproject/web-app:latest
+```
+
+## Continuous Integration and Continuous Deployment (CI/CD)
+
+### CI/CD Pipeline Concepts
+CI/CD automates the process of integrating code changes, testing, and deploying applications to production environments.
+
+#### Pipeline Stages
+1. **Source**: Code repository (Git)
+2. **Build**: Compile and package application
+3. **Test**: Run automated tests
+4. **Package**: Create deployable artifacts
+5. **Deploy**: Deploy to environments
+6. **Monitor**: Track application health
+
+### Jenkins CI/CD Pipeline
+Jenkins is an open-source automation server that enables building, deploying, and automating any project.
+
+#### Jenkinsfile Example
+```groovy
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_REGISTRY = 'myregistry.com'
+        DOCKER_IMAGE = 'web-app'
+        DOCKER_TAG = "${env.BUILD_NUMBER}"
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                sh 'npm ci'
+                sh 'npm run build'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                sh 'npm test'
+                sh 'npm run test:coverage'
+            }
+            post {
+                always {
+                    publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'coverage',
+                        reportFiles: 'index.html',
+                        reportName: 'Coverage Report'
+                    ])
+                }
+            }
+        }
+        
+        stage('Security Scan') {
+            steps {
+                sh 'npm audit'
+                sh 'docker run --rm -v $(pwd):/app clair-scanner:latest'
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry("https://${DOCKER_REGISTRY}", 'docker-registry-credentials') {
+                        def image = docker.build("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG}")
+                        image.push()
+                        image.push('latest')
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy to Staging') {
+            steps {
+                sh """
+                    kubectl set image deployment/web-app \
+                    web-app=${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG} \
+                    --namespace=staging
+                """
+                sh 'kubectl rollout status deployment/web-app --namespace=staging'
+            }
+        }
+        
+        stage('Integration Tests') {
+            steps {
+                sh 'npm run test:integration'
+            }
+        }
+        
+        stage('Deploy to Production') {
+            when {
+                branch 'main'
+            }
+            steps {
+                input message: 'Deploy to production?', ok: 'Deploy'
+                sh """
+                    kubectl set image deployment/web-app \
+                    web-app=${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG} \
+                    --namespace=production
+                """
+                sh 'kubectl rollout status deployment/web-app --namespace=production'
+            }
+        }
+    }
+    
+    post {
+        success {
+            slackSend(
+                channel: '#deployments',
+                color: 'good',
+                message: "✅ Deployment successful: ${env.JOB_NAME} - ${env.BUILD_NUMBER}"
+            )
+        }
+        failure {
+            slackSend(
+                channel: '#deployments',
+                color: 'danger',
+                message: "❌ Deployment failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}"
+            )
+        }
+        always {
+            cleanWs()
+        }
+    }
+}
+```
+
+### GitHub Actions
+GitHub Actions provides CI/CD capabilities directly integrated with GitHub repositories.
+
+#### GitHub Actions Workflow
+```yaml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run tests
+      run: npm test
+    
+    - name: Run coverage
+      run: npm run test:coverage
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+
+  security:
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Run security audit
+      run: npm audit --audit-level moderate
+    
+    - name: Run Snyk security scan
+      uses: snyk/actions/node@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    if: github.ref == 'refs/heads/main'
+    
+    permissions:
+      contents: read
+      packages: write
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Log in to Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+    
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+    
+    - name: Deploy to Kubernetes
+      run: |
+        echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
+        export KUBECONFIG=kubeconfig
+        kubectl set image deployment/web-app \
+        web-app=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+        --namespace=production
+        kubectl rollout status deployment/web-app --namespace=production
+```
+
+## Infrastructure as Code (IaC)
+
+### Terraform
+Terraform is an open-source infrastructure as code tool that enables you to safely and predictably create, change, and improve infrastructure.
+
+#### Terraform Configuration
+```hcl
+# Provider configuration
+provider "aws" {
+  region = var.aws_region
+  
+  default_tags {
+    tags = {
+      Environment = var.environment
+      Project     = var.project_name
+      ManagedBy   = "Terraform"
+    }
+  }
+}
+
+# VPC configuration
+resource "aws_vpc" "main" {
+  cidr_block           = var.vpc_cidr
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+  
+  tags = {
+    Name = "${var.project_name}-vpc"
+  }
+}
+
+# Subnets
+resource "aws_subnet" "public" {
+  count                   = length(var.availability_zones)
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = cidrsubnet(var.vpc_cidr, 8, count.index)
+  availability_zone       = var.availability_zones[count.index]
+  map_public_ip_on_launch = true
+  
+  tags = {
+    Name = "${var.project_name}-public-${count.index + 1}"
+    Type = "Public"
+  }
+}
+
+resource "aws_subnet" "private" {
+  count             = length(var.availability_zones)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = cidrsubnet(var.vpc_cidr, 8, count.index + 3)
+  availability_zone = var.availability_zones[count.index]
+  
+  tags = {
+    Name = "${var.project_name}-private-${count.index + 1}"
+    Type = "Private"
+  }
+}
+
+# Internet Gateway
+resource "aws_internet_gateway" "main" {
+  vpc_id = aws_vpc.main.id
+  
+  tags = {
+    Name = "${var.project_name}-igw"
+  }
+}
+
+# Route tables
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+  
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.main.id
+  }
+  
+  tags = {
+    Name = "${var.project_name}-public-rt"
+  }
+}
+
+resource "aws_route_table_association" "public" {
+  count          = length(var.availability_zones)
+  subnet_id      = aws_subnet.public[count.index].id
+  route_table_id = aws_route_table.public.id
+}
+
+# ECS Cluster
+resource "aws_ecs_cluster" "main" {
+  name = "${var.project_name}-cluster"
+  
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+}
+
+# Application Load Balancer
+resource "aws_lb" "main" {
+  name               = "${var.project_name}-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb.id]
+  subnets            = aws_subnet.public[*].id
+  
+  enable_deletion_protection = false
+  
+  tags = {
+    Name = "${var.project_name}-alb"
+  }
+}
+
+# ECS Task Definition
+resource "aws_ecs_task_definition" "app" {
+  family                   = "${var.project_name}-task"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
+  
+  container_definitions = jsonencode([
+    {
+      name  = "app"
+      image = var.container_image
+      
+      portMappings = [
+        {
+          containerPort = 3000
+          protocol      = "tcp"
+        }
+      ]
+      
+      environment = [
+        {
+          name  = "NODE_ENV"
+          value = var.environment
+        }
+      ]
+      
+      secrets = [
+        {
+          name      = "DATABASE_URL"
+          valueFrom = aws_secretsmanager.database_url.arn
+        }
+      ]
+      
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.app.name
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+    }
+  ])
+}
+
+# ECS Service
+resource "aws_ecs_service" "app" {
+  name            = "${var.project_name}-service"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.app.arn
+  desired_count   = 2
+  launch_type     = "FARGATE"
+  
+  network_configuration {
+    subnets          = aws_subnet.private[*].id
+    security_groups  = [aws_security_group.app.id]
+    assign_public_ip = false
+  }
+  
+  load_balancer {
+    target_group_arn = aws_lb_target_group.app.arn
+    container_name   = "app"
+    container_port   = 3000
+  }
+  
+  depends_on = [aws_lb_listener.app]
+}
+```
+
+#### Terraform Variables
+```hcl
+variable "aws_region" {
+  description = "AWS region for resources"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "project_name" {
+  description = "Name of the project"
+  type        = string
+}
+
+variable "environment" {
+  description = "Environment (development, staging, production)"
+  type        = string
+  default     = "development"
+}
+
+variable "vpc_cidr" {
+  description = "CIDR block for VPC"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+
+variable "availability_zones" {
+  description = "List of availability zones"
+  type        = list(string)
+  default     = ["us-east-1a", "us-east-1b"]
+}
+
+variable "container_image" {
+  description = "Docker image for the application"
+  type        = string
+}
+```
+
+## Monitoring and Observability
+
+### Prometheus and Grafana
+Prometheus is a monitoring system and time series database, while Grafana provides visualization capabilities.
+
+#### Prometheus Configuration
+```yaml
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "alert_rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  - job_name: 'kubernetes-pods'
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+      - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+        action: replace
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: $1:$2
+        target_label: __address__
+```
+
+#### Grafana Dashboard Configuration
+```json
+{
+  "dashboard": {
+    "title": "Application Metrics",
+    "panels": [
+      {
+        "title": "Request Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total[5m])",
+            "legendFormat": "{{method}} {{status}}"
+          }
+        ]
+      },
+      {
+        "title": "Response Time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "95th percentile"
+          }
+        ]
+      },
+      {
+        "title": "Error Rate",
+        "type": "singlestat",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{status=~\"5..\"}[5m]) / rate(http_requests_total[5m])",
+            "legendFormat": "Error Rate"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### ELK Stack (Elasticsearch, Logstash, Kibana)
+ELK stack provides centralized logging and log analysis capabilities.
+
+#### Logstash Configuration
+```ruby
+input {
+  beats {
+    port => 5044
+  }
+}
+
+filter {
+  if [fields][service] == "web-app" {
+    grok {
+      match => { 
+        "message" => "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:level} %{GREEDYDATA:log_message}"
+      }
+    }
+    
+    date {
+      match => [ "timestamp", "ISO8601" ]
+    }
+    
+    if [level] == "ERROR" {
+      mutate {
+        add_tag => [ "error" ]
+      }
+    }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["elasticsearch:9200"]
+    index => "web-app-%{+YYYY.MM.dd}"
+  }
+  
+  if "error" in [tags] {
+    email {
+      to => "ops@example.com"
+      subject => "Web App Error Alert"
+      body => "An error occurred: %{log_message}"
+    }
+  }
+}
+```
+
+## DevOps Best Practices
+
+### Security Best Practices
+- **Secrets Management**: Use dedicated secret management tools
+- **Network Security**: Implement proper network segmentation and firewalls
+- **Container Security**: Scan images for vulnerabilities
+- **Access Control**: Implement least privilege principle
+- **Compliance**: Ensure regulatory compliance (GDPR, HIPAA, etc.)
+
+### Performance Optimization
+- **Auto Scaling**: Implement horizontal and vertical scaling
+- **Caching**: Use multi-level caching strategies
+- **Load Balancing**: Distribute traffic efficiently
+- **Database Optimization**: Indexing, query optimization, connection pooling
+- **CDN**: Use content delivery networks for static assets
+
+### Disaster Recovery
+- **Backups**: Regular, automated backup strategies
+- **Multi-Region**: Deploy across multiple geographic regions
+- **Failover**: Automatic failover mechanisms
+- **Recovery Plans**: Documented and tested recovery procedures
+- **Monitoring**: Comprehensive health monitoring
+
+### Cost Optimization
+- **Resource Rightsizing**: Choose appropriate instance sizes
+- **Reserved Instances**: Commit to long-term usage for discounts
+- **Spot Instances**: Use spot instances for fault-tolerant workloads
+- **Auto Scaling**: Scale resources based on demand
+- **Cost Monitoring**: Track and optimize cloud spending
+
+## DevOps Interview Questions
+
+### Docker and Containerization
+**Q: What is the difference between Docker containers and virtual machines?**
+A: Containers share the host OS kernel and are lightweight, while VMs have separate OS instances. Containers start faster and use fewer resources, but VMs provide stronger isolation.
+
+**Q: Explain the difference between Docker ENTRYPOINT and CMD.**
+A: ENTRYPOINT provides the main executable and cannot be easily overridden, while CMD provides default arguments that can be overridden. ENTRYPOINT is often used for the main command, CMD for default parameters.
+
+### Kubernetes
+**Q: What is the difference between a Deployment and a StatefulSet in Kubernetes?**
+A: Deployments are for stateless applications with interchangeable pods, while StatefulSets are for stateful applications that need stable network identifiers and persistent storage.
+
+**Q: How does Kubernetes handle service discovery?**
+A: Kubernetes provides built-in service discovery through DNS. Services get DNS entries in the format `<service-name>.<namespace>.svc.cluster.local`, and pods can resolve service names automatically.
+
+### CI/CD
+**Q: What is the difference between continuous integration and continuous deployment?**
+A: CI focuses on automatically building and testing code changes, while CD automatically deploys successful builds to production. CI ensures code quality, CD ensures rapid delivery.
+
+**Q: Explain blue-green deployment vs. canary deployment.**
+A: Blue-green deployment switches traffic entirely to a new version, canary deployment gradually shifts traffic to the new version. Blue-green provides instant rollback, canary provides gradual risk assessment.
+
+### Infrastructure as Code
+**Q: What are the benefits of infrastructure as code?**
+A: Benefits include version control, repeatability, consistency, documentation, collaboration, and automated provisioning. IaC reduces manual errors and improves reliability.
+
+**Q: Compare Terraform and CloudFormation.**
+A: Terraform is cloud-agnostic and supports multiple providers, CloudFormation is AWS-specific. Terraform uses HCL, CloudFormation uses YAML/JSON. Terraform has better state management and community support.
+
+### Cloud Computing
+**Q: What is the difference between IaaS, PaaS, and SaaS?**
+A: IaaS provides virtualized computing resources, PaaS provides platform for application development, SaaS provides ready-to-use software. IaaS offers most control, SaaS offers least control.
+
+**Q: Explain the shared responsibility model in cloud computing.**
+A: Cloud provider is responsible for security of the cloud, customer is responsible for security in the cloud. Provider manages infrastructure, customer manages data, applications, and configurations.
+
+## Conclusion
+
+DevOps and cloud infrastructure require understanding of containerization, orchestration, cloud platforms, CI/CD pipelines, and monitoring. Key areas to master include:
+
+1. **Container Technologies**: Docker, container orchestration with Kubernetes
+2. **Cloud Platforms**: AWS, Azure, GCP services and best practices
+3. **CI/CD**: Automated build, test, and deployment pipelines
+4. **Infrastructure as Code**: Terraform, CloudFormation, ARM templates
+5. **Monitoring and Observability**: Prometheus, Grafana, ELK stack
+6. **Security and Compliance**: Best practices for cloud security
+7. **Cost Optimization**: Efficient resource utilization and cost management
+
+The DevOps landscape continues to evolve with new technologies, tools, and methodologies. Staying current with industry trends while maintaining strong fundamentals is essential for successful DevOps implementation and interview preparation.

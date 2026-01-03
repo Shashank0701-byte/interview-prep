@@ -8,6 +8,7 @@ const {
     deleteRoadmapSession,
     updateRoadmapSessionRating,
     updateRoadmapSessionProgress,
+    regenerateSessionQuestions,
 } = require("../controllers/roadmapSessionController");
 const { protect } = require("../middlewares/authMiddleware");
 
@@ -45,5 +46,10 @@ router.put("/:id/rating", protect, updateRoadmapSessionRating);
 // @route   PUT /api/roadmap-sessions/:id/progress
 // @access  Private
 router.put("/:id/progress", protect, updateRoadmapSessionProgress);
+
+// @desc    Regenerate questions for a session using Gemini AI
+// @route   POST /api/roadmap-sessions/:id/regenerate
+// @access  Private
+router.post("/:id/regenerate", protect, regenerateSessionQuestions);
 
 module.exports = router;

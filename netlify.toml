@@ -1,34 +1,32 @@
 # Netlify Build Settings
 [build]
-  # Directory to change to before starting a build.
-  # Make sure this is your project's correct folder name.
   base = "frontend/interview-perp-ai"
-
-  # The command to build your site for production.
-  command = "rm -rf node_modules package-lock.json && npm install --legacy-peer-deps && npm run build"
-
-  # The directory that contains the deploy-ready HTML files and assets.
+  command = "npm install --legacy-peer-deps && npm run build"
   publish = "dist"
 
 [build.environment]
-  # Node.js version for build
-  NODE_VERSION = "20"
-  # Fix npm optional dependencies issue
-  NPM_FLAGS = "--legacy-peer-deps"
-  # Omit PORT from secrets scanning (it's just a port number, not a secret)
-  SECRETS_SCAN_OMIT_KEYS = "PORT"
-  # Omit paths that contain salary data and other non-secret numeric values
-  SECRETS_SCAN_OMIT_PATHS = "src/components/Resume/*,public/pdf.worker.min.js,dist/*"
-  # Backend URL for production (using the actual URL from the error)
-  VITE_API_BASE_URL = "https://interview-prep-gbhf.vercel.app"
+  # Required for Vite 5+
+  NODE_VERSION = "22"
 
-# Redirect rules for Single Page Application (SPA)
+  # Fix npm peer dependency issues
+  NPM_FLAGS = "--legacy-peer-deps"
+
+  # Your production backend
+  VITE_API_BASE_URL = "https://interview-prep-2-rfzb.onrender.com"
+
+  # Ignore PORT as a "secret"
+  SECRETS_SCAN_OMIT_KEYS = "PORT"
+
+  # Ignore paths containing worker/pdf bundles or build output
+  SECRETS_SCAN_OMIT_PATHS = "dist/*,public/*,src/components/Resume/*"
+
+# Redirect SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Headers for security and performance
+# Security Headers
 [[headers]]
   for = "/*"
   [headers.values]
@@ -37,7 +35,7 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
-# Cache static assets
+# Cache static assets (improves performance)
 [[headers]]
   for = "/assets/*"
   [headers.values]

@@ -1,0 +1,104 @@
+[
+  {
+    "id": "array_two_sum",
+    "question": "Given an array of integers and a target sum, find two numbers that add up to the target. Return their indices.",
+    "difficulty": "easy",
+    "solution_approach": "Use a hash map to store seen numbers and their indices. For each number, check if (target - current_number) exists in the hash map. If yes, return both indices. If no, add current number to hash map. Time: O(n), Space: O(n).",
+    "code_example": "def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []",
+    "metadata": {
+      "type": "coding_question",
+      "category": "arrays",
+      "difficulty": "easy",
+      "topics": ["hash_map", "two_pointers", "arrays"],
+      "companies": ["google", "amazon", "microsoft", "facebook"],
+      "time_complexity": "O(n)",
+      "space_complexity": "O(n)",
+      "interview_frequency": "very_high"
+    }
+  },
+  {
+    "id": "linked_list_reverse",
+    "question": "Reverse a singly linked list iteratively and recursively.",
+    "difficulty": "easy",
+    "solution_approach": "Iterative: Use three pointers (prev, current, next). Traverse the list, reverse links by setting current.next = prev, then move pointers forward. Recursive: Base case when head is null or head.next is null. Recursively reverse rest of list, then reverse current link.",
+    "code_example": "def reverse_iterative(head):\n    prev = None\n    current = head\n    while current:\n        next_temp = current.next\n        current.next = prev\n        prev = current\n        current = next_temp\n    return prev",
+    "metadata": {
+      "type": "coding_question",
+      "category": "linked_lists",
+      "difficulty": "easy",
+      "topics": ["linked_lists", "pointers", "recursion"],
+      "companies": ["amazon", "microsoft", "apple"],
+      "time_complexity": "O(n)",
+      "space_complexity": "O(1) iterative, O(n) recursive",
+      "interview_frequency": "very_high"
+    }
+  },
+  {
+    "id": "binary_tree_traversal",
+    "question": "Implement inorder, preorder, and postorder traversal of a binary tree both recursively and iteratively.",
+    "difficulty": "medium",
+    "solution_approach": "Recursive is straightforward using call stack. Iterative requires explicit stack. Inorder: left, root, right. Preorder: root, left, right. Postorder: left, right, root. For iterative inorder: go left as far as possible, process node, go right.",
+    "code_example": "def inorder_recursive(root):\n    if not root:\n        return []\n    return inorder_recursive(root.left) + [root.val] + inorder_recursive(root.right)",
+    "metadata": {
+      "type": "coding_question",
+      "category": "trees",
+      "difficulty": "medium",
+      "topics": ["binary_trees", "tree_traversal", "recursion", "stack"],
+      "companies": ["google", "facebook", "amazon"],
+      "time_complexity": "O(n)",
+      "space_complexity": "O(h) where h is height",
+      "interview_frequency": "high"
+    }
+  },
+  {
+    "id": "valid_parentheses",
+    "question": "Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.",
+    "difficulty": "easy",
+    "solution_approach": "Use a stack to track opening brackets. For each character: if opening bracket, push to stack. If closing bracket, check if stack is empty or top doesn't match - return false. Pop from stack if match. Return true if stack is empty at end.",
+    "code_example": "def is_valid(s):\n    stack = []\n    mapping = {')': '(', '}': '{', ']': '['}\n    for char in s:\n        if char in mapping:\n            if not stack or stack.pop() != mapping[char]:\n                return False\n        else:\n            stack.append(char)\n    return not stack",
+    "metadata": {
+      "type": "coding_question",
+      "category": "stacks",
+      "difficulty": "easy",
+      "topics": ["stack", "string_processing", "matching"],
+      "companies": ["amazon", "microsoft", "google"],
+      "time_complexity": "O(n)",
+      "space_complexity": "O(n)",
+      "interview_frequency": "very_high"
+    }
+  },
+  {
+    "id": "merge_intervals",
+    "question": "Given an array of intervals, merge all overlapping intervals.",
+    "difficulty": "medium",
+    "solution_approach": "Sort intervals by start time. Iterate through sorted intervals. If current interval overlaps with previous (current.start <= previous.end), merge them by updating end time. Otherwise, add current interval to result. Overlapping condition: intervals [a,b] and [c,d] overlap if max(a,c) <= min(b,d).",
+    "code_example": "def merge(intervals):\n    if not intervals:\n        return []\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n    for current in intervals[1:]:\n        if current[0] <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], current[1])\n        else:\n            merged.append(current)\n    return merged",
+    "metadata": {
+      "type": "coding_question",
+      "category": "intervals",
+      "difficulty": "medium",
+      "topics": ["sorting", "intervals", "greedy"],
+      "companies": ["facebook", "google", "amazon"],
+      "time_complexity": "O(n log n)",
+      "space_complexity": "O(1)",
+      "interview_frequency": "high"
+    }
+  },
+  {
+    "id": "lru_cache",
+    "question": "Design and implement a data structure for Least Recently Used (LRU) cache.",
+    "difficulty": "medium",
+    "solution_approach": "Use combination of hash map and doubly linked list. Hash map provides O(1) access to nodes. Doubly linked list maintains order (most recent at head, least recent at tail). For get(): move accessed node to head. For put(): if key exists, update and move to head. If capacity exceeded, remove tail node and its hash map entry.",
+    "code_example": "class LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        # Create dummy head and tail\n        self.head = Node(0, 0)\n        self.tail = Node(0, 0)\n        self.head.next = self.tail\n        self.tail.prev = self.head",
+    "metadata": {
+      "type": "design_question",
+      "category": "data_structures",
+      "difficulty": "medium",
+      "topics": ["hash_map", "doubly_linked_list", "cache", "design"],
+      "companies": ["amazon", "microsoft", "google"],
+      "time_complexity": "O(1) for get and put",
+      "space_complexity": "O(capacity)",
+      "interview_frequency": "very_high"
+    }
+  }
+]
