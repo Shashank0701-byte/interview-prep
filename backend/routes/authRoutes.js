@@ -1,6 +1,7 @@
 const express = require("express");
-const { registerUser, loginUser, getUserProfile } = require("../controllers/authController");
+const { registerUser, loginUser, getUserProfile, verifyLoginOtp } = require("../controllers/authController");
 const { protect } = require("../middlewares/authMiddleware");
+const { verifyCaptcha } = require("../middlewares/captchaMiddleware");
 const upload = require("../middlewares/uploadMiddleware");
 
 const router = express.Router();
@@ -9,7 +10,8 @@ const router = express.Router();
 // Auth Routes
 // ================================
 router.post("/register", registerUser);
-router.post("/login", loginUser);
+router.post("/login", verifyCaptcha, loginUser);
+router.post("/verify-otp", verifyLoginOtp);
 router.get("/profile", protect, getUserProfile);
 
 // ================================

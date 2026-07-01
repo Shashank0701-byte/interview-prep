@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { sendOTP } = require("../utils/emailService");
 
 // Generate JWT Token
 const generateToken = (userId) => {
@@ -64,6 +65,61 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const salt = await bcrypt.genSalt(10);
+    const hashedOTP = await bcrypt.hash(otp, salt);
+
+    user.otp = hashedOTP;
+    user.otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    await user.save();
+
+    await sendOTP(user.email, otp);
+
+    res.json({
+      message: "OTP sent to your email",
+      requiresOTP: true,
+      email: user.email
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// @desc    Verify OTP and finalize login
+// @route   POST /api/auth/verify-otp
+// @access  Public
+const verifyLoginOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ message: "Email and OTP are required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!user.otp || !user.otpExpires) {
+      return res.status(400).json({ message: "No OTP request found for this user" });
+    }
+
+    if (user.otpExpires < new Date()) {
+      return res.status(400).json({ message: "OTP has expired. Please log in again." });
+    }
+
+    const isMatch = await bcrypt.compare(otp, user.otp);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    // Clear OTP
+    user.otp = null;
+    user.otpExpires = null;
+    await user.save();
+
     // Return user data with JWT
     res.json({
       _id: user._id,
@@ -92,4 +148,4 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUserProfile };
+module.exports = { registerUser, loginUser, getUserProfile, verifyLoginOtp };
