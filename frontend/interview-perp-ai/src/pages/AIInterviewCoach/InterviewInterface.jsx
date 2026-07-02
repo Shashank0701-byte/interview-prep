@@ -442,38 +442,38 @@ const InterviewInterface = () => {
 
     if (!interview) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+            <div className="min-h-screen bg-cream font-body flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 dark:border-slate-400 mx-auto mb-4"></div>
-                    <p className="text-gray-900 dark:text-white">Loading interview session...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-charcoal mx-auto mb-4"></div>
+                    <p className="text-charcoal font-bold uppercase tracking-wider text-sm">Loading interview session...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+        <div className="min-h-screen bg-cream font-body text-charcoal">
             {/* Header */}
-            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
+            <div className="bg-cream border-b-2 border-charcoal/10 p-4">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-2">
-                            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                            <span className="text-sm font-medium">LIVE INTERVIEW</span>
+                            <div className="w-3 h-3 bg-red-500 border border-charcoal rounded-full animate-pulse"></div>
+                            <span className="text-sm font-bold uppercase tracking-wider text-charcoal">LIVE INTERVIEW</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                        <div className="flex items-center space-x-2 text-charcoal/80">
                             <Clock className="w-4 h-4" />
                             <span className="font-mono">{formatTime(timeElapsed)}</span>
                         </div>
                     </div>
                     
                     <div className="flex items-center space-x-4">
-                        <div className="text-sm text-gray-600 dark:text-gray-300">
+                        <div className="text-sm font-bold uppercase tracking-wider text-charcoal/80">
                             Question {questionIndex + 1} of {interview.questions.length}
                         </div>
                         <button
                             onClick={endInterview}
-                            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2"
+                            className="border-2 border-charcoal bg-charcoal text-white hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] px-4 py-2 rounded-md font-bold uppercase tracking-wider text-sm transition-all duration-200 flex items-center space-x-2 cursor-pointer"
                         >
                             <Phone className="w-4 h-4" />
                             <span>End Interview</span>
@@ -486,15 +486,15 @@ const InterviewInterface = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                     {/* Video Call Interface */}
                     <div className="lg:col-span-3">
-                        <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                        <div className="card-editorial overflow-hidden">
                             {/* AI Interviewer */}
-                            <div className="relative h-48 bg-gray-600 dark:bg-gray-700 flex items-center justify-center">
+                            <div className="relative h-48 bg-charcoal flex items-center justify-center border-b-2 border-charcoal">
                                 <div className="text-center">
-                                    <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-3 mx-auto">
+                                    <div className="w-20 h-20 bg-cream/20 rounded-md flex items-center justify-center mb-3 mx-auto">
                                         <User className="w-10 h-10 text-white" />
                                     </div>
-                                    <h3 className="text-xl font-semibold text-white">{aiPersona?.name}</h3>
-                                    <p className="text-gray-200">{aiPersona?.role} at {aiPersona?.company}</p>
+                                    <h3 className="text-xl font-display font-bold text-white">{aiPersona?.name}</h3>
+                                    <p className="text-white/80">{aiPersona?.role} at {aiPersona?.company}</p>
                                     {aiSpeaking && (
                                         <div className="flex items-center justify-center mt-2">
                                             <div className="flex space-x-1">
@@ -509,7 +509,7 @@ const InterviewInterface = () => {
                             </div>
 
                             {/* User Video */}
-                            <div className="relative h-96 bg-gray-900">
+                            <div className="relative h-96 bg-charcoal/10 border-b-2 border-charcoal">
                                 <video
                                     ref={videoRef}
                                     autoPlay
@@ -519,10 +519,10 @@ const InterviewInterface = () => {
                                 />
                                 
                                 {!isVideoOn && (
-                                    <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
+                                    <div className="absolute inset-0 bg-charcoal/90 flex items-center justify-center">
                                         <div className="text-center">
-                                            <CameraOff className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                                            <p className="text-gray-400">Camera is off</p>
+                                            <CameraOff className="w-12 h-12 text-white/40 mx-auto mb-2" />
+                                            <p className="text-white/40">Camera is off</p>
                                         </div>
                                     </div>
                                 )}
@@ -541,22 +541,22 @@ const InterviewInterface = () => {
                                 />
 
                                 {/* Real-time Score Overlay */}
-                                <div className="absolute top-4 right-4 bg-black/50 rounded-lg p-3 backdrop-blur-sm">
-                                    <div className="grid grid-cols-2 gap-2 text-xs">
+                                <div className="absolute top-4 right-4 bg-white border-2 border-charcoal rounded-md p-3 shadow-[4px_4px_0px_0px_#1A1A1A]">
+                                    <div className="grid grid-cols-2 gap-3 text-xs font-bold uppercase tracking-wider text-charcoal">
                                         <div className="flex items-center space-x-1">
-                                            <Eye className="w-3 h-3 text-blue-400" />
+                                            <Eye className="w-3 h-3 text-charcoal" />
                                             <span>Eye: {currentScore.eyeContact}%</span>
                                         </div>
                                         <div className="flex items-center space-x-1">
-                                            <Volume2 className="w-3 h-3 text-green-400" />
+                                            <Volume2 className="w-3 h-3 text-charcoal" />
                                             <span>Voice: {currentScore.voiceClarity}%</span>
                                         </div>
                                         <div className="flex items-center space-x-1">
-                                            <CheckCircle className="w-3 h-3 text-purple-400" />
+                                            <CheckCircle className="w-3 h-3 text-charcoal" />
                                             <span>Conf: {currentScore.confidence}%</span>
                                         </div>
                                         <div className="flex items-center space-x-1">
-                                            <User className="w-3 h-3 text-indigo-400" />
+                                            <User className="w-3 h-3 text-charcoal" />
                                             <span>Prof: {currentScore.professionalism}%</span>
                                         </div>
                                     </div>
@@ -564,11 +564,11 @@ const InterviewInterface = () => {
                             </div>
 
                             {/* Controls */}
-                            <div className="p-4 bg-gray-800 flex items-center justify-center space-x-4">
+                            <div className="p-4 bg-cream flex items-center justify-center space-x-4">
                                 <button
                                     onClick={toggleVideo}
-                                    className={`p-3 rounded-full transition-colors duration-200 ${
-                                        isVideoOn ? 'bg-gray-700 hover:bg-gray-600' : 'bg-red-600 hover:bg-red-700'
+                                    className={`p-3 rounded-md border-2 border-charcoal transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] ${
+                                        isVideoOn ? 'bg-white text-charcoal' : 'bg-charcoal text-white'
                                     }`}
                                 >
                                     {isVideoOn ? <Video className="w-5 h-5" /> : <VideoOff className="w-5 h-5" />}
@@ -576,8 +576,8 @@ const InterviewInterface = () => {
                                 
                                 <button
                                     onClick={toggleAudio}
-                                    className={`p-3 rounded-full transition-colors duration-200 ${
-                                        isAudioOn ? 'bg-gray-700 hover:bg-gray-600' : 'bg-red-600 hover:bg-red-700'
+                                    className={`p-3 rounded-md border-2 border-charcoal transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] ${
+                                        isAudioOn ? 'bg-white text-charcoal' : 'bg-charcoal text-white'
                                     }`}
                                 >
                                     {isAudioOn ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
@@ -585,8 +585,8 @@ const InterviewInterface = () => {
                                 
                                 <button
                                     onClick={() => setIsAIAudioOn(!isAIAudioOn)}
-                                    className={`p-3 rounded-full transition-colors duration-200 ${
-                                        isAIAudioOn ? 'bg-gray-700 hover:bg-gray-600' : 'bg-red-600 hover:bg-red-700'
+                                    className={`p-3 rounded-md border-2 border-charcoal transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] ${
+                                        isAIAudioOn ? 'bg-white text-charcoal' : 'bg-charcoal text-white'
                                     }`}
                                 >
                                     {isAIAudioOn ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
@@ -595,7 +595,7 @@ const InterviewInterface = () => {
                                 {!interviewStarted ? (
                                     <button
                                         onClick={startInterview}
-                                        className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+                                        className="border-2 border-charcoal bg-charcoal text-white px-6 py-3 rounded-md font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]"
                                     >
                                         Start Interview
                                     </button>
@@ -603,14 +603,14 @@ const InterviewInterface = () => {
                                     <div className="flex space-x-3">
                                         <button
                                             onClick={simulateVoiceResponse}
-                                            className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+                                            className="border-2 border-charcoal bg-white text-charcoal px-6 py-3 rounded-md font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]"
                                         >
                                             Submit Response
                                         </button>
                                         {questionIndex >= interview.questions.length - 1 && (
                                             <button
                                                 onClick={endInterview}
-                                                className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+                                                className="border-2 border-charcoal bg-charcoal text-white px-6 py-3 rounded-md font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]"
                                             >
                                                 End Interview
                                             </button>
@@ -624,12 +624,12 @@ const InterviewInterface = () => {
                     {/* Sidebar */}
                     <div className="lg:col-span-1 space-y-6">
                         {/* Current Question */}
-                        <div className="bg-gray-800 rounded-xl p-4">
-                            <h3 className="text-lg font-semibold mb-3">Current Question</h3>
+                        <div className="card-editorial p-4">
+                            <h3 className="text-lg font-display font-bold text-charcoal mb-3">Current Question</h3>
                             {currentQuestion && (
                                 <div>
-                                    <p className="text-gray-300 mb-2">{currentQuestion.question}</p>
-                                    <div className="text-xs text-gray-500">
+                                    <p className="text-charcoal/80 mb-2 font-medium">{currentQuestion.question}</p>
+                                    <div className="text-xs font-bold uppercase tracking-wider text-charcoal/60">
                                         Expected: {Math.floor(currentQuestion.expectedDuration / 60)} minutes
                                     </div>
                                 </div>
@@ -638,14 +638,14 @@ const InterviewInterface = () => {
 
                         {/* Start Interview Button - Prominent Placement */}
                         {!interviewStarted && (
-                            <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl p-6 text-center">
-                                <h3 className="text-xl font-bold text-white mb-3">Ready to Begin?</h3>
-                                <p className="text-green-100 mb-4 text-sm">
+                            <div className="bg-charcoal rounded-md p-6 text-center border-2 border-charcoal shadow-[6px_6px_0px_0px_#1A1A1A]">
+                                <h3 className="text-xl font-display font-bold text-white mb-3">Ready to Begin?</h3>
+                                <p className="text-white/80 mb-4 text-sm font-medium">
                                     Click the button below to start your AI interview session
                                 </p>
                                 <button
                                     onClick={startInterview}
-                                    className="bg-white text-green-600 hover:bg-green-50 px-8 py-4 rounded-lg font-bold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg"
+                                    className="bg-white text-charcoal px-8 py-4 rounded-md font-bold uppercase tracking-wider text-sm transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] border-2 border-charcoal"
                                 >
                                     🚀 Start Interview
                                 </button>
@@ -654,17 +654,17 @@ const InterviewInterface = () => {
 
                         {/* Response Input Area */}
                         {interviewStarted ? (
-                            <div className="bg-gray-800 rounded-xl p-4 border-2 border-green-500">
-                                <h3 className="text-lg font-semibold mb-3 text-green-400">Your Response</h3>
-                                <div className="text-xs text-green-400 mb-2">✅ Interview Active - Type your answer below</div>
+                            <div className="card-editorial p-4 border-l-4 border-l-charcoal">
+                                <h3 className="text-lg font-display font-bold text-charcoal mb-3">Your Response</h3>
+                                <div className="text-xs font-bold uppercase tracking-wider text-charcoal/80 mb-2">✅ Interview Active - Type your answer below</div>
                                 <textarea
                                     placeholder="Type your response here or use voice recording..."
-                                    className="w-full h-32 bg-gray-700 text-white rounded-lg p-3 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full h-32 bg-white text-charcoal rounded-md border-2 border-charcoal p-3 resize-none focus:outline-none focus:ring-2 focus:ring-charcoal"
                                     value={textResponse}
                                     onChange={(e) => setTextResponse(e.target.value)}
                                 />
                                 <div className="flex justify-between items-center mt-3">
-                                    <span className="text-xs text-gray-400">
+                                    <span className="text-xs font-bold text-charcoal/60">
                                         {textResponse.length} characters
                                     </span>
                                     <div className="flex space-x-2">
@@ -677,7 +677,7 @@ const InterviewInterface = () => {
                                                     toast.success('Voice recording completed!');
                                                 }, 2000);
                                             }}
-                                            className="px-3 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm transition-colors duration-200"
+                                            className="px-3 py-2 border-2 border-charcoal bg-white text-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] rounded-md text-sm font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer"
                                         >
                                             🎤 Record
                                         </button>
@@ -689,31 +689,31 @@ const InterviewInterface = () => {
                                                 }
                                             }}
                                             disabled={!textResponse.trim()}
-                                            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg text-sm transition-colors duration-200"
+                                            className="px-4 py-2 border-2 border-charcoal bg-charcoal text-white hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none rounded-md text-sm font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer"
                                         >
-                                            Submit Response
+                                            Submit
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         ) : (
-                            <div className="bg-gray-800 rounded-xl p-4 border-2 border-red-500">
-                                <h3 className="text-lg font-semibold mb-3 text-red-400">Response Area</h3>
-                                <div className="text-xs text-red-400 mb-2">❌ Interview Not Started - Click "Start Interview" first</div>
-                                <div className="bg-gray-700 rounded-lg p-3 text-gray-500 text-center">
+                            <div className="card-editorial p-4 opacity-50">
+                                <h3 className="text-lg font-display font-bold text-charcoal mb-3">Response Area</h3>
+                                <div className="text-xs font-bold uppercase tracking-wider text-charcoal/60 mb-2">❌ Interview Not Started - Click "Start Interview" first</div>
+                                <div className="bg-cream border-2 border-charcoal/20 rounded-md p-3 text-charcoal/60 text-center font-medium">
                                     Response area will appear here once interview starts
                                 </div>
                             </div>
                         )}
 
                         {/* Debug Info */}
-                        <div className="bg-yellow-900 rounded-xl p-4 border border-yellow-600">
-                            <h3 className="text-lg font-semibold mb-3 text-yellow-400">Debug Info</h3>
-                            <div className="text-xs space-y-1">
-                                <div>Interview Started: <span className={interviewStarted ? 'text-green-400' : 'text-red-400'}>{interviewStarted ? 'YES' : 'NO'}</span></div>
-                                <div>Timer: <span className="text-white">{formatTime(timeElapsed)}</span></div>
-                                <div>Current Question: <span className="text-white">{currentQuestion ? 'Loaded' : 'Not Loaded'}</span></div>
-                                <div>Session ID: <span className="text-white">{sessionId}</span></div>
+                        <div className="bg-white border-2 border-charcoal rounded-md p-4 shadow-[4px_4px_0px_0px_#1A1A1A]">
+                            <h3 className="text-lg font-display font-bold text-charcoal mb-3">Debug Info</h3>
+                            <div className="text-xs font-mono font-medium text-charcoal/80 space-y-1">
+                                <div>Interview Started: <span className={interviewStarted ? 'font-bold' : ''}>{interviewStarted ? 'YES' : 'NO'}</span></div>
+                                <div>Timer: <span className="font-bold">{formatTime(timeElapsed)}</span></div>
+                                <div>Current Question: <span className="font-bold">{currentQuestion ? 'Loaded' : 'Not Loaded'}</span></div>
+                                <div>Session ID: <span className="font-bold">{sessionId}</span></div>
                             </div>
                         </div>
 
@@ -744,19 +744,19 @@ const InterviewInterface = () => {
 
                         {/* Current Follow-up Question */}
                         {currentFollowUp && (
-                            <div className="bg-gradient-to-r from-purple-900 to-indigo-900 rounded-xl p-4 border border-purple-500">
-                                <h3 className="text-lg font-semibold mb-3 text-white flex items-center">
-                                    <Zap className="w-5 h-5 mr-2 text-yellow-400" />
+                            <div className="bg-charcoal text-white rounded-md p-4 border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A]">
+                                <h3 className="text-lg font-display font-bold mb-3 flex items-center">
+                                    <Zap className="w-5 h-5 mr-2" />
                                     Active Follow-up
                                 </h3>
-                                <div className="bg-black/20 rounded-lg p-3 mb-3">
-                                    <p className="text-white font-medium leading-relaxed">
+                                <div className="bg-white/10 rounded-md p-3 mb-3">
+                                    <p className="font-medium leading-relaxed">
                                         {currentFollowUp.question}
                                     </p>
                                 </div>
                                 <button
                                     onClick={proceedToFollowUp}
-                                    className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200"
+                                    className="w-full bg-white text-charcoal py-2 px-4 rounded-md font-bold uppercase tracking-wider text-sm transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] border-2 border-charcoal"
                                 >
                                     Answer Follow-up Question
                                 </button>
@@ -765,26 +765,26 @@ const InterviewInterface = () => {
 
                         {/* Coaching Stats */}
                         {interviewStarted && (
-                            <div className="bg-gray-800 rounded-xl p-4">
-                                <h3 className="text-lg font-semibold mb-3 text-indigo-400">AI Features</h3>
+                            <div className="card-editorial p-4">
+                                <h3 className="text-lg font-display font-bold text-charcoal mb-3">AI Features</h3>
                                 
                                 {/* Feature Stats */}
                                 <div className="grid grid-cols-2 gap-3 text-sm mb-4">
-                                    <div className="bg-gray-700 rounded-lg p-2 text-center">
-                                        <div className="text-emerald-400 font-bold">{coachingStats.hintsGiven}</div>
-                                        <div className="text-gray-400 text-xs">Coaching Tips</div>
+                                    <div className="bg-cream border-2 border-charcoal rounded-md p-2 text-center">
+                                        <div className="text-charcoal font-bold text-lg">{coachingStats.hintsGiven}</div>
+                                        <div className="text-charcoal/80 font-bold uppercase tracking-wider text-[10px]">Coaching Tips</div>
                                     </div>
-                                    <div className="bg-gray-700 rounded-lg p-2 text-center">
-                                        <div className="text-purple-400 font-bold">{followUpQuestions.length}</div>
-                                        <div className="text-gray-400 text-xs">Follow-ups</div>
+                                    <div className="bg-cream border-2 border-charcoal rounded-md p-2 text-center">
+                                        <div className="text-charcoal font-bold text-lg">{followUpQuestions.length}</div>
+                                        <div className="text-charcoal/80 font-bold uppercase tracking-wider text-[10px]">Follow-ups</div>
                                     </div>
-                                    <div className="bg-gray-700 rounded-lg p-2 text-center">
-                                        <div className="text-blue-400 font-bold">{adaptiveDifficulty}</div>
-                                        <div className="text-gray-400 text-xs">Difficulty</div>
+                                    <div className="bg-cream border-2 border-charcoal rounded-md p-2 text-center">
+                                        <div className="text-charcoal font-bold text-lg">{adaptiveDifficulty}</div>
+                                        <div className="text-charcoal/80 font-bold uppercase tracking-wider text-[10px]">Difficulty</div>
                                     </div>
-                                    <div className="bg-gray-700 rounded-lg p-2 text-center">
-                                        <div className="text-amber-400 font-bold">{questionIndex + 1}</div>
-                                        <div className="text-gray-400 text-xs">Question #</div>
+                                    <div className="bg-cream border-2 border-charcoal rounded-md p-2 text-center">
+                                        <div className="text-charcoal font-bold text-lg">{questionIndex + 1}</div>
+                                        <div className="text-charcoal/80 font-bold uppercase tracking-wider text-[10px]">Question #</div>
                                     </div>
                                 </div>
 
@@ -792,10 +792,10 @@ const InterviewInterface = () => {
                                 <div className="space-y-2">
                                     <button
                                         onClick={() => setCoachingEnabled(!coachingEnabled)}
-                                        className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                                        className={`w-full px-3 py-2 border-2 border-charcoal rounded-md font-bold uppercase tracking-wider text-xs transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] ${
                                             coachingEnabled 
-                                                ? 'bg-indigo-600 hover:bg-indigo-700 text-white' 
-                                                : 'bg-gray-600 hover:bg-gray-500 text-gray-300'
+                                                ? 'bg-charcoal text-white' 
+                                                : 'bg-white text-charcoal'
                                         }`}
                                     >
                                         {coachingEnabled ? '🤖 AI Coach: ON' : '🤖 AI Coach: OFF'}
@@ -803,10 +803,10 @@ const InterviewInterface = () => {
                                     
                                     <button
                                         onClick={() => setQuestionGenerationEnabled(!questionGenerationEnabled)}
-                                        className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                                        className={`w-full px-3 py-2 border-2 border-charcoal rounded-md font-bold uppercase tracking-wider text-xs transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] ${
                                             questionGenerationEnabled 
-                                                ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                                                : 'bg-gray-600 hover:bg-gray-500 text-gray-300'
+                                                ? 'bg-charcoal text-white' 
+                                                : 'bg-white text-charcoal'
                                         }`}
                                     >
                                         {questionGenerationEnabled ? '🧠 Dynamic Q: ON' : '🧠 Dynamic Q: OFF'}

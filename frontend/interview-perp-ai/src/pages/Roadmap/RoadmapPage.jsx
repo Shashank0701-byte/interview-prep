@@ -130,7 +130,7 @@ const RoadmapPage = () => {
     if (isLoadingRoles) {
         return (
             <DashboardLayout>
-                <div className="flex items-center justify-center h-screen">
+                <div className="flex flex-col items-center justify-center h-screen bg-cream font-body">
                     <SpinnerLoader />
                 </div>
             </DashboardLayout>
@@ -139,20 +139,20 @@ const RoadmapPage = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+            <div className="min-h-screen bg-cream font-body">
                 {/* Enhanced Hero Header */}
-                <div className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
+                <div className="bg-charcoal text-white border-b-2 border-charcoal">
                     <div className="container mx-auto px-4 md:px-6 py-8">
                         <div className="text-center space-y-4">
                             <div className="flex items-center justify-center gap-3 mb-4">
-                                <div className="w-12 h-12 bg-gray-600 dark:bg-slate-600 rounded-xl flex items-center justify-center">
-                                    <LuMap className="w-6 h-6 text-white" />
+                                <div className="w-12 h-12 bg-white rounded-md flex items-center justify-center">
+                                    <LuMap className="w-6 h-6 text-charcoal" />
                                 </div>
-                                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+                                <h1 className="text-3xl md:text-4xl font-display font-bold text-white">
                                     Learning Roadmap
                                 </h1>
                             </div>
-                            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
+                            <p className="text-white/80 text-lg max-w-2xl mx-auto leading-relaxed font-bold">
                                 Your personalized learning journey, crafted to guide you from where you are to where you want to be.
                             </p>
                             
@@ -162,10 +162,10 @@ const RoadmapPage = () => {
                                     <button
                                         key={role.name}
                                         onClick={() => handleRoleChange(role.name)}
-                                        className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                                        className={`px-6 py-3 rounded-md font-bold uppercase tracking-wider text-sm transition-all duration-200 border-2 border-charcoal cursor-pointer ${
                                             selectedRole === role.name
-                                                ? 'bg-gray-900 dark:bg-slate-600 text-white'
-                                                : 'bg-white dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600 border border-gray-200 dark:border-slate-600'
+                                                ? 'bg-white text-charcoal shadow-[4px_4px_0px_0px_#1A1A1A] -translate-y-1'
+                                                : 'bg-charcoal text-white hover:bg-white hover:text-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]'
                                         }`}
                                     >
                                         {role.name}
@@ -180,42 +180,42 @@ const RoadmapPage = () => {
                     {isLoading ? (
                         <div className="flex flex-col items-center justify-center py-20">
                             <SpinnerLoader />
-                            <p className="text-slate-600 mt-4 text-center">
+                            <p className="text-charcoal mt-4 text-center font-bold">
                                 Crafting your personalized learning roadmap... ✨
                             </p>
                         </div>
                     ) : roadmap ? (
                         <div className="space-y-8">
                             {/* Roadmap Overview */}
-                            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-8">
+                            <div className="card-editorial p-8">
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-gray-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-3">
-                                            <LuTrendingUp className="w-8 h-8 text-gray-600 dark:text-gray-400" />
+                                        <div className="w-16 h-16 bg-cream border-2 border-charcoal/20 rounded-md flex items-center justify-center mx-auto mb-3">
+                                            <LuTrendingUp className="w-8 h-8 text-charcoal" />
                                         </div>
-                                        <div className="text-2xl font-bold text-gray-900 dark:text-white">{roadmap.overallProgress}%</div>
-                                        <div className="text-sm text-gray-600 dark:text-gray-400">Overall Progress</div>
+                                        <div className="text-2xl font-display font-bold text-charcoal">{roadmap.overallProgress}%</div>
+                                        <div className="text-sm text-charcoal/80 font-bold">Overall Progress</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-gray-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-3">
-                                            <LuAward className="w-8 h-8 text-gray-600 dark:text-gray-400" />
+                                        <div className="w-16 h-16 bg-cream border-2 border-charcoal/20 rounded-md flex items-center justify-center mx-auto mb-3">
+                                            <LuAward className="w-8 h-8 text-charcoal" />
                                         </div>
-                                        <div className="text-2xl font-bold text-gray-900 dark:text-white">{roadmap.completedPhases}/{roadmap.totalPhases}</div>
-                                        <div className="text-sm text-gray-600 dark:text-gray-400">Phases Complete</div>
+                                        <div className="text-2xl font-display font-bold text-charcoal">{roadmap.completedPhases}/{roadmap.totalPhases}</div>
+                                        <div className="text-sm text-charcoal/80 font-bold">Phases Complete</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-gray-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-3">
-                                            <LuCalendar className="w-8 h-8 text-gray-600 dark:text-gray-400" />
+                                        <div className="w-16 h-16 bg-cream border-2 border-charcoal/20 rounded-md flex items-center justify-center mx-auto mb-3">
+                                            <LuCalendar className="w-8 h-8 text-charcoal" />
                                         </div>
-                                        <div className="text-2xl font-bold text-gray-900 dark:text-white">{roadmap.estimatedCompletionDays}</div>
-                                        <div className="text-sm text-gray-600 dark:text-gray-400">Days Remaining</div>
+                                        <div className="text-2xl font-display font-bold text-charcoal">{roadmap.estimatedCompletionDays}</div>
+                                        <div className="text-sm text-charcoal/80 font-bold">Days Remaining</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-gray-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-3">
-                                            <LuBookOpen className="w-8 h-8 text-gray-600 dark:text-gray-400" />
+                                        <div className="w-16 h-16 bg-cream border-2 border-charcoal/20 rounded-md flex items-center justify-center mx-auto mb-3">
+                                            <LuBookOpen className="w-8 h-8 text-charcoal" />
                                         </div>
-                                        <div className="text-2xl font-bold text-gray-900 dark:text-white">{roadmap.phases.reduce((sum, phase) => sum + phase.sessionsCount, 0)}</div>
-                                        <div className="text-sm text-gray-600 dark:text-gray-400">Total Sessions</div>
+                                        <div className="text-2xl font-display font-bold text-charcoal">{roadmap.phases.reduce((sum, phase) => sum + phase.sessionsCount, 0)}</div>
+                                        <div className="text-sm text-charcoal/80 font-bold">Total Sessions</div>
                                     </div>
                                 </div>
                             </div>
@@ -225,25 +225,25 @@ const RoadmapPage = () => {
                                 {roadmap.phases.map((phase, index) => (
                                     <div
                                         key={phase.id}
-                                        className={`relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 overflow-hidden transition-all duration-500 hover:shadow-2xl ${
+                                        className={`relative card-editorial overflow-hidden transition-all duration-500 ${
                                             phase.status === 'locked' ? 'opacity-60' : ''
                                         }`}
                                     >
                                         {/* Phase Header */}
-                                        <div className={`bg-gradient-to-r ${getPhaseColor(phase.color)} p-6 text-white`}>
+                                        <div className={`bg-charcoal p-6 text-white border-b-2 border-charcoal`}>
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                                                    <div className="w-12 h-12 bg-white rounded-md flex items-center justify-center">
                                                         {getStatusIcon(phase.status)}
                                                     </div>
                                                     <div>
-                                                        <h3 className="text-xl font-bold">Phase {phase.order}: {phase.name}</h3>
-                                                        <p className="text-white/90 text-sm">{phase.description}</p>
+                                                        <h3 className="text-xl font-display font-bold">Phase {phase.order}: {phase.name}</h3>
+                                                        <p className="text-white/90 text-sm font-bold">{phase.description}</p>
                                                     </div>
                                                 </div>
                                                 <div className="text-right">
-                                                    <div className="text-2xl font-bold">{phase.completionPercentage}%</div>
-                                                    <div className="text-white/90 text-sm">{phase.estimatedDays} days</div>
+                                                    <div className="text-2xl font-display font-bold">{phase.completionPercentage}%</div>
+                                                    <div className="text-white/90 text-sm font-bold">{phase.estimatedDays} days</div>
                                                 </div>
                                             </div>
                                             
@@ -262,15 +262,15 @@ const RoadmapPage = () => {
                                         <div className="p-6">
                                             {/* Topics */}
                                             <div className="mb-6">
-                                                <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                                                    <LuBrain className="w-4 h-4 text-indigo-500" />
+                                                <h4 className="font-display font-bold text-charcoal mb-3 flex items-center gap-2">
+                                                    <LuBrain className="w-4 h-4" />
                                                     Key Topics
                                                 </h4>
                                                 <div className="flex flex-wrap gap-2">
                                                     {phase.topics.map((topic, topicIndex) => (
                                                         <span
                                                             key={topicIndex}
-                                                            className="px-3 py-1 bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 rounded-full text-sm font-medium border border-indigo-100"
+                                                            className="px-3 py-1 bg-cream text-charcoal rounded-sm text-sm font-bold border border-charcoal/20"
                                                         >
                                                             {topic}
                                                         </span>
@@ -280,29 +280,29 @@ const RoadmapPage = () => {
 
                                             {/* Stats */}
                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                                                <div className="text-center p-3 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-100">
-                                                    <div className="text-lg font-bold text-blue-600">{phase.sessionsCount}</div>
-                                                    <div className="text-xs text-blue-600">Sessions</div>
+                                                <div className="text-center p-3 bg-white rounded-md border-2 border-charcoal/20">
+                                                    <div className="text-lg font-bold text-charcoal">{phase.sessionsCount}</div>
+                                                    <div className="text-xs text-charcoal/80 font-bold">Sessions</div>
                                                 </div>
-                                                <div className="text-center p-3 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl border border-emerald-100">
-                                                    <div className="text-lg font-bold text-emerald-600">{phase.totalQuestions}</div>
-                                                    <div className="text-xs text-emerald-600">Questions</div>
+                                                <div className="text-center p-3 bg-white rounded-md border-2 border-charcoal/20">
+                                                    <div className="text-lg font-bold text-charcoal">{phase.totalQuestions}</div>
+                                                    <div className="text-xs text-charcoal/80 font-bold">Questions</div>
                                                 </div>
-                                                <div className="text-center p-3 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-100">
-                                                    <div className="text-lg font-bold text-purple-600">{phase.masteredQuestions}</div>
-                                                    <div className="text-xs text-purple-600">Mastered</div>
+                                                <div className="text-center p-3 bg-white rounded-md border-2 border-charcoal/20">
+                                                    <div className="text-lg font-bold text-charcoal">{phase.masteredQuestions}</div>
+                                                    <div className="text-xs text-charcoal/80 font-bold">Mastered</div>
                                                 </div>
-                                                <div className="text-center p-3 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-100">
-                                                    <div className="text-lg font-bold text-amber-600">{phase.estimatedDays}</div>
-                                                    <div className="text-xs text-amber-600">Est. Days</div>
+                                                <div className="text-center p-3 bg-white rounded-md border-2 border-charcoal/20">
+                                                    <div className="text-lg font-bold text-charcoal">{phase.estimatedDays}</div>
+                                                    <div className="text-xs text-charcoal/80 font-bold">Est. Days</div>
                                                 </div>
                                             </div>
 
                                             {/* Sessions */}
                                             {phase.sessions.length > 0 && (
                                                 <div>
-                                                    <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                                                        <LuRocket className="w-4 h-4 text-purple-500" />
+                                                    <h4 className="font-display font-bold text-charcoal mb-3 flex items-center gap-2">
+                                                        <LuRocket className="w-4 h-4" />
                                                         Your Sessions ({phase.sessions.length})
                                                     </h4>
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -310,22 +310,22 @@ const RoadmapPage = () => {
                                                             <div
                                                                 key={session.id}
                                                                 onClick={() => navigate(`/interview-prep/${session.id}`)}
-                                                                className="p-4 bg-gradient-to-br from-white to-gray-50/50 rounded-xl border border-gray-200 hover:border-indigo-200 cursor-pointer transition-all duration-200 hover:shadow-md group"
+                                                                className="p-4 bg-cream rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200 group"
                                                             >
                                                                 <div className="flex items-center justify-between">
                                                                     <div>
-                                                                        <div className="font-medium text-gray-800 group-hover:text-indigo-600 transition-colors">
+                                                                        <div className="font-bold text-charcoal">
                                                                             {session.role}
                                                                         </div>
-                                                                        <div className="text-sm text-gray-500">
+                                                                        <div className="text-sm text-charcoal/80 font-bold">
                                                                             {session.experience} Years • {session.questionsCount} Questions
                                                                         </div>
                                                                     </div>
                                                                     <div className="flex items-center gap-2">
-                                                                        <div className="text-sm font-medium text-gray-600">
+                                                                        <div className="text-sm font-bold text-charcoal">
                                                                             {session.completionPercentage}%
                                                                         </div>
-                                                                        <LuChevronRight className="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transition-colors" />
+                                                                        <LuChevronRight className="w-4 h-4 text-charcoal" />
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -333,7 +333,7 @@ const RoadmapPage = () => {
                                                     </div>
                                                     {phase.sessions.length > 4 && (
                                                         <div className="mt-3 text-center">
-                                                            <span className="text-sm text-gray-500">
+                                                            <span className="text-sm text-charcoal/50 font-bold">
                                                                 +{phase.sessions.length - 4} more sessions
                                                             </span>
                                                         </div>
@@ -348,7 +348,7 @@ const RoadmapPage = () => {
                                                         onClick={() => {
                                                             navigate(`/phase/${encodeURIComponent(selectedRole)}/${phase.id}`);
                                                         }}
-                                                        className={`group flex items-center gap-2 mx-auto px-6 py-3 font-semibold rounded-2xl text-white bg-gradient-to-r ${getStatusColor(phase.status)} hover:shadow-lg transition-all duration-300 transform hover:scale-105`}
+                                                        className={`group flex items-center justify-center gap-2 mx-auto px-6 py-3 font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal bg-charcoal text-white hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-300`}
                                                     >
                                                         {phase.status === 'completed' ? (
                                                             <>
@@ -357,12 +357,12 @@ const RoadmapPage = () => {
                                                             </>
                                                         ) : phase.status === 'in_progress' ? (
                                                             <>
-                                                                <LuPlay className="w-4 h-4 group-hover:animate-pulse" />
+                                                                <LuPlay className="w-4 h-4" />
                                                                 <span>Continue Phase</span>
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <LuTarget className="w-4 h-4 group-hover:animate-pulse" />
+                                                                <LuTarget className="w-4 h-4" />
                                                                 <span>Start Phase</span>
                                                             </>
                                                         )}
@@ -373,19 +373,19 @@ const RoadmapPage = () => {
 
                                         {/* Connection Line */}
                                         {index < roadmap.phases.length - 1 && (
-                                            <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-1 h-6 bg-gradient-to-b from-indigo-200 to-purple-200 rounded-full"></div>
+                                            <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-1 h-6 bg-charcoal/20"></div>
                                         )}
                                     </div>
                                 ))}
                             </div>
                         </div>
                     ) : (
-                        <div className="text-center py-20">
-                            <div className="w-20 h-20 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <div className="text-center py-20 bg-cream min-h-screen">
+                            <div className="w-20 h-20 bg-charcoal rounded-md flex items-center justify-center mx-auto mb-6">
                                 <LuMap className="w-10 h-10 text-white" />
                             </div>
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">No Roadmap Available</h2>
-                            <p className="text-gray-600 mb-6">
+                            <h2 className="text-2xl font-display font-bold text-charcoal mb-4">No Roadmap Available</h2>
+                            <p className="text-charcoal/80 font-bold mb-6">
                                 Select a role to generate your personalized learning roadmap.
                             </p>
                         </div>

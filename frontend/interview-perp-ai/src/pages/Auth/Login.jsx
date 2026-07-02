@@ -106,10 +106,10 @@ const Login = ({ setCurrentPage }) => {
     <div className="w-full px-4 sm:px-8 py-6 sm:py-10 flex flex-col justify-center min-h-[400px] sm:min-h-[500px]">
       {/* Header Section */}
       <div className="text-center mb-6 sm:mb-8">
-        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-3 transition-colors duration-300">
+        <h3 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-charcoal mb-2 sm:mb-3 transition-colors duration-300">
           {requiresOTP ? "Verify Login OTP" : "Welcome Back"}
         </h3>
-        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 transition-colors duration-300">
+        <p className="text-sm sm:text-base font-body text-charcoal/80 transition-colors duration-300">
           {requiresOTP ? `We've sent a code to ${email}` : "Please enter your details to log in"}
         </p>
       </div>
@@ -133,14 +133,14 @@ const Login = ({ setCurrentPage }) => {
           />
 
           {error && (
-            <div className='bg-red-50 border border-red-200 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6'>
-              <p className='text-red-600 text-sm font-medium'>{error}</p>
+            <div className='bg-red-50 border-2 border-red-500 rounded-sm p-3 sm:p-4 mb-4 sm:mb-6'>
+              <p className='text-red-600 text-sm font-bold'>{error}</p>
             </div>
           )}
 
           <button 
             type="submit" 
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg hover:shadow-xl mb-4 sm:mb-6" 
+            className="w-full bg-charcoal text-white font-bold uppercase tracking-wider text-sm py-3 sm:py-4 px-4 sm:px-6 rounded-sm border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none mb-4 sm:mb-6" 
             disabled={isLoading}
           >
             {isLoading ? (
@@ -154,11 +154,11 @@ const Login = ({ setCurrentPage }) => {
           </button>
 
           <div className="text-center pt-4">
-            <p className='text-sm text-gray-600 dark:text-gray-400'>
+            <p className='text-sm text-charcoal/80 font-body'>
               Don't have an account?{" "}
               <button
                 type="button"
-                className='font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-200 underline decoration-2 underline-offset-2'
+                className='font-bold text-charcoal hover:underline transition-colors duration-200 underline decoration-2 underline-offset-2'
                 onClick={() => setCurrentPage("signup")}
               >
                 Sign Up
@@ -178,14 +178,14 @@ const Login = ({ setCurrentPage }) => {
           />
 
           {error && (
-            <div className='bg-red-50 border border-red-200 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6'>
-              <p className='text-red-600 text-sm font-medium'>{error}</p>
+            <div className='bg-red-50 border-2 border-red-500 rounded-sm p-3 sm:p-4 mb-4 sm:mb-6'>
+              <p className='text-red-600 text-sm font-bold'>{error}</p>
             </div>
           )}
 
           <button 
             type="submit" 
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg hover:shadow-xl mb-4 sm:mb-6" 
+            className="w-full bg-charcoal text-white font-bold uppercase tracking-wider text-sm py-3 sm:py-4 px-4 sm:px-6 rounded-sm border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none mb-4 sm:mb-6" 
             disabled={isLoading}
           >
             {isLoading ? (
@@ -201,7 +201,7 @@ const Login = ({ setCurrentPage }) => {
           <div className="text-center pt-4">
             <button
               type="button"
-              className='text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors duration-200'
+              className='text-sm font-bold text-charcoal/80 hover:text-charcoal transition-colors duration-200'
               onClick={() => {
                 setRequiresOTP(false);
                 setOtp("");

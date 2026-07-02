@@ -153,9 +153,9 @@ const PhaseOverviewPage = () => {
     if (isLoading) {
         return (
             <DashboardLayout>
-                <div className="flex flex-col items-center justify-center h-screen">
+                <div className="flex flex-col items-center justify-center h-screen font-body bg-cream">
                     <SpinnerLoader />
-                    <p className="text-slate-600 mt-4 text-center">
+                    <p className="text-charcoal mt-4 text-center font-bold">
                         Preparing your phase overview... ✨
                     </p>
                 </div>
@@ -166,17 +166,17 @@ const PhaseOverviewPage = () => {
     if (!currentPhase) {
         return (
             <DashboardLayout>
-                <div className="text-center py-20">
-                    <div className="w-20 h-20 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="text-center py-20 font-body bg-cream min-h-screen">
+                    <div className="w-20 h-20 bg-charcoal rounded-full flex items-center justify-center mx-auto mb-6">
                         <LuTarget className="w-10 h-10 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">Phase Not Found</h2>
-                    <p className="text-gray-600 mb-6">
+                    <h2 className="text-2xl font-display font-bold text-charcoal mb-4">Phase Not Found</h2>
+                    <p className="text-charcoal/80 mb-6">
                         The requested phase could not be found.
                     </p>
                     <button
                         onClick={() => navigate(`/roadmap?role=${encodeURIComponent(role)}`)}
-                        className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-2xl hover:shadow-lg transition-all duration-300"
+                        className="px-6 py-3 bg-charcoal border-2 border-charcoal text-white font-bold uppercase tracking-wider text-sm rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
                     >
                         Back to Roadmap
                     </button>
@@ -187,9 +187,9 @@ const PhaseOverviewPage = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/20">
+            <div className="min-h-screen bg-cream font-body">
                 {/* Enhanced Hero Header */}
-                <div className={`bg-gradient-to-r ${getPhaseColor(currentPhase.color)} text-white`}>
+                <div className={`bg-charcoal text-white border-b-2 border-charcoal`}>
                     <div className="container mx-auto px-4 md:px-6 py-12">
                         <div className="max-w-4xl mx-auto">
                             {/* Breadcrumb */}
@@ -206,7 +206,7 @@ const PhaseOverviewPage = () => {
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                                 <div>
-                                    <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                                    <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
                                         {currentPhase.name}
                                     </h1>
                                     <p className="text-xl text-white/90 mb-6 leading-relaxed">
@@ -215,19 +215,19 @@ const PhaseOverviewPage = () => {
                                     
                                     {/* Phase Stats */}
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
+                                        <div className="bg-white text-charcoal border-2 border-charcoal rounded-md p-4 shadow-[4px_4px_0px_0px_#1A1A1A]">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <LuBookOpen className="w-5 h-5" />
-                                                <span className="font-semibold">Sessions</span>
+                                                <span className="font-bold">Sessions</span>
                                             </div>
-                                            <div className="text-2xl font-bold">{currentPhase.sessionsCount}</div>
+                                            <div className="text-2xl font-display font-bold">{currentPhase.sessionsCount}</div>
                                         </div>
-                                        <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
+                                        <div className="bg-white text-charcoal border-2 border-charcoal rounded-md p-4 shadow-[4px_4px_0px_0px_#1A1A1A]">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <LuTarget className="w-5 h-5" />
-                                                <span className="font-semibold">Questions</span>
+                                                <span className="font-bold">Questions</span>
                                             </div>
-                                            <div className="text-2xl font-bold">{currentPhase.totalQuestions}</div>
+                                            <div className="text-2xl font-display font-bold">{currentPhase.totalQuestions}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -282,23 +282,23 @@ const PhaseOverviewPage = () => {
                         {/* Main Content */}
                         <div className="lg:col-span-2 space-y-8">
                             {/* Key Topics */}
-                            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-8">
+                            <div className="card-editorial p-8">
                                 <div className="flex items-center gap-3 mb-6">
-                                    <div className={`w-10 h-10 bg-gradient-to-r ${getPhaseColor(currentPhase.color)} rounded-2xl flex items-center justify-center`}>
+                                    <div className={`w-10 h-10 bg-charcoal rounded-md flex items-center justify-center`}>
                                         <LuBrain className="w-5 h-5 text-white" />
                                     </div>
-                                    <h2 className="text-2xl font-bold text-gray-800">Key Topics</h2>
+                                    <h2 className="text-2xl font-display font-bold text-charcoal">Key Topics</h2>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {currentPhase.topics.map((topic, index) => (
                                         <div
                                             key={index}
-                                            className="flex items-center gap-3 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl border border-indigo-100"
+                                            className="flex items-center gap-3 p-4 bg-white rounded-md border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A]"
                                         >
-                                            <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
+                                            <div className="w-8 h-8 bg-charcoal rounded-sm flex items-center justify-center">
                                                 <span className="text-white font-bold text-sm">{index + 1}</span>
                                             </div>
-                                            <span className="font-medium text-gray-800">{topic}</span>
+                                            <span className="font-bold text-charcoal">{topic}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -307,45 +307,45 @@ const PhaseOverviewPage = () => {
                             {/* Session Templates */}
                             {console.log('Rendering session templates, count:', sessionTemplates.length)}
                             {sessionTemplates.length > 0 ? (
-                                <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-8">
+                                <div className="card-editorial p-8">
                                     <div className="flex items-center gap-3 mb-6">
-                                        <div className={`w-10 h-10 bg-gradient-to-r ${getPhaseColor(currentPhase.color)} rounded-2xl flex items-center justify-center`}>
+                                        <div className={`w-10 h-10 bg-charcoal rounded-md flex items-center justify-center`}>
                                             <LuRocket className="w-5 h-5 text-white" />
                                         </div>
-                                        <h2 className="text-2xl font-bold text-gray-800">Your Sessions ({sessionTemplates.length})</h2>
+                                        <h2 className="text-2xl font-display font-bold text-charcoal">Your Sessions ({sessionTemplates.length})</h2>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {sessionTemplates.map((template, index) => (
                                             <div
                                                 key={template._id}
-                                                className="bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-indigo-300 hover:shadow-lg transition-all duration-200"
+                                                className="bg-white border-2 border-charcoal rounded-md p-6 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200"
                                             >
                                                 <div className="flex items-start justify-between mb-4">
                                                     <div className="flex-1">
-                                                        <h3 className="font-bold text-gray-800 text-lg mb-2">
+                                                        <h3 className="font-display font-bold text-charcoal text-lg mb-2">
                                                             {template.role}
                                                         </h3>
-                                                        <p className="text-sm text-gray-600 mb-3">
+                                                        <p className="text-sm text-charcoal/80 mb-3">
                                                             {template.description}
                                                         </p>
                                                         <div className="flex flex-wrap gap-2 mb-3">
                                                             {template.topicsToFocus.slice(0, 3).map((topic, i) => (
-                                                                <span key={i} className="text-xs bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full">
+                                                                <span key={i} className="text-xs bg-charcoal/5 border border-charcoal text-charcoal font-bold px-2 py-1 rounded-sm">
                                                                     {topic}
                                                                 </span>
                                                             ))}
                                                             {template.topicsToFocus.length > 3 && (
-                                                                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                                                                <span className="text-xs bg-cream border border-charcoal/20 text-charcoal/80 font-bold px-2 py-1 rounded-sm">
                                                                     +{template.topicsToFocus.length - 3} more
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        <div className="flex items-center gap-4 text-sm text-gray-600">
-                                                            <span className="flex items-center gap-1">
+                                                        <div className="flex items-center gap-4 text-sm text-charcoal/80">
+                                                            <span className="flex items-center gap-1 font-bold">
                                                                 <LuTarget className="w-4 h-4" />
                                                                 {template.questions?.length || 5} questions
                                                             </span>
-                                                            <span className="flex items-center gap-1">
+                                                            <span className="flex items-center gap-1 font-bold">
                                                                 <LuClock className="w-4 h-4" />
                                                                 {template.experience} years
                                                             </span>
@@ -356,18 +356,18 @@ const PhaseOverviewPage = () => {
                                                 {template.isStarted ? (
                                                     <div className="space-y-2">
                                                         <div className="flex items-center justify-between text-sm mb-2">
-                                                            <span className="text-gray-600">Progress</span>
-                                                            <span className="font-semibold text-indigo-600">{template.completionPercentage}%</span>
+                                                            <span className="text-charcoal/80 font-bold">Progress</span>
+                                                            <span className="font-bold text-charcoal">{template.completionPercentage}%</span>
                                                         </div>
-                                                        <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                                                        <div className="w-full bg-cream border-2 border-charcoal/20 rounded-full h-2 mb-3">
                                                             <div 
-                                                                className="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                                                                className="bg-charcoal h-2 transition-all duration-300"
                                                                 style={{ width: `${template.completionPercentage}%` }}
                                                             />
                                                         </div>
                                                         <button
                                                             onClick={() => navigate(`/roadmap-session/${template.sessionId}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`)}
-                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-200"
+                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white text-charcoal border-2 border-charcoal font-bold uppercase tracking-wider text-xs rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 cursor-pointer"
                                                         >
                                                             <LuPlay className="w-4 h-4" />
                                                             {template.completionPercentage === 100 ? 'Review Session' : 'Continue Session'}
@@ -377,7 +377,7 @@ const PhaseOverviewPage = () => {
                                                     <button
                                                         onClick={() => handleStartSession(template)}
                                                         disabled={creatingSession === template._id}
-                                                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-charcoal text-white border-2 border-charcoal font-bold uppercase tracking-wider text-xs rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                                                     >
                                                         {creatingSession === template._id ? (
                                                             <>
@@ -397,9 +397,9 @@ const PhaseOverviewPage = () => {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-8">
+                                <div className="card-editorial p-8">
                                     <div className="text-center py-8">
-                                        <p className="text-gray-600">No session templates available for this phase yet.</p>
+                                        <p className="text-charcoal/80 font-bold">No session templates available for this phase yet.</p>
                                     </div>
                                 </div>
                             )}
@@ -408,12 +408,12 @@ const PhaseOverviewPage = () => {
                         {/* Action Sidebar */}
                         <div className="space-y-6">
                             {/* Action Buttons */}
-                            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-6">
-                                <h3 className="text-xl font-bold text-gray-800 mb-6">Ready to Learn?</h3>
+                            <div className="card-editorial p-6">
+                                <h3 className="text-xl font-display font-bold text-charcoal mb-6">Ready to Learn?</h3>
                                 <div className="space-y-4">
                                     <button
                                         onClick={handleBrowseSessions}
-                                        className="w-full flex items-center justify-center gap-3 px-6 py-4 font-semibold rounded-2xl text-gray-700 bg-white border-2 border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-300"
+                                        className="w-full flex items-center justify-center gap-3 px-6 py-4 font-bold uppercase tracking-wider text-sm rounded-md text-charcoal bg-white border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 cursor-pointer"
                                     >
                                         <LuBookOpen className="w-5 h-5" />
                                         <span>Browse All Sessions</span>
@@ -422,7 +422,7 @@ const PhaseOverviewPage = () => {
                                     {currentPhase.completionPercentage >= 70 && (
                                         <button
                                             onClick={handleStartPhaseQuiz}
-                                            className="w-full flex items-center justify-center gap-3 px-6 py-4 font-semibold rounded-2xl text-white bg-gradient-to-r from-emerald-500 to-green-500 hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                                            className="w-full flex items-center justify-center gap-3 px-6 py-4 font-bold uppercase tracking-wider text-sm rounded-md text-white bg-charcoal border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 cursor-pointer"
                                         >
                                             <LuAward className="w-5 h-5" />
                                             <span>Take Phase Quiz</span>
@@ -432,29 +432,29 @@ const PhaseOverviewPage = () => {
                             </div>
 
                             {/* Progress Summary */}
-                            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-6">
-                                <h3 className="text-xl font-bold text-gray-800 mb-4">Your Progress</h3>
+                            <div className="card-editorial p-6">
+                                <h3 className="text-xl font-display font-bold text-charcoal mb-4">Your Progress</h3>
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-gray-600">Mastered Questions</span>
-                                        <span className="font-bold text-emerald-600">{currentPhase.masteredQuestions}/{currentPhase.totalQuestions}</span>
+                                        <span className="text-charcoal/80 font-bold">Mastered Questions</span>
+                                        <span className="font-bold text-charcoal">{currentPhase.masteredQuestions}/{currentPhase.totalQuestions}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-gray-600">Sessions Started</span>
-                                        <span className="font-bold text-blue-600">{currentPhase.sessionsCount}</span>
+                                        <span className="text-charcoal/80 font-bold">Sessions Started</span>
+                                        <span className="font-bold text-charcoal">{currentPhase.sessionsCount}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-gray-600">Estimated Time</span>
-                                        <span className="font-bold text-amber-600">{currentPhase.estimatedDays} days</span>
+                                        <span className="text-charcoal/80 font-bold">Estimated Time</span>
+                                        <span className="font-bold text-charcoal">{currentPhase.estimatedDays} days</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Motivational Message */}
-                            <div className={`bg-gradient-to-r ${getPhaseColor(currentPhase.color)} rounded-3xl p-6 text-white`}>
+                            <div className={`bg-charcoal border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A] rounded-md p-6 text-white`}>
                                 <div className="text-center">
                                     <LuStar className="w-8 h-8 mx-auto mb-3" />
-                                    <h4 className="font-bold text-lg mb-2">
+                                    <h4 className="font-display font-bold text-lg mb-2">
                                         {currentPhase.completionPercentage >= 100 
                                             ? "Phase Complete! 🎉" 
                                             : currentPhase.completionPercentage >= 50 
@@ -462,7 +462,7 @@ const PhaseOverviewPage = () => {
                                                 : "Every expert was once a beginner"
                                         }
                                     </h4>
-                                    <p className="text-white/90 text-sm">
+                                    <p className="text-white/90 text-sm font-bold">
                                         {currentPhase.completionPercentage >= 100 
                                             ? "Congratulations on mastering this phase. Ready for the next challenge?" 
                                             : "Take it one question at a time. You've got this!"

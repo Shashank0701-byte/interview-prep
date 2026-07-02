@@ -53,81 +53,81 @@ const NegotiationResults = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-8 px-4">
+            <div className="min-h-screen bg-cream py-8 px-4 font-body">
                 <div className="max-w-5xl mx-auto">
                     {/* Back Button */}
                     <button
                         onClick={() => navigate('/salary-negotiation')}
-                        className="flex items-center gap-2 px-4 py-2 mb-6 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 mb-6 text-charcoal hover:bg-white border-2 border-transparent hover:border-charcoal rounded-md transition-all font-bold uppercase tracking-wider text-sm cursor-pointer"
                     >
                         <LuArrowLeft className="w-5 h-5" />
-                        <span className="font-medium">Back to Scenarios</span>
+                        <span>Back to Scenarios</span>
                     </button>
 
                     {/* Hero Result Card */}
-                    <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 md:p-12 shadow-2xl mb-8 border-2 border-slate-200 dark:border-slate-700">
+                    <div className="card-editorial p-8 md:p-12 mb-8 bg-white">
                         <div className="text-center">
-                            <div className="inline-flex items-center justify-center w-20 h-20 bg-indigo-100 dark:bg-indigo-900/30 rounded-full mb-6">
+                            <div className="inline-flex items-center justify-center w-20 h-20 bg-cream border-2 border-charcoal rounded-md mb-6">
                                 {summary.status === 'accepted' ? (
-                                    <LuCheck className="w-10 h-10 text-emerald-600" />
+                                    <LuCheck className="w-10 h-10 text-charcoal" />
                                 ) : summary.status === 'rejected' ? (
-                                    <LuX className="w-10 h-10 text-red-600" />
+                                    <LuX className="w-10 h-10 text-charcoal" />
                                 ) : (
-                                    <LuInfo className="w-10 h-10 text-amber-600" />
+                                    <LuInfo className="w-10 h-10 text-charcoal" />
                                 )}
                             </div>
                             
-                            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white">
+                            <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-charcoal uppercase tracking-wider">
                                 {summary.status === 'accepted' ? 'Negotiation Complete!' :
                                  summary.status === 'rejected' ? 'Offer Rejected' :
                                  'Walked Away'}
                             </h1>
                             
-                            <p className="text-xl text-slate-600 dark:text-slate-300 mb-8">
+                            <p className="text-xl text-charcoal/80 font-medium mb-8">
                                 {feedback.overall}
                             </p>
 
                             {/* Key Metrics */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-600">
-                                    <div className="text-slate-600 dark:text-slate-400 text-sm mb-2">Improvement</div>
-                                    <div className="text-4xl font-bold flex items-center justify-center gap-2 text-slate-900 dark:text-white">
+                                <div className="bg-cream border-2 border-charcoal/10 rounded-md p-6">
+                                    <div className="text-charcoal/80 font-bold uppercase tracking-wider text-sm mb-2">Improvement</div>
+                                    <div className="text-4xl font-display font-bold flex items-center justify-center gap-2 text-charcoal">
                                         {parseFloat(feedback.improvement) >= 0 ? (
-                                            <LuTrendingUp className="w-8 h-8 text-emerald-600" />
+                                            <LuTrendingUp className="w-8 h-8 text-charcoal" />
                                         ) : (
-                                            <LuTrendingDown className="w-8 h-8 text-red-600" />
+                                            <LuTrendingDown className="w-8 h-8 text-charcoal" />
                                         )}
                                         {feedback.improvement}
                                     </div>
                                 </div>
                                 
-                                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-600">
-                                    <div className="text-slate-600 dark:text-slate-400 text-sm mb-2">Confidence Score</div>
-                                    <div className="text-4xl font-bold text-slate-900 dark:text-white">{feedback.confidenceScore}/100</div>
+                                <div className="bg-cream border-2 border-charcoal/10 rounded-md p-6">
+                                    <div className="text-charcoal/80 font-bold uppercase tracking-wider text-sm mb-2">Confidence Score</div>
+                                    <div className="text-4xl font-display font-bold text-charcoal">{feedback.confidenceScore}/100</div>
                                 </div>
                                 
-                                <div className="bg-slate-50 dark:bg-slate-700/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-600">
-                                    <div className="text-slate-600 dark:text-slate-400 text-sm mb-2">Negotiation Rounds</div>
-                                    <div className="text-4xl font-bold text-slate-900 dark:text-white">{summary.rounds}</div>
+                                <div className="bg-cream border-2 border-charcoal/10 rounded-md p-6">
+                                    <div className="text-charcoal/80 font-bold uppercase tracking-wider text-sm mb-2">Negotiation Rounds</div>
+                                    <div className="text-4xl font-display font-bold text-charcoal">{summary.rounds}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Compensation Comparison */}
-                    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-8 mb-8">
-                        <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2">
-                            <LuActivity className="w-6 h-6 text-indigo-600" />
+                    <div className="card-editorial p-8 mb-8 bg-white">
+                        <h2 className="text-2xl font-display font-bold text-charcoal mb-6 flex items-center gap-2 uppercase tracking-wider">
+                            <LuActivity className="w-6 h-6 text-charcoal" />
                             Compensation Breakdown
                         </h2>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
-                                <div className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">Initial Offer</div>
+                                <div className="text-sm font-bold text-charcoal uppercase tracking-wider mb-3">Initial Offer</div>
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-slate-600 dark:text-slate-400">Total</span>
-                                        <span className="text-2xl font-bold text-slate-800 dark:text-white">
+                                        <span className="text-charcoal/80 font-medium">Total</span>
+                                        <span className="text-2xl font-display font-bold text-charcoal">
                                             {formatCurrency(summary.initialTotal)}
                                         </span>
                                     </div>
@@ -135,15 +135,15 @@ const NegotiationResults = () => {
                             </div>
                             
                             <div>
-                                <div className="text-sm font-semibold text-slate-600 dark:text-slate-400 mb-3">Final Offer</div>
+                                <div className="text-sm font-bold text-charcoal uppercase tracking-wider mb-3">Final Offer</div>
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-slate-600 dark:text-slate-400">Total</span>
-                                        <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                                        <span className="text-charcoal/80 font-medium">Total</span>
+                                        <span className="text-2xl font-display font-bold text-charcoal">
                                             {formatCurrency(summary.finalTotal)}
                                         </span>
                                     </div>
-                                    <div className={`flex items-center gap-2 text-${improvementColor}-600 font-semibold`}>
+                                    <div className={`flex items-center gap-2 text-charcoal font-bold mt-2`}>
                                         <LuTrendingUp className="w-5 h-5" />
                                         +{formatCurrency(summary.finalTotal - summary.initialTotal)} ({feedback.improvement})
                                     </div>
@@ -154,21 +154,21 @@ const NegotiationResults = () => {
 
                     {/* Market Position */}
                     {feedback.marketPosition && (
-                        <div className={`bg-gradient-to-br from-${feedback.marketPosition.percentile >= 75 ? 'emerald' : feedback.marketPosition.percentile >= 50 ? 'blue' : 'amber'}-50 to-${feedback.marketPosition.percentile >= 75 ? 'emerald' : feedback.marketPosition.percentile >= 50 ? 'blue' : 'amber'}-100 dark:from-slate-800 dark:to-slate-700 rounded-2xl p-8 mb-8 border-2 border-${feedback.marketPosition.percentile >= 75 ? 'emerald' : feedback.marketPosition.percentile >= 50 ? 'blue' : 'amber'}-200 dark:border-slate-600`}>
-                            <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                                <LuTarget className="w-6 h-6" />
+                        <div className={`bg-cream border-2 border-charcoal/10 rounded-md p-8 mb-8`}>
+                            <h3 className="text-xl font-display font-bold text-charcoal mb-4 flex items-center gap-2 uppercase tracking-wider">
+                                <LuTarget className="w-6 h-6 text-charcoal" />
                                 Market Position
                             </h3>
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <div className="text-3xl font-bold text-slate-800 dark:text-white">
+                                    <div className="text-3xl font-display font-bold text-charcoal">
                                         {feedback.marketPosition.description}
                                     </div>
-                                    <div className="text-slate-600 dark:text-slate-300 mt-2">
+                                    <div className="text-charcoal/80 font-medium mt-2">
                                         Your final offer is at the {feedback.marketPosition.percentile}th percentile for your role and location
                                     </div>
                                 </div>
-                                <div className={`text-6xl font-bold text-${feedback.marketPosition.percentile >= 75 ? 'emerald' : feedback.marketPosition.percentile >= 50 ? 'blue' : 'amber'}-600`}>
+                                <div className={`text-6xl font-display font-bold text-charcoal`}>
                                     {feedback.marketPosition.percentile}%
                                 </div>
                             </div>
@@ -179,16 +179,16 @@ const NegotiationResults = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         {/* Strengths */}
                         {feedback.strengths?.length > 0 && (
-                            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6">
-                                <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                                    <LuCheck className="w-5 h-5 text-emerald-600" />
+                            <div className="card-editorial p-6 bg-white">
+                                <h3 className="text-lg font-display font-bold text-charcoal mb-4 flex items-center gap-2 uppercase tracking-wider">
+                                    <LuCheck className="w-5 h-5 text-charcoal" />
                                     What You Did Well
                                 </h3>
                                 <div className="space-y-3">
                                     {feedback.strengths.map((strength, idx) => (
-                                        <div key={idx} className="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl">
-                                            <LuCheck className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
-                                            <span className="text-slate-700 dark:text-slate-300">{strength}</span>
+                                        <div key={idx} className="flex items-start gap-3 p-3 bg-cream border-2 border-charcoal/10 rounded-md">
+                                            <LuCheck className="w-5 h-5 text-charcoal mt-0.5 flex-shrink-0" />
+                                            <span className="text-charcoal/80 font-medium">{strength}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -197,16 +197,16 @@ const NegotiationResults = () => {
 
                         {/* Areas for Improvement */}
                         {feedback.areasForImprovement?.length > 0 && (
-                            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6">
-                                <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                                    <LuInfo className="w-5 h-5 text-amber-600" />
+                            <div className="card-editorial p-6 bg-white">
+                                <h3 className="text-lg font-display font-bold text-charcoal mb-4 flex items-center gap-2 uppercase tracking-wider">
+                                    <LuInfo className="w-5 h-5 text-charcoal" />
                                     Areas to Improve
                                 </h3>
                                 <div className="space-y-3">
                                     {feedback.areasForImprovement.map((area, idx) => (
-                                        <div key={idx} className="flex items-start gap-3 p-3 bg-amber-50 rounded-xl">
-                                            <LuInfo className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                                            <span className="text-slate-700 dark:text-slate-300">{area}</span>
+                                        <div key={idx} className="flex items-start gap-3 p-3 bg-cream border-2 border-charcoal/10 rounded-md">
+                                            <LuInfo className="w-5 h-5 text-charcoal mt-0.5 flex-shrink-0" />
+                                            <span className="text-charcoal/80 font-medium">{area}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -216,16 +216,16 @@ const NegotiationResults = () => {
 
                     {/* Tactics Used */}
                     {feedback.tacticsUsed?.length > 0 && (
-                        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6 mb-8">
-                            <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                                <LuSparkles className="w-5 h-5 text-indigo-600" />
+                        <div className="card-editorial p-6 mb-8 bg-white">
+                            <h3 className="text-lg font-display font-bold text-charcoal mb-4 flex items-center gap-2 uppercase tracking-wider">
+                                <LuSparkles className="w-5 h-5 text-charcoal" />
                                 Negotiation Tactics You Used
                             </h3>
                             <div className="flex flex-wrap gap-2">
                                 {feedback.tacticsUsed.map((tactic, idx) => (
                                     <span
                                         key={idx}
-                                        className="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium"
+                                        className="px-4 py-2 bg-cream border-2 border-charcoal rounded-md text-sm font-bold uppercase tracking-wider text-charcoal"
                                     >
                                         {tactic}
                                     </span>
@@ -236,16 +236,16 @@ const NegotiationResults = () => {
 
                     {/* Recommendations */}
                     {feedback.recommendations?.length > 0 && (
-                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-700 rounded-2xl p-8 border-2 border-blue-200 dark:border-slate-600 mb-8">
-                            <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                                <LuAward className="w-6 h-6 text-indigo-600" />
+                        <div className="bg-cream border-2 border-charcoal/10 rounded-md p-8 mb-8">
+                            <h3 className="text-xl font-display font-bold text-charcoal mb-4 flex items-center gap-2 uppercase tracking-wider">
+                                <LuAward className="w-6 h-6 text-charcoal" />
                                 Recommendations for Next Time
                             </h3>
                             <div className="space-y-3">
                                 {feedback.recommendations.map((rec, idx) => (
                                     <div key={idx} className="flex items-start gap-3">
-                                        <div className="w-2 h-2 bg-indigo-500 rounded-full mt-2 flex-shrink-0"></div>
-                                        <p className="text-slate-700 dark:text-slate-300">{rec}</p>
+                                        <div className="w-2 h-2 bg-charcoal rounded-none mt-2 flex-shrink-0"></div>
+                                        <p className="text-charcoal/80 font-medium">{rec}</p>
                                     </div>
                                 ))}
                             </div>
@@ -256,14 +256,14 @@ const NegotiationResults = () => {
                     <div className="flex flex-col sm:flex-row gap-4">
                         <button
                             onClick={() => navigate('/salary-negotiation')}
-                            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-2xl hover:scale-105 transition-all"
+                            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-charcoal text-white rounded-md font-bold text-lg border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all uppercase tracking-wider cursor-pointer"
                         >
                             <LuRotateCcw className="w-5 h-5" />
                             Try Another Scenario
                         </button>
                         <button
                             onClick={() => navigate('/dashboard')}
-                            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white dark:bg-slate-800 text-slate-700 dark:text-white rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all border-2 border-slate-200 dark:border-slate-600"
+                            className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white text-charcoal rounded-md font-bold text-lg border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all uppercase tracking-wider cursor-pointer"
                         >
                             Back to Dashboard
                             <LuArrowRight className="w-5 h-5" />

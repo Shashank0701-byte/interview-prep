@@ -101,22 +101,22 @@ const NegotiationHistory = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-8 px-4">
+            <div className="min-h-screen bg-cream py-8 px-4 font-body">
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <div className="mb-8">
                         <button
                             onClick={() => navigate('/salary-negotiation')}
-                            className="flex items-center gap-2 px-4 py-2 mb-4 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 mb-4 text-charcoal hover:bg-white border-2 border-transparent hover:border-charcoal rounded-md transition-all font-bold uppercase tracking-wider text-sm"
                         >
                             <LuArrowLeft className="w-5 h-5" />
-                            <span className="font-medium">Back to Scenarios</span>
+                            <span>Back to Scenarios</span>
                         </button>
                         
-                        <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2">
+                        <h1 className="text-3xl md:text-4xl font-display font-bold text-charcoal mb-2 uppercase tracking-wider">
                             Negotiation History
                         </h1>
-                        <p className="text-slate-600 dark:text-slate-400">
+                        <p className="text-charcoal/80 font-medium">
                             Track your progress and improve your negotiation skills
                         </p>
                     </div>
@@ -126,62 +126,62 @@ const NegotiationHistory = () => {
                         <>
                             {/* Key Metrics */}
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                                <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg border border-slate-200 dark:border-slate-700">
+                                <div className="bg-white border-2 border-charcoal/20 rounded-md p-6 shadow-sm hover:border-charcoal transition-colors">
                                     <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl">
-                                            <LuActivity className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                                        <div className="p-3 bg-cream border-2 border-charcoal rounded-md">
+                                            <LuActivity className="w-6 h-6 text-charcoal" />
                                         </div>
                                         <div>
-                                            <div className="text-sm text-slate-600 dark:text-slate-400">Total Negotiations</div>
-                                            <div className="text-2xl font-bold text-slate-900 dark:text-white">{analytics.totalNegotiations}</div>
+                                            <div className="text-xs font-bold text-charcoal uppercase tracking-wider">Total Negotiations</div>
+                                            <div className="text-2xl font-display font-bold text-charcoal">{analytics.totalNegotiations}</div>
                                         </div>
                                     </div>
-                                    <div className="text-xs text-slate-500 dark:text-slate-500">
+                                    <div className="text-xs text-charcoal/80 font-medium mt-1">
                                         {analytics.completedNegotiations} completed
                                     </div>
                                 </div>
 
-                                <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg border border-slate-200 dark:border-slate-700">
+                                <div className="bg-white border-2 border-charcoal/20 rounded-md p-6 shadow-sm hover:border-charcoal transition-colors">
                                     <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl">
-                                            <LuTrendingUp className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                                        <div className="p-3 bg-cream border-2 border-charcoal rounded-md">
+                                            <LuTrendingUp className="w-6 h-6 text-charcoal" />
                                         </div>
                                         <div>
-                                            <div className="text-sm text-slate-600 dark:text-slate-400">Avg Improvement</div>
-                                            <div className="text-2xl font-bold text-slate-900 dark:text-white">{analytics.avgImprovement}%</div>
+                                            <div className="text-xs font-bold text-charcoal uppercase tracking-wider">Avg Improvement</div>
+                                            <div className="text-2xl font-display font-bold text-charcoal">{analytics.avgImprovement}%</div>
                                         </div>
                                     </div>
-                                    <div className="text-xs text-slate-500 dark:text-slate-500">
+                                    <div className="text-xs text-charcoal/80 font-medium mt-1">
                                         Across all negotiations
                                     </div>
                                 </div>
 
-                                <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg border border-slate-200 dark:border-slate-700">
+                                <div className="bg-white border-2 border-charcoal/20 rounded-md p-6 shadow-sm hover:border-charcoal transition-colors">
                                     <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
-                                            <LuTarget className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                                        <div className="p-3 bg-cream border-2 border-charcoal rounded-md">
+                                            <LuTarget className="w-6 h-6 text-charcoal" />
                                         </div>
                                         <div>
-                                            <div className="text-sm text-slate-600 dark:text-slate-400">Avg Confidence</div>
-                                            <div className="text-2xl font-bold text-slate-900 dark:text-white">{analytics.avgConfidence}/100</div>
+                                            <div className="text-xs font-bold text-charcoal uppercase tracking-wider">Avg Confidence</div>
+                                            <div className="text-2xl font-display font-bold text-charcoal">{analytics.avgConfidence}/100</div>
                                         </div>
                                     </div>
-                                    <div className="text-xs text-slate-500 dark:text-slate-500">
+                                    <div className="text-xs text-charcoal/80 font-medium mt-1">
                                         Confidence score
                                     </div>
                                 </div>
 
-                                <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg border border-slate-200 dark:border-slate-700">
+                                <div className="bg-white border-2 border-charcoal/20 rounded-md p-6 shadow-sm hover:border-charcoal transition-colors">
                                     <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-xl">
-                                            <LuFlame className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                                        <div className="p-3 bg-cream border-2 border-charcoal rounded-md">
+                                            <LuFlame className="w-6 h-6 text-charcoal" />
                                         </div>
                                         <div>
-                                            <div className="text-sm text-slate-600 dark:text-slate-400">Current Streak</div>
-                                            <div className="text-2xl font-bold text-slate-900 dark:text-white">{analytics.streak} days</div>
+                                            <div className="text-xs font-bold text-charcoal uppercase tracking-wider">Current Streak</div>
+                                            <div className="text-2xl font-display font-bold text-charcoal">{analytics.streak} days</div>
                                         </div>
                                     </div>
-                                    <div className="text-xs text-slate-500 dark:text-slate-500">
+                                    <div className="text-xs text-charcoal/80 font-medium mt-1">
                                         Keep it going!
                                     </div>
                                 </div>
@@ -189,19 +189,19 @@ const NegotiationHistory = () => {
 
                             {/* Achievements */}
                             {analytics.achievements.length > 0 && (
-                                <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg border border-slate-200 dark:border-slate-700 mb-8">
-                                    <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                                        <LuTrophy className="w-6 h-6 text-amber-600" />
+                                <div className="card-editorial p-6 bg-white mb-8">
+                                    <h2 className="text-xl font-display font-bold text-charcoal mb-4 flex items-center gap-2 uppercase tracking-wider">
+                                        <LuTrophy className="w-6 h-6 text-charcoal" />
                                         Achievements
                                     </h2>
                                     <div className="flex flex-wrap gap-3">
                                         {analytics.achievements.map((achievement, idx) => (
                                             <div
                                                 key={idx}
-                                                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-2 border-amber-200 dark:border-amber-700 rounded-xl"
+                                                className="flex items-center gap-2 px-4 py-2 bg-cream border-2 border-charcoal rounded-md"
                                             >
                                                 <span className="text-2xl">{achievement.icon}</span>
-                                                <span className="font-semibold text-slate-900 dark:text-white">{achievement.name}</span>
+                                                <span className="font-bold text-charcoal uppercase tracking-wider text-sm">{achievement.name}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -210,25 +210,25 @@ const NegotiationHistory = () => {
 
                             {/* Top Tactics */}
                             {analytics.topTactics.length > 0 && (
-                                <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg border border-slate-200 dark:border-slate-700 mb-8">
-                                    <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                                        <LuStar className="w-6 h-6 text-indigo-600" />
+                                <div className="card-editorial p-6 bg-white mb-8">
+                                    <h2 className="text-xl font-display font-bold text-charcoal mb-4 flex items-center gap-2 uppercase tracking-wider">
+                                        <LuStar className="w-6 h-6 text-charcoal" />
                                         Your Top Tactics
                                     </h2>
                                     <div className="space-y-3">
                                         {analytics.topTactics.map((tactic, idx) => (
                                             <div key={idx} className="flex items-center justify-between">
-                                                <span className="text-slate-700 dark:text-slate-300 capitalize">
+                                                <span className="text-charcoal font-bold text-sm uppercase tracking-wider">
                                                     {tactic.tactic.replace('-', ' ')}
                                                 </span>
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-32 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                                    <div className="w-32 h-2 bg-charcoal/10 rounded-none overflow-hidden">
                                                         <div
-                                                            className="h-full bg-gradient-to-r from-indigo-600 to-purple-600"
+                                                            className="h-full bg-charcoal"
                                                             style={{ width: `${(tactic.count / analytics.totalNegotiations) * 100}%` }}
                                                         />
                                                     </div>
-                                                    <span className="text-sm font-semibold text-slate-900 dark:text-white w-8 text-right">
+                                                    <span className="text-sm font-bold text-charcoal w-8 text-right">
                                                         {tactic.count}
                                                     </span>
                                                 </div>
@@ -241,19 +241,19 @@ const NegotiationHistory = () => {
                     )}
 
                     {/* Negotiations List */}
-                    <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg border border-slate-200 dark:border-slate-700">
-                        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-                            <LuCalendar className="w-6 h-6 text-indigo-600" />
+                    <div className="card-editorial p-6 bg-white">
+                        <h2 className="text-xl font-display font-bold text-charcoal mb-6 flex items-center gap-2 uppercase tracking-wider">
+                            <LuCalendar className="w-6 h-6 text-charcoal" />
                             All Negotiations
                         </h2>
 
                         {negotiations.length === 0 ? (
                             <div className="text-center py-12">
-                                <LuActivity className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-                                <p className="text-slate-600 dark:text-slate-400 mb-4">No negotiations yet</p>
+                                <LuActivity className="w-16 h-16 text-charcoal/20 mx-auto mb-4" />
+                                <p className="text-charcoal/80 font-medium mb-4">No negotiations yet</p>
                                 <button
                                     onClick={() => navigate('/salary-negotiation')}
-                                    className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
+                                    className="px-6 py-3 bg-charcoal text-white rounded-md font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer border-2 border-charcoal"
                                 >
                                     Start Your First Negotiation
                                 </button>
@@ -268,7 +268,7 @@ const NegotiationHistory = () => {
                                     return (
                                         <div
                                             key={negotiation._id}
-                                            className="p-6 border-2 border-slate-200 dark:border-slate-700 rounded-xl hover:border-indigo-300 dark:hover:border-indigo-600 transition-all cursor-pointer"
+                                            className="p-6 bg-cream border-2 border-charcoal/20 rounded-md hover:border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
                                             onClick={() => {
                                                 if (negotiation.status === 'in-progress') {
                                                     navigate('/salary-negotiation/simulator', { state: negotiation });
@@ -277,10 +277,10 @@ const NegotiationHistory = () => {
                                         >
                                             <div className="flex items-start justify-between mb-4">
                                                 <div>
-                                                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+                                                    <h3 className="text-lg font-display font-bold text-charcoal mb-1 uppercase tracking-wider">
                                                         {negotiation.role}
                                                     </h3>
-                                                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                                                    <p className="text-sm text-charcoal/80 font-medium">
                                                         {getScenarioName(negotiation.scenario)} • {negotiation.location}
                                                     </p>
                                                 </div>
@@ -289,26 +289,26 @@ const NegotiationHistory = () => {
 
                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                                                 <div>
-                                                    <div className="text-xs text-slate-600 dark:text-slate-400 mb-1">Initial Offer</div>
-                                                    <div className="text-sm font-semibold text-slate-900 dark:text-white">
+                                                    <div className="text-xs font-bold text-charcoal uppercase tracking-wider mb-1">Initial Offer</div>
+                                                    <div className="text-sm font-bold text-charcoal">
                                                         {formatCurrency(initial)}
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <div className="text-xs text-slate-600 dark:text-slate-400 mb-1">Final Offer</div>
-                                                    <div className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+                                                    <div className="text-xs font-bold text-charcoal uppercase tracking-wider mb-1">Final Offer</div>
+                                                    <div className="text-sm font-bold text-charcoal">
                                                         {formatCurrency(final)}
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <div className="text-xs text-slate-600 dark:text-slate-400 mb-1">Improvement</div>
-                                                    <div className={`text-sm font-semibold ${improvement >= 10 ? 'text-emerald-600' : 'text-slate-600 dark:text-slate-400'}`}>
+                                                    <div className="text-xs font-bold text-charcoal uppercase tracking-wider mb-1">Improvement</div>
+                                                    <div className={`text-sm font-bold text-charcoal`}>
                                                         {negotiation.status !== 'in-progress' ? `+${improvement.toFixed(1)}%` : '-'}
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <div className="text-xs text-slate-600 dark:text-slate-400 mb-1">Date</div>
-                                                    <div className="text-sm font-semibold text-slate-900 dark:text-white">
+                                                    <div className="text-xs font-bold text-charcoal uppercase tracking-wider mb-1">Date</div>
+                                                    <div className="text-sm font-bold text-charcoal">
                                                         {formatDate(negotiation.createdAt)}
                                                     </div>
                                                 </div>
@@ -316,14 +316,14 @@ const NegotiationHistory = () => {
 
                                             {negotiation.performance?.confidenceScore && (
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-xs text-slate-600 dark:text-slate-400">Confidence:</span>
-                                                    <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden max-w-xs">
+                                                    <span className="text-xs font-bold text-charcoal uppercase tracking-wider">Confidence:</span>
+                                                    <div className="flex-1 h-2 bg-charcoal/10 rounded-none overflow-hidden max-w-xs">
                                                         <div
-                                                            className="h-full bg-gradient-to-r from-blue-600 to-indigo-600"
+                                                            className="h-full bg-charcoal"
                                                             style={{ width: `${negotiation.performance.confidenceScore}%` }}
                                                         />
                                                     </div>
-                                                    <span className="text-xs font-semibold text-slate-900 dark:text-white">
+                                                    <span className="text-xs font-bold text-charcoal">
                                                         {negotiation.performance.confidenceScore}/100
                                                     </span>
                                                 </div>

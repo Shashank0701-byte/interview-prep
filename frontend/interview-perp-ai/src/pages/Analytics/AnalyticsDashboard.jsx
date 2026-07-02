@@ -79,7 +79,7 @@ const AnalyticsDashboard = () => {
                 const data = progressRes.data.data.map(d => d.accuracy);
                 setProgressData({
                     labels,
-                    datasets: [{ label: 'Content Accuracy', data, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.4 }],
+                    datasets: [{ label: 'Content Accuracy', data, borderColor: '#1A1A1A', backgroundColor: 'rgba(26, 26, 26, 0.1)', fill: true, tension: 0.4 }],
                 });
                 
                 // Calculate overall progress stats
@@ -95,7 +95,7 @@ const AnalyticsDashboard = () => {
             } else {
                 setProgressData({
                     labels: ['This Week'],
-                    datasets: [{ label: 'Content Accuracy', data: [0], borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.4 }],
+                    datasets: [{ label: 'Content Accuracy', data: [0], borderColor: '#1A1A1A', backgroundColor: 'rgba(26, 26, 26, 0.1)', fill: true, tension: 0.4 }],
                 });
             }
             if (performanceRes.data?.data && performanceRes.data.data.length > 0) {
@@ -103,12 +103,12 @@ const AnalyticsDashboard = () => {
                 const data = performanceRes.data.data.map(d => d.performance);
                 setPerformanceData({
                     labels,
-                    datasets: [{ label: 'Performance', data, backgroundColor: '#818cf8', borderColor: '#6366f1', borderWidth: 1 }],
+                    datasets: [{ label: 'Performance', data, backgroundColor: '#1A1A1A', borderColor: '#1A1A1A', borderWidth: 1 }],
                 });
             } else {
                 setPerformanceData({
                     labels: ['No Data Yet'],
-                    datasets: [{ label: 'Performance', data: [0], backgroundColor: '#818cf8', borderColor: '#6366f1', borderWidth: 1 }],
+                    datasets: [{ label: 'Performance', data: [0], backgroundColor: '#1A1A1A', borderColor: '#1A1A1A', borderWidth: 1 }],
                 });
             }
 
@@ -118,14 +118,14 @@ const AnalyticsDashboard = () => {
                 const data = activityRes.data.data.map(d => d.count);
                 setDailyActivityData({
                     labels,
-                    datasets: [{ label: 'Cards Reviewed', data, backgroundColor: '#34d399', borderColor: '#10b981', borderWidth: 1 }],
+                    datasets: [{ label: 'Cards Reviewed', data, backgroundColor: '#1A1A1A', borderColor: '#1A1A1A', borderWidth: 1 }],
                 });
             } else {
                 // If no data, show empty chart with today's date
                 const today = new Date();
                 setDailyActivityData({
                     labels: [today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })],
-                    datasets: [{ label: 'Cards Reviewed', data: [0], backgroundColor: '#34d399', borderColor: '#10b981', borderWidth: 1 }],
+                    datasets: [{ label: 'Cards Reviewed', data: [0], backgroundColor: '#1A1A1A', borderColor: '#1A1A1A', borderWidth: 1 }],
                 });
             }
             if (masteryRes.data?.data) {
@@ -137,7 +137,7 @@ const AnalyticsDashboard = () => {
                     labels: ['Mastered', 'Unmastered'],
                     datasets: [{
                         data: [mastered, unmastered],
-                        backgroundColor: ['#60a5fa', '#f87171'],
+                        backgroundColor: ['#1A1A1A', '#DC2626'],
                         hoverOffset: 4,
                     }],
                 });
@@ -164,7 +164,7 @@ const AnalyticsDashboard = () => {
                     labels: ['Mastered', 'Unmastered'],
                     datasets: [{
                         data: [0, 0],
-                        backgroundColor: ['#60a5fa', '#f87171'],
+                        backgroundColor: ['#1A1A1A', '#DC2626'],
                         hoverOffset: 4,
                     }],
                 });
@@ -228,33 +228,33 @@ const AnalyticsDashboard = () => {
         <DashboardLayout>
             <div className="container mx-auto p-4 sm:p-6 lg:p-8">
                 <header className="mb-8 px-4 md:px-0">
-                    <div className="bg-gradient-to-r from-white via-blue-50/30 to-indigo-50/20 rounded-3xl p-8 border border-blue-100/50 shadow-lg">
+                    <div className="card-editorial p-8 bg-white">
                         <div className="flex justify-between items-start">
                             <div className="space-y-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg">
+                                    <div className="w-12 h-12 bg-charcoal text-white rounded-md flex items-center justify-center">
                                         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 bg-clip-text text-transparent">My Progress Dashboard</h1>
-                                        <p className="text-slate-600 mt-2 text-base sm:text-lg leading-relaxed">Your learning journey, visualized with care and encouragement.</p>
+                                        <h1 className="text-3xl sm:text-4xl font-display text-charcoal">My Progress Dashboard</h1>
+                                        <p className="text-charcoal/80 mt-2 text-base sm:text-lg leading-relaxed">Your learning journey, visualized with care and encouragement.</p>
                                     </div>
                                 </div>
                                 
                                 {/* Quick Stats */}
                                 <div className="flex items-center gap-6 text-sm">
-                                    <div className="flex items-center gap-3 bg-white/70 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-emerald-100/50 shadow-sm">
-                                        <div className="w-3 h-3 bg-gradient-to-r from-emerald-500 to-green-500 rounded-full animate-pulse"></div>
-                                        <span className="font-medium text-gray-700">
+                                    <div className="flex items-center gap-3 bg-white px-4 py-2.5 rounded-md border-2 border-charcoal/20">
+                                        <div className="w-3 h-3 bg-charcoal rounded-full animate-pulse"></div>
+                                        <span className="font-bold text-charcoal uppercase tracking-wider text-xs">
                                             {progressStats.masteredQuestions} questions mastered
                                         </span>
                                     </div>
                                     {progressStats.streakDays > 0 && (
-                                        <div className="flex items-center gap-2 bg-amber-50/80 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-amber-200/50">
+                                        <div className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-md border-2 border-charcoal/20">
                                             <span className="text-lg">🔥</span>
-                                            <span className="text-amber-700 font-medium">
+                                            <span className="font-bold text-charcoal uppercase tracking-wider text-xs">
                                                 {progressStats.streakDays} day streak
                                             </span>
                                         </div>
@@ -265,7 +265,7 @@ const AnalyticsDashboard = () => {
                             <button 
                                 onClick={fetchAnalyticsData}
                                 disabled={isLoading}
-                                className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white px-6 py-3 rounded-2xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                                className="btn-small w-auto"
                             >
                                 <svg className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -276,32 +276,23 @@ const AnalyticsDashboard = () => {
                     </div>
                 </header>
 
-                {/* --- Enhanced Tab Navigation --- */}
                 <div className="mb-8 px-4 md:px-0">
-                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100/50 p-2">
-                        <nav className="flex space-x-2">
-                            {[
-                                { id: 'overview', label: 'Overview', icon: '🌟' },
-                                { id: 'performance', label: 'Performance', icon: '📊' },
-                                { id: 'activity', label: 'Activity', icon: '⚡' },
-                                { id: 'insights', label: 'Insights', icon: '💡' }
-                            ].map((tab) => (
-                                <button 
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)} 
-                                    className={`
-                                        flex items-center gap-2 px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300 transform hover:scale-105
-                                        ${activeTab === tab.id 
-                                            ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-200/50' 
-                                            : 'text-slate-600 hover:text-slate-800 hover:bg-gray-50'
-                                        }
-                                    `}
-                                >
-                                    <span className="text-lg">{tab.icon}</span>
-                                    {tab.label}
-                                </button>
-                            ))}
-                        </nav>
+                    <div className="flex flex-wrap gap-2">
+                        {[
+                            { id: 'overview', label: 'Overview', icon: '🌟' },
+                            { id: 'performance', label: 'Performance', icon: '📊' },
+                            { id: 'activity', label: 'Activity', icon: '⚡' },
+                            { id: 'insights', label: 'Insights', icon: '💡' }
+                        ].map((tab) => (
+                            <button 
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)} 
+                                className={activeTab === tab.id ? 'chip-active' : 'chip-inactive'}
+                            >
+                                <span className="text-lg mr-2">{tab.icon}</span>
+                                {tab.label}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
@@ -309,11 +300,11 @@ const AnalyticsDashboard = () => {
                     <div className="text-center py-16">
                         <div className="space-y-6">
                             <div className="relative mx-auto w-16 h-16">
-                                <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 dark:border-slate-700 border-t-gray-600 dark:border-t-slate-400"></div>
+                                <div className="animate-spin rounded-full h-16 w-16 border-4 border-charcoal/20 border-t-charcoal"></div>
                             </div>
                             <div className="space-y-3">
-                                <p className="text-xl font-semibold text-gray-900 dark:text-white">Loading analytics...</p>
-                                <p className="text-gray-600 dark:text-gray-400">Gathering your progress data</p>
+                                <p className="text-xl font-display font-semibold text-charcoal">Loading analytics...</p>
+                                <p className="text-charcoal/80 font-body">Gathering your progress data</p>
                             </div>
                         </div>
                     </div>
@@ -331,7 +322,7 @@ const AnalyticsDashboard = () => {
                                 <div className="space-y-8">
                                     {/* Progress Rings Section */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-all duration-200">
+                                        <div className="card-editorial p-6 flex items-center justify-center">
                                             <ProgressRing 
                                                 progress={progressStats.overallProgress} 
                                                 color="gray"
@@ -340,7 +331,7 @@ const AnalyticsDashboard = () => {
                                             />
                                         </div>
                                         
-                                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-all duration-200">
+                                        <div className="card-editorial p-6 flex items-center justify-center">
                                             <ProgressRing 
                                                 progress={progressStats.totalQuestions > 0 ? (progressStats.masteredQuestions / progressStats.totalQuestions) * 100 : 0} 
                                                 color="gray"
@@ -349,7 +340,7 @@ const AnalyticsDashboard = () => {
                                             />
                                         </div>
                                         
-                                        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-all duration-200">
+                                        <div className="card-editorial p-6 flex items-center justify-center">
                                             <ProgressRing 
                                                 progress={progressStats.totalSessions > 0 ? (progressStats.completedSessions / progressStats.totalSessions) * 100 : 0} 
                                                 color="gray"
@@ -360,12 +351,12 @@ const AnalyticsDashboard = () => {
                                     </div>
 
                                     {/* Progress Wave */}
-                                    <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
-                                        <div className="text-center mb-8">
-                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Learning Progress</h2>
-                                            <p className="text-gray-600 dark:text-gray-400">Your overall progress overview</p>
+                                    <div className="card-editorial p-8 relative z-10">
+                                        <div className="text-center mb-8 border-b-2 border-charcoal/20 pb-4">
+                                            <h2 className="text-3xl font-display text-charcoal mb-2">Learning Progress</h2>
+                                            <p className="text-charcoal/80">Your overall progress overview</p>
                                         </div>
-                                        <div className="flex justify-center">
+                                        <div className="flex justify-center relative z-0">
                                             <ProgressWave 
                                                 progress={progressStats.overallProgress} 
                                                 width={400} 
@@ -376,10 +367,10 @@ const AnalyticsDashboard = () => {
                                     </div>
 
                                     {/* Milestones */}
-                                    <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700">
-                                        <div className="text-center mb-8">
-                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Learning Milestones</h2>
-                                            <p className="text-gray-600 dark:text-gray-400">Track your progress milestones</p>
+                                    <div className="card-editorial p-8">
+                                        <div className="text-center mb-8 border-b-2 border-charcoal/20 pb-4">
+                                            <h2 className="text-3xl font-display text-charcoal mb-2">Learning Milestones</h2>
+                                            <p className="text-charcoal/80">Track your progress milestones</p>
                                         </div>
                                         <ProgressMilestones progress={progressStats.overallProgress} />
                                     </div>
@@ -400,19 +391,19 @@ const AnalyticsDashboard = () => {
                                 />
                             ) : (
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                    <div className="lg:col-span-2 bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-all duration-200">
-                                        <div className="flex items-center gap-3 mb-6">
+                                    <div className="lg:col-span-2 card-editorial p-6">
+                                        <div className="flex items-center gap-3 mb-6 border-b-2 border-charcoal/20 pb-4">
                                             <span className="text-2xl">📊</span>
-                                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Performance by Topic</h2>
+                                            <h2 className="text-2xl font-display text-charcoal">Performance by Topic</h2>
                                         </div>
                                         <div className="h-96 w-full">
                                             <Bar options={barChartOptions} data={performanceData} />
                                         </div>
                                     </div>
-                                     <div className="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md transition-all duration-200">
-                                        <div className="flex items-center gap-3 mb-6">
+                                     <div className="card-editorial p-6">
+                                        <div className="flex items-center gap-3 mb-6 border-b-2 border-charcoal/20 pb-4">
                                             <span className="text-2xl">📈</span>
-                                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Progress Over Time</h2>
+                                            <h2 className="text-2xl font-display text-charcoal">Progress Over Time</h2>
                                         </div>
                                         <div className="h-96 w-full">
                                             <Line options={lineChartOptions} data={progressData} />
@@ -435,19 +426,19 @@ const AnalyticsDashboard = () => {
                                 />
                             ) : (
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                    <div className="bg-white p-4 sm:p-6 rounded-3xl shadow-lg border border-gray-100/50 hover:shadow-xl transition-all duration-500">
-                                        <div className="flex items-center gap-3 mb-6">
+                                    <div className="card-editorial p-6">
+                                        <div className="flex items-center gap-3 mb-6 border-b-2 border-charcoal/20 pb-4">
                                             <span className="text-2xl">⚡</span>
-                                            <h2 className="text-xl font-bold text-slate-900">Daily Activity</h2>
+                                            <h2 className="text-2xl font-display text-charcoal">Daily Activity</h2>
                                         </div>
                                         <div className="h-80 w-full">
                                             <Bar options={activityBarOptions} data={dailyActivityData} />
                                         </div>
                                     </div>
-                                    <div className="bg-white p-4 sm:p-6 rounded-3xl shadow-lg border border-gray-100/50 hover:shadow-xl transition-all duration-500">
-                                        <div className="flex items-center gap-3 mb-6">
+                                    <div className="card-editorial p-6">
+                                        <div className="flex items-center gap-3 mb-6 border-b-2 border-charcoal/20 pb-4">
                                             <span className="text-2xl">🎯</span>
-                                            <h2 className="text-xl font-bold text-slate-900">Mastery Ratio</h2>
+                                            <h2 className="text-2xl font-display text-charcoal">Mastery Ratio</h2>
                                         </div>
                                         <div className="h-80 w-full flex items-center justify-center">
                                             <Doughnut options={masteryPieOptions} data={masteryRatioData} />

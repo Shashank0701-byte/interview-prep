@@ -10,7 +10,7 @@ const AIResponsePreview = ({ content }) => {
     content = content.replace(/\\n/g, '\n');
     return (
         <div className='max-w-4xl mx-auto'>
-            <div className='text-[14px] prose prose-slate dark:prose-invert max-w-none'>
+            <div className='text-[14px] font-body text-charcoal max-w-none prose prose-slate'>
                 <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
@@ -25,7 +25,7 @@ const AIResponsePreview = ({ content }) => {
                                     language={language}
                                 />
                             ) : (
-                                <code className='px-1 py-0.5 bg-gray-100 rounded text-sm' {...props}>
+                                <code className='px-1 py-0.5 bg-charcoal/5 border-2 border-charcoal/10 rounded-sm font-bold text-charcoal text-sm' {...props}>
                                     {children}
                                 </code>
                             );
@@ -49,7 +49,7 @@ const AIResponsePreview = ({ content }) => {
                             return <li className='mb-1'>{children}</li>;
                         },
                         blockquote({ children }) {
-                            return <blockquote className='border-l-4 border-gray-200 pl-4 italic my-4'>{children}</blockquote>;
+                            return <blockquote className='border-l-4 border-charcoal pl-4 italic my-4 text-charcoal/80'>{children}</blockquote>;
                         },
                         h1({ children }) {
                             return <h1 className='text-2xl font-bold mt-6 mb-4'>{children}</h1>;
@@ -61,37 +61,37 @@ const AIResponsePreview = ({ content }) => {
                             return <h3 className='text-lg font-bold mt-5 mb-2'>{children}</h3>;
                         },
                         h4({ children }) {
-                            return <h4 className='text-base font-bold mt-4 mb-2'>{children}</h4>;
+                            return <h4 className='text-base font-display font-bold mt-4 mb-2'>{children}</h4>;
                         },
                         a({ children, href }) {
-                            return <a href={href} className='text-blue-600 hover:underline'>{children}</a>;
+                            return <a href={href} className='text-charcoal font-bold hover:underline'>{children}</a>;
                         },
                         table({ children }) {
                             return (
                                 <div className='overflow-x-auto my-4'>
-                                    <table className='min-w-full divide-y divide-gray-300 border border-gray-200'>
+                                    <table className='min-w-full divide-y-2 divide-charcoal/20 border-2 border-charcoal'>
                                         {children}
                                     </table>
                                 </div>
                             );
                         },
                         thead({ children }) {
-                            return <thead className='bg-gray-50'>{children}</thead>;
+                            return <thead className='bg-cream'>{children}</thead>;
                         },
                         tbody({ children }) {
-                            return <tbody className='divide-y divide-gray-200'>{children}</tbody>;
+                            return <tbody className='divide-y-2 divide-charcoal/10'>{children}</tbody>;
                         },
                         tr({ children }) {
                             return <tr>{children}</tr>;
                         },
                         th({ children }) {
-                            return <th className='px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>{children}</th>;
+                            return <th className='px-3 py-2 text-left text-xs font-bold text-charcoal uppercase tracking-wider'>{children}</th>;
                         },
                         td({ children }) {
-                            return <td className='px-3 py-2 whitespace-nowrap text-sm'>{children}</td>;
+                            return <td className='px-3 py-2 whitespace-nowrap text-sm text-charcoal/80'>{children}</td>;
                         },
                         hr() {
-                            return <hr className='my-6 border-gray-200' />;
+                            return <hr className='my-6 border-t-2 border-charcoal/10' />;
                         },
                         img({ src, alt }) {
                             return <img src={src} alt={alt} className='my-4 max-w-full rounded' />;
@@ -116,17 +116,17 @@ function CodeBlock({ code, language }) {
     };
 
     return (
-        <div className='relative my-6 rounded-lg overflow-hidden bg-gray-50 border border-gray-200'>
-            <div className='flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-200'>
+        <div className='relative my-6 rounded-sm overflow-hidden bg-white border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A]'>
+            <div className='flex items-center justify-between px-4 py-2 bg-cream border-b-2 border-charcoal'>
                 <div className='flex items-center space-x-2'>
-                    <LuCode size={16} className='text-gray-500' />
-                    <span className='text-xs font-semibold text-gray-600 uppercase tracking-wide'>
+                    <LuCode size={16} className='text-charcoal' />
+                    <span className='text-xs font-bold text-charcoal uppercase tracking-wider'>
                         {language || 'Code'}
                     </span>
                 </div>
                 <button
                     onClick={copyCode}
-                    className='text-gray-500 hover:text-gray-700 focus:outline-none relative group cursor-pointer'
+                    className='text-charcoal/80 hover:text-charcoal focus:outline-none relative group cursor-pointer'
                     aria-label='Copy code'
                 >
                     {copied ? (
@@ -135,7 +135,7 @@ function CodeBlock({ code, language }) {
                         <LuCopy size={16} />
                     )}
                     {copied && (
-                        <span className='absolute -top-8 right-0 bg-black text-white text-xs rounded-md px-2 py-1 opacity-80 group-hover:opacity-100 transition'>
+                        <span className='absolute -top-8 right-0 bg-charcoal text-white font-bold text-xs rounded-sm px-2 py-1 opacity-100 transition'>
                             Copied!
                         </span>
                     )}

@@ -61,7 +61,7 @@ const App = () => {
   return (
     <ThemeProvider>
       <UserProvider>
-        <div className="min-h-screen bg-white dark:bg-slate-900 transition-colors duration-300">
+        <div className="min-h-screen bg-cream dark:bg-slate-900 transition-colors duration-300">
           <Router>
           <ScrollToTop />
           <Routes>

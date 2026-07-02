@@ -118,26 +118,26 @@ const PracticePage = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+            <div className="min-h-screen bg-cream font-body">
                 {/* Enhanced Hero Header */}
-                <div className="bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700">
+                <div className="border-b-2 border-charcoal">
                     <div className="container mx-auto px-4 md:px-6 py-8">
                         <div className="text-center space-y-4">
                             <div className="flex items-center justify-center gap-3 mb-4">
-                                <div className="w-12 h-12 bg-gray-600 dark:bg-slate-600 rounded-2xl flex items-center justify-center shadow-sm">
+                                <div className="w-12 h-12 bg-charcoal rounded-sm flex items-center justify-center shadow-[4px_4px_0px_0px_#1A1A1A]">
                                     <LuTarget className="w-6 h-6 text-white" />
                                 </div>
-                                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+                                <h1 className="text-4xl md:text-5xl font-display font-bold text-charcoal">
                                     Practice Session
                                 </h1>
                             </div>
-                            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
+                            <p className="text-charcoal/80 text-lg max-w-2xl mx-auto leading-relaxed">
                                 Practice makes perfect! Take your time to articulate your thoughts clearly and confidently.
                             </p>
                             <div className="flex items-center justify-center">
                                 <button 
                                     onClick={() => navigate(-1)} 
-                                    className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors bg-gray-100 dark:bg-slate-700 px-4 py-2 rounded-xl border border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500"
+                                    className="flex items-center gap-2 text-charcoal font-bold uppercase tracking-wider text-xs bg-white px-4 py-2 rounded-sm border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 cursor-pointer"
                                 >
                                     <LuArrowLeft className="w-4 h-4" />
                                     <span>Back to Review</span>
@@ -148,37 +148,37 @@ const PracticePage = () => {
                 </div>
 
                 <div className="container mx-auto p-4 md:p-8 max-w-5xl">
-                    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden" ref={topRef}>
+                    <div className="card-editorial overflow-hidden" ref={topRef}>
                         {/* Question Header */}
-                        <div className="bg-gray-50 dark:bg-slate-700 p-6 border-b border-gray-200 dark:border-slate-600">
+                        <div className="bg-white p-6 border-b-2 border-charcoal">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-8 h-8 bg-gray-600 dark:bg-slate-600 rounded-xl flex items-center justify-center">
-                                    <span className="text-white font-bold text-sm">Q</span>
+                                <div className="w-8 h-8 bg-charcoal rounded-sm flex items-center justify-center">
+                                    <span className="text-white font-bold text-sm font-display">Q</span>
                                 </div>
-                                <span className="text-gray-700 dark:text-gray-300 font-medium">Interview Question</span>
+                                <span className="text-charcoal font-bold uppercase tracking-wider text-sm">Interview Question</span>
                             </div>
-                            <p className="text-xl md:text-2xl font-medium text-gray-800 dark:text-gray-200 leading-relaxed">
+                            <p className="text-2xl md:text-3xl font-display font-bold text-charcoal leading-relaxed">
                                 {question.question}
                             </p>
                         </div>
                         
-                        <div className="p-8">
+                        <div className="p-8 bg-cream">
                             {/* Answer Input Section */}
                             <div className="mb-8">
                                 <div className="flex items-center gap-2 mb-4">
-                                    <LuMessageSquare className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                                    <span className="font-semibold text-gray-700 dark:text-gray-300">Your Answer</span>
+                                    <LuMessageSquare className="w-5 h-5 text-charcoal" />
+                                    <span className="font-bold text-charcoal uppercase tracking-wider text-sm">Your Answer</span>
                                 </div>
                                 <div className="relative">
                                     <textarea
-                                        className="w-full h-48 p-6 border-2 border-gray-200 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 focus:ring-2 focus:ring-gray-500 dark:focus:ring-slate-400 focus:border-gray-400 dark:focus:border-slate-500 transition-all duration-200 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 resize-none"
+                                        className="w-full h-48 p-6 border-2 border-charcoal rounded-sm bg-white focus:outline-none transition-all duration-200 text-charcoal placeholder-charcoal/50 resize-none font-bold shadow-[4px_4px_0px_0px_#1A1A1A]"
                                         value={transcript}
                                         onChange={(e) => setTranscript(e.target.value)}
                                         placeholder="Start typing your answer here, or use the microphone to record your response..."
                                         readOnly={!!feedback}
                                     />
                                     {isRecording && (
-                                        <div className="absolute top-4 right-4 flex items-center gap-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium animate-pulse">
+                                        <div className="absolute top-4 right-4 flex items-center gap-2 bg-crimson border-2 border-charcoal text-white px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider animate-pulse shadow-[2px_2px_0px_0px_#1A1A1A]">
                                             <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
                                             Recording...
                                         </div>
@@ -191,10 +191,10 @@ const PracticePage = () => {
                                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
                                     <button 
                                         onClick={isRecording ? stopRecording : startRecording}
-                                        className={`group flex items-center gap-3 px-8 py-4 font-semibold rounded-lg text-white transition-all duration-200 shadow-sm ${
+                                        className={`group flex items-center gap-3 px-8 py-4 font-bold uppercase tracking-wider text-sm rounded-sm text-white transition-all duration-200 border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer ${
                                             isRecording 
-                                                ? 'bg-red-600 hover:bg-red-700' 
-                                                : 'bg-gray-600 dark:bg-slate-600 hover:bg-gray-700 dark:hover:bg-slate-500'
+                                                ? 'bg-crimson' 
+                                                : 'bg-charcoal'
                                         }`}
                                     >
                                         {isRecording ? (
@@ -213,7 +213,7 @@ const PracticePage = () => {
                                     <button 
                                         onClick={handleGetFeedback}
                                         disabled={isRecording || isLoading || !transcript.trim()}
-                                        className="group flex items-center gap-3 px-8 py-4 font-semibold rounded-lg text-white bg-gray-900 dark:bg-slate-700 hover:bg-gray-800 dark:hover:bg-slate-600 disabled:bg-gray-400 dark:disabled:bg-slate-500 disabled:cursor-not-allowed transition-all duration-200 shadow-sm"
+                                        className="group flex items-center gap-3 px-8 py-4 font-bold uppercase tracking-wider text-sm rounded-sm text-charcoal bg-white border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
                                     >
                                         <LuStar className="w-5 h-5" />
                                         <span>{isLoading ? 'Analyzing...' : 'Get AI Feedback'}</span>
@@ -225,7 +225,7 @@ const PracticePage = () => {
                             {isLoading && (
                                 <div className="flex flex-col items-center justify-center py-12">
                                     <SpinnerLoader />
-                                    <p className="text-gray-600 dark:text-gray-400 mt-4 text-center">
+                                    <p className="text-charcoal font-bold uppercase tracking-wider mt-4 text-center">
                                         Our AI is carefully analyzing your response...
                                     </p>
                                 </div>
@@ -234,26 +234,26 @@ const PracticePage = () => {
                             {/* Feedback Section */}
                             {feedback && (
                                 <div className="space-y-6">
-                                    <div className="bg-gray-50 dark:bg-slate-700 rounded-xl p-6 border border-gray-200 dark:border-slate-600">
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <LuCheck className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                                            <span className="font-semibold text-gray-700 dark:text-gray-300">AI Feedback & Analysis</span>
+                                    <div className="bg-white rounded-sm p-6 border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A]">
+                                        <div className="flex items-center gap-2 mb-4 pb-4 border-b-2 border-charcoal/10">
+                                            <LuCheck className="w-5 h-5 text-charcoal" />
+                                            <span className="font-bold text-charcoal uppercase tracking-wider">AI Feedback & Analysis</span>
                                         </div>
-                                        <div className="prose prose-lg max-w-none text-gray-700 dark:text-gray-300">
+                                        <div className="prose prose-lg max-w-none text-charcoal/90">
                                             <ReactMarkdown>{feedback}</ReactMarkdown>
                                         </div>
                                     </div>
                                     
                                     {/* Practice Again Button */}
-                                    <div className="text-center pt-6 border-t border-gray-200 dark:border-slate-600">
+                                    <div className="text-center pt-6">
                                         <button
                                             onClick={handlePracticeAgain}
-                                            className="group flex items-center gap-3 mx-auto px-8 py-4 font-semibold rounded-lg text-white bg-gray-600 dark:bg-slate-600 hover:bg-gray-700 dark:hover:bg-slate-500 transition-all duration-200 shadow-sm"
+                                            className="group flex items-center gap-3 mx-auto px-8 py-4 font-bold uppercase tracking-wider text-sm rounded-sm text-white bg-charcoal border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 cursor-pointer"
                                         >
                                             <LuRefreshCw className="w-5 h-5" />
                                             <span>Practice Again</span>
                                         </button>
-                                        <p className="text-gray-500 dark:text-gray-400 text-sm mt-3">
+                                        <p className="text-charcoal/60 font-bold uppercase tracking-wider text-xs mt-4">
                                             Keep practicing to build confidence and fluency!
                                         </p>
                                     </div>

@@ -28,14 +28,13 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="bg-[#FFFCEF] text-black overflow-x-hidden" style={{ backgroundColor: '#FFFCEF', color: '#000000' }}>
-      <div className='w-full min-h-full bg-[#FFFCEF] relative' style={{ backgroundColor: '#FFFCEF' }}>
+    <div className="bg-cream text-charcoal overflow-x-hidden font-body">
+      <div className='w-full min-h-full bg-cream relative'>
         <div className='w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-amber-200/20 blur-[65px] absolute top-0 left-0 pointer-events-none' />
         <div className='container mx-auto px-4 pt-6 pb-[200px] relative z-10'>
           {/* Header */}
-          {/* Corrected: "items-center" and "mb-16" */}
           <header className='flex justify-between items-center mb-12 md:mb-16'>
-            <div className='text-lg md:text-xl font-bold' style={{ color: '#000000' }}>
+            <div className='text-xl md:text-3xl font-display font-bold text-charcoal'>
               Interview Prep AI
             </div>
             {/* Auth button */}
@@ -43,12 +42,7 @@ const LandingPage = () => {
               <ProfileInfoCard />
             ) : (
               <button
-                className='bg-gradient-to-r from-[#FF9324] to-[#e99a4b] text-xs md:text-sm font-semibold text-white px-5 py-2 md:px-7 md:py-2.5 rounded-full hover:bg-black hover:text-white border border-white transition-colors cursor-pointer'
-                style={{
-                  background: 'linear-gradient(to right, #FF9324, #e99a4b)',
-                  color: '#ffffff',
-                  border: '1px solid #ffffff'
-                }}
+                className='bg-charcoal text-white px-5 py-2 md:px-7 md:py-2.5 text-xs md:text-sm font-bold uppercase tracking-wider rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer border-2 border-charcoal'
                 onClick={() => setOpenAuthModal(true)}
               >
                 Login / Sign Up
@@ -59,26 +53,27 @@ const LandingPage = () => {
           <div className='flex flex-col md:flex-row items-center'>
             <div className='w-full md:w-1/2 pr-0 md:pr-4 mb-8 md:mb-0 text-center md:text-left'>
               <div className='flex items-center justify-center md:justify-start mb-4'>
-                <div className='flex items-center gap-2 text-xs md:text-[13px] text-amber-600 font-semibold bg-amber-100 px-3 py-1 rounded-full border border-amber-300'>
+                <div className='flex items-center gap-2 text-xs md:text-[13px] text-charcoal font-bold bg-white px-3 py-1 rounded-sm border-2 border-charcoal uppercase tracking-wider'>
                   <LuSparkles />AI Powered
                 </div>
               </div>
-              <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium mb-6 leading-tight' style={{ color: '#000000' }}>
+              <h1 className='text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display text-charcoal leading-tight mb-6'>
                 Ace Interviews with <br />
-                <span className='text-transparent bg-clip-text bg-[radial-gradient(circle,_#FF9324_0%,_#FCD760_100%)] bg-[length:200%_200%] animate-text-shine font-semibold'>
+                <span className='text-crimson'>
                   AI-Powered
                 </span>{" "}
                 Learning
               </h1>
             </div>
             <div className='w-full md:w-1/2 text-center md:text-left'>
-              <p className='text-base md:text-lg mr-0 md:mr-20 mb-8' style={{ color: '#111827' }}>Get role-specific questions, expand answers when you need them,
+              <p className='text-base md:text-lg mr-0 md:mr-20 mb-8 text-charcoal/80'>
+                Get role-specific questions, expand answers when you need them,
                 dive deeper into concepts and organise everything your way.
                 From preparation to mastery - your ultimate interview toolkit is
                 here.
               </p>
               <button
-                className='bg-black text-sm font-semibold text-white px-8 py-3 rounded-full hover:bg-yellow-100 hover:text-black border border-yellow-50 hover:border-yellow-300 transition-colors cursor-pointer shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200'
+                className='bg-white text-charcoal text-sm font-bold uppercase tracking-wider px-8 py-4 rounded-sm border-2 border-charcoal hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#1A1A1A] transition-all cursor-pointer'
                 onClick={handleCTA}
               >
                 Get Started
@@ -93,47 +88,43 @@ const LandingPage = () => {
             <img
               src={HERO_IMG}
               alt='Hero Image'
-              className='w-full md:w-[80vw] rounded-xl shadow-2xl border-4 border-white/50'
+              className='w-full md:w-[80vw] rounded-sm border-4 border-charcoal shadow-[8px_8px_0px_0px_#1A1A1A]'
             />
           </section>
         </div>
 
-        <div className='w-full min-h-full bg-[#FFFCEF] mt-10' style={{ backgroundColor: '#FFFCEF' }}>
+        <div className='w-full min-h-full bg-cream mt-10'>
           <div className='container mx-auto px-4 pt-10 pb-20'>
             <section className='mt-5'>
-              <h2 className='text-2xl font-medium text-center mb-12' style={{ color: '#000000' }}>
+              <h2 className='text-3xl md:text-4xl font-display font-bold text-center mb-12 text-charcoal'>
                 Features That Make You Shine
               </h2>
-              {/* Corrected: "items-center" */}
               <div className='flex flex-col items-center gap-8'>
                 {/* First 3 Cards */}
                 <div className='grid grid-cols-1 md:grid-cols-3 w-full gap-8'>
                   {APP_FEATURES.slice(0, 3).map((feature) => (
                     <div
                       key={feature.id}
-                      className='bg-[#FFFEF8] p-6 rounded-xl shadow-xs hover:shadow-lg shadow-amber-100 transition border border-amber-100'
-                      style={{ backgroundColor: '#FFFEF8' }}
+                      className='card-editorial p-6 flex flex-col'
                     >
-                      <h3 className='text-base font-semibold mb-3' style={{ color: '#000000' }}>
+                      <h3 className='text-lg font-bold mb-3 uppercase tracking-wider text-charcoal'>
                         {feature.title}
                       </h3>
-                      <p style={{ color: '#4B5563' }}>{feature.description}</p>
+                      <p className="text-charcoal/80">{feature.description}</p>
                     </div>
                   ))}
                 </div>
                 {/* Remaining 2 cards */}
-                {/* Corrected: "md:grid-cols-2" */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
                   {APP_FEATURES.slice(3).map((feature) => (
                     <div
                       key={feature.id}
-                      className='bg-[#FFFEF8] p-6 rounded-xl hover:shadow-lg shadow-amber-100 transition border border-amber-100'
-                      style={{ backgroundColor: '#FFFEF8' }}
+                      className='card-editorial p-6 flex flex-col'
                     >
-                      <h3 className='text-base font-semibold mb-3' style={{ color: '#000000' }}>
+                      <h3 className='text-lg font-bold mb-3 uppercase tracking-wider text-charcoal'>
                         {feature.title}
                       </h3>
-                      <p style={{ color: '#4B5563' }}>{feature.description}</p>
+                      <p className="text-charcoal/80">{feature.description}</p>
                     </div>
                   ))}
                 </div>
@@ -142,7 +133,7 @@ const LandingPage = () => {
           </div>
         </div>
         {/* Footer */}
-        <div className='text-sm bg-gray-50 text-center p-5 mt-5' style={{ backgroundColor: '#F9FAFB', color: '#6B7280' }}>
+        <div className='text-xs font-bold uppercase tracking-widest bg-charcoal text-white text-center p-6 border-t-2 border-charcoal'>
           Made with ❤️... Happy Coding
         </div>
       </div>
@@ -152,8 +143,8 @@ const LandingPage = () => {
           setOpenAuthModal(false);
           setCurrentPage("login");
         }}
-        hideHeader={false} // Set to false if you want to see a title, true to hide
-        title="Welcome" // Example title
+        hideHeader={false}
+        title="Welcome"
       >
         <div>
           {currentPage === "login" && (

@@ -283,10 +283,10 @@ const LiveCodingChallenge = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-cream py-6 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
-                    <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <div className="bg-white rounded-md border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A] p-6 mb-6">
                         <div className="flex items-center justify-between mb-4">
                             <button
                                 onClick={() => navigate('/live-coding')}
@@ -297,29 +297,25 @@ const LiveCodingChallenge = () => {
                             </button>
                             
                             <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2 text-gray-600">
+                                <div className="flex items-center gap-2 text-charcoal/80 font-bold">
                                     <LuClock className="w-4 h-4" />
                                     <span className="font-mono text-lg">{formatTime(timeElapsed)}</span>
                                 </div>
                                 
-                                <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                    challenge.difficulty === 'Easy' ? 'bg-green-100 text-green-800' :
-                                    challenge.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
-                                    'bg-red-100 text-red-800'
-                                }`}>
+                                <div className={`px-3 py-1 rounded-sm border-2 border-charcoal bg-white shadow-[2px_2px_0px_0px_#1A1A1A] text-xs font-bold uppercase tracking-wider text-charcoal`}>
                                     {challenge.difficulty}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg p-6">
+                        <div className="bg-charcoal text-white rounded-md border-2 border-charcoal shadow-[4px_4px_0px_0px_rgba(26,26,26,0.3)] p-6">
                             <div className="flex items-center gap-3 mb-3">
                                 <LuCode className="w-6 h-6" />
-                                <h1 className="text-2xl font-bold">{challenge.title}</h1>
+                                <h1 className="text-3xl font-display font-bold">{challenge.title}</h1>
                             </div>
-                            <p className="text-indigo-100 mb-4">{challenge.description}</p>
+                            <p className="text-white/80 font-body mb-4">{challenge.description}</p>
                             
-                            <div className="flex items-center gap-6 text-sm">
+                            <div className="flex items-center gap-6 text-sm font-bold uppercase tracking-wider">
                                 <div className="flex items-center gap-2">
                                     <LuTarget className="w-4 h-4" />
                                     <span>Category: {challenge.category}</span>
@@ -334,17 +330,17 @@ const LiveCodingChallenge = () => {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Code Editor */}
-                        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                            <div className="bg-gray-800 text-white px-4 py-3 flex items-center justify-between">
+                        <div className="bg-white rounded-md border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A] overflow-hidden">
+                            <div className="bg-charcoal text-white px-4 py-3 flex items-center justify-between border-b-2 border-charcoal">
                                 <div className="flex items-center gap-2">
                                     <LuCode className="w-4 h-4" />
-                                    <span className="font-medium">Code Editor</span>
+                                    <span className="font-display font-bold">Code Editor</span>
                                 </div>
                                 
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={() => setShowHints(!showHints)}
-                                        className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm transition-colors"
+                                        className="px-3 py-1 bg-white text-charcoal border-2 border-charcoal hover:-translate-y-1 hover:shadow-[2px_2px_0px_0px_#1A1A1A] rounded-sm text-xs font-bold uppercase tracking-wider transition-all duration-200"
                                     >
                                         {showHints ? 'Hide Hints' : 'Show Hints'}
                                     </button>
@@ -352,7 +348,7 @@ const LiveCodingChallenge = () => {
                                     <button
                                         onClick={runCode}
                                         disabled={isRunning}
-                                        className="flex items-center gap-2 px-4 py-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 rounded text-sm font-medium transition-colors"
+                                        className="flex items-center gap-2 px-4 py-1.5 bg-white text-charcoal border-2 border-charcoal hover:-translate-y-1 hover:shadow-[2px_2px_0px_0px_#1A1A1A] disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none rounded-sm text-xs font-bold uppercase tracking-wider transition-all duration-200"
                                     >
                                         {isRunning ? (
                                             <>
@@ -406,9 +402,9 @@ const LiveCodingChallenge = () => {
                         <div className="space-y-6">
                             {/* Test Results */}
                             {!hasRunCode ? (
-                                <div className="bg-white rounded-xl shadow-lg p-6">
-                                    <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                        <LuTarget className="w-5 h-5 text-gray-400" />
+                                <div className="card-editorial p-6">
+                                    <h2 className="text-2xl font-display font-bold text-charcoal mb-4 flex items-center gap-2 border-b-2 border-charcoal/10 pb-2">
+                                        <LuTarget className="w-5 h-5 text-charcoal/80" />
                                         Test Results
                                     </h2>
                                     <div className="text-center py-8">
@@ -418,8 +414,8 @@ const LiveCodingChallenge = () => {
                                     </div>
                                 </div>
                             ) : testResults.length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg p-6">
-                                    <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <div className="card-editorial p-6">
+                                    <h2 className="text-2xl font-display font-bold text-charcoal mb-4 flex items-center gap-2 border-b-2 border-charcoal/10 pb-2">
                                         <LuCheck className="w-5 h-5 text-green-500" />
                                         Test Results
                                     </h2>
@@ -456,9 +452,9 @@ const LiveCodingChallenge = () => {
 
                             {/* AI Code Review */}
                             {!hasRunCode ? (
-                                <div className="bg-white rounded-xl shadow-lg p-6">
-                                    <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                        <LuBrain className="w-5 h-5 text-gray-400" />
+                                <div className="card-editorial p-6">
+                                    <h2 className="text-2xl font-display font-bold text-charcoal mb-4 flex items-center gap-2 border-b-2 border-charcoal/10 pb-2">
+                                        <LuBrain className="w-5 h-5 text-charcoal/80" />
                                         AI Code Review
                                     </h2>
                                     <div className="text-center py-8">
@@ -468,9 +464,9 @@ const LiveCodingChallenge = () => {
                                     </div>
                                 </div>
                             ) : aiReview && (
-                                <div className="bg-white rounded-xl shadow-lg p-6">
-                                    <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                        <LuBrain className="w-5 h-5 text-slate-600" />
+                                <div className="card-editorial p-6">
+                                    <h2 className="text-2xl font-display font-bold text-charcoal mb-4 flex items-center gap-2 border-b-2 border-charcoal/10 pb-2">
+                                        <LuBrain className="w-5 h-5 text-charcoal" />
                                         AI Code Review
                                     </h2>
 

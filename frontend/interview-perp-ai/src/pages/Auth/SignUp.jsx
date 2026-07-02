@@ -80,10 +80,10 @@ const SignUp = ({ setCurrentPage }) => {
         <div className="w-full px-8 py-10 flex flex-col justify-center min-h-[600px]">
             {/* Header Section */}
             <div className="text-center mb-8">
-                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 transition-colors duration-300">
+                <h3 className="text-2xl sm:text-3xl font-display font-bold text-charcoal mb-3 transition-colors duration-300">
                     Create an Account
                 </h3>
-                <p className="text-base text-gray-600 dark:text-gray-400 transition-colors duration-300">
+                <p className="text-base font-body text-charcoal/80 transition-colors duration-300">
                     Join us today by entering your details below.
                 </p>
             </div>
@@ -124,14 +124,14 @@ const SignUp = ({ setCurrentPage }) => {
                 />
 
                 {error && (
-                    <div className='bg-red-50 border border-red-200 rounded-xl p-4 mb-6'>
-                        <p className='text-red-600 text-sm font-medium text-center'>{error}</p>
+                    <div className='bg-red-50 border-2 border-red-500 rounded-sm p-4 mb-6'>
+                        <p className='text-red-600 text-sm font-bold text-center'>{error}</p>
                     </div>
                 )}
 
                 <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-4 px-6 rounded-xl font-semibold text-base transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg hover:shadow-xl mb-6"
+                    className="w-full bg-charcoal text-white font-bold uppercase tracking-wider text-sm py-4 px-6 rounded-sm border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none mb-6"
                     disabled={isLoading}
                 >
                     {isLoading ? (
@@ -145,11 +145,11 @@ const SignUp = ({ setCurrentPage }) => {
                 </button>
 
                 <div className="text-center pt-4">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm font-body text-charcoal/80">
                         Already have an account?{" "}
                         <button
                             type="button"
-                            className="font-semibold text-green-600 hover:text-green-700 transition-colors duration-200 underline decoration-2 underline-offset-2"
+                            className="font-bold text-charcoal hover:underline transition-colors duration-200 underline decoration-2 underline-offset-2"
                             onClick={() => setCurrentPage("login")}
                         >
                             Login

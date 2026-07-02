@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @import './styles/AIInterviewAnimations.css';
 @tailwind base;
 @tailwind components;
@@ -6,17 +6,20 @@
 
 @layer base {
   :root {
-    --font-display: "Urbanist", sans-serif;
+    --font-display: "Instrument Serif", Georgia, serif;
+    --font-body: "Space Grotesk", system-ui, sans-serif;
     --breakpoint-3xl: 1920px;
-    --color-primary: #FF9324;
+    --color-primary: #DC2626;
+    --color-cream: #F5F0E8;
+    --color-charcoal: #1A1A1A;
   }
 
   html {
-    font-family: var(--font-display);
+    font-family: var(--font-body);
   }
 
   body {
-    background-color: #fcfbfc;
+    background-color: var(--color-cream);
     overflow-x: hidden;
   }
 }
@@ -27,12 +30,43 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(100, 100, 100, 0.4);
+  background-color: rgba(26, 26, 26, 0.3);
   border-radius: 10px;
 }
 
+@layer components {
+  .section-label {
+    @apply text-xs font-bold uppercase tracking-[0.15em];
+    color: rgba(26, 26, 26, 0.6); 
+  }
+
+  .card-editorial {
+    @apply bg-white border-2 rounded-md transition-all duration-200;
+    border-color: var(--color-charcoal);
+  }
+
+  .card-editorial:hover {
+    @apply translate-y-[-2px];
+  }
+
+  .chip-active {
+    @apply text-white border-2 px-4 py-1.5 text-sm font-medium rounded-md cursor-pointer transition-all duration-150;
+    background-color: var(--color-charcoal);
+    border-color: var(--color-charcoal);
+  }
+
+  .chip-inactive {
+    @apply bg-transparent border-2 px-4 py-1.5 text-sm font-medium rounded-md cursor-pointer transition-all duration-150;
+    color: var(--color-charcoal);
+    border-color: rgba(26, 26, 26, 0.2);
+  }
+
+  .chip-inactive:hover {
+    border-color: rgba(26, 26, 26, 0.5);
+  }
+}
+
 @layer utilities {
-  /* Animate text with a shine effect */
   @keyframes text-shine {
     0% {
       background-position: 0% 50%;
@@ -78,15 +112,28 @@
 }
 
 .input-box {
-  @apply w-full flex justify-between gap-3 text-sm text-black bg-gray-50/50 rounded px-4 py-3 mb-4 mt-3 border-gray-100 outline-none focus-within:border-orange-300;
+  @apply w-full flex justify-between gap-3 text-sm bg-white rounded-md px-4 py-3 mb-4 mt-3 border-2 outline-none;
+  color: var(--color-charcoal);
+  border-color: rgba(26, 26, 26, 0.2);
+}
+.input-box:focus-within {
+  border-color: var(--color-charcoal);
 }
 
 .btn-primary {
-  @apply w-full flex items-center justify-center gap-3 text-sm font-medium text-white bg-black shadow-lg shadow-orange-600/5 p-[10px] rounded-md my-1 hover:bg-orange-600/15 hover:text-black cursor-pointer;
+  @apply w-full flex items-center justify-center gap-3 text-sm font-bold uppercase tracking-wider text-white p-[10px] rounded-md my-1 cursor-pointer transition-all duration-200;
+  background-color: var(--color-charcoal);
+}
+.btn-primary:hover {
+  background-color: rgba(26, 26, 26, 0.8);
 }
 
 .btn-small {
-  @apply flex items-center justify-center gap-3 bg-gradient-to-r from-[#FF9324] to-[#e99a4b] text-sm font-semibold text-white px-7 py-2 rounded-lg hover:bg-black hover:text-white transition-colors cursor-pointer hover:shadow-2xl hover:shadow-orange-300;
+  @apply flex items-center justify-center gap-3 text-sm font-semibold uppercase tracking-wider text-white px-7 py-2 rounded-md transition-all duration-200 cursor-pointer;
+  background-color: var(--color-charcoal);
+}
+.btn-small:hover {
+  background-color: rgba(26, 26, 26, 0.8);
 }
 
 .glass-card {

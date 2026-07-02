@@ -183,7 +183,7 @@ const RoadmapSessionPractice = () => {
     if (isLoading) {
         return (
             <DashboardLayout>
-                <div className="flex items-center justify-center h-screen">
+                <div className="flex items-center justify-center h-screen bg-cream font-body">
                     <SpinnerLoader />
                 </div>
             </DashboardLayout>
@@ -193,14 +193,14 @@ const RoadmapSessionPractice = () => {
     if (errorMsg) {
         return (
             <DashboardLayout>
-                <div className="flex items-center justify-center h-screen">
+                <div className="flex items-center justify-center h-screen bg-cream font-body">
                     <div className="text-center">
-                        <LuCircleAlert className="w-16 h-16 text-red-500 mx-auto mb-4" />
-                        <h2 className="text-2xl font-bold text-gray-800 mb-2">Error Loading Session</h2>
-                        <p className="text-gray-600 mb-4">{errorMsg}</p>
+                        <LuCircleAlert className="w-16 h-16 text-charcoal mx-auto mb-4" />
+                        <h2 className="text-2xl font-display font-bold text-charcoal mb-2">Error Loading Session</h2>
+                        <p className="text-charcoal/80 mb-4 font-bold">{errorMsg}</p>
                         <button
                             onClick={() => navigate(-1)}
-                            className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-2xl hover:shadow-lg transition-all duration-300"
+                            className="px-6 py-3 bg-charcoal text-white font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
                         >
                             Go Back
                         </button>
@@ -213,13 +213,13 @@ const RoadmapSessionPractice = () => {
     if (!sessionData) {
         return (
             <DashboardLayout>
-                <div className="flex items-center justify-center h-screen">
+                <div className="flex items-center justify-center h-screen bg-cream font-body">
                     <div className="text-center">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-2">Session Not Found</h2>
-                        <p className="text-gray-600 mb-4">The requested session could not be found.</p>
+                        <h2 className="text-2xl font-display font-bold text-charcoal mb-2">Session Not Found</h2>
+                        <p className="text-charcoal/80 font-bold mb-4">The requested session could not be found.</p>
                         <button
                             onClick={() => navigate(-1)}
-                            className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-2xl hover:shadow-lg transition-all duration-300"
+                            className="px-6 py-3 bg-charcoal text-white font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
                         >
                             Go Back
                         </button>
@@ -231,13 +231,13 @@ const RoadmapSessionPractice = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50">
+            <div className="min-h-screen bg-cream font-body">
                 <div className="max-w-6xl mx-auto px-4 py-8">
                     {/* Roadmap Session Header */}
-                    <div className={`bg-gradient-to-r ${getPhaseColor(phaseData?.color || sessionData.phaseColor)} rounded-3xl p-8 mb-8 text-white`}>
+                    <div className={`bg-charcoal border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A] rounded-md p-8 mb-8 text-white`}>
                         {/* Breadcrumb Navigation */}
                         {fromPhase && role && (
-                            <div className="flex items-center gap-2 text-white/80 mb-6">
+                            <div className="flex items-center gap-2 text-white/80 mb-6 font-bold">
                                 <span 
                                     onClick={() => navigate('/roadmap')}
                                     className="hover:text-white cursor-pointer transition-colors"
@@ -259,23 +259,23 @@ const RoadmapSessionPractice = () => {
                                     Session Library
                                 </span>
                                 <LuChevronRight className="w-4 h-4" />
-                                <span className="text-white font-medium">Practice Session</span>
+                                <span className="text-white">Practice Session</span>
                             </div>
                         )}
 
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-6">
-                                <div className="p-4 bg-white/20 backdrop-blur-sm rounded-2xl">
-                                    <LuBrain className="w-8 h-8 text-white" />
+                                <div className="p-4 bg-white rounded-md">
+                                    <LuBrain className="w-8 h-8 text-charcoal" />
                                 </div>
                                 <div>
-                                    <h1 className="text-3xl md:text-4xl font-bold mb-2">
+                                    <h1 className="text-3xl md:text-4xl font-display font-bold mb-2 text-white">
                                         {sessionData.role}
                                     </h1>
-                                    <p className="text-xl text-white/90 mb-2">
+                                    <p className="text-xl text-white/90 mb-2 font-bold">
                                         {phaseData?.name || sessionData.phaseName} • {sessionData.experience} years experience
                                     </p>
-                                    <div className="flex items-center gap-4 text-white/80">
+                                    <div className="flex items-center gap-4 text-white/80 font-bold">
                                         <div className="flex items-center gap-2">
                                             <LuTarget className="w-4 h-4" />
                                             <span>{sessionData.questions?.length || 0} Questions</span>
@@ -290,7 +290,7 @@ const RoadmapSessionPractice = () => {
                             
                             <button
                                 onClick={() => navigate(-1)}
-                                className="flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-xl hover:bg-white/30 transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 bg-white text-charcoal font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
                             >
                                 <LuArrowLeft className="w-4 h-4" />
                                 <span>Back</span>
@@ -299,7 +299,7 @@ const RoadmapSessionPractice = () => {
 
                         {/* Phase Badge */}
                         <div className="mt-6">
-                            <span className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium">
+                            <span className="px-4 py-2 bg-white text-charcoal border-2 border-charcoal rounded-sm text-sm font-bold">
                                 🎯 Roadmap Session • {sessionData.sessionType || 'roadmap'}
                             </span>
                         </div>
@@ -339,12 +339,12 @@ const RoadmapSessionPractice = () => {
                                 </motion.div>
                             ))
                         ) : (
-                            <div className="text-center py-20">
-                                <div className="w-20 h-20 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <div className="text-center py-20 bg-cream">
+                                <div className="w-20 h-20 bg-charcoal rounded-full flex items-center justify-center mx-auto mb-6">
                                     <LuListCollapse className="w-10 h-10 text-white" />
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-800 mb-4">No Questions Available</h3>
-                                <p className="text-gray-600">
+                                <h3 className="text-2xl font-display font-bold text-charcoal mb-4">No Questions Available</h3>
+                                <p className="text-charcoal/80 font-bold">
                                     This session doesn't have any questions yet.
                                 </p>
                             </div>

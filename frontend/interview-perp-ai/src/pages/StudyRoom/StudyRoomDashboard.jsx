@@ -66,31 +66,31 @@ const StudyRoomDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 p-6">
+    <div className="min-h-screen bg-cream font-body p-6 text-charcoal">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white dark:bg-slate-800 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-8 mb-8">
+        <div className="card-editorial p-8 mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate('/dashboard')}
-                className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700 rounded-lg transition-all duration-200"
+                className="p-2 text-charcoal hover:bg-charcoal/10 rounded-md transition-all duration-200"
                 title="Back to Dashboard"
               >
                 <ArrowLeft className="w-6 h-6" />
               </button>
               <div>
-                <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-4xl font-display font-bold text-charcoal">
                   Study Rooms
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400 mt-2">
+                <p className="text-charcoal/80 mt-2">
                   Collaborate with friends and practice together in real-time
                 </p>
               </div>
             </div>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="bg-gray-900 dark:bg-slate-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-gray-800 dark:hover:bg-slate-500 transition-all duration-200 flex items-center gap-2"
+              className="border-2 border-charcoal bg-charcoal text-white px-6 py-3 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200 flex items-center gap-2"
             >
               <Plus className="w-5 h-5" />
               Create Room
@@ -107,10 +107,10 @@ const StudyRoomDashboard = () => {
               <button
                 key={key}
                 onClick={() => setFilter(key)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`px-4 py-2 rounded-md font-bold uppercase tracking-wider text-sm transition-all duration-200 border-2 ${
                   filter === key
-                    ? 'bg-gray-200 dark:bg-slate-700 text-gray-900 dark:text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700'
+                    ? 'bg-charcoal text-white border-charcoal'
+                    : 'bg-white text-charcoal border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer'
                 }`}
               >
                 {label}
@@ -122,20 +122,20 @@ const StudyRoomDashboard = () => {
         {/* Study Rooms Grid */}
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-600 dark:border-slate-400"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-charcoal"></div>
           </div>
         ) : studyRooms.length === 0 ? (
-          <div className="bg-white dark:bg-slate-800 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-12 text-center">
-            <Users className="w-16 h-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <div className="card-editorial p-12 text-center">
+            <Users className="w-16 h-16 text-charcoal/40 mx-auto mb-4" />
+            <h3 className="text-xl font-display font-bold text-charcoal mb-2">
               No Study Rooms Yet
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-charcoal/80 mb-6">
               Create your first study room and invite friends to practice together!
             </p>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="bg-gray-900 dark:bg-slate-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-gray-800 dark:hover:bg-slate-500 transition-all duration-200"
+              className="border-2 border-charcoal bg-charcoal text-white px-6 py-3 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200"
             >
               Create Your First Room
             </button>
@@ -145,25 +145,25 @@ const StudyRoomDashboard = () => {
             {studyRooms.map((room) => (
               <div
                 key={room.roomId}
-                className="bg-white dark:bg-slate-800 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                className="card-editorial p-6"
               >
                 {/* Room Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                    <h3 className="text-xl font-display font-bold text-charcoal mb-1">
                       {room.name}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">
+                    <p className="text-charcoal/80 text-sm line-clamp-2">
                       {room.description || 'No description'}
                     </p>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(room.status)}`}>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold border-2 border-charcoal uppercase tracking-wider ${getStatusColor(room.status)}`}>
                     {room.status}
                   </span>
                 </div>
 
                 {/* Room Stats */}
-                <div className="flex items-center gap-4 mb-4 text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-4 mb-4 text-sm text-charcoal/80">
                   <div className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
                     <span>{room.participantCount}/{room.maxParticipants}</span>
@@ -176,18 +176,18 @@ const StudyRoomDashboard = () => {
 
                 {/* Host Info */}
                 <div className="mb-4">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Hosted by <span className="font-medium text-gray-700 dark:text-gray-300">{room.host.username}</span>
+                  <p className="text-sm text-charcoal/60">
+                    Hosted by <span className="font-bold text-charcoal">{room.host.username}</span>
                   </p>
                 </div>
 
                 {/* Current Session */}
                 {room.currentSession?.sessionId && (
-                  <div className="bg-gray-100 dark:bg-slate-700 rounded-lg p-3 mb-4">
-                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <div className="bg-cream border-2 border-charcoal/10 rounded-md p-3 mb-4">
+                    <p className="text-sm font-bold text-charcoal">
                       Active Session
                     </p>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                    <p className="text-xs text-charcoal/80">
                       Question {room.currentSession.questionIndex + 1}
                     </p>
                   </div>
@@ -197,14 +197,14 @@ const StudyRoomDashboard = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => navigate(`/study-room/${room.roomId}`)}
-                    className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-2 px-4 rounded-lg font-medium hover:shadow-lg transition-all duration-200"
+                    className="flex-1 bg-charcoal text-white py-2 px-4 rounded-md font-bold uppercase tracking-wider text-sm border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200"
                   >
                     Join Room
                   </button>
                   
                   <button
                     onClick={() => copyInviteLink(room.roomId)}
-                    className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                    className="p-2 text-charcoal border-2 border-charcoal rounded-md bg-white hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200"
                     title="Copy invite link"
                   >
                     <Share2 className="w-5 h-5" />
@@ -214,14 +214,14 @@ const StudyRoomDashboard = () => {
                     <>
                       <button
                         onClick={() => {/* Open edit modal */}}
-                        className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200"
+                        className="p-2 text-charcoal border-2 border-charcoal rounded-md bg-white hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200"
                         title="Edit room"
                       >
                         <Edit3 className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => deleteRoom(room.roomId)}
-                        className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
+                        className="p-2 text-white bg-charcoal border-2 border-charcoal rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200"
                         title="Delete room"
                       >
                         <Trash2 className="w-5 h-5" />
@@ -283,14 +283,14 @@ const CreateRoomModal = ({ onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-charcoal/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 font-body">
+      <div className="card-editorial max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Create Study Room</h2>
+          <h2 className="text-2xl font-display font-bold text-charcoal mb-6">Create Study Room</h2>
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-charcoal mb-2 uppercase tracking-wider">
                 Room Name *
               </label>
               <input
@@ -298,32 +298,32 @@ const CreateRoomModal = ({ onClose, onSuccess }) => {
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border-2 border-charcoal rounded-md focus:outline-none focus:ring-0 bg-white"
                 placeholder="e.g., JavaScript Study Group"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-charcoal mb-2 uppercase tracking-wider">
                 Description
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border-2 border-charcoal rounded-md focus:outline-none focus:ring-0 bg-white"
                 rows="3"
                 placeholder="What will you be studying together?"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-charcoal mb-2 uppercase tracking-wider">
                 Max Participants
               </label>
               <select
                 value={formData.maxParticipants}
                 onChange={(e) => setFormData({ ...formData, maxParticipants: parseInt(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border-2 border-charcoal rounded-md focus:outline-none focus:ring-0 bg-white"
               >
                 {[2, 3, 4, 5, 6, 8, 10].map(num => (
                   <option key={num} value={num}>{num} people</option>
@@ -333,7 +333,7 @@ const CreateRoomModal = ({ onClose, onSuccess }) => {
 
             {/* Settings */}
             <div className="space-y-3">
-              <h3 className="font-medium text-gray-700">Room Settings</h3>
+              <h3 className="font-bold text-charcoal uppercase tracking-wider text-sm">Room Settings</h3>
               
               {[
                 { key: 'allowCodeEditing', label: 'Allow collaborative code editing' },
@@ -349,9 +349,9 @@ const CreateRoomModal = ({ onClose, onSuccess }) => {
                       ...formData,
                       settings: { ...formData.settings, [key]: e.target.checked }
                     })}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    className="w-4 h-4 text-charcoal border-2 border-charcoal rounded-sm focus:ring-0"
                   />
-                  <span className="text-sm text-gray-700">{label}</span>
+                  <span className="text-sm text-charcoal">{label}</span>
                 </label>
               ))}
             </div>
@@ -360,14 +360,14 @@ const CreateRoomModal = ({ onClose, onSuccess }) => {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 text-charcoal border-2 border-charcoal rounded-md hover:bg-charcoal/10 transition-colors font-bold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-2 px-4 rounded-lg font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-50"
+                className="flex-1 bg-charcoal text-white border-2 border-charcoal py-2 px-4 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200 disabled:opacity-50"
               >
                 {loading ? 'Creating...' : 'Create Room'}
               </button>

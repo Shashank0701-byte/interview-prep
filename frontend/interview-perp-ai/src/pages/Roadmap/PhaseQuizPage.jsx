@@ -217,9 +217,9 @@ const PhaseQuizPage = () => {
     if (isLoading) {
         return (
             <DashboardLayout>
-                <div className="flex flex-col items-center justify-center h-screen">
+                <div className="flex flex-col items-center justify-center h-screen bg-cream font-body">
                     <SpinnerLoader />
-                    <p className="text-slate-600 mt-4 text-center">
+                    <p className="text-charcoal mt-4 text-center font-bold">
                         Preparing your phase quiz... ✨
                     </p>
                 </div>
@@ -230,17 +230,17 @@ const PhaseQuizPage = () => {
     if (!currentPhase || quizQuestions.length === 0) {
         return (
             <DashboardLayout>
-                <div className="text-center py-20">
-                    <div className="w-20 h-20 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="text-center py-20 bg-cream min-h-screen font-body">
+                    <div className="w-20 h-20 bg-charcoal rounded-full flex items-center justify-center mx-auto mb-6">
                         <LuAward className="w-10 h-10 text-white" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">Quiz Not Available</h2>
-                    <p className="text-gray-600 mb-6">
+                    <h2 className="text-2xl font-display font-bold text-charcoal mb-4">Quiz Not Available</h2>
+                    <p className="text-charcoal/80 mb-6">
                         The quiz for this phase is not available yet.
                     </p>
                     <button
                         onClick={() => navigate(`/phase/${encodeURIComponent(role)}/${phaseId}`)}
-                        className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-2xl hover:shadow-lg transition-all duration-300"
+                        className="px-6 py-3 bg-charcoal text-white font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
                     >
                         Back to Phase
                     </button>
@@ -251,43 +251,43 @@ const PhaseQuizPage = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/20">
+            <div className="min-h-screen bg-cream font-body">
                 {!quizStarted ? (
                     // Quiz Introduction
                     <div className="container mx-auto px-4 py-12 max-w-4xl">
-                        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/50 p-8 text-center">
-                            <div className={`w-20 h-20 bg-gradient-to-r ${getPhaseColor(currentPhase.color)} rounded-full flex items-center justify-center mx-auto mb-6`}>
+                        <div className="card-editorial p-8 text-center">
+                            <div className={`w-20 h-20 bg-charcoal rounded-md flex items-center justify-center mx-auto mb-6`}>
                                 <LuAward className="w-10 h-10 text-white" />
                             </div>
                             
-                            <h1 className="text-3xl font-bold text-gray-800 mb-4">
+                            <h1 className="text-3xl font-display font-bold text-charcoal mb-4">
                                 Phase {currentPhase.order} Quiz
                             </h1>
-                            <h2 className="text-xl text-gray-600 mb-6">
+                            <h2 className="text-xl text-charcoal/80 mb-6 font-bold">
                                 {currentPhase.name}
                             </h2>
                             
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                                <div className="bg-blue-50 rounded-2xl p-4">
-                                    <LuTarget className="w-6 h-6 text-blue-500 mx-auto mb-2" />
-                                    <div className="font-bold text-blue-600">{quizQuestions.length}</div>
-                                    <div className="text-sm text-blue-600">Questions</div>
+                                <div className="bg-cream border-2 border-charcoal/20 rounded-md p-4">
+                                    <LuTarget className="w-6 h-6 text-charcoal mx-auto mb-2" />
+                                    <div className="font-bold text-charcoal">{quizQuestions.length}</div>
+                                    <div className="text-sm text-charcoal/80 font-bold">Questions</div>
                                 </div>
-                                <div className="bg-amber-50 rounded-2xl p-4">
-                                    <LuClock className="w-6 h-6 text-amber-500 mx-auto mb-2" />
-                                    <div className="font-bold text-amber-600">5</div>
-                                    <div className="text-sm text-amber-600">Minutes</div>
+                                <div className="bg-cream border-2 border-charcoal/20 rounded-md p-4">
+                                    <LuClock className="w-6 h-6 text-charcoal mx-auto mb-2" />
+                                    <div className="font-bold text-charcoal">5</div>
+                                    <div className="text-sm text-charcoal/80 font-bold">Minutes</div>
                                 </div>
-                                <div className="bg-emerald-50 rounded-2xl p-4">
-                                    <LuStar className="w-6 h-6 text-emerald-500 mx-auto mb-2" />
-                                    <div className="font-bold text-emerald-600">70%</div>
-                                    <div className="text-sm text-emerald-600">To Pass</div>
+                                <div className="bg-cream border-2 border-charcoal/20 rounded-md p-4">
+                                    <LuStar className="w-6 h-6 text-charcoal mx-auto mb-2" />
+                                    <div className="font-bold text-charcoal">70%</div>
+                                    <div className="text-sm text-charcoal/80 font-bold">To Pass</div>
                                 </div>
                             </div>
                             
-                            <div className="bg-gray-50 rounded-2xl p-6 mb-8">
-                                <h3 className="font-bold text-gray-800 mb-3">Quiz Instructions</h3>
-                                <ul className="text-left text-gray-600 space-y-2">
+                            <div className="bg-cream border-2 border-charcoal/20 rounded-md p-6 mb-8">
+                                <h3 className="font-display font-bold text-charcoal mb-3">Quiz Instructions</h3>
+                                <ul className="text-left text-charcoal/80 space-y-2 font-bold">
                                     <li>• You have 5 minutes to complete the quiz</li>
                                     <li>• Each question has only one correct answer</li>
                                     <li>• You need 70% or higher to pass</li>
@@ -297,7 +297,7 @@ const PhaseQuizPage = () => {
                             
                             <button
                                 onClick={handleStartQuiz}
-                                className={`px-8 py-4 bg-gradient-to-r ${getPhaseColor(currentPhase.color)} text-white font-bold rounded-2xl hover:shadow-lg transition-all duration-300 transform hover:scale-105`}
+                                className={`px-8 py-4 bg-charcoal text-white border-2 border-charcoal font-bold uppercase tracking-wider text-sm rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 cursor-pointer`}
                             >
                                 Start Quiz
                             </button>
@@ -306,34 +306,34 @@ const PhaseQuizPage = () => {
                 ) : showResult ? (
                     // Quiz Results
                     <div className="container mx-auto px-4 py-12 max-w-4xl">
-                        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/50 p-8 text-center">
-                            <div className={`w-20 h-20 bg-gradient-to-r ${quizResult.passed ? 'from-emerald-500 to-green-500' : 'from-red-500 to-pink-500'} rounded-full flex items-center justify-center mx-auto mb-6`}>
+                        <div className="card-editorial p-8 text-center">
+                            <div className={`w-20 h-20 bg-charcoal rounded-md flex items-center justify-center mx-auto mb-6`}>
                                 {quizResult.passed ? <LuCheck className="w-10 h-10 text-white" /> : <LuX className="w-10 h-10 text-white" />}
                             </div>
                             
-                            <h1 className="text-3xl font-bold text-gray-800 mb-4">
+                            <h1 className="text-3xl font-display font-bold text-charcoal mb-4">
                                 {quizResult.passed ? 'Congratulations! 🎉' : 'Keep Learning! 📚'}
                             </h1>
                             
-                            <div className="text-6xl font-bold mb-4" style={{ color: quizResult.passed ? '#10b981' : '#ef4444' }}>
+                            <div className="text-6xl font-display font-bold mb-4 text-charcoal">
                                 {quizResult.score}%
                             </div>
                             
-                            <p className="text-xl text-gray-600 mb-8">
+                            <p className="text-xl text-charcoal/80 mb-8 font-bold">
                                 You got {quizResult.correctAnswers} out of {quizResult.totalQuestions} questions correct
                             </p>
                             
                             {quizResult.passed ? (
-                                <div className="bg-emerald-50 rounded-2xl p-6 mb-8">
-                                    <h3 className="font-bold text-emerald-800 mb-2">Phase Complete!</h3>
-                                    <p className="text-emerald-700">
+                                <div className="bg-cream border-2 border-charcoal/20 rounded-md p-6 mb-8">
+                                    <h3 className="font-display font-bold text-charcoal mb-2">Phase Complete!</h3>
+                                    <p className="text-charcoal/80 font-bold">
                                         You've successfully mastered this phase. Ready for the next challenge?
                                     </p>
                                 </div>
                             ) : (
-                                <div className="bg-red-50 rounded-2xl p-6 mb-8">
-                                    <h3 className="font-bold text-red-800 mb-2">Almost There!</h3>
-                                    <p className="text-red-700">
+                                <div className="bg-cream border-2 border-charcoal/20 rounded-md p-6 mb-8">
+                                    <h3 className="font-display font-bold text-charcoal mb-2">Almost There!</h3>
+                                    <p className="text-charcoal/80 font-bold">
                                         Review the topics and try again. You need 70% to pass.
                                     </p>
                                 </div>
@@ -342,7 +342,7 @@ const PhaseQuizPage = () => {
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <button
                                     onClick={() => navigate(`/phase/${encodeURIComponent(role)}/${phaseId}`)}
-                                    className="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white font-semibold rounded-2xl hover:shadow-lg transition-all duration-300"
+                                    className="px-6 py-3 bg-white text-charcoal border-2 border-charcoal font-bold uppercase tracking-wider text-sm rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 cursor-pointer"
                                 >
                                     Back to Phase
                                 </button>
@@ -357,7 +357,7 @@ const PhaseQuizPage = () => {
                                             setSelectedAnswer('');
                                             setTimeLeft(300);
                                         }}
-                                        className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-2xl hover:shadow-lg transition-all duration-300"
+                                        className="px-6 py-3 bg-charcoal text-white border-2 border-charcoal font-bold uppercase tracking-wider text-sm rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 cursor-pointer"
                                     >
                                         <LuRefreshCw className="w-4 h-4 inline mr-2" />
                                         Retake Quiz
@@ -367,7 +367,7 @@ const PhaseQuizPage = () => {
                                 {quizResult.passed && (
                                     <button
                                         onClick={() => navigate(`/roadmap?role=${encodeURIComponent(role)}`)}
-                                        className={`px-6 py-3 bg-gradient-to-r ${getPhaseColor(currentPhase.color)} text-white font-semibold rounded-2xl hover:shadow-lg transition-all duration-300`}
+                                        className={`px-6 py-3 bg-charcoal text-white border-2 border-charcoal font-bold uppercase tracking-wider text-sm rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 cursor-pointer`}
                                     >
                                         Continue Roadmap
                                     </button>
@@ -383,18 +383,18 @@ const PhaseQuizPage = () => {
                             <div className="flex items-center gap-4">
                                 <button
                                     onClick={() => navigate(`/phase/${encodeURIComponent(role)}/${phaseId}`)}
-                                    className="p-2 hover:bg-white/50 rounded-xl transition-colors"
+                                    className="p-2 hover:-translate-y-1 transition-all rounded-md cursor-pointer"
                                 >
-                                    <LuArrowLeft className="w-5 h-5 text-gray-600" />
+                                    <LuArrowLeft className="w-5 h-5 text-charcoal" />
                                 </button>
                                 <div>
-                                    <h1 className="text-2xl font-bold text-gray-800">Phase Quiz</h1>
-                                    <p className="text-gray-600">Question {currentQuestionIndex + 1} of {quizQuestions.length}</p>
+                                    <h1 className="text-2xl font-display font-bold text-charcoal">Phase Quiz</h1>
+                                    <p className="text-charcoal/80 font-bold">Question {currentQuestionIndex + 1} of {quizQuestions.length}</p>
                                 </div>
                             </div>
                             
                             <div className="flex items-center gap-4">
-                                <div className={`flex items-center gap-2 px-4 py-2 rounded-xl ${timeLeft <= 60 ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600'}`}>
+                                <div className={`flex items-center gap-2 px-4 py-2 rounded-md border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A] ${timeLeft <= 60 ? 'bg-white text-red-600' : 'bg-white text-charcoal'}`}>
                                     <LuClock className="w-4 h-4" />
                                     <span className="font-mono font-bold">{formatTime(timeLeft)}</span>
                                 </div>
@@ -402,20 +402,20 @@ const PhaseQuizPage = () => {
                         </div>
                         
                         {/* Progress Bar */}
-                        <div className="w-full bg-gray-200 rounded-full h-2 mb-8">
+                        <div className="w-full bg-cream border-2 border-charcoal/20 rounded-full h-2 mb-8">
                             <div 
-                                className={`bg-gradient-to-r ${getPhaseColor(currentPhase.color)} h-2 rounded-full transition-all duration-300`}
+                                className={`bg-charcoal h-2 transition-all duration-300`}
                                 style={{ width: `${((currentQuestionIndex + 1) / quizQuestions.length) * 100}%` }}
                             ></div>
                         </div>
                         
                         {/* Question Card */}
-                        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-8 mb-8">
+                        <div className="card-editorial p-8 mb-8">
                             <div className="flex items-start gap-4 mb-6">
-                                <div className={`w-10 h-10 bg-gradient-to-r ${getPhaseColor(currentPhase.color)} rounded-2xl flex items-center justify-center flex-shrink-0`}>
+                                <div className={`w-10 h-10 bg-charcoal rounded-md flex items-center justify-center flex-shrink-0`}>
                                     <LuBrain className="w-5 h-5 text-white" />
                                 </div>
-                                <h2 className="text-xl font-semibold text-gray-800 leading-relaxed">
+                                <h2 className="text-xl font-display font-bold text-charcoal leading-relaxed">
                                     {quizQuestions[currentQuestionIndex]?.question}
                                 </h2>
                             </div>
@@ -425,21 +425,21 @@ const PhaseQuizPage = () => {
                                     <button
                                         key={index}
                                         onClick={() => handleAnswerSelect(index)}
-                                        className={`w-full text-left p-4 rounded-2xl border-2 transition-all duration-200 ${
+                                        className={`w-full text-left p-4 rounded-md border-2 transition-all duration-200 hover:-translate-y-1 cursor-pointer ${
                                             selectedAnswer === index
-                                                ? `border-indigo-500 bg-indigo-50`
-                                                : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
+                                                ? `border-charcoal bg-charcoal text-white shadow-[4px_4px_0px_0px_#1A1A1A]`
+                                                : 'border-charcoal bg-white text-charcoal hover:shadow-[4px_4px_0px_0px_#1A1A1A]'
                                         }`}
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
                                                 selectedAnswer === index
-                                                    ? 'border-indigo-500 bg-indigo-500'
-                                                    : 'border-gray-300'
+                                                    ? 'border-white bg-charcoal'
+                                                    : 'border-charcoal'
                                             }`}>
                                                 {selectedAnswer === index && <LuCheck className="w-4 h-4 text-white" />}
                                             </div>
-                                            <span className="font-medium text-gray-800">{option}</span>
+                                            <span className="font-bold">{option}</span>
                                         </div>
                                     </button>
                                 ))}
@@ -451,10 +451,10 @@ const PhaseQuizPage = () => {
                             <button
                                 onClick={handleNextQuestion}
                                 disabled={selectedAnswer === ''}
-                                className={`flex items-center gap-2 px-6 py-3 font-semibold rounded-2xl transition-all duration-300 ${
+                                className={`flex items-center gap-2 px-6 py-3 font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal transition-all duration-300 ${
                                     selectedAnswer !== ''
-                                        ? `bg-gradient-to-r ${getPhaseColor(currentPhase.color)} text-white hover:shadow-lg transform hover:scale-105`
-                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        ? `bg-charcoal text-white hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer`
+                                        : 'bg-white text-charcoal/50 cursor-not-allowed'
                                 }`}
                             >
                                 <span>{currentQuestionIndex === quizQuestions.length - 1 ? 'Submit Quiz' : 'Next Question'}</span>

@@ -45,26 +45,26 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                     {/* Search Input */}
                     <div className="relative flex-1 max-w-md">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <LuSearch className="h-4 w-4 text-gray-400" />
+                            <LuSearch className="h-4 w-4 text-[#1A1A1A]" />
                         </div>
                         <input
                             type="text"
                             placeholder="Search sessions by role or topics..."
                             value={filters.searchTerm}
                             onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
-                            className="block w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-slate-600 rounded-xl text-sm placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50/50 dark:bg-slate-800/50 text-gray-900 dark:text-slate-100 transition-all duration-200"
+                            className="block w-full pl-10 pr-4 py-3 border-2 border-[#1A1A1A] rounded-md text-sm placeholder-[#1A1A1A]/50 focus:outline-none bg-white text-[#1A1A1A] transition-all duration-200 font-bold"
                         />
                     </div>
                     
                     {/* Filter Toggle Button */}
                     <button
                         onClick={() => setIsOpen(!isOpen)}
-                        className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-xl hover:from-gray-100 hover:to-gray-200 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
+                        className="flex items-center gap-2 px-4 py-3 bg-white border-2 border-[#1A1A1A] rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 cursor-pointer"
                     >
-                        <LuFilter className="w-4 h-4 text-gray-600" />
-                        <span className="text-sm font-medium text-gray-700">Filters</span>
+                        <LuFilter className="w-4 h-4 text-[#1A1A1A]" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]">Filters</span>
                         {getActiveFilterCount() > 0 && (
-                            <span className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                            <span className="bg-[#1A1A1A] text-white text-[10px] px-2 py-0.5 rounded-sm font-bold">
                                 {getActiveFilterCount()}
                             </span>
                         )}
@@ -80,7 +80,7 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                             handleFilterChange('sortBy', sortBy);
                             handleFilterChange('sortOrder', sortOrder);
                         }}
-                        className="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-gray-50/50 text-sm font-medium text-gray-700 transition-all duration-200"
+                        className="px-4 py-3 border-2 border-[#1A1A1A] rounded-md focus:outline-none bg-white text-sm font-bold text-[#1A1A1A] transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]"
                     >
                         <option value="lastUpdated-desc">📅 Latest Updated</option>
                         <option value="lastUpdated-asc">📅 Oldest Updated</option>
@@ -101,7 +101,7 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                     {getActiveFilterCount() > 0 && (
                         <button
                             onClick={clearFilters}
-                            className="flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-all duration-200 font-medium"
+                            className="flex items-center gap-2 px-4 py-3 text-xs font-bold uppercase tracking-wider text-crimson hover:bg-crimson/10 rounded-md transition-all duration-200"
                         >
                             <LuX className="w-4 h-4" />
                             Clear All

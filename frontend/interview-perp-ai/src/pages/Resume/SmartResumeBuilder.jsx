@@ -501,30 +501,30 @@ FORMATTING IMPROVEMENTS:
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-cream font-body text-charcoal py-8 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2">Resume ATS Analyzer</h1>
-                        <p className="text-gray-600">Upload your PDF resume to get instant feedback and improve your ATS score</p>
+                        <h1 className="text-3xl font-display font-bold text-charcoal mb-2">Resume ATS Analyzer</h1>
+                        <p className="text-charcoal/80 font-medium">Upload your PDF resume to get instant feedback and improve your ATS score</p>
                     </div>
 
                     {!analysisComplete ? (
-                        <div className="bg-white rounded-xl shadow-lg p-8">
+                        <div className="card-editorial p-8">
                             <div className="max-w-2xl mx-auto">
                                 <div className="text-center mb-8">
-                                    <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <div className="w-20 h-20 bg-cream border-2 border-charcoal rounded-md flex items-center justify-center mx-auto mb-6">
                                         {isAnalyzing ? (
-                                            <LuRotateCcw className="w-10 h-10 text-blue-600 animate-spin" />
+                                            <LuRotateCcw className="w-10 h-10 text-charcoal animate-spin" />
                                         ) : (
-                                            <LuFileText className="w-10 h-10 text-blue-600" />
+                                            <LuFileText className="w-10 h-10 text-charcoal" />
                                         )}
                                     </div>
                                     
-                                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                                    <h2 className="text-2xl font-display font-bold text-charcoal mb-2">
                                         {isAnalyzing ? 'Analyzing Your Resume...' : 'Upload Your Resume'}
                                     </h2>
                                     
-                                    <p className="text-gray-600 mb-6">
+                                    <p className="text-charcoal/80 mb-6 font-medium">
                                         {isAnalyzing 
                                             ? 'We\'re extracting text from your PDF and analyzing it for ATS optimization.'
                                             : 'Upload your PDF resume to get instant ATS analysis and personalized feedback.'}
@@ -534,7 +534,7 @@ FORMATTING IMPROVEMENTS:
                                 {!isAnalyzing && !showTextInput && (
                                     <div className="space-y-6">
                                         <div className="text-center">
-                                            <label className="cursor-pointer inline-flex flex-col items-center px-8 py-6 bg-white border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors duration-200">
+                                            <label className="cursor-pointer inline-flex flex-col items-center px-8 py-6 bg-white border-2 border-dashed border-charcoal rounded-md hover:border-solid hover:bg-cream transition-colors duration-200">
                                                 <input
                                                     ref={fileInputRef}
                                                     type="file"
@@ -543,22 +543,22 @@ FORMATTING IMPROVEMENTS:
                                                     onChange={handleFileChange}
                                                     disabled={isAnalyzing}
                                                 />
-                                                <LuUpload className="w-12 h-12 text-blue-600 mb-4" />
-                                                <span className="text-lg font-medium text-gray-700 mb-2">
+                                                <LuUpload className="w-12 h-12 text-charcoal mb-4" />
+                                                <span className="text-lg font-bold uppercase tracking-wider text-charcoal mb-2">
                                                     Choose PDF File
                                                 </span>
-                                                <span className="text-sm text-gray-500">
+                                                <span className="text-sm font-bold uppercase tracking-wider text-charcoal/60">
                                                     Upload your resume in PDF format for instant analysis
                                                 </span>
                                             </label>
                                         </div>
                                         
-                                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                        <div className="bg-white border-2 border-charcoal rounded-md p-4 shadow-[4px_4px_0px_0px_#1A1A1A]">
                                             <div className="flex items-start">
-                                                <LuInfo className="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
-                                                <div className="text-sm text-blue-800">
-                                                    <p className="font-medium mb-1">PDF Requirements:</p>
-                                                    <ul className="list-disc list-inside space-y-1 text-blue-700">
+                                                <LuInfo className="w-5 h-5 text-charcoal mt-0.5 mr-3 flex-shrink-0" />
+                                                <div className="text-sm font-medium text-charcoal/80">
+                                                    <p className="font-bold text-charcoal mb-1">PDF Requirements:</p>
+                                                    <ul className="list-disc list-inside space-y-1 text-charcoal/80">
                                                         <li>Text-based PDF (not scanned images)</li>
                                                         <li>Created from Word, Google Docs, or similar</li>
                                                         <li>First page will be analyzed for speed</li>
@@ -568,10 +568,10 @@ FORMATTING IMPROVEMENTS:
                                         </div>
                                         
                                         <div className="text-center">
-                                            <p className="text-sm text-gray-500 mb-2">Having trouble with PDF?</p>
+                                            <p className="text-sm font-bold uppercase tracking-wider text-charcoal/60 mb-2">Having trouble with PDF?</p>
                                             <button
                                                 onClick={() => setShowTextInput(true)}
-                                                className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                                                className="text-charcoal border-b-2 border-charcoal hover:opacity-70 text-sm font-bold uppercase tracking-wider transition-opacity"
                                             >
                                                 Paste resume text instead
                                             </button>
@@ -582,18 +582,18 @@ FORMATTING IMPROVEMENTS:
                                 {!isAnalyzing && showTextInput && (
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <label className="block text-sm font-medium text-gray-700">
+                                            <label className="block text-sm font-bold uppercase tracking-wider text-charcoal">
                                                 Resume Text
                                             </label>
                                             <button
                                                 onClick={() => setShowTextInput(false)}
-                                                className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                                                className="text-charcoal border-b-2 border-charcoal hover:opacity-70 text-sm font-bold uppercase tracking-wider transition-opacity"
                                             >
                                                 Upload PDF instead
                                             </button>
                                         </div>
                                         <textarea
-                                            className="w-full p-4 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            className="w-full p-4 bg-white border-2 border-charcoal text-charcoal rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-charcoal"
                                             rows="12"
                                             placeholder="Paste your complete resume text here. Include all sections: contact info, summary, experience, education, skills, etc."
                                             value={resumeText}
@@ -604,7 +604,7 @@ FORMATTING IMPROVEMENTS:
                                             <button
                                                 onClick={() => analyzeTextContent(resumeText)}
                                                 disabled={!resumeText.trim()}
-                                                className="px-8 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                                                className="px-8 py-3 border-2 border-charcoal bg-charcoal text-white rounded-md font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none transition-all cursor-pointer"
                                             >
                                                 Analyze Resume
                                             </button>
@@ -613,17 +613,17 @@ FORMATTING IMPROVEMENTS:
                                 )}
                                 
                                 {isAnalyzing && (
-                                    <div className="mt-6 w-full bg-gray-200 rounded-full h-2.5">
+                                    <div className="mt-6 w-full bg-cream border-2 border-charcoal rounded-md h-3 p-[1px]">
                                         <div 
-                                            className="h-2.5 rounded-full bg-blue-500 animate-pulse"
+                                            className="h-full rounded-sm bg-charcoal animate-pulse"
                                             style={{ width: '70%' }}
                                         ></div>
                                     </div>
                                 )}
 
                                 {error && (
-                                    <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                                        <p className="text-red-700 text-sm">{error}</p>
+                                    <div className="mt-4 p-4 bg-white border-2 border-charcoal rounded-md shadow-[4px_4px_0px_0px_#1A1A1A]">
+                                        <p className="text-charcoal font-bold">{error}</p>
                                     </div>
                                 )}
                             </div>
@@ -631,22 +631,22 @@ FORMATTING IMPROVEMENTS:
                     ) : (
                         <div className="space-y-6">
                             {/* Score Card */}
-                            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                            <div className="card-editorial overflow-hidden">
                                 <div className="p-6">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                         <div>
-                                            <h2 className="text-xl font-bold text-gray-800">Your ATS Score</h2>
-                                            <p className="text-gray-600">{getScoreFeedback(analysisResults?.atsScore || 0)}</p>
+                                            <h2 className="text-xl font-display font-bold text-charcoal">Your ATS Score</h2>
+                                            <p className="text-charcoal/80 font-medium">{getScoreFeedback(analysisResults?.atsScore || 0)}</p>
                                         </div>
-                                        <div className={`text-5xl font-bold ${getScoreColor(analysisResults?.atsScore || 0)}`}>
+                                        <div className={`text-5xl font-display font-bold text-charcoal`}>
                                             {analysisResults?.atsScore || 0}
-                                            <span className="text-2xl text-gray-500">/100</span>
+                                            <span className="text-2xl text-charcoal/60 font-body">/100</span>
                                         </div>
                                     </div>
                                     
-                                    <div className="mt-4 w-full bg-gray-200 rounded-full h-3">
+                                    <div className="mt-4 w-full bg-cream border-2 border-charcoal rounded-md h-4 p-[2px]">
                                         <div 
-                                            className={`h-3 rounded-full ${getScoreBgColor(analysisResults?.atsScore || 0)}`}
+                                            className={`h-full rounded-sm bg-charcoal`}
                                             style={{ width: `${analysisResults?.atsScore || 0}%` }}
                                         ></div>
                                     </div>
@@ -654,14 +654,14 @@ FORMATTING IMPROVEMENTS:
                                     <div className="mt-6 flex flex-wrap gap-3">
                                         <button 
                                             onClick={handleRetry}
-                                            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                                            className="flex items-center gap-2 px-4 py-2 border-2 border-charcoal bg-white text-charcoal rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
                                         >
                                             <LuRotateCcw className="w-4 h-4" />
-                                            Analyze Another Resume
+                                            Analyze Another
                                         </button>
                                         <button 
                                             onClick={downloadReport}
-                                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                                            className="flex items-center gap-2 px-4 py-2 border-2 border-charcoal bg-charcoal text-white rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
                                         >
                                             <LuDownload className="w-4 h-4" />
                                             Download Report
@@ -672,17 +672,17 @@ FORMATTING IMPROVEMENTS:
 
                             {/* Strengths */}
                             {analysisResults?.strengths?.length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                                <div className="card-editorial overflow-hidden">
                                     <div className="p-6">
-                                        <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                            <LuCheck className="w-5 h-5 text-green-500" />
+                                        <h2 className="text-xl font-display font-bold text-charcoal mb-4 flex items-center gap-2">
+                                            <LuCheck className="w-5 h-5" />
                                             What's Working Well
                                         </h2>
                                         <div className="space-y-4">
                                             {analysisResults.strengths.map((strength) => (
-                                                <div key={strength.id} className="p-4 bg-green-50 rounded-lg">
-                                                    <h3 className="font-medium text-green-800">{strength.title}</h3>
-                                                    <p className="text-sm text-green-700 mt-1">{strength.description}</p>
+                                                <div key={strength.id} className="p-4 bg-cream border-2 border-charcoal rounded-md">
+                                                    <h3 className="font-bold text-charcoal">{strength.title}</h3>
+                                                    <p className="text-sm font-medium text-charcoal/80 mt-1">{strength.description}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -692,26 +692,22 @@ FORMATTING IMPROVEMENTS:
                             
                             {/* Areas for Improvement */}
                             {analysisResults?.improvements?.length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                                <div className="card-editorial overflow-hidden">
                                     <div className="p-6">
-                                        <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                            <LuInfo className="w-5 h-5 text-yellow-500" />
+                                        <h2 className="text-xl font-display font-bold text-charcoal mb-4 flex items-center gap-2">
+                                            <LuInfo className="w-5 h-5" />
                                             Areas for Improvement
                                         </h2>
                                         <div className="space-y-4">
                                             {analysisResults.improvements.map((improvement) => (
-                                                <div key={improvement.id} className="p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
+                                                <div key={improvement.id} className="p-4 bg-white border-2 border-charcoal rounded-md shadow-[4px_4px_0px_0px_#1A1A1A]">
                                                     <div className="flex justify-between items-start">
                                                         <div>
-                                                            <h3 className="font-medium text-yellow-800">{improvement.title}</h3>
-                                                            <p className="text-sm text-yellow-700 mt-1">{improvement.description}</p>
+                                                            <h3 className="font-bold text-charcoal">{improvement.title}</h3>
+                                                            <p className="text-sm font-medium text-charcoal/80 mt-1">{improvement.description}</p>
                                                         </div>
                                                         {improvement.priority && (
-                                                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                                                improvement.priority === 'High' ? 'bg-red-100 text-red-800' :
-                                                                improvement.priority === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
-                                                                'bg-gray-100 text-gray-800'
-                                                            }`}>
+                                                            <span className={`px-2 py-1 text-xs font-bold uppercase tracking-wider rounded-sm border-2 border-charcoal bg-charcoal text-white`}>
                                                                 {improvement.priority} Priority
                                                             </span>
                                                         )}
@@ -724,17 +720,17 @@ FORMATTING IMPROVEMENTS:
                             )}
                             
                             {/* Action Buttons */}
-                            <div className="flex flex-col sm:flex-row gap-3">
+                            <div className="flex flex-col sm:flex-row gap-4">
                                 <button 
                                     onClick={handleRetry}
-                                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border-2 border-charcoal bg-white text-charcoal rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
                                 >
                                     <LuRotateCcw className="w-4 h-4" />
                                     Analyze Another Resume
                                 </button>
                                 <button 
                                     onClick={createOptimizedVersion}
-                                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border-2 border-charcoal bg-charcoal text-white rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
                                 >
                                     <LuPen className="w-4 h-4" />
                                     Create Optimized Version

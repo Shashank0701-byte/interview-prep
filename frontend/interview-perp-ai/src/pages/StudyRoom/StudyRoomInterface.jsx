@@ -423,10 +423,10 @@ const StudyRoomInterface = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-cream font-body flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Joining study room...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-charcoal mx-auto mb-4"></div>
+          <p className="text-charcoal/80">Joining study room...</p>
         </div>
       </div>
     );
@@ -434,12 +434,12 @@ const StudyRoomInterface = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-cream font-body flex items-center justify-center text-charcoal">
         <div className="text-center">
-          <p className="text-red-600 mb-4">{error}</p>
+          <p className="text-red-600 mb-4 font-bold">{error}</p>
           <button
             onClick={() => navigate('/study-rooms')}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+            className="border-2 border-charcoal bg-charcoal text-white px-6 py-2 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200"
           >
             Back to Study Rooms
           </button>
@@ -449,23 +449,22 @@ const StudyRoomInterface = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-cream font-body text-charcoal">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm shadow-lg border-b">
+      <div className="bg-white border-b-2 border-charcoal/10 relative z-10">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {/* Navigation Back Button */}
               <button
                 onClick={handleLeaveRoom}
-                className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-3 py-2 text-charcoal hover:bg-charcoal/10 rounded-md transition-colors font-bold uppercase tracking-wider text-xs"
                 title="Leave Room & Back to Study Rooms"
               >
                 <ArrowLeft className="w-5 h-5" />
                 <span className="hidden sm:inline">Leave Room</span>
               </button>
               
-              {/* Dashboard Button */}
               <button
                 onClick={() => {
                   if (socketRef.current && currentUser) {
@@ -476,17 +475,17 @@ const StudyRoomInterface = () => {
                   }
                   navigate('/dashboard');
                 }}
-                className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-3 py-2 text-charcoal hover:bg-charcoal/10 rounded-md transition-colors font-bold uppercase tracking-wider text-xs"
                 title="Leave Room & Go to Dashboard"
               >
                 <Home className="w-5 h-5" />
                 <span className="hidden sm:inline">Dashboard</span>
               </button>
 
-              <div className="h-6 w-px bg-gray-300"></div>
+              <div className="h-6 w-px bg-charcoal/20"></div>
 
-              <h1 className="text-2xl font-bold text-gray-800">{room?.name}</h1>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
+              <h1 className="text-2xl font-display font-bold text-charcoal">{room?.name}</h1>
+              <div className="flex items-center gap-2 text-sm text-charcoal/80">
                 <Users className="w-4 h-4" />
                 <span>{participants.length}/{room?.maxParticipants}</span>
               </div>
@@ -512,10 +511,9 @@ const StudyRoomInterface = () => {
                 {isVideoOff ? <VideoOff className="w-5 h-5" /> : <Video className="w-5 h-5" />}
               </button>
 
-              {/* Invite Button */}
               <button
                 onClick={() => setShowInviteModal(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                className="border-2 border-charcoal bg-charcoal text-white px-4 py-2 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200 flex items-center gap-2 font-bold uppercase tracking-wider text-sm"
               >
                 <Share2 className="w-4 h-4" />
                 Invite
@@ -525,14 +523,14 @@ const StudyRoomInterface = () => {
 
           {/* Current Session Info */}
           {currentSession && (
-            <div className="mt-4 flex items-center justify-between bg-blue-50 rounded-lg p-3">
+            <div className="mt-4 flex items-center justify-between border-2 border-charcoal bg-white rounded-md p-3">
               <div>
-                <p className="font-medium text-blue-800">{currentSession.name}</p>
-                <p className="text-sm text-blue-600">
+                <p className="font-bold text-charcoal uppercase tracking-wider">{currentSession.name}</p>
+                <p className="text-sm font-bold text-charcoal/80">
                   Question {questionIndex + 1} of {studyQuestions.length}
                 </p>
                 {currentQuestion && (
-                  <p className="text-xs text-blue-500">
+                  <p className="text-xs font-bold text-charcoal/60 uppercase tracking-wider mt-1">
                     {currentQuestion.type === 'coding' ? '💻 Coding' : '🔍 Code Review'} • {currentQuestion.difficulty}
                   </p>
                 )}
@@ -543,14 +541,14 @@ const StudyRoomInterface = () => {
                   <button
                     onClick={() => navigateQuestion('prev')}
                     disabled={questionIndex === 0}
-                    className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg disabled:opacity-50"
+                    className="p-2 text-charcoal border-2 border-charcoal rounded-md bg-white hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none transition-all duration-200"
                   >
                     <SkipBack className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => navigateQuestion('next')}
                     disabled={questionIndex >= studyQuestions.length - 1}
-                    className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg disabled:opacity-50"
+                    className="p-2 text-charcoal border-2 border-charcoal rounded-md bg-white hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none transition-all duration-200"
                   >
                     <SkipForward className="w-4 h-4" />
                   </button>
@@ -565,11 +563,11 @@ const StudyRoomInterface = () => {
       <div className="max-w-7xl mx-auto p-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-200px)]">
           {/* Left Panel - Question */}
-          <div className="lg:col-span-3 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden">
+          <div className="lg:col-span-3 card-editorial overflow-hidden flex flex-col bg-white">
             {/* Question Header */}
-            <div className="flex items-center gap-2 px-6 py-3 border-b bg-gray-50/50">
-              <MessageSquare className="w-5 h-5 text-blue-600" />
-              <h3 className="font-semibold text-gray-800">Question</h3>
+            <div className="flex items-center gap-2 px-6 py-3 border-b-2 border-charcoal/10">
+              <MessageSquare className="w-5 h-5 text-charcoal" />
+              <h3 className="font-bold text-charcoal uppercase tracking-wider text-sm">Question</h3>
             </div>
 
             {/* Question Content */}
@@ -577,27 +575,19 @@ const StudyRoomInterface = () => {
               {currentQuestion && (
                 <div className="h-full overflow-y-auto pb-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <h2 className="text-2xl font-bold text-gray-800">
+                    <h2 className="text-2xl font-display font-bold text-charcoal">
                       {currentQuestion.title}
                     </h2>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      currentQuestion.type === 'coding' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-purple-100 text-purple-800'
-                    }`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold border-2 border-charcoal uppercase tracking-wider bg-white`}>
                       {currentQuestion.type === 'coding' ? '💻 Coding' : '🔍 Code Review'}
                     </span>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      currentQuestion.difficulty === 'Easy' ? 'bg-green-100 text-green-700' :
-                      currentQuestion.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-700' :
-                      'bg-red-100 text-red-700'
-                    }`}>
+                    <span className={`px-2 py-1 rounded text-xs font-bold border-2 border-charcoal uppercase tracking-wider bg-white`}>
                       {currentQuestion.difficulty}
                     </span>
                   </div>
 
                   <div className="prose max-w-none">
-                    <p className="text-gray-700 leading-relaxed mb-6">
+                    <p className="text-charcoal leading-relaxed mb-6 font-medium">
                       {currentQuestion.description}
                     </p>
 
@@ -634,12 +624,12 @@ const StudyRoomInterface = () => {
 
                     {/* Solution (Hidden by default, can be revealed) */}
                     {currentQuestion.solution && (
-                      <details className="mt-6">
-                        <summary className="cursor-pointer text-blue-600 hover:text-blue-800 font-medium">
+                      <details className="mt-6 border-2 border-charcoal rounded-md">
+                        <summary className="cursor-pointer text-charcoal font-bold p-3 bg-white hover:bg-cream transition-colors uppercase tracking-wider text-sm border-b-2 border-transparent open:border-charcoal">
                           💡 View Solution (Click to reveal)
                         </summary>
-                        <div className="mt-3 overflow-auto max-h-96 bg-blue-50 border-l-4 border-blue-400 rounded-lg">
-                          <pre className="p-4 text-sm">
+                        <div className="overflow-auto max-h-96 bg-cream border-t-2 border-charcoal">
+                          <pre className="p-4 text-sm text-charcoal font-medium">
                             <code className="whitespace-pre">{currentQuestion.solution}</code>
                           </pre>
                         </div>
@@ -674,10 +664,10 @@ const StudyRoomInterface = () => {
 
       {/* Invite Modal */}
       {showInviteModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Invite Friends</h2>
-            <p className="text-gray-600 mb-4">
+        <div className="fixed inset-0 bg-charcoal/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 font-body">
+          <div className="card-editorial max-w-md w-full p-6 bg-white">
+            <h2 className="text-2xl font-display font-bold text-charcoal mb-4">Invite Friends</h2>
+            <p className="text-charcoal/80 mb-4 font-medium">
               Share this link with your friends to invite them to the study room:
             </p>
             <div className="flex gap-2 mb-6">
@@ -685,11 +675,11 @@ const StudyRoomInterface = () => {
                 type="text"
                 value={`${window.location.origin}/study-room/${roomId}`}
                 readOnly
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                className="flex-1 px-4 py-2 border-2 border-charcoal rounded-md bg-cream text-charcoal font-medium focus:outline-none"
               />
               <button
                 onClick={copyInviteLink}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="bg-charcoal text-white border-2 border-charcoal px-4 py-2 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200"
               >
                 <Copy className="w-4 h-4" />
               </button>
@@ -697,7 +687,7 @@ const StudyRoomInterface = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowInviteModal(false)}
-                className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 text-charcoal border-2 border-charcoal rounded-md hover:bg-charcoal/10 transition-colors font-bold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer"
               >
                 Close
               </button>

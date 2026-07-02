@@ -46,13 +46,13 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg flex flex-col h-96">
+    <div className="card-editorial flex flex-col h-96 bg-white">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
-        <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+      <div className="flex items-center justify-between p-4 border-b-2 border-charcoal/10">
+        <h3 className="text-lg font-display font-bold text-charcoal flex items-center gap-2 uppercase tracking-wider">
           💬 Chat
         </h3>
-        <button className="p-1 text-gray-400 hover:text-gray-600 rounded">
+        <button className="p-1 text-charcoal/60 hover:text-charcoal rounded">
           <MoreVertical className="w-4 h-4" />
         </button>
       </div>
@@ -60,9 +60,9 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 ? (
-          <div className="text-center text-gray-500 py-8">
-            <p className="text-sm">No messages yet</p>
-            <p className="text-xs mt-1">Start the conversation!</p>
+          <div className="text-center text-charcoal/60 py-8">
+            <p className="text-sm font-medium">No messages yet</p>
+            <p className="text-xs mt-1 font-medium">Start the conversation!</p>
           </div>
         ) : (
           messages.map((message, index) => (
@@ -73,14 +73,14 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
                 </div>
               ) : (
                 <div className={`flex ${message.userId === currentUser?._id ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-xs lg:max-w-md ${
+                  <div className={`max-w-xs lg:max-w-md border-2 border-charcoal font-medium ${
                     message.userId === currentUser?._id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-800'
-                  } rounded-lg px-3 py-2`}>
+                      ? 'bg-charcoal text-white'
+                      : 'bg-cream text-charcoal'
+                  } rounded-md px-3 py-2`}>
                     {/* Username for others' messages */}
                     {message.userId !== currentUser?._id && (
-                      <div className="text-xs font-medium text-gray-600 mb-1">
+                      <div className="text-xs font-bold text-charcoal/80 mb-1">
                         {message.username}
                       </div>
                     )}
@@ -91,10 +91,10 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
                     </div>
                     
                     {/* Timestamp */}
-                    <div className={`text-xs mt-1 ${
+                    <div className={`text-xs mt-1 font-bold ${
                       message.userId === currentUser?._id
-                        ? 'text-blue-200'
-                        : 'text-gray-500'
+                        ? 'text-white/60'
+                        : 'text-charcoal/60'
                     }`}>
                       {formatTime(message.timestamp)}
                     </div>
@@ -108,7 +108,7 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t">
+      <div className="p-4 border-t-2 border-charcoal/10">
         <div className="flex items-end gap-2">
           <div className="flex-1 relative">
             <textarea
@@ -116,7 +116,7 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type a message..."
-              className="w-full px-3 py-2 pr-20 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 pr-20 border-2 border-charcoal rounded-md resize-none focus:outline-none bg-cream text-charcoal font-medium"
               rows="1"
               style={{ minHeight: '40px', maxHeight: '120px' }}
             />
@@ -160,7 +160,7 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
           <button
             onClick={onSendMessage}
             disabled={!newMessage.trim()}
-            className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="bg-charcoal text-white p-2 border-2 border-charcoal rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none transition-all duration-200"
             title="Send message"
           >
             <Send className="w-4 h-4" />

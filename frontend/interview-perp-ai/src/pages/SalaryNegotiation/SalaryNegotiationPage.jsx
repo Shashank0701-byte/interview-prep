@@ -162,25 +162,25 @@ const SalaryNegotiationPage = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-8 px-4">
+            <div className="min-h-screen bg-cream py-8 px-4 font-body">
                 {/* Hero Section */}
                 <div className="max-w-7xl mx-auto mb-12">
-                    <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 md:p-12 shadow-lg border border-slate-200 dark:border-slate-700">
+                    <div className="card-editorial p-8 md:p-12 bg-white">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-                                    <LuDollarSign className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                                <div className="p-3 bg-cream border-2 border-charcoal rounded-md">
+                                    <LuDollarSign className="w-8 h-8 text-charcoal" />
                                 </div>
                                 <div>
-                                    <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Salary Negotiation Simulator</h1>
-                                    <p className="text-slate-600 dark:text-slate-400 text-lg mt-2">
+                                    <h1 className="text-3xl md:text-4xl font-display font-bold text-charcoal uppercase tracking-wider">Salary Negotiation Simulator</h1>
+                                    <p className="text-charcoal/80 font-medium text-lg mt-2">
                                         Practice negotiating with AI recruiters and maximize your compensation
                                     </p>
                                 </div>
                             </div>
                             <button
                                 onClick={() => navigate('/salary-negotiation/history')}
-                                className="hidden md:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
+                                className="hidden md:flex items-center gap-2 px-6 py-3 bg-white text-charcoal border-2 border-charcoal rounded-md font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200"
                             >
                                 <LuActivity className="w-5 h-5" />
                                 View History
@@ -189,33 +189,33 @@ const SalaryNegotiationPage = () => {
 
                         {/* Stats */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                            <div className="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-4 border border-slate-200 dark:border-slate-600">
+                            <div className="bg-cream rounded-md p-4 border-2 border-charcoal/10">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <LuTrendingUp className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-                                    <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Avg Improvement</span>
+                                    <LuTrendingUp className="w-4 h-4 text-charcoal" />
+                                    <span className="text-xs font-bold text-charcoal uppercase tracking-wider">Avg Improvement</span>
                                 </div>
-                                <div className="text-2xl font-bold text-slate-900 dark:text-white">18%</div>
+                                <div className="text-2xl font-display font-bold text-charcoal">18%</div>
                             </div>
-                            <div className="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-4 border border-slate-200 dark:border-slate-600">
+                            <div className="bg-cream rounded-md p-4 border-2 border-charcoal/10">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <LuUsers className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-                                    <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Success Rate</span>
+                                    <LuUsers className="w-4 h-4 text-charcoal" />
+                                    <span className="text-xs font-bold text-charcoal uppercase tracking-wider">Success Rate</span>
                                 </div>
-                                <div className="text-2xl font-bold text-slate-900 dark:text-white">87%</div>
+                                <div className="text-2xl font-display font-bold text-charcoal">87%</div>
                             </div>
-                            <div className="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-4 border border-slate-200 dark:border-slate-600">
+                            <div className="bg-cream rounded-md p-4 border-2 border-charcoal/10">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <LuDollarSign className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-                                    <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Avg Gained</span>
+                                    <LuDollarSign className="w-4 h-4 text-charcoal" />
+                                    <span className="text-xs font-bold text-charcoal uppercase tracking-wider">Avg Gained</span>
                                 </div>
-                                <div className="text-2xl font-bold text-slate-900 dark:text-white">₹2.4L</div>
+                                <div className="text-2xl font-display font-bold text-charcoal">₹2.4L</div>
                             </div>
-                            <div className="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-4 border border-slate-200 dark:border-slate-600">
+                            <div className="bg-cream rounded-md p-4 border-2 border-charcoal/10">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <LuActivity className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-                                    <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Scenarios</span>
+                                    <LuActivity className="w-4 h-4 text-charcoal" />
+                                    <span className="text-xs font-bold text-charcoal uppercase tracking-wider">Scenarios</span>
                                 </div>
-                                <div className="text-2xl font-bold text-slate-900 dark:text-white">6</div>
+                                <div className="text-2xl font-display font-bold text-charcoal">6</div>
                             </div>
                         </div>
                     </div>
@@ -224,8 +224,8 @@ const SalaryNegotiationPage = () => {
                 <div className="max-w-7xl mx-auto">
                     {/* Step 1: Choose Scenario */}
                     <div className="mb-12">
-                        <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-3">
-                            <span className="flex items-center justify-center w-8 h-8 bg-indigo-600 text-white rounded-full text-sm">1</span>
+                        <h2 className="text-2xl font-display font-bold text-charcoal mb-6 flex items-center gap-3 uppercase tracking-wider">
+                            <span className="flex items-center justify-center w-8 h-8 bg-charcoal text-white rounded-md text-sm border-2 border-charcoal font-bold">1</span>
                             Choose Your Scenario
                         </h2>
                         
@@ -238,43 +238,43 @@ const SalaryNegotiationPage = () => {
                                     <div
                                         key={scenario.id}
                                         onClick={() => setSelectedScenario(scenario.id)}
-                                        className={`relative bg-white dark:bg-slate-800 rounded-xl p-6 cursor-pointer transition-all duration-200 border-2 ${
+                                        className={`relative bg-white p-6 cursor-pointer transition-all duration-200 border-2 rounded-md ${
                                             isSelected
-                                                ? 'border-blue-500 shadow-lg'
-                                                : 'border-slate-200 dark:border-slate-700 hover:border-blue-300 hover:shadow-md'
+                                                ? 'border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A] -translate-y-1'
+                                                : 'border-charcoal/20 hover:border-charcoal hover:shadow-[4px_4px_0px_0px_#1A1A1A] hover:-translate-y-1'
                                         }`}
                                     >
                                         {isSelected && (
-                                            <div className="absolute -top-2 -right-2 bg-blue-600 text-white rounded-full p-1.5">
+                                            <div className="absolute -top-3 -right-3 bg-charcoal text-white rounded-md p-1.5 border-2 border-charcoal">
                                                 <LuTarget className="w-4 h-4" />
                                             </div>
                                         )}
                                         
-                                        <div className="inline-flex p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg mb-4">
-                                            <Icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                                        <div className="inline-flex p-3 bg-cream border-2 border-charcoal/20 rounded-md mb-4">
+                                            <Icon className="w-6 h-6 text-charcoal" />
                                         </div>
                                         
-                                        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{scenario.title}</h3>
-                                        <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">{scenario.description}</p>
+                                        <h3 className="text-lg font-display font-bold text-charcoal mb-2 uppercase tracking-wider">{scenario.title}</h3>
+                                        <p className="text-charcoal/80 text-sm mb-4 font-medium">{scenario.description}</p>
                                         
                                         <div className="flex items-center justify-between mb-4">
-                                            <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${
-                                                scenario.difficulty === 'Easy' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400' :
-                                                scenario.difficulty === 'Medium' ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' :
-                                                scenario.difficulty === 'Hard' ? 'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400' :
-                                                'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+                                            <span className={`px-2.5 py-1 rounded-sm border-2 font-bold uppercase tracking-wider text-xs ${
+                                                scenario.difficulty === 'Easy' ? 'bg-cream text-charcoal border-charcoal/20' :
+                                                scenario.difficulty === 'Medium' ? 'bg-cream text-charcoal border-charcoal/50' :
+                                                scenario.difficulty === 'Hard' ? 'bg-charcoal text-white border-charcoal' :
+                                                'bg-white text-charcoal border-charcoal'
                                             }`}>
                                                 {scenario.difficulty}
                                             </span>
-                                            <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                                            <span className="text-sm font-bold text-charcoal">
                                                 {scenario.avgImprovement}
                                             </span>
                                         </div>
                                         
                                         <div className="space-y-2">
                                             {scenario.features.map((feature, idx) => (
-                                                <div key={idx} className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-                                                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                                                <div key={idx} className="flex items-center gap-2 text-sm text-charcoal/80 font-bold">
+                                                    <div className="w-1.5 h-1.5 bg-charcoal rounded-none"></div>
                                                     {feature}
                                                 </div>
                                             ))}
@@ -288,23 +288,23 @@ const SalaryNegotiationPage = () => {
                     {/* Step 2: Configure Details */}
                     {selectedScenario && (
                         <div className="mb-12 animate-fadeIn">
-                            <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-3">
-                                <span className="flex items-center justify-center w-8 h-8 bg-indigo-600 text-white rounded-full text-sm">2</span>
+                            <h2 className="text-2xl font-display font-bold text-charcoal mb-6 flex items-center gap-3 uppercase tracking-wider">
+                                <span className="flex items-center justify-center w-8 h-8 bg-charcoal text-white rounded-md text-sm border-2 border-charcoal font-bold">2</span>
                                 Configure Your Profile
                             </h2>
                             
-                            <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-200 dark:border-slate-700">
+                            <div className="card-editorial p-8 bg-white">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     {/* Role Selection */}
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                                        <label className="block text-sm font-bold text-charcoal mb-3 uppercase tracking-wider">
                                             <LuBriefcase className="inline w-4 h-4 mr-2" />
                                             Role
                                         </label>
                                         <select
                                             value={formData.role}
                                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                                            className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+                                            className="w-full px-4 py-3 border-2 border-charcoal rounded-md focus:outline-none transition-all bg-cream text-charcoal font-bold"
                                         >
                                             {roles.map((role) => (
                                                 <option key={role} value={role}>{role}</option>
@@ -314,14 +314,14 @@ const SalaryNegotiationPage = () => {
 
                                     {/* Level Selection */}
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                                        <label className="block text-sm font-bold text-charcoal mb-3 uppercase tracking-wider">
                                             <LuTrendingUp className="inline w-4 h-4 mr-2" />
                                             Experience Level
                                         </label>
                                         <select
                                             value={formData.level}
                                             onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-                                            className="w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+                                            className="w-full px-4 py-3 border-2 border-charcoal rounded-md focus:outline-none transition-all bg-cream text-charcoal font-bold"
                                         >
                                             {levels.map((level) => (
                                                 <option key={level.value} value={level.value}>
@@ -333,14 +333,14 @@ const SalaryNegotiationPage = () => {
 
                                     {/* Location Selection */}
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                                        <label className="block text-sm font-bold text-charcoal mb-3 uppercase tracking-wider">
                                             <LuMapPin className="inline w-4 h-4 mr-2" />
                                             Location
                                         </label>
                                         <select
                                             value={formData.location}
                                             onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                                            className="w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+                                            className="w-full px-4 py-3 border-2 border-charcoal rounded-md focus:outline-none transition-all bg-cream text-charcoal font-bold"
                                         >
                                             {locations.map((loc) => (
                                                 <option key={loc.value} value={loc.value}>
@@ -352,14 +352,14 @@ const SalaryNegotiationPage = () => {
 
                                     {/* Recruiter Personality */}
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                                        <label className="block text-sm font-bold text-charcoal mb-3 uppercase tracking-wider">
                                             <LuUsers className="inline w-4 h-4 mr-2" />
                                             Recruiter Personality
                                         </label>
                                         <select
                                             value={formData.recruiterPersonality}
                                             onChange={(e) => setFormData({ ...formData, recruiterPersonality: e.target.value })}
-                                            className="w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:focus:ring-indigo-800 transition-all bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+                                            className="w-full px-4 py-3 border-2 border-charcoal rounded-md focus:outline-none transition-all bg-cream text-charcoal font-bold"
                                         >
                                             {personalities.map((p) => (
                                                 <option key={p.value} value={p.value}>
@@ -367,14 +367,14 @@ const SalaryNegotiationPage = () => {
                                                 </option>
                                             ))}
                                         </select>
-                                        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                                        <p className="mt-2 text-sm text-charcoal/80 font-bold">
                                             {personalities.find(p => p.value === formData.recruiterPersonality)?.description}
                                         </p>
                                     </div>
 
                                     {/* Communication Mode */}
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                                        <label className="block text-sm font-bold text-charcoal mb-3 uppercase tracking-wider">
                                             <LuMessageSquare className="inline w-4 h-4 mr-2" />
                                             Communication Mode
                                         </label>
@@ -382,35 +382,35 @@ const SalaryNegotiationPage = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, communicationMode: 'chat' })}
-                                                className={`p-4 rounded-xl border-2 transition-all ${
+                                                className={`p-4 rounded-md border-2 transition-all font-bold uppercase tracking-wider ${
                                                     formData.communicationMode === 'chat'
-                                                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                                                        : 'border-slate-200 dark:border-slate-600 hover:border-indigo-300'
+                                                        ? 'border-charcoal bg-charcoal text-white shadow-[4px_4px_0px_0px_#1A1A1A] -translate-y-1'
+                                                        : 'border-charcoal/20 hover:border-charcoal bg-white text-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]'
                                                 }`}
                                             >
                                                 <LuMessageSquare className={`w-6 h-6 mx-auto mb-2 ${
-                                                    formData.communicationMode === 'chat' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'
+                                                    formData.communicationMode === 'chat' ? 'text-white' : 'text-charcoal'
                                                 }`} />
-                                                <div className="text-sm font-semibold text-slate-900 dark:text-white">Chat Mode</div>
-                                                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Real-time messaging</div>
+                                                <div className="text-sm font-bold mt-2">Chat Mode</div>
+                                                <div className="text-xs mt-1 opacity-80">Real-time messaging</div>
                                             </button>
                                             <button
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, communicationMode: 'email' })}
-                                                className={`p-4 rounded-xl border-2 transition-all ${
+                                                className={`p-4 rounded-md border-2 transition-all font-bold uppercase tracking-wider ${
                                                     formData.communicationMode === 'email'
-                                                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                                                        : 'border-slate-200 dark:border-slate-600 hover:border-indigo-300'
+                                                        ? 'border-charcoal bg-charcoal text-white shadow-[4px_4px_0px_0px_#1A1A1A] -translate-y-1'
+                                                        : 'border-charcoal/20 hover:border-charcoal bg-white text-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]'
                                                 }`}
                                             >
                                                 <LuMail className={`w-6 h-6 mx-auto mb-2 ${
-                                                    formData.communicationMode === 'email' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'
+                                                    formData.communicationMode === 'email' ? 'text-white' : 'text-charcoal'
                                                 }`} />
-                                                <div className="text-sm font-semibold text-slate-900 dark:text-white">Email Mode</div>
-                                                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Professional emails</div>
+                                                <div className="text-sm font-bold mt-2">Email Mode</div>
+                                                <div className="text-xs mt-1 opacity-80">Professional emails</div>
                                             </button>
                                         </div>
-                                        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                                        <p className="mt-2 text-sm text-charcoal/80 font-bold">
                                             {formData.communicationMode === 'chat' 
                                                 ? '💬 Practice quick, conversational negotiation skills'
                                                 : '📧 Learn professional email negotiation etiquette'}
@@ -422,7 +422,7 @@ const SalaryNegotiationPage = () => {
                                 <div className="mt-8 flex justify-center">
                                     <button
                                         onClick={handleStartNegotiation}
-                                        className="group flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-lg shadow-md hover:shadow-lg transition-all duration-200"
+                                        className="group flex items-center gap-3 px-8 py-4 bg-charcoal text-white rounded-md font-bold text-lg uppercase tracking-wider border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 cursor-pointer"
                                     >
                                         Start Negotiation
                                         <LuArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -433,38 +433,38 @@ const SalaryNegotiationPage = () => {
                     )}
 
                     {/* Tips Section */}
-                    <div className="bg-blue-50 dark:bg-slate-800 rounded-xl p-8 border border-blue-200 dark:border-slate-700">
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                            <LuSparkles className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    <div className="bg-cream border-2 border-charcoal rounded-md p-8 shadow-[4px_4px_0px_0px_#1A1A1A]">
+                        <h3 className="text-xl font-display font-bold text-charcoal mb-4 flex items-center gap-2 uppercase tracking-wider">
+                            <LuSparkles className="w-6 h-6 text-charcoal" />
                             Pro Tips for Salary Negotiation in India
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="flex items-start gap-3">
-                                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                <div className="w-2 h-2 bg-charcoal rounded-none mt-2 flex-shrink-0"></div>
                                 <div>
-                                    <p className="font-semibold text-slate-900 dark:text-white">Never reveal your current CTC</p>
-                                    <p className="text-sm text-slate-600 dark:text-slate-400">Focus on market value and your skills, not current package</p>
+                                    <p className="font-bold text-charcoal uppercase tracking-wider text-sm">Never reveal your current CTC</p>
+                                    <p className="text-sm text-charcoal/80 font-medium">Focus on market value and your skills, not current package</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-3">
-                                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                <div className="w-2 h-2 bg-charcoal rounded-none mt-2 flex-shrink-0"></div>
                                 <div>
-                                    <p className="font-semibold text-slate-900 dark:text-white">Always negotiate the first offer</p>
-                                    <p className="text-sm text-slate-600 dark:text-slate-400">Indian companies expect 10-20% negotiation buffer</p>
+                                    <p className="font-bold text-charcoal uppercase tracking-wider text-sm">Always negotiate the first offer</p>
+                                    <p className="text-sm text-charcoal/80 font-medium">Indian companies expect 10-20% negotiation buffer</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-3">
-                                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                <div className="w-2 h-2 bg-charcoal rounded-none mt-2 flex-shrink-0"></div>
                                 <div>
-                                    <p className="font-semibold text-slate-900 dark:text-white">Research company salary bands</p>
-                                    <p className="text-sm text-slate-600 dark:text-slate-400">Use platforms like AmbitionBox, Glassdoor for Indian salaries</p>
+                                    <p className="font-bold text-charcoal uppercase tracking-wider text-sm">Research company salary bands</p>
+                                    <p className="text-sm text-charcoal/80 font-medium">Use platforms like AmbitionBox, Glassdoor for Indian salaries</p>
                                 </div>
                             </div>
                             <div className="flex items-start gap-3">
-                                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                                <div className="w-2 h-2 bg-charcoal rounded-none mt-2 flex-shrink-0"></div>
                                 <div>
-                                    <p className="font-semibold text-slate-900 dark:text-white">Consider total CTC breakdown</p>
-                                    <p className="text-sm text-slate-600 dark:text-slate-400">Check fixed vs variable, ESOPs, joining bonus, and benefits</p>
+                                    <p className="font-bold text-charcoal uppercase tracking-wider text-sm">Consider total CTC breakdown</p>
+                                    <p className="text-sm text-charcoal/80 font-medium">Check fixed vs variable, ESOPs, joining bonus, and benefits</p>
                                 </div>
                             </div>
                         </div>

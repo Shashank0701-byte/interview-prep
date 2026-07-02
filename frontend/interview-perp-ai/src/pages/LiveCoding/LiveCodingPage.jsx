@@ -65,16 +65,16 @@ const LiveCodingPage = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-8 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-cream py-8 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
                     {/* Hero Section */}
-                    <div className="bg-slate-800 dark:bg-slate-900 text-white rounded-xl shadow-lg p-8 mb-8">
+                    <div className="bg-charcoal text-white rounded-md shadow-[6px_6px_0px_0px_rgba(26,26,26,0.3)] p-8 mb-8">
                         <div className="flex items-center gap-4 mb-4">
-                            <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                                <LuCode className="w-6 h-6" />
+                            <div className="w-12 h-12 bg-white/20 rounded-sm flex items-center justify-center">
+                                <LuCode className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-3xl font-bold">Live Coding Challenges</h1>
+                                <h1 className="text-3xl font-display font-bold">Live Coding Challenges</h1>
                                 <p className="text-slate-300 mt-2">
                                     Practice coding with instant AI feedback on correctness, efficiency, and code style
                                 </p>
@@ -126,10 +126,10 @@ const LiveCodingPage = () => {
                     </div>
 
                     {/* Filters */}
-                    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 mb-8">
-                        <div className="flex items-center gap-2 mb-4">
-                            <LuFilter className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                            <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Filter Challenges</h2>
+                    <div className="card-editorial p-6 mb-8">
+                        <div className="flex items-center gap-2 mb-4 border-b-2 border-charcoal/10 pb-2">
+                            <LuFilter className="w-5 h-5 text-charcoal" />
+                            <h2 className="text-lg font-display font-bold text-charcoal">Filter Challenges</h2>
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -141,7 +141,7 @@ const LiveCodingPage = () => {
                                     placeholder="Search challenges..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                                    className="w-full pl-10 pr-4 py-2 border-2 border-charcoal bg-white text-charcoal font-body rounded-sm focus:outline-none shadow-[2px_2px_0px_0px_#1A1A1A]"
                                 />
                             </div>
 
@@ -149,7 +149,7 @@ const LiveCodingPage = () => {
                             <select
                                 value={selectedDifficulty}
                                 onChange={(e) => setSelectedDifficulty(e.target.value)}
-                                className="px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                                className="px-4 py-2 border-2 border-charcoal bg-white text-charcoal font-body rounded-sm focus:outline-none shadow-[2px_2px_0px_0px_#1A1A1A]"
                             >
                                 {difficulties.map(difficulty => (
                                     <option key={difficulty} value={difficulty}>
@@ -162,7 +162,7 @@ const LiveCodingPage = () => {
                             <select
                                 value={selectedCategory}
                                 onChange={(e) => setSelectedCategory(e.target.value)}
-                                className="px-4 py-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                                className="px-4 py-2 border-2 border-charcoal bg-white text-charcoal font-body rounded-sm focus:outline-none shadow-[2px_2px_0px_0px_#1A1A1A]"
                             >
                                 {categories.map(category => (
                                     <option key={category} value={category}>
@@ -176,33 +176,33 @@ const LiveCodingPage = () => {
                     {/* Challenge Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredChallenges.map((challenge) => (
-                            <div key={challenge.id} className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div key={challenge.id} className="card-editorial flex flex-col justify-between">
                                 {/* Card Header */}
                                 <div className="p-6 pb-4">
                                     <div className="flex items-start justify-between mb-3">
                                         <div className="flex items-center gap-2">
                                             <span className="text-2xl">{getCategoryIcon(challenge.category)}</span>
                                             <div>
-                                                <h3 className="text-lg font-bold text-gray-800 dark:text-white line-clamp-1">
+                                                <h3 className="text-lg font-display font-bold text-charcoal line-clamp-1">
                                                     {challenge.title}
                                                 </h3>
-                                                <div className="text-sm text-gray-500 dark:text-gray-400 capitalize">
+                                                <div className="text-sm font-body text-charcoal/80 capitalize">
                                                     {challenge.category.replace('-', ' ')}
                                                 </div>
                                             </div>
                                         </div>
                                         
-                                        <div className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(challenge.difficulty)}`}>
+                                        <div className={`px-2 py-1 border-2 border-charcoal bg-white rounded-sm text-xs font-bold uppercase tracking-wider text-charcoal shadow-[2px_2px_0px_0px_#1A1A1A]`}>
                                             {challenge.difficulty}
                                         </div>
                                     </div>
 
-                                    <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3 mb-4">
+                                    <p className="text-charcoal/80 font-body text-sm line-clamp-3 mb-4">
                                         {challenge.description}
                                     </p>
 
                                     {/* Challenge Stats */}
-                                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-4">
+                                    <div className="flex items-center gap-4 text-xs font-bold text-charcoal uppercase tracking-wider mb-4">
                                         <div className="flex items-center gap-1">
                                             <LuClock className="w-3 h-3" />
                                             <span>O({challenge.expectedComplexity})</span>
@@ -218,7 +218,7 @@ const LiveCodingPage = () => {
                                 <div className="px-6 pb-6">
                                     <button
                                         onClick={() => startChallenge(challenge.id)}
-                                        className="w-full flex items-center justify-center gap-2 bg-slate-800 dark:bg-slate-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-slate-700 dark:hover:bg-slate-500 transition-all duration-200 transform hover:scale-105"
+                                        className="w-full flex items-center justify-center gap-2 bg-charcoal text-white font-bold uppercase tracking-wider text-sm py-3 px-4 rounded-sm border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200"
                                     >
                                         <LuPlay className="w-4 h-4" />
                                         Start Challenge
@@ -252,8 +252,8 @@ const LiveCodingPage = () => {
                     )}
 
                     {/* Feature Highlights */}
-                    <div className="mt-12 bg-white rounded-xl shadow-lg p-8">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+                    <div className="mt-12 card-editorial p-8">
+                        <h2 className="text-3xl font-display font-bold text-charcoal mb-6 text-center">
                             Why Live Coding Challenges?
                         </h2>
                         
