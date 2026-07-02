@@ -370,51 +370,51 @@ module.exports = { loginUser, hashPassword };`,
     if (showRebuttalPhase && !isSubmitted) {
         return (
             <DashboardLayout>
-                <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/20 p-6">
+                <div className="min-h-screen bg-cream dark:bg-navy font-body p-6">
                     <div className="max-w-4xl mx-auto">
                         {/* Header */}
-                        <div className="bg-white rounded-2xl shadow-lg border border-slate-200/60 p-8 mb-6">
+                        <div className="card-editorial p-8 mb-6">
                             <div className="text-center">
-                                <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <LuMessageSquare className="w-10 h-10 text-white" />
+                                <div className="w-20 h-20 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <LuMessageSquare className="w-10 h-10 text-white dark:text-navy" />
                                 </div>
-                                <h1 className="text-3xl font-bold text-slate-800 mb-2">Author Responses</h1>
-                                <p className="text-slate-600">The code author has responded to your feedback. How do you reply?</p>
+                                <h1 className="text-3xl font-display font-bold text-charcoal dark:text-cream mb-2">Author Responses</h1>
+                                <p className="text-charcoal/80 dark:text-cream/80">The code author has responded to your feedback. How do you reply?</p>
                             </div>
                         </div>
 
                         {/* Conversations */}
                         <div className="space-y-6">
                             {conversations.map(conversation => (
-                                <div key={conversation.id} className="bg-white rounded-2xl shadow-lg border border-slate-200/60 overflow-hidden">
+                                <div key={conversation.id} className="card-editorial overflow-hidden">
                                     {/* Original Comment */}
-                                    <div className="bg-slate-50 p-6 border-b border-slate-200">
+                                    <div className="bg-charcoal/5 dark:bg-cream/5 p-6 border-b-2 border-charcoal/10 dark:border-cream/10">
                                         <div className="flex items-start gap-4">
-                                            <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-semibold">
+                                            <div className="w-10 h-10 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center text-white dark:text-navy font-bold">
                                                 You
                                             </div>
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2 mb-2">
-                                                    <span className="font-semibold text-slate-800">Your Review Comment</span>
-                                                    <span className="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded">
+                                                    <span className="font-bold text-charcoal dark:text-cream uppercase tracking-wider text-sm">Your Review Comment</span>
+                                                    <span className="text-xs bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream px-2 py-1 rounded font-bold">
                                                         Line {conversation.userComment.line}
                                                     </span>
                                                 </div>
-                                                <p className="text-slate-700">{conversation.userComment.text}</p>
+                                                <p className="text-charcoal/80 dark:text-cream/80">{conversation.userComment.text}</p>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Author Response */}
-                                    <div className="p-6 border-b border-slate-200">
+                                    <div className="p-6 border-b-2 border-charcoal/10 dark:border-cream/10">
                                         <div className="flex items-start gap-4">
-                                            <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white text-lg">
+                                            <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white text-lg font-bold">
                                                 {conversation.authorResponse.avatar}
                                             </div>
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2 mb-2">
-                                                    <span className="font-semibold text-slate-800">{conversation.authorResponse.author}</span>
-                                                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">
+                                                    <span className="font-bold text-charcoal dark:text-cream">{conversation.authorResponse.author}</span>
+                                                    <span className="text-xs bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream px-2 py-1 rounded-sm font-bold uppercase tracking-wider">
                                                         {conversation.authorResponse.experience} experience
                                                     </span>
                                                     <span className={`text-xs px-2 py-1 rounded ${
@@ -425,7 +425,7 @@ module.exports = { loginUser, hashPassword };`,
                                                         {conversation.authorResponse.style}
                                                     </span>
                                                 </div>
-                                                <p className="text-slate-700 mb-4">{conversation.authorResponse.response}</p>
+                                                <p className="text-charcoal/80 dark:text-cream/80 mb-4">{conversation.authorResponse.response}</p>
                                                 
                                                 {/* Response Area */}
                                                 {!conversation.isResolved && (
@@ -436,21 +436,21 @@ module.exports = { loginUser, hashPassword };`,
                                                                     value={rebuttalResponse}
                                                                     onChange={(e) => setRebuttalResponse(e.target.value)}
                                                                     placeholder="How do you respond? Consider their perspective while defending your position..."
-                                                                    className="w-full p-4 border border-slate-300 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                                    className="w-full p-4 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md resize-none outline-none focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50"
                                                                     rows={4}
                                                                 />
                                                                 <div className="flex gap-3">
                                                                     <button
                                                                         onClick={() => submitRebuttal(conversation.id, rebuttalResponse)}
                                                                         disabled={!rebuttalResponse.trim()}
-                                                                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                                        className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                                                                     >
                                                                         <LuSend className="w-4 h-4" />
                                                                         Send Response
                                                                     </button>
                                                                     <button
                                                                         onClick={() => setActiveConversation(null)}
-                                                                        className="px-4 py-2 text-slate-600 hover:text-slate-800 transition-colors"
+                                                                        className="px-4 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream font-bold transition-colors"
                                                                     >
                                                                         Cancel
                                                                     </button>
@@ -459,7 +459,7 @@ module.exports = { loginUser, hashPassword };`,
                                                         ) : (
                                                             <button
                                                                 onClick={() => setActiveConversation(conversation.id)}
-                                                                className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
+                                                                className="flex items-center gap-2 px-4 py-2 bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream font-bold uppercase tracking-wider text-sm rounded-md transition-colors hover:bg-charcoal/20 dark:hover:bg-cream/20"
                                                             >
                                                                 <LuMessageSquare className="w-4 h-4" />
                                                                 Respond to {conversation.authorResponse.author}
@@ -470,14 +470,14 @@ module.exports = { loginUser, hashPassword };`,
 
                                                 {/* User's Rebuttal */}
                                                 {conversation.userRebuttal && (
-                                                    <div className="mt-4 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                                                    <div className="mt-4 p-4 bg-charcoal/5 dark:bg-cream/5 rounded-md border-2 border-charcoal/10 dark:border-cream/10">
                                                         <div className="flex items-center gap-2 mb-2">
-                                                            <span className="font-semibold text-indigo-800">Your Response</span>
-                                                            <span className="text-xs bg-indigo-200 text-indigo-700 px-2 py-1 rounded">
+                                                            <span className="font-bold text-charcoal dark:text-cream uppercase tracking-wider text-sm">Your Response</span>
+                                                            <span className="text-xs bg-charcoal dark:bg-cream text-white dark:text-navy px-2 py-1 rounded-sm font-bold uppercase tracking-wider">
                                                                 Communication Score: {conversation.userRebuttal.score.overall}%
                                                             </span>
                                                         </div>
-                                                        <p className="text-indigo-700">{conversation.userRebuttal.text}</p>
+                                                        <p className="text-charcoal/80 dark:text-cream/80">{conversation.userRebuttal.text}</p>
                                                     </div>
                                                 )}
                                             </div>
@@ -488,11 +488,11 @@ module.exports = { loginUser, hashPassword };`,
                         </div>
 
                         {/* Progress Indicator */}
-                        <div className="mt-8 bg-white rounded-xl shadow-lg border border-slate-200/60 p-6">
+                        <div className="mt-8 card-editorial p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h3 className="font-semibold text-slate-800">Conversation Progress</h3>
-                                    <p className="text-slate-600 text-sm">
+                                    <h3 className="font-display font-bold text-charcoal dark:text-cream">Conversation Progress</h3>
+                                    <p className="text-charcoal/80 dark:text-cream/80 text-sm font-bold">
                                         {conversations.filter(c => c.isResolved).length} of {conversations.length} conversations completed
                                     </p>
                                 </div>
@@ -500,8 +500,8 @@ module.exports = { loginUser, hashPassword };`,
                                     {conversations.map(conv => (
                                         <div
                                             key={conv.id}
-                                            className={`w-3 h-3 rounded-full ${
-                                                conv.isResolved ? 'bg-emerald-500' : 'bg-slate-300'
+                                            className={`w-3 h-3 rounded-full border-2 border-charcoal/20 dark:border-cream/20 ${
+                                                conv.isResolved ? 'bg-charcoal dark:bg-cream' : 'bg-transparent'
                                             }`}
                                         />
                                     ))}
@@ -517,93 +517,93 @@ module.exports = { loginUser, hashPassword };`,
     if (isSubmitted && reviewScore) {
         return (
             <DashboardLayout>
-                <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/20 p-6">
+                <div className="min-h-screen bg-cream dark:bg-navy font-body p-6">
                     <div className="max-w-4xl mx-auto">
                         {/* Header */}
-                        <div className="bg-white rounded-2xl shadow-lg border border-slate-200/60 p-8 mb-6">
+                        <div className="card-editorial p-8 mb-6">
                             <div className="text-center">
-                                <div className="w-20 h-20 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <LuCheck className="w-10 h-10 text-white" />
+                                <div className="w-20 h-20 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <LuCheck className="w-10 h-10 text-white dark:text-navy" />
                                 </div>
-                                <h1 className="text-3xl font-bold text-slate-800 mb-2">Review Complete!</h1>
-                                <p className="text-slate-600">Your code review has been analyzed and scored</p>
+                                <h1 className="text-3xl font-display font-bold text-charcoal dark:text-cream mb-2">Review Complete!</h1>
+                                <p className="text-charcoal/80 dark:text-cream/80 font-bold">Your code review has been analyzed and scored</p>
                             </div>
                         </div>
 
                         {/* Score Cards */}
                         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-                            <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 p-6 text-center">
-                                <div className="text-3xl font-bold text-indigo-600 mb-2">{reviewScore.overall}%</div>
-                                <div className="text-sm text-slate-600">Technical Score</div>
+                            <div className="card-editorial p-6 text-center">
+                                <div className="text-3xl font-display font-bold text-charcoal dark:text-cream mb-2">{reviewScore.overall}%</div>
+                                <div className="text-sm font-bold text-charcoal/70 dark:text-cream/70 uppercase tracking-wider">Technical Score</div>
                             </div>
-                            <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 p-6 text-center">
-                                <div className="text-3xl font-bold text-emerald-600 mb-2">{reviewScore.accuracy}%</div>
-                                <div className="text-sm text-slate-600">Accuracy</div>
+                            <div className="card-editorial p-6 text-center">
+                                <div className="text-3xl font-display font-bold text-charcoal dark:text-cream mb-2">{reviewScore.accuracy}%</div>
+                                <div className="text-sm font-bold text-charcoal/70 dark:text-cream/70 uppercase tracking-wider">Accuracy</div>
                             </div>
-                            <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 p-6 text-center">
-                                <div className="text-3xl font-bold text-purple-600 mb-2">{reviewScore.depth}/10</div>
-                                <div className="text-sm text-slate-600">Depth</div>
+                            <div className="card-editorial p-6 text-center">
+                                <div className="text-3xl font-display font-bold text-charcoal dark:text-cream mb-2">{reviewScore.depth}/10</div>
+                                <div className="text-sm font-bold text-charcoal/70 dark:text-cream/70 uppercase tracking-wider">Depth</div>
                             </div>
-                            <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 p-6 text-center">
-                                <div className="text-3xl font-bold text-orange-600 mb-2">{reviewScore.constructiveness}/10</div>
-                                <div className="text-sm text-slate-600">Constructiveness</div>
+                            <div className="card-editorial p-6 text-center">
+                                <div className="text-3xl font-display font-bold text-charcoal dark:text-cream mb-2">{reviewScore.constructiveness}/10</div>
+                                <div className="text-sm font-bold text-charcoal/70 dark:text-cream/70 uppercase tracking-wider">Constructiveness</div>
                             </div>
                             {communicationScore && (
-                                <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 p-6 text-center">
-                                    <div className="text-3xl font-bold text-blue-600 mb-2">{communicationScore.overall}%</div>
-                                    <div className="text-sm text-slate-600">Communication</div>
+                                <div className="card-editorial p-6 text-center">
+                                    <div className="text-3xl font-display font-bold text-charcoal dark:text-cream mb-2">{communicationScore.overall}%</div>
+                                    <div className="text-sm font-bold text-charcoal/70 dark:text-cream/70 uppercase tracking-wider">Communication</div>
                                 </div>
                             )}
                         </div>
 
                         {/* Communication Breakdown */}
                         {communicationScore && (
-                            <div className="bg-white rounded-2xl shadow-lg border border-slate-200/60 p-8 mb-6">
-                                <h2 className="text-xl font-semibold text-slate-800 mb-6">Communication Skills Breakdown</h2>
+                            <div className="card-editorial p-8 mb-6">
+                                <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-6">Communication Skills Breakdown</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                                            <span className="text-white font-bold text-lg">{communicationScore.empathy}%</span>
+                                        <div className="w-16 h-16 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-3">
+                                            <span className="text-white dark:text-navy font-bold text-lg">{communicationScore.empathy}%</span>
                                         </div>
-                                        <h3 className="font-semibold text-slate-800 mb-2">Empathy</h3>
-                                        <p className="text-sm text-slate-600">Understanding and acknowledging others' perspectives</p>
+                                        <h3 className="font-bold text-charcoal dark:text-cream mb-2">Empathy</h3>
+                                        <p className="text-sm text-charcoal/70 dark:text-cream/70">Understanding and acknowledging others' perspectives</p>
                                     </div>
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                                            <span className="text-white font-bold text-lg">{communicationScore.technical}%</span>
+                                        <div className="w-16 h-16 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-3">
+                                            <span className="text-white dark:text-navy font-bold text-lg">{communicationScore.technical}%</span>
                                         </div>
-                                        <h3 className="font-semibold text-slate-800 mb-2">Technical Reasoning</h3>
-                                        <p className="text-sm text-slate-600">Backing arguments with data and evidence</p>
+                                        <h3 className="font-bold text-charcoal dark:text-cream mb-2">Technical Reasoning</h3>
+                                        <p className="text-sm text-charcoal/70 dark:text-cream/70">Backing arguments with data and evidence</p>
                                     </div>
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                                            <span className="text-white font-bold text-lg">{communicationScore.leadership}%</span>
+                                        <div className="w-16 h-16 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-3">
+                                            <span className="text-white dark:text-navy font-bold text-lg">{communicationScore.leadership}%</span>
                                         </div>
-                                        <h3 className="font-semibold text-slate-800 mb-2">Leadership</h3>
-                                        <p className="text-sm text-slate-600">Providing clear direction and recommendations</p>
+                                        <h3 className="font-bold text-charcoal dark:text-cream mb-2">Leadership</h3>
+                                        <p className="text-sm text-charcoal/70 dark:text-cream/70">Providing clear direction and recommendations</p>
                                     </div>
                                 </div>
                             </div>
                         )}
 
                         {/* Detailed Feedback */}
-                        <div className="bg-white rounded-2xl shadow-lg border border-slate-200/60 p-8 mb-6">
-                            <h2 className="text-xl font-semibold text-slate-800 mb-4">Detailed Feedback</h2>
+                        <div className="card-editorial p-8 mb-6">
+                            <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4">Detailed Feedback</h2>
                             <div className="space-y-4">
-                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                                    <span className="text-slate-700">Issues Found</span>
-                                    <span className="font-semibold text-slate-800">{reviewScore.issuesFound} / {reviewScore.totalIssues}</span>
+                                <div className="flex items-center justify-between p-4 bg-charcoal/5 dark:bg-cream/5 rounded-md border-2 border-charcoal/10 dark:border-cream/10">
+                                    <span className="text-charcoal dark:text-cream font-bold">Issues Found</span>
+                                    <span className="font-bold text-charcoal dark:text-cream">{reviewScore.issuesFound} / {reviewScore.totalIssues}</span>
                                 </div>
-                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                                    <span className="text-slate-700">Comments Added</span>
-                                    <span className="font-semibold text-slate-800">{comments.length}</span>
+                                <div className="flex items-center justify-between p-4 bg-charcoal/5 dark:bg-cream/5 rounded-md border-2 border-charcoal/10 dark:border-cream/10">
+                                    <span className="text-charcoal dark:text-cream font-bold">Comments Added</span>
+                                    <span className="font-bold text-charcoal dark:text-cream">{comments.length}</span>
                                 </div>
-                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                                    <span className="text-slate-700">Review Quality</span>
-                                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                        reviewScore.overall >= 80 ? 'bg-emerald-100 text-emerald-700' :
-                                        reviewScore.overall >= 60 ? 'bg-yellow-100 text-yellow-700' :
-                                        'bg-red-100 text-red-700'
+                                <div className="flex items-center justify-between p-4 bg-charcoal/5 dark:bg-cream/5 rounded-md border-2 border-charcoal/10 dark:border-cream/10">
+                                    <span className="text-charcoal dark:text-cream font-bold">Review Quality</span>
+                                    <span className={`px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider ${
+                                        reviewScore.overall >= 80 ? 'bg-charcoal dark:bg-cream text-white dark:text-navy' :
+                                        reviewScore.overall >= 60 ? 'bg-charcoal/20 dark:bg-cream/20 text-charcoal dark:text-cream' :
+                                        'bg-red-500/20 text-red-700 dark:text-red-400'
                                     }`}>
                                         {reviewScore.overall >= 80 ? 'Excellent' :
                                          reviewScore.overall >= 60 ? 'Good' : 'Needs Improvement'}
@@ -616,13 +616,13 @@ module.exports = { loginUser, hashPassword };`,
                         <div className="flex gap-4 justify-center">
                             <button
                                 onClick={() => navigate('/dashboard')}
-                                className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300"
+                                className="btn-primary"
                             >
                                 Back to Dashboard
                             </button>
                             <button
                                 onClick={() => window.location.reload()}
-                                className="px-6 py-3 bg-white text-slate-700 font-semibold rounded-xl border border-slate-300 hover:shadow-lg transition-all duration-300"
+                                className="px-6 py-3 bg-white dark:bg-navy-light text-charcoal dark:text-cream font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all"
                             >
                                 Try Another Review
                             </button>
@@ -635,31 +635,31 @@ module.exports = { loginUser, hashPassword };`,
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/20">
+            <div className="min-h-screen bg-cream dark:bg-navy font-body">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                <div className="bg-charcoal dark:bg-navy-light text-cream border-b-2 border-charcoal dark:border-cream/20">
                     <div className="container mx-auto px-4 md:px-6 py-8">
                         <div className="max-w-6xl mx-auto">
                             <div className="flex items-center gap-4 mb-6">
                                 <button
                                     onClick={() => navigate('/code-review')}
-                                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                    className="p-2 hover:bg-cream/10 rounded-md transition-colors"
                                 >
                                     <LuArrowLeft className="w-5 h-5" />
                                 </button>
                                 <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                    <div className="w-12 h-12 bg-cream/10 rounded-md flex items-center justify-center">
                                         <LuCode className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h1 className="text-2xl font-bold">Code Review Simulator</h1>
-                                        <p className="text-white/80">Review code like a senior engineer</p>
+                                        <h1 className="text-2xl font-display font-bold text-cream">Code Review Simulator</h1>
+                                        <p className="text-cream/80">Review code like a senior engineer</p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Review Info */}
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                            <div className="bg-cream/5 border border-cream/10 rounded-md p-6">
                                 <div className="flex flex-wrap items-center justify-between gap-6">
                                     <div className="flex flex-wrap items-center gap-6 text-sm">
                                         <div className="flex items-center gap-2">
@@ -684,20 +684,20 @@ module.exports = { loginUser, hashPassword };`,
                                     <div className="flex items-center gap-3">
                                         <button
                                             onClick={() => setShowHints(!showHints)}
-                                            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                                            className={`px-3 py-1.5 rounded-sm text-sm font-bold uppercase tracking-wider transition-all border-2 border-transparent ${
                                                 showHints 
-                                                    ? 'bg-white/20 text-white' 
-                                                    : 'bg-white/10 text-white/80 hover:bg-white/15'
+                                                    ? 'bg-cream text-charcoal' 
+                                                    : 'bg-cream/10 text-cream/80 hover:bg-cream/20'
                                             }`}
                                         >
                                             {showHints ? '🔍 Hide Hints' : '💡 Show Hints'}
                                         </button>
                                         <button
                                             onClick={() => setHintsEnabled(!hintsEnabled)}
-                                            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                                            className={`px-3 py-1.5 rounded-sm text-sm font-bold uppercase tracking-wider transition-all border-2 border-transparent ${
                                                 hintsEnabled 
-                                                    ? 'bg-white/20 text-white' 
-                                                    : 'bg-white/10 text-white/80 hover:bg-white/15'
+                                                    ? 'bg-cream text-charcoal' 
+                                                    : 'bg-cream/10 text-cream/80 hover:bg-cream/20'
                                             }`}
                                         >
                                             {hintsEnabled ? '🤖 AI Hints: ON' : '🤖 AI Hints: OFF'}
@@ -716,11 +716,11 @@ module.exports = { loginUser, hashPassword };`,
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                             {/* Code Panel */}
                             <div className="lg:col-span-2">
-                                <div className="bg-white rounded-2xl shadow-lg border border-slate-200/60 overflow-hidden">
-                                    <div className="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                                <div className="card-editorial overflow-hidden">
+                                    <div className="bg-charcoal/5 dark:bg-cream/5 px-6 py-4 border-b-2 border-charcoal/10 dark:border-cream/10">
                                         <div className="flex items-center gap-3">
-                                            <LuCode className="w-5 h-5 text-slate-600" />
-                                            <span className="font-semibold text-slate-800">{currentReview.codeBlocks[0].filename}</span>
+                                            <LuCode className="w-5 h-5 text-charcoal dark:text-cream" />
+                                            <span className="font-bold text-charcoal dark:text-cream">{currentReview.codeBlocks[0].filename}</span>
                                         </div>
                                     </div>
                                     <div className="relative">
@@ -763,7 +763,7 @@ module.exports = { loginUser, hashPassword };`,
                                                     const hint = getHintForLine(hoveredLine);
                                                     return hint ? (
                                                         <div 
-                                                            className="absolute right-4 bg-slate-800 text-white px-3 py-2 rounded-lg shadow-lg text-sm max-w-xs z-10"
+                                                            className="absolute right-4 bg-charcoal dark:bg-navy text-cream px-3 py-2 rounded-md border-2 border-cream/20 shadow-lg text-sm max-w-xs z-10 font-bold"
                                                             style={{ top: `${hoveredLine * 1.5}em` }}
                                                         >
                                                             <div className="flex items-center gap-2 mb-1">
@@ -784,7 +784,7 @@ module.exports = { loginUser, hashPassword };`,
                                         {comments.map(comment => (
                                             <div
                                                 key={comment.id}
-                                                className="absolute right-4 w-3 h-3 bg-blue-500 rounded-full border-2 border-white shadow-sm"
+                                                className="absolute right-4 w-3 h-3 bg-charcoal dark:bg-cream rounded-full border-2 border-cream shadow-sm"
                                                 style={{ top: `${comment.line * 1.5}em` }}
                                                 title={`Comment on line ${comment.line}`}
                                             />
@@ -794,29 +794,29 @@ module.exports = { loginUser, hashPassword };`,
 
                                 {/* Add Comment Form */}
                                 {selectedLine && (
-                                    <div className="mt-6 bg-white rounded-xl shadow-lg border border-slate-200/60 p-6">
+                                    <div className="mt-6 card-editorial p-6">
                                         <div className="flex items-center gap-3 mb-4">
-                                            <LuMessageSquare className="w-5 h-5 text-indigo-600" />
-                                            <span className="font-semibold text-slate-800">Add comment for line {selectedLine}</span>
+                                            <LuMessageSquare className="w-5 h-5 text-charcoal dark:text-cream" />
+                                            <span className="font-bold text-charcoal dark:text-cream">Add comment for line {selectedLine}</span>
                                         </div>
                                         <textarea
                                             value={newComment}
                                             onChange={(e) => setNewComment(e.target.value)}
                                             placeholder="What issues do you see? Suggest improvements..."
-                                            className="w-full p-4 border border-slate-300 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                            className="w-full p-4 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md resize-none outline-none focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50"
                                             rows={4}
                                         />
                                         <div className="flex gap-3 mt-4">
                                             <button
                                                 onClick={() => addComment(selectedLine)}
-                                                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                                                className="btn-primary"
                                             >
                                                 <LuSend className="w-4 h-4" />
                                                 Add Comment
                                             </button>
                                             <button
                                                 onClick={() => setSelectedLine(null)}
-                                                className="px-4 py-2 text-slate-600 hover:text-slate-800 transition-colors"
+                                                className="px-4 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream font-bold transition-colors"
                                             >
                                                 Cancel
                                             </button>
@@ -828,9 +828,9 @@ module.exports = { loginUser, hashPassword };`,
                             {/* Comments Panel */}
                             <div className="space-y-6">
                                 {/* Instructions */}
-                                <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 p-6">
-                                    <h3 className="font-semibold text-slate-800 mb-3">How to Review</h3>
-                                    <ul className="space-y-2 text-sm text-slate-600">
+                                <div className="card-editorial p-6">
+                                    <h3 className="font-display font-bold text-charcoal dark:text-cream mb-3">How to Review</h3>
+                                    <ul className="space-y-2 text-sm text-charcoal/80 dark:text-cream/80 font-bold">
                                         <li className="flex items-start gap-2">
                                             <LuInfo className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
                                             <span>Look for bugs and edge cases</span>
@@ -851,25 +851,25 @@ module.exports = { loginUser, hashPassword };`,
                                 </div>
 
                                 {/* Comments List */}
-                                <div className="bg-white rounded-xl shadow-lg border border-slate-200/60 p-6">
-                                    <h3 className="font-semibold text-slate-800 mb-4">Your Comments ({comments.length})</h3>
+                                <div className="card-editorial p-6">
+                                    <h3 className="font-display font-bold text-charcoal dark:text-cream mb-4">Your Comments ({comments.length})</h3>
                                     {comments.length === 0 ? (
-                                        <p className="text-slate-500 text-center py-8">
+                                        <p className="text-charcoal/60 dark:text-cream/60 text-center py-8 font-bold">
                                             Click on any line of code to add a comment
                                         </p>
                                     ) : (
                                         <div className="space-y-4">
                                             {comments.map(comment => (
-                                                <div key={comment.id} className="border border-slate-200 rounded-lg p-4">
+                                                <div key={comment.id} className="border-2 border-charcoal/10 dark:border-cream/10 rounded-md p-4">
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">
+                                                        <span className="text-xs bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
                                                             Line {comment.line}
                                                         </span>
-                                                        <span className="text-xs text-slate-500">
+                                                        <span className="text-xs text-charcoal/60 dark:text-cream/60 font-bold">
                                                             {comment.timestamp.toLocaleTimeString()}
                                                         </span>
                                                     </div>
-                                                    <p className="text-slate-700">{comment.text}</p>
+                                                    <p className="text-charcoal/80 dark:text-cream/80">{comment.text}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -880,7 +880,7 @@ module.exports = { loginUser, hashPassword };`,
                                 <button
                                     onClick={submitReview}
                                     disabled={comments.length === 0}
-                                    className="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full py-4 btn-primary disabled:opacity-50 disabled:cursor-not-allowed text-center justify-center"
                                 >
                                     Submit Review & Start Discussion
                                 </button>

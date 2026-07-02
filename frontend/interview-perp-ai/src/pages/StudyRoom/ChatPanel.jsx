@@ -46,13 +46,13 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
   };
 
   return (
-    <div className="card-editorial flex flex-col h-96 bg-white">
+    <div className="card-editorial flex flex-col h-96 bg-white dark:bg-navy-light">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b-2 border-charcoal/10">
-        <h3 className="text-lg font-display font-bold text-charcoal flex items-center gap-2 uppercase tracking-wider">
+      <div className="flex items-center justify-between p-4 border-b-2 border-charcoal/10 dark:border-cream/10">
+        <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream flex items-center gap-2 uppercase tracking-wider">
           💬 Chat
         </h3>
-        <button className="p-1 text-charcoal/60 hover:text-charcoal rounded">
+        <button className="p-1 text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream rounded">
           <MoreVertical className="w-4 h-4" />
         </button>
       </div>
@@ -60,7 +60,7 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 ? (
-          <div className="text-center text-charcoal/60 py-8">
+          <div className="text-center text-charcoal/60 dark:text-cream/60 py-8">
             <p className="text-sm font-medium">No messages yet</p>
             <p className="text-xs mt-1 font-medium">Start the conversation!</p>
           </div>
@@ -73,14 +73,14 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
                 </div>
               ) : (
                 <div className={`flex ${message.userId === currentUser?._id ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-xs lg:max-w-md border-2 border-charcoal font-medium ${
+                  <div className={`max-w-xs lg:max-w-md border-2 border-charcoal dark:border-cream/40 font-medium ${
                     message.userId === currentUser?._id
                       ? 'bg-charcoal text-white'
-                      : 'bg-cream text-charcoal'
+                      : 'bg-cream dark:bg-navy text-charcoal dark:text-cream'
                   } rounded-md px-3 py-2`}>
                     {/* Username for others' messages */}
                     {message.userId !== currentUser?._id && (
-                      <div className="text-xs font-bold text-charcoal/80 mb-1">
+                      <div className="text-xs font-bold text-charcoal/80 dark:text-cream/80 mb-1">
                         {message.username}
                       </div>
                     )}
@@ -94,7 +94,7 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
                     <div className={`text-xs mt-1 font-bold ${
                       message.userId === currentUser?._id
                         ? 'text-white/60'
-                        : 'text-charcoal/60'
+                        : 'text-charcoal/60 dark:text-cream/60'
                     }`}>
                       {formatTime(message.timestamp)}
                     </div>
@@ -108,7 +108,7 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t-2 border-charcoal/10">
+      <div className="p-4 border-t-2 border-charcoal/10 dark:border-cream/10">
         <div className="flex items-end gap-2">
           <div className="flex-1 relative">
             <textarea
@@ -116,7 +116,7 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type a message..."
-              className="w-full px-3 py-2 pr-20 border-2 border-charcoal rounded-md resize-none focus:outline-none bg-cream text-charcoal font-medium"
+              className="w-full px-3 py-2 pr-20 border-2 border-charcoal dark:border-cream/40 rounded-md resize-none focus:outline-none bg-cream dark:bg-navy text-charcoal dark:text-cream font-medium"
               rows="1"
               style={{ minHeight: '40px', maxHeight: '120px' }}
             />
@@ -126,7 +126,7 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
               <div className="relative">
                 <button
                   onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                  className="p-1 text-gray-400 hover:text-gray-600 rounded"
+                  className="p-1 text-gray-400 hover:text-gray-600 dark:text-cream/40 dark:hover:text-cream/70 rounded"
                   title="Add emoji"
                 >
                   <Smile className="w-4 h-4" />
@@ -134,12 +134,12 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
                 
                 {/* Emoji picker */}
                 {showEmojiPicker && (
-                  <div className="absolute bottom-8 right-0 bg-white rounded-lg shadow-lg border p-2 grid grid-cols-6 gap-1 z-10">
+                  <div className="absolute bottom-8 right-0 bg-white dark:bg-navy-light rounded-lg shadow-lg border dark:border-cream/20 p-2 grid grid-cols-6 gap-1 z-10">
                     {emojis.map((emoji, index) => (
                       <button
                         key={index}
                         onClick={() => addEmoji(emoji)}
-                        className="p-1 hover:bg-gray-100 rounded text-lg"
+                        className="p-1 hover:bg-gray-100 dark:hover:bg-navy rounded text-lg"
                       >
                         {emoji}
                       </button>
@@ -149,7 +149,7 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
               </div>
               
               <button
-                className="p-1 text-gray-400 hover:text-gray-600 rounded"
+                className="p-1 text-gray-400 hover:text-gray-600 dark:text-cream/40 dark:hover:text-cream/70 rounded"
                 title="Attach file"
               >
                 <Paperclip className="w-4 h-4" />
@@ -160,7 +160,9 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
           <button
             onClick={onSendMessage}
             disabled={!newMessage.trim()}
-            className="bg-charcoal text-white p-2 border-2 border-charcoal rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none transition-all duration-200"
+            className="bg-charcoal text-white p-2 border-2 border-charcoal rounded-md hover:-translate-y-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 transition-all duration-200"
+            onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+            onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
             title="Send message"
           >
             <Send className="w-4 h-4" />
@@ -168,7 +170,7 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
         </div>
         
         {/* Typing indicator */}
-        <div className="mt-2 text-xs text-gray-500 h-4">
+        <div className="mt-2 text-xs text-gray-500 dark:text-cream/40 h-4">
           {/* You can add typing indicators here */}
         </div>
       </div>

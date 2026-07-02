@@ -153,9 +153,9 @@ const PhaseOverviewPage = () => {
     if (isLoading) {
         return (
             <DashboardLayout>
-                <div className="flex flex-col items-center justify-center h-screen font-body bg-cream">
+                <div className="flex flex-col items-center justify-center h-screen font-body bg-cream dark:bg-navy">
                     <SpinnerLoader />
-                    <p className="text-charcoal mt-4 text-center font-bold">
+                    <p className="text-charcoal dark:text-cream mt-4 text-center font-bold">
                         Preparing your phase overview... ✨
                     </p>
                 </div>
@@ -166,17 +166,17 @@ const PhaseOverviewPage = () => {
     if (!currentPhase) {
         return (
             <DashboardLayout>
-                <div className="text-center py-20 font-body bg-cream min-h-screen">
-                    <div className="w-20 h-20 bg-charcoal rounded-full flex items-center justify-center mx-auto mb-6">
-                        <LuTarget className="w-10 h-10 text-white" />
+                <div className="text-center py-20 font-body bg-cream dark:bg-navy min-h-screen">
+                    <div className="w-20 h-20 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-6">
+                        <LuTarget className="w-10 h-10 text-white dark:text-navy" />
                     </div>
-                    <h2 className="text-2xl font-display font-bold text-charcoal mb-4">Phase Not Found</h2>
-                    <p className="text-charcoal/80 mb-6">
+                    <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4">Phase Not Found</h2>
+                    <p className="text-charcoal/80 dark:text-cream/80 mb-6">
                         The requested phase could not be found.
                     </p>
                     <button
                         onClick={() => navigate(`/roadmap?role=${encodeURIComponent(role)}`)}
-                        className="px-6 py-3 bg-charcoal border-2 border-charcoal text-white font-bold uppercase tracking-wider text-sm rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
+                        className="px-6 py-3 bg-charcoal dark:bg-cream border-2 border-charcoal dark:border-cream/40 text-white dark:text-navy font-bold uppercase tracking-wider text-sm rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
                     >
                         Back to Roadmap
                     </button>
@@ -187,9 +187,9 @@ const PhaseOverviewPage = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-cream font-body">
+            <div className="min-h-screen bg-cream dark:bg-navy font-body">
                 {/* Enhanced Hero Header */}
-                <div className={`bg-charcoal text-white border-b-2 border-charcoal`}>
+                <div className={`bg-charcoal dark:bg-navy-input text-white dark:text-cream border-b-2 border-charcoal dark:border-cream/40`}>
                     <div className="container mx-auto px-4 md:px-6 py-12">
                         <div className="max-w-4xl mx-auto">
                             {/* Breadcrumb */}
@@ -215,14 +215,14 @@ const PhaseOverviewPage = () => {
                                     
                                     {/* Phase Stats */}
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="bg-white text-charcoal border-2 border-charcoal rounded-md p-4 shadow-[4px_4px_0px_0px_#1A1A1A]">
+                                        <div className="bg-white dark:bg-navy-light text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 rounded-md p-4" style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}>
                                             <div className="flex items-center gap-2 mb-2">
                                                 <LuBookOpen className="w-5 h-5" />
                                                 <span className="font-bold">Sessions</span>
                                             </div>
                                             <div className="text-2xl font-display font-bold">{currentPhase.sessionsCount}</div>
                                         </div>
-                                        <div className="bg-white text-charcoal border-2 border-charcoal rounded-md p-4 shadow-[4px_4px_0px_0px_#1A1A1A]">
+                                        <div className="bg-white dark:bg-navy-light text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 rounded-md p-4" style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}>
                                             <div className="flex items-center gap-2 mb-2">
                                                 <LuTarget className="w-5 h-5" />
                                                 <span className="font-bold">Questions</span>
@@ -284,21 +284,22 @@ const PhaseOverviewPage = () => {
                             {/* Key Topics */}
                             <div className="card-editorial p-8">
                                 <div className="flex items-center gap-3 mb-6">
-                                    <div className={`w-10 h-10 bg-charcoal rounded-md flex items-center justify-center`}>
-                                        <LuBrain className="w-5 h-5 text-white" />
+                                    <div className={`w-10 h-10 bg-charcoal dark:bg-cream rounded-md flex items-center justify-center`}>
+                                        <LuBrain className="w-5 h-5 text-white dark:text-navy" />
                                     </div>
-                                    <h2 className="text-2xl font-display font-bold text-charcoal">Key Topics</h2>
+                                    <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream">Key Topics</h2>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {currentPhase.topics.map((topic, index) => (
                                         <div
                                             key={index}
-                                            className="flex items-center gap-3 p-4 bg-white rounded-md border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A]"
+                                            className="flex items-center gap-3 p-4 bg-white dark:bg-navy-light rounded-md border-2 border-charcoal dark:border-cream/40"
+                                            style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}
                                         >
-                                            <div className="w-8 h-8 bg-charcoal rounded-sm flex items-center justify-center">
-                                                <span className="text-white font-bold text-sm">{index + 1}</span>
+                                            <div className="w-8 h-8 bg-charcoal dark:bg-cream rounded-sm flex items-center justify-center">
+                                                <span className="text-white dark:text-navy font-bold text-sm">{index + 1}</span>
                                             </div>
-                                            <span className="font-bold text-charcoal">{topic}</span>
+                                            <span className="font-bold text-charcoal dark:text-cream">{topic}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -309,38 +310,41 @@ const PhaseOverviewPage = () => {
                             {sessionTemplates.length > 0 ? (
                                 <div className="card-editorial p-8">
                                     <div className="flex items-center gap-3 mb-6">
-                                        <div className={`w-10 h-10 bg-charcoal rounded-md flex items-center justify-center`}>
-                                            <LuRocket className="w-5 h-5 text-white" />
+                                        <div className={`w-10 h-10 bg-charcoal dark:bg-cream rounded-md flex items-center justify-center`}>
+                                            <LuRocket className="w-5 h-5 text-white dark:text-navy" />
                                         </div>
-                                        <h2 className="text-2xl font-display font-bold text-charcoal">Your Sessions ({sessionTemplates.length})</h2>
+                                        <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream">Your Sessions ({sessionTemplates.length})</h2>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {sessionTemplates.map((template, index) => (
                                             <div
                                                 key={template._id}
-                                                className="bg-white border-2 border-charcoal rounded-md p-6 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200"
+                                                className="bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md p-6 hover:-translate-y-1 transition-all duration-200"
+                                                style={{ transition: 'transform 0.2s, box-shadow 0.2s' }}
+                                                onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+                                                onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
                                             >
                                                 <div className="flex items-start justify-between mb-4">
                                                     <div className="flex-1">
-                                                        <h3 className="font-display font-bold text-charcoal text-lg mb-2">
+                                                        <h3 className="font-display font-bold text-charcoal dark:text-cream text-lg mb-2">
                                                             {template.role}
                                                         </h3>
-                                                        <p className="text-sm text-charcoal/80 mb-3">
+                                                        <p className="text-sm text-charcoal/80 dark:text-cream/80 mb-3">
                                                             {template.description}
                                                         </p>
                                                         <div className="flex flex-wrap gap-2 mb-3">
                                                             {template.topicsToFocus.slice(0, 3).map((topic, i) => (
-                                                                <span key={i} className="text-xs bg-charcoal/5 border border-charcoal text-charcoal font-bold px-2 py-1 rounded-sm">
+                                                                <span key={i} className="text-xs bg-charcoal/5 dark:bg-cream/5 border border-charcoal dark:border-cream/40 text-charcoal dark:text-cream font-bold px-2 py-1 rounded-sm">
                                                                     {topic}
                                                                 </span>
                                                             ))}
                                                             {template.topicsToFocus.length > 3 && (
-                                                                <span className="text-xs bg-cream border border-charcoal/20 text-charcoal/80 font-bold px-2 py-1 rounded-sm">
+                                                                <span className="text-xs bg-cream dark:bg-navy border border-charcoal/20 dark:border-cream/20 text-charcoal/80 dark:text-cream/80 font-bold px-2 py-1 rounded-sm">
                                                                     +{template.topicsToFocus.length - 3} more
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        <div className="flex items-center gap-4 text-sm text-charcoal/80">
+                                                        <div className="flex items-center gap-4 text-sm text-charcoal/80 dark:text-cream/80">
                                                             <span className="flex items-center gap-1 font-bold">
                                                                 <LuTarget className="w-4 h-4" />
                                                                 {template.questions?.length || 5} questions
@@ -356,18 +360,18 @@ const PhaseOverviewPage = () => {
                                                 {template.isStarted ? (
                                                     <div className="space-y-2">
                                                         <div className="flex items-center justify-between text-sm mb-2">
-                                                            <span className="text-charcoal/80 font-bold">Progress</span>
-                                                            <span className="font-bold text-charcoal">{template.completionPercentage}%</span>
+                                                            <span className="text-charcoal/80 dark:text-cream/80 font-bold">Progress</span>
+                                                            <span className="font-bold text-charcoal dark:text-cream">{template.completionPercentage}%</span>
                                                         </div>
-                                                        <div className="w-full bg-cream border-2 border-charcoal/20 rounded-full h-2 mb-3">
+                                                        <div className="w-full bg-cream dark:bg-navy border-2 border-charcoal/20 dark:border-cream/20 rounded-full h-2 mb-3">
                                                             <div 
-                                                                className="bg-charcoal h-2 transition-all duration-300"
+                                                                className="bg-charcoal dark:bg-cream h-2 transition-all duration-300"
                                                                 style={{ width: `${template.completionPercentage}%` }}
                                                             />
                                                         </div>
                                                         <button
                                                             onClick={() => navigate(`/roadmap-session/${template.sessionId}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`)}
-                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white text-charcoal border-2 border-charcoal font-bold uppercase tracking-wider text-xs rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 cursor-pointer"
+                                                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-navy-light text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 font-bold uppercase tracking-wider text-xs rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all duration-200 cursor-pointer"
                                                         >
                                                             <LuPlay className="w-4 h-4" />
                                                             {template.completionPercentage === 100 ? 'Review Session' : 'Continue Session'}
@@ -377,11 +381,11 @@ const PhaseOverviewPage = () => {
                                                     <button
                                                         onClick={() => handleStartSession(template)}
                                                         disabled={creatingSession === template._id}
-                                                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-charcoal text-white border-2 border-charcoal font-bold uppercase tracking-wider text-xs rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                                                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-charcoal dark:bg-cream text-white dark:text-navy border-2 border-charcoal dark:border-cream/40 font-bold uppercase tracking-wider text-xs rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                                                     >
                                                         {creatingSession === template._id ? (
                                                             <>
-                                                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                                                <div className="w-4 h-4 border-2 border-white dark:border-navy border-t-transparent dark:border-t-transparent rounded-full animate-spin" />
                                                                 Generating Questions...
                                                             </>
                                                         ) : (
@@ -399,7 +403,7 @@ const PhaseOverviewPage = () => {
                             ) : (
                                 <div className="card-editorial p-8">
                                     <div className="text-center py-8">
-                                        <p className="text-charcoal/80 font-bold">No session templates available for this phase yet.</p>
+                                        <p className="text-charcoal/80 dark:text-cream/80 font-bold">No session templates available for this phase yet.</p>
                                     </div>
                                 </div>
                             )}
@@ -409,11 +413,14 @@ const PhaseOverviewPage = () => {
                         <div className="space-y-6">
                             {/* Action Buttons */}
                             <div className="card-editorial p-6">
-                                <h3 className="text-xl font-display font-bold text-charcoal mb-6">Ready to Learn?</h3>
+                                <h3 className="text-xl font-display font-bold text-charcoal dark:text-cream mb-6">Ready to Learn?</h3>
                                 <div className="space-y-4">
                                     <button
                                         onClick={handleBrowseSessions}
-                                        className="w-full flex items-center justify-center gap-3 px-6 py-4 font-bold uppercase tracking-wider text-sm rounded-md text-charcoal bg-white border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 cursor-pointer"
+                                        className="w-full flex items-center justify-center gap-3 px-6 py-4 font-bold uppercase tracking-wider text-sm rounded-md text-charcoal dark:text-cream bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+                                        style={{ transition: 'transform 0.3s, box-shadow 0.3s' }}
+                                        onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+                                        onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
                                     >
                                         <LuBookOpen className="w-5 h-5" />
                                         <span>Browse All Sessions</span>
@@ -422,7 +429,7 @@ const PhaseOverviewPage = () => {
                                     {currentPhase.completionPercentage >= 70 && (
                                         <button
                                             onClick={handleStartPhaseQuiz}
-                                            className="w-full flex items-center justify-center gap-3 px-6 py-4 font-bold uppercase tracking-wider text-sm rounded-md text-white bg-charcoal border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 cursor-pointer"
+                                            className="w-full flex items-center justify-center gap-3 px-6 py-4 font-bold uppercase tracking-wider text-sm rounded-md text-white dark:text-navy bg-charcoal dark:bg-cream border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all duration-300 cursor-pointer"
                                         >
                                             <LuAward className="w-5 h-5" />
                                             <span>Take Phase Quiz</span>
@@ -433,25 +440,25 @@ const PhaseOverviewPage = () => {
 
                             {/* Progress Summary */}
                             <div className="card-editorial p-6">
-                                <h3 className="text-xl font-display font-bold text-charcoal mb-4">Your Progress</h3>
+                                <h3 className="text-xl font-display font-bold text-charcoal dark:text-cream mb-4">Your Progress</h3>
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-charcoal/80 font-bold">Mastered Questions</span>
-                                        <span className="font-bold text-charcoal">{currentPhase.masteredQuestions}/{currentPhase.totalQuestions}</span>
+                                        <span className="text-charcoal/80 dark:text-cream/80 font-bold">Mastered Questions</span>
+                                        <span className="font-bold text-charcoal dark:text-cream">{currentPhase.masteredQuestions}/{currentPhase.totalQuestions}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-charcoal/80 font-bold">Sessions Started</span>
-                                        <span className="font-bold text-charcoal">{currentPhase.sessionsCount}</span>
+                                        <span className="text-charcoal/80 dark:text-cream/80 font-bold">Sessions Started</span>
+                                        <span className="font-bold text-charcoal dark:text-cream">{currentPhase.sessionsCount}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-charcoal/80 font-bold">Estimated Time</span>
-                                        <span className="font-bold text-charcoal">{currentPhase.estimatedDays} days</span>
+                                        <span className="text-charcoal/80 dark:text-cream/80 font-bold">Estimated Time</span>
+                                        <span className="font-bold text-charcoal dark:text-cream">{currentPhase.estimatedDays} days</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Motivational Message */}
-                            <div className={`bg-charcoal border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A] rounded-md p-6 text-white`}>
+                            <div className={`bg-charcoal dark:bg-navy-input border-2 border-charcoal dark:border-cream/40 shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] rounded-md p-6 text-white dark:text-cream`}>
                                 <div className="text-center">
                                     <LuStar className="w-8 h-8 mx-auto mb-3" />
                                     <h4 className="font-display font-bold text-lg mb-2">

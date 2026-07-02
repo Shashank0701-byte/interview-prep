@@ -491,9 +491,9 @@ const PhaseSessionLibrary = () => {
     if (isLoading) {
         return (
             <DashboardLayout>
-                <div className="flex flex-col items-center justify-center h-screen bg-cream font-body">
+                <div className="flex flex-col items-center justify-center h-screen bg-cream dark:bg-navy font-body">
                     <SpinnerLoader />
-                    <p className="text-charcoal mt-4 text-center font-bold">
+                    <p className="text-charcoal dark:text-cream mt-4 text-center font-bold">
                         Loading phase sessions... ✨
                     </p>
                 </div>
@@ -504,17 +504,17 @@ const PhaseSessionLibrary = () => {
     if (!currentPhase) {
         return (
             <DashboardLayout>
-                <div className="text-center py-20 bg-cream min-h-screen font-body">
-                    <div className="w-20 h-20 bg-charcoal rounded-full flex items-center justify-center mx-auto mb-6">
-                        <LuBookOpen className="w-10 h-10 text-white" />
+                <div className="text-center py-20 bg-cream dark:bg-navy min-h-screen font-body">
+                    <div className="w-20 h-20 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-6">
+                        <LuBookOpen className="w-10 h-10 text-white dark:text-navy" />
                     </div>
-                    <h2 className="text-2xl font-display font-bold text-charcoal mb-4">Phase Not Found</h2>
-                    <p className="text-charcoal/80 mb-6">
+                    <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4">Phase Not Found</h2>
+                    <p className="text-charcoal/80 dark:text-cream/80 mb-6">
                         The requested phase could not be found.
                     </p>
                     <button
                         onClick={() => navigate(`/roadmap?role=${encodeURIComponent(role)}`)}
-                        className="px-6 py-3 bg-charcoal text-white font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
+                        className="px-6 py-3 bg-charcoal dark:bg-cream text-white dark:text-navy font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
                     >
                         Back to Roadmap
                     </button>
@@ -525,9 +525,9 @@ const PhaseSessionLibrary = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-cream font-body">
+            <div className="min-h-screen bg-cream dark:bg-navy font-body">
                 {/* Header */}
-                <div className={`bg-charcoal text-white border-b-2 border-charcoal`}>
+                <div className={`bg-charcoal dark:bg-navy-input text-white dark:text-cream border-b-2 border-charcoal dark:border-cream/40`}>
                     <div className="container mx-auto px-4 md:px-6 py-8">
                         <div className="max-w-6xl mx-auto">
                             {/* Breadcrumb */}
@@ -561,7 +561,7 @@ const PhaseSessionLibrary = () => {
                                 
                                 <button
                                     onClick={() => navigate(`/phase/${encodeURIComponent(role)}/${phaseId}`)}
-                                    className="flex items-center gap-2 px-4 py-2 bg-white text-charcoal font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
+                                    className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-navy-light text-charcoal dark:text-cream font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
                                 >
                                     <LuArrowLeft className="w-4 h-4" />
                                     <span>Back to Phase</span>
@@ -574,17 +574,17 @@ const PhaseSessionLibrary = () => {
                 <div className="container mx-auto px-4 md:px-6 py-8 max-w-6xl">
                     {/* Filters */}
                     <div className="card-editorial p-6 mb-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 font-bold text-charcoal">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 font-bold text-charcoal dark:text-cream">
                             {/* Search */}
                             <div className="lg:col-span-2">
                                 <div className="relative">
-                                    <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-charcoal/50 w-4 h-4" />
+                                    <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-charcoal/50 dark:text-cream/50 w-4 h-4" />
                                     <input
                                         type="text"
                                         placeholder="Search sessions..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-2 border-2 border-charcoal rounded-md outline-none focus:ring-0 text-charcoal bg-white"
+                                        className="w-full pl-10 pr-4 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md outline-none focus:ring-0 text-charcoal dark:text-cream bg-white dark:bg-navy-light"
                                     />
                                 </div>
                             </div>
@@ -594,7 +594,7 @@ const PhaseSessionLibrary = () => {
                                 <select
                                     value={selectedTopic}
                                     onChange={(e) => setSelectedTopic(e.target.value)}
-                                    className="w-full px-3 py-2 border-2 border-charcoal rounded-md outline-none focus:ring-0 text-charcoal bg-white cursor-pointer"
+                                    className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md outline-none focus:ring-0 text-charcoal dark:text-cream bg-white dark:bg-navy-light cursor-pointer"
                                 >
                                     <option value="all">All Topics</option>
                                     {currentPhase.topics.map(topic => (
@@ -608,7 +608,7 @@ const PhaseSessionLibrary = () => {
                                 <select
                                     value={selectedDifficulty}
                                     onChange={(e) => setSelectedDifficulty(e.target.value)}
-                                    className="w-full px-3 py-2 border-2 border-charcoal rounded-md outline-none focus:ring-0 text-charcoal bg-white cursor-pointer"
+                                    className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md outline-none focus:ring-0 text-charcoal dark:text-cream bg-white dark:bg-navy-light cursor-pointer"
                                 >
                                     <option value="all">All Levels</option>
                                     <option value="easy">Easy (0-2 years)</option>
@@ -622,7 +622,7 @@ const PhaseSessionLibrary = () => {
                                 <select
                                     value={selectedType}
                                     onChange={(e) => setSelectedType(e.target.value)}
-                                    className="w-full px-3 py-2 border-2 border-charcoal rounded-md outline-none focus:ring-0 text-charcoal bg-white cursor-pointer"
+                                    className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md outline-none focus:ring-0 text-charcoal dark:text-cream bg-white dark:bg-navy-light cursor-pointer"
                                 >
                                     <option value="all">All Types</option>
                                     <option value="coding">Coding</option>
@@ -636,7 +636,7 @@ const PhaseSessionLibrary = () => {
                                 <select
                                     value={selectedStatus}
                                     onChange={(e) => setSelectedStatus(e.target.value)}
-                                    className="w-full px-3 py-2 border-2 border-charcoal rounded-md outline-none focus:ring-0 text-charcoal bg-white cursor-pointer"
+                                    className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md outline-none focus:ring-0 text-charcoal dark:text-cream bg-white dark:bg-navy-light cursor-pointer"
                                 >
                                     <option value="all">All Status</option>
                                     <option value="recommended">Recommended</option>
@@ -651,11 +651,11 @@ const PhaseSessionLibrary = () => {
                     {/* Sessions Grid */}
                     {filteredSessions.length === 0 ? (
                         <div className="text-center py-20">
-                            <div className="w-20 h-20 bg-charcoal rounded-full flex items-center justify-center mx-auto mb-6">
-                                <LuBookOpen className="w-10 h-10 text-white" />
+                            <div className="w-20 h-20 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-6">
+                                <LuBookOpen className="w-10 h-10 text-white dark:text-navy" />
                             </div>
-                            <h3 className="text-2xl font-display font-bold text-charcoal mb-4">No Sessions Found</h3>
-                            <p className="text-charcoal/80 mb-6 font-bold">
+                            <h3 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4">No Sessions Found</h3>
+                            <p className="text-charcoal/80 dark:text-cream/80 mb-6 font-bold">
                                 {allSessions.length === 0 
                                     ? "No sessions available for this phase yet. Create some sessions to get started!"
                                     : "No sessions match your current filters. Try adjusting your search criteria."
@@ -663,7 +663,7 @@ const PhaseSessionLibrary = () => {
                             </p>
                             <button
                                 onClick={() => navigate('/dashboard')}
-                                className="px-6 py-3 bg-charcoal text-white font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
+                                className="px-6 py-3 bg-charcoal dark:bg-cream text-white dark:text-navy font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
                             >
                                 Create New Session
                             </button>
@@ -673,19 +673,22 @@ const PhaseSessionLibrary = () => {
                             {filteredSessions.map((session) => (
                                 <div
                                     key={session._id}
-                                    className="bg-white border-2 border-charcoal rounded-md shadow-[4px_4px_0px_0px_#1A1A1A] p-6 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#1A1A1A] transition-all duration-300 group flex flex-col"
+                                    className="bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md p-6 hover:-translate-y-1 transition-all duration-300 group flex flex-col"
+                                    style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.boxShadow = '6px 6px 0px 0px var(--color-shadow)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
                                 >
                                     {/* Session Header */}
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-charcoal text-white rounded-md">
+                                            <div className="p-2 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md">
                                                 {getTypeIcon(session.topicsToFocus)}
                                             </div>
                                             <div>
-                                                <h3 className="font-display font-bold text-charcoal group-hover:text-charcoal/80 transition-colors">
+                                                <h3 className="font-display font-bold text-charcoal dark:text-cream group-hover:text-charcoal/80 dark:group-hover:text-cream/80 transition-colors">
                                                     {session.role}
                                                 </h3>
-                                                <p className="text-sm text-charcoal/80 font-bold">
+                                                <p className="text-sm text-charcoal/80 dark:text-cream/80 font-bold">
                                                     {session.experience} years experience
                                                 </p>
                                             </div>
@@ -708,25 +711,25 @@ const PhaseSessionLibrary = () => {
                                                             {topics.slice(0, 3).map((topic, index) => (
                                                                 <span
                                                                     key={index}
-                                                                    className="px-2 py-1 bg-cream border border-charcoal text-charcoal text-xs font-bold rounded-sm"
+                                                                    className="px-2 py-1 bg-cream dark:bg-navy border border-charcoal dark:border-cream/40 text-charcoal dark:text-cream text-xs font-bold rounded-sm"
                                                                 >
                                                                     {topic}
                                                                 </span>
                                                             ))}
                                                             {topics.length > 3 && (
-                                                                <span className="px-2 py-1 bg-cream border border-charcoal/20 text-charcoal/80 text-xs font-bold rounded-sm">
+                                                                <span className="px-2 py-1 bg-cream dark:bg-navy border border-charcoal/20 dark:border-cream/20 text-charcoal/80 dark:text-cream/80 text-xs font-bold rounded-sm">
                                                                     +{topics.length - 3} more
                                                                 </span>
                                                             )}
                                                         </>
                                                     ) : (
-                                                        <span className="px-2 py-1 bg-cream border border-charcoal/20 text-charcoal/80 text-xs font-bold rounded-sm">
+                                                        <span className="px-2 py-1 bg-cream dark:bg-navy border border-charcoal/20 dark:border-cream/20 text-charcoal/80 dark:text-cream/80 text-xs font-bold rounded-sm">
                                                             General Practice
                                                         </span>
                                                     );
                                                 })()
                                             ) : (
-                                                <span className="px-2 py-1 bg-cream border border-charcoal/20 text-charcoal/80 text-xs font-bold rounded-sm">
+                                                <span className="px-2 py-1 bg-cream dark:bg-navy border border-charcoal/20 dark:border-cream/20 text-charcoal/80 dark:text-cream/80 text-xs font-bold rounded-sm">
                                                     General Practice
                                                 </span>
                                             )}
@@ -735,15 +738,15 @@ const PhaseSessionLibrary = () => {
 
                                     {/* Stats */}
                                     <div className="grid grid-cols-2 gap-4 mb-4">
-                                        <div className="text-center p-3 bg-white border-2 border-charcoal/20 rounded-md">
-                                            <LuTarget className="w-4 h-4 text-charcoal mx-auto mb-1" />
-                                            <div className="text-sm font-bold text-charcoal">{session.questions?.length || 0}</div>
-                                            <div className="text-xs text-charcoal/80 font-bold">Questions</div>
+                                        <div className="text-center p-3 bg-white dark:bg-navy-light border-2 border-charcoal/20 dark:border-cream/20 rounded-md">
+                                            <LuTarget className="w-4 h-4 text-charcoal dark:text-cream mx-auto mb-1" />
+                                            <div className="text-sm font-bold text-charcoal dark:text-cream">{session.questions?.length || 0}</div>
+                                            <div className="text-xs text-charcoal/80 dark:text-cream/80 font-bold">Questions</div>
                                         </div>
-                                        <div className="text-center p-3 bg-white border-2 border-charcoal/20 rounded-md">
-                                            <LuTrendingUp className="w-4 h-4 text-charcoal mx-auto mb-1" />
-                                            <div className="text-sm font-bold text-charcoal">{session.completionPercentage || 0}%</div>
-                                            <div className="text-xs text-charcoal/80 font-bold">Complete</div>
+                                        <div className="text-center p-3 bg-white dark:bg-navy-light border-2 border-charcoal/20 dark:border-cream/20 rounded-md">
+                                            <LuTrendingUp className="w-4 h-4 text-charcoal dark:text-cream mx-auto mb-1" />
+                                            <div className="text-sm font-bold text-charcoal dark:text-cream">{session.completionPercentage || 0}%</div>
+                                            <div className="text-xs text-charcoal/80 dark:text-cream/80 font-bold">Complete</div>
                                         </div>
                                     </div>
 
@@ -752,15 +755,15 @@ const PhaseSessionLibrary = () => {
                                         <div className="flex items-center gap-2">
                                             {getDifficultyBadge(session.experience)}
                                             {session.isTemplate && (
-                                                <span className="px-2 py-1 bg-charcoal text-white text-xs font-bold rounded-sm">
+                                                <span className="px-2 py-1 bg-charcoal dark:bg-cream text-white dark:text-navy text-xs font-bold rounded-sm">
                                                     Template
                                                 </span>
                                             )}
                                             {session.isRelevant && !session.isTemplate && (
-                                                <span className={`px-2 py-1 text-xs font-bold rounded-sm border border-charcoal ${
+                                                <span className={`px-2 py-1 text-xs font-bold rounded-sm border border-charcoal dark:border-cream/40 ${
                                                     session.isRoadmapSession 
-                                                        ? 'bg-cream text-charcoal' 
-                                                        : 'bg-white text-charcoal'
+                                                        ? 'bg-cream dark:bg-navy text-charcoal dark:text-cream' 
+                                                        : 'bg-white dark:bg-navy-light text-charcoal dark:text-cream'
                                                 }`}>
                                                     {session.isRoadmapSession ? 'Roadmap Session' : 'Your Session'}
                                                 </span>
@@ -772,12 +775,12 @@ const PhaseSessionLibrary = () => {
                                     {/* Description for templates or Created Date for user sessions */}
                                     {session.isTemplate ? (
                                         <div className="mb-4 flex-grow">
-                                            <p className="text-sm text-charcoal/80 font-bold">
+                                            <p className="text-sm text-charcoal/80 dark:text-cream/80 font-bold">
                                                 {session.description}
                                             </p>
                                         </div>
                                     ) : (
-                                        <div className="flex items-center gap-2 text-xs text-charcoal/50 mb-4 font-bold flex-grow">
+                                        <div className="flex items-center gap-2 text-xs text-charcoal/50 dark:text-cream/50 mb-4 font-bold flex-grow">
                                             <LuCalendar className="w-3 h-3" />
                                             <span>Created {new Date(session.createdAt).toLocaleDateString()}</span>
                                         </div>
@@ -787,7 +790,7 @@ const PhaseSessionLibrary = () => {
                                     {session.isTemplate ? (
                                         <button
                                             onClick={() => handleStartTemplate(session)}
-                                            className={`w-full flex items-center justify-center gap-2 px-4 py-3 font-bold uppercase tracking-wider text-xs rounded-md text-white bg-charcoal border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 mt-auto cursor-pointer`}
+                                            className={`w-full flex items-center justify-center gap-2 px-4 py-3 font-bold uppercase tracking-wider text-xs rounded-md text-white dark:text-navy bg-charcoal dark:bg-cream border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all duration-300 mt-auto cursor-pointer`}
                                         >
                                             <LuPlay className="w-4 h-4" />
                                             <span>Start Session</span>

@@ -64,10 +64,9 @@ connectDB();
 /* -------------------------
    SOCKET.IO
 -------------------------- */
-const socketOrigins = FRONTEND_URL ? [FRONTEND_URL] : allowedOrigins;
 const io = socketIo(server, {
   cors: {
-    origin: socketOrigins,
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },

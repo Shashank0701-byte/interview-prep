@@ -51,11 +51,11 @@ const QuestionCard = ({
     };
 
     const getDifficultyColor = (diff) => {
-        return 'border-2 border-charcoal bg-white text-charcoal shadow-[2px_2px_0px_0px_#1A1A1A]';
+        return 'border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream shadow-[2px_2px_0px_0px_var(--color-shadow)]';
     };
 
     const getProbabilityColor = (prob) => {
-        return 'border-2 border-charcoal bg-white text-charcoal shadow-[2px_2px_0px_0px_#1A1A1A]';
+        return 'border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream shadow-[2px_2px_0px_0px_var(--color-shadow)]';
     };
 
     const getInterviewTypeIcon = (type) => {
@@ -81,7 +81,7 @@ const QuestionCard = ({
                         </span>
                     )}
                     {justification?.interviewType && (
-                        <span className="px-2 py-1 text-xs font-bold uppercase tracking-wider rounded-sm border-2 border-charcoal bg-white text-charcoal shadow-[2px_2px_0px_0px_#1A1A1A]">
+                        <span className="px-2 py-1 text-xs font-bold uppercase tracking-wider rounded-sm border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream shadow-[2px_2px_0px_0px_var(--color-shadow)]">
                             {getInterviewTypeIcon(justification.interviewType)} {justification.interviewType}
                         </span>
                     )}
@@ -91,7 +91,7 @@ const QuestionCard = ({
                         </span>
                     )}
                     {category && (
-                        <span className="px-2 py-1 text-xs font-bold uppercase tracking-wider rounded-sm border-2 border-charcoal bg-white text-charcoal shadow-[2px_2px_0px_0px_#1A1A1A]">
+                        <span className="px-2 py-1 text-xs font-bold uppercase tracking-wider rounded-sm border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream shadow-[2px_2px_0px_0px_var(--color-shadow)]">
                             {category}
                         </span>
                     )}
@@ -102,15 +102,15 @@ const QuestionCard = ({
             <div className="px-6 pb-4">
                 <div className="flex items-start justify-between cursor-pointer" onClick={toggleExpand}>
                     <div className="flex items-start gap-4 flex-1">
-                        <span className="text-sm font-bold text-charcoal mt-1">Q</span>
+                        <span className="text-sm font-bold text-charcoal dark:text-cream mt-1">Q</span>
                         <div className="flex-1">
-                            <h3 className="text-sm font-bold text-charcoal leading-relaxed mb-2">
+                            <h3 className="text-sm font-bold text-charcoal dark:text-cream leading-relaxed mb-2">
                                 {question}
                             </h3>
                             
                             {/* Justification preview */}
                             {justification?.reasoning && (
-                                <p className="text-xs text-charcoal/80 bg-cream px-3 py-2 rounded-sm border-2 border-charcoal/20 mb-2 font-bold">
+                                <p className="text-xs text-charcoal/80 dark:text-cream/80 bg-cream dark:bg-navy px-3 py-2 rounded-sm border-2 border-charcoal/20 dark:border-cream/20 mb-2 font-bold">
                                     💡 {justification.reasoning.substring(0, 100)}...
                                 </p>
                             )}
@@ -123,12 +123,12 @@ const QuestionCard = ({
                                             <LuStar
                                                 key={star}
                                                 className={`w-3 h-3 ${
-                                                    star <= avgRating ? 'text-charcoal fill-current' : 'text-charcoal/20'
+                                                    star <= avgRating ? 'text-charcoal dark:text-cream fill-current' : 'text-charcoal/20 dark:text-cream/20'
                                                 }`}
                                             />
                                         ))}
                                     </div>
-                                    <span className="text-xs text-charcoal/80 font-bold">
+                                    <span className="text-xs text-charcoal/80 dark:text-cream/80 font-bold">
                                         ({avgRating.toFixed(1)})
                                     </span>
                                 </div>
@@ -142,8 +142,8 @@ const QuestionCard = ({
                             <button
                                 className={`flex items-center gap-1 text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-sm border-2 transition-all ${
                                     isMastered
-                                    ? 'bg-charcoal text-white border-charcoal shadow-[2px_2px_0px_0px_#1A1A1A] -translate-y-0.5'
-                                    : 'bg-white text-charcoal border-charcoal hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_#1A1A1A]'
+                                    ? 'bg-charcoal text-white border-charcoal dark:border-cream/40 -translate-y-0.5'
+                                    : 'bg-white dark:bg-navy-light text-charcoal dark:text-cream border-charcoal dark:border-cream/40 hover:-translate-y-0.5'
                                 }`}
                                 onClick={(e) => { e.stopPropagation(); onToggleMastered(); }}
                             >
@@ -152,28 +152,28 @@ const QuestionCard = ({
                             </button>
                             
                             <button
-                                className="flex items-center gap-1 text-charcoal font-bold bg-white px-2 py-1 rounded-sm border-2 border-charcoal hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_#1A1A1A] transition-all"
+                                className="flex items-center gap-1 text-charcoal dark:text-cream font-bold bg-white dark:bg-navy-light px-2 py-1 rounded-sm border-2 border-charcoal dark:border-cream/40 hover:-translate-y-0.5 transition-all"
                                 onClick={(e) => { e.stopPropagation(); onTogglePin(); }}
                             >
                                 {isPinned ? <LuPinOff className="w-3 h-3" /> : <LuPin className="w-3 h-3" />}
                             </button>
                             
                             <button
-                                className="flex items-center gap-1 text-charcoal font-bold bg-white px-2 py-1 rounded-sm border-2 border-charcoal hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_#1A1A1A] transition-all"
+                                className="flex items-center gap-1 text-charcoal dark:text-cream font-bold bg-white dark:bg-navy-light px-2 py-1 rounded-sm border-2 border-charcoal dark:border-cream/40 hover:-translate-y-0.5 transition-all"
                                 onClick={(e) => { e.stopPropagation(); onAskFollowUp(); }}
                             >
                                 <LuMessageSquarePlus className="w-3 h-3" />
                             </button>
 
                             <button
-                                className="flex items-center gap-1 text-charcoal font-bold bg-white px-2 py-1 rounded-sm border-2 border-charcoal hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_#1A1A1A] transition-all"
+                                className="flex items-center gap-1 text-charcoal dark:text-cream font-bold bg-white dark:bg-navy-light px-2 py-1 rounded-sm border-2 border-charcoal dark:border-cream/40 hover:-translate-y-0.5 transition-all"
                                 onClick={(e) => { e.stopPropagation(); setShowRatingModal(true); }}
                             >
                                 <LuStar className="w-3 h-3" />
                             </button>
                         </div>
 
-                        <button className="text-charcoal hover:text-charcoal/80 transition-colors">
+                        <button className="text-charcoal dark:text-cream hover:text-charcoal/80 dark:hover:text-cream/80 transition-colors">
                             <LuChevronDown
                                 className={`w-5 h-5 transform transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
                             />
@@ -187,19 +187,19 @@ const QuestionCard = ({
                     style={{ maxHeight: `${height}px` }}
                 >
                     <div ref={contentRef} className="pt-4 space-y-4">
-                        <div className="text-sm text-charcoal bg-cream border-2 border-charcoal/20 px-4 py-4 rounded-sm">
+                        <div className="text-sm text-charcoal dark:text-cream bg-cream dark:bg-navy border-2 border-charcoal/20 dark:border-cream/20 px-4 py-4 rounded-sm">
                             <AIResponsePreview content={answer} />
                         </div>
 
                         {/* Full justification */}
                         {justification?.reasoning && (
-                            <div className="bg-cream border-2 border-charcoal/20 px-4 py-3 rounded-sm">
-                                <h4 className="text-xs font-bold uppercase tracking-wider text-charcoal mb-2">Why this question matters</h4>
-                                <p className="text-sm text-charcoal">{justification.reasoning}</p>
+                            <div className="bg-cream dark:bg-navy border-2 border-charcoal/20 dark:border-cream/20 px-4 py-3 rounded-sm">
+                                <h4 className="text-xs font-bold uppercase tracking-wider text-charcoal dark:text-cream mb-2">Why this question matters</h4>
+                                <p className="text-sm text-charcoal dark:text-cream">{justification.reasoning}</p>
                                 {justification.commonCompanies && justification.commonCompanies.length > 0 && (
                                     <div className="mt-2">
-                                        <span className="text-xs text-charcoal/80 font-bold">Common at: </span>
-                                        <span className="text-xs text-charcoal font-bold">
+                                        <span className="text-xs text-charcoal/80 dark:text-cream/80 font-bold">Common at: </span>
+                                        <span className="text-xs text-charcoal dark:text-cream font-bold">
                                             {justification.commonCompanies.join(', ')}
                                         </span>
                                     </div>
@@ -208,13 +208,14 @@ const QuestionCard = ({
                         )}
 
                         {/* Notes section */}
-                        <div className="border-t-2 border-charcoal/20 pt-4">
-                            <h4 className="text-xs font-bold uppercase tracking-wider text-charcoal mb-2">My Notes</h4>
+                        <div className="border-t-2 border-charcoal/20 dark:border-cream/20 pt-4">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-charcoal dark:text-cream mb-2">My Notes</h4>
                             <textarea
                                 value={note}
                                 onChange={(e) => setNote(e.target.value)}
                                 placeholder="Write your personal notes here..."
-                                className="w-full h-20 p-3 text-sm border-2 border-charcoal rounded-sm bg-white focus:ring-0 outline-none resize-none shadow-[2px_2px_0px_0px_#1A1A1A]"
+                                className="w-full h-20 p-3 text-sm border-2 border-charcoal dark:border-cream/40 rounded-sm bg-white dark:bg-navy-light dark:text-cream focus:ring-0 outline-none resize-none"
+                                style={{ boxShadow: '2px 2px 0px 0px var(--color-shadow)' }}
                                 onClick={(e) => e.stopPropagation()}
                             />
                             <button
@@ -223,7 +224,7 @@ const QuestionCard = ({
                                     onSaveNote(questionId, note);
                                 }}
                                 disabled={note === (userNote || "")}
-                                className="mt-4 px-6 py-2.5 bg-charcoal text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none transition-all border-2 border-charcoal"
+                                className="mt-4 px-6 py-2.5 bg-charcoal text-white text-xs font-bold uppercase tracking-wider rounded-sm hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none transition-all border-2 border-charcoal dark:border-cream/40"
                             >
                                 Save Note
                             </button>
@@ -234,13 +235,13 @@ const QuestionCard = ({
 
             {/* Rating Modal */}
             {showRatingModal && (
-                <div className="fixed inset-0 bg-charcoal/80 flex items-center justify-center z-50" onClick={() => setShowRatingModal(false)}>
+                <div className="fixed inset-0 bg-charcoal/80 dark:bg-navy/80 flex items-center justify-center z-50" onClick={() => setShowRatingModal(false)}>
                     <div className="card-editorial p-8 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
-                        <h3 className="text-2xl font-display font-bold text-charcoal mb-6">Rate this Question</h3>
+                        <h3 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-6">Rate this Question</h3>
                         
                         {['difficulty', 'usefulness', 'clarity'].map((aspect) => (
                             <div key={aspect} className="mb-4">
-                                <label className="block text-sm font-bold uppercase tracking-wider text-charcoal mb-2">
+                                <label className="block text-sm font-bold uppercase tracking-wider text-charcoal dark:text-cream mb-2">
                                     {aspect}
                                 </label>
                                 <div className="flex gap-1">
@@ -252,7 +253,7 @@ const QuestionCard = ({
                                         >
                                             <LuStar
                                                 className={`w-6 h-6 ${
-                                                    star <= tempRating[aspect] ? 'text-charcoal fill-current' : 'text-charcoal/20'
+                                                    star <= tempRating[aspect] ? 'text-charcoal dark:text-cream fill-current' : 'text-charcoal/20 dark:text-cream/20'
                                                 }`}
                                             />
                                         </button>
@@ -264,13 +265,13 @@ const QuestionCard = ({
                         <div className="flex gap-3 mt-8">
                             <button
                                 onClick={() => setShowRatingModal(false)}
-                                className="flex-1 px-4 py-2.5 border-2 border-charcoal bg-white text-charcoal font-bold uppercase tracking-wider rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all text-sm"
+                                className="flex-1 px-4 py-2.5 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream font-bold uppercase tracking-wider rounded-sm hover:-translate-y-1 transition-all text-sm"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleRatingSubmit}
-                                className="flex-1 px-4 py-2.5 bg-charcoal text-white font-bold uppercase tracking-wider border-2 border-charcoal rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all text-sm"
+                                className="flex-1 px-4 py-2.5 bg-charcoal text-white font-bold uppercase tracking-wider border-2 border-charcoal dark:border-cream/40 rounded-sm hover:-translate-y-1 transition-all text-sm"
                             >
                                 Save Rating
                             </button>

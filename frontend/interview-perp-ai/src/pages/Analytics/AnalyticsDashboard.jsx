@@ -228,33 +228,33 @@ const AnalyticsDashboard = () => {
         <DashboardLayout>
             <div className="container mx-auto p-4 sm:p-6 lg:p-8">
                 <header className="mb-8 px-4 md:px-0">
-                    <div className="card-editorial p-8 bg-white">
+                    <div className="card-editorial p-8 bg-white dark:bg-navy-light">
                         <div className="flex justify-between items-start">
                             <div className="space-y-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 bg-charcoal text-white rounded-md flex items-center justify-center">
-                                        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div className="w-12 h-12 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md flex items-center justify-center">
+                                        <svg className="w-6 h-6 text-white dark:text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <h1 className="text-3xl sm:text-4xl font-display text-charcoal">My Progress Dashboard</h1>
-                                        <p className="text-charcoal/80 mt-2 text-base sm:text-lg leading-relaxed">Your learning journey, visualized with care and encouragement.</p>
+                                        <h1 className="text-3xl sm:text-4xl font-display text-charcoal dark:text-cream">My Progress Dashboard</h1>
+                                        <p className="text-charcoal/80 dark:text-cream/80 mt-2 text-base sm:text-lg leading-relaxed">Your learning journey, visualized with care and encouragement.</p>
                                     </div>
                                 </div>
                                 
                                 {/* Quick Stats */}
                                 <div className="flex items-center gap-6 text-sm">
-                                    <div className="flex items-center gap-3 bg-white px-4 py-2.5 rounded-md border-2 border-charcoal/20">
-                                        <div className="w-3 h-3 bg-charcoal rounded-full animate-pulse"></div>
-                                        <span className="font-bold text-charcoal uppercase tracking-wider text-xs">
+                                    <div className="flex items-center gap-3 bg-white dark:bg-navy-input px-4 py-2.5 rounded-md border-2 border-charcoal/20 dark:border-cream/20">
+                                        <div className="w-3 h-3 bg-charcoal dark:bg-cream rounded-full animate-pulse"></div>
+                                        <span className="font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs">
                                             {progressStats.masteredQuestions} questions mastered
                                         </span>
                                     </div>
                                     {progressStats.streakDays > 0 && (
-                                        <div className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-md border-2 border-charcoal/20">
+                                        <div className="flex items-center gap-2 bg-white dark:bg-navy-input px-4 py-2.5 rounded-md border-2 border-charcoal/20 dark:border-cream/20">
                                             <span className="text-lg">🔥</span>
-                                            <span className="font-bold text-charcoal uppercase tracking-wider text-xs">
+                                            <span className="font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs">
                                                 {progressStats.streakDays} day streak
                                             </span>
                                         </div>
@@ -300,11 +300,11 @@ const AnalyticsDashboard = () => {
                     <div className="text-center py-16">
                         <div className="space-y-6">
                             <div className="relative mx-auto w-16 h-16">
-                                <div className="animate-spin rounded-full h-16 w-16 border-4 border-charcoal/20 border-t-charcoal"></div>
+                                <div className="animate-spin rounded-full h-16 w-16 border-4 border-charcoal/20 dark:border-cream/20 border-t-charcoal dark:border-t-cream"></div>
                             </div>
                             <div className="space-y-3">
-                                <p className="text-xl font-display font-semibold text-charcoal">Loading analytics...</p>
-                                <p className="text-charcoal/80 font-body">Gathering your progress data</p>
+                                <p className="text-xl font-display font-semibold text-charcoal dark:text-cream">Loading analytics...</p>
+                                <p className="text-charcoal/80 dark:text-cream/80 font-body">Gathering your progress data</p>
                             </div>
                         </div>
                     </div>
@@ -352,9 +352,9 @@ const AnalyticsDashboard = () => {
 
                                     {/* Progress Wave */}
                                     <div className="card-editorial p-8 relative z-10">
-                                        <div className="text-center mb-8 border-b-2 border-charcoal/20 pb-4">
-                                            <h2 className="text-3xl font-display text-charcoal mb-2">Learning Progress</h2>
-                                            <p className="text-charcoal/80">Your overall progress overview</p>
+                                        <div className="text-center mb-8 border-b-2 border-charcoal/20 dark:border-cream/20 pb-4">
+                                            <h2 className="text-3xl font-display text-charcoal dark:text-cream mb-2">Learning Progress</h2>
+                                            <p className="text-charcoal/80 dark:text-cream/80">Your overall progress overview</p>
                                         </div>
                                         <div className="flex justify-center relative z-0">
                                             <ProgressWave 
@@ -368,9 +368,9 @@ const AnalyticsDashboard = () => {
 
                                     {/* Milestones */}
                                     <div className="card-editorial p-8">
-                                        <div className="text-center mb-8 border-b-2 border-charcoal/20 pb-4">
-                                            <h2 className="text-3xl font-display text-charcoal mb-2">Learning Milestones</h2>
-                                            <p className="text-charcoal/80">Track your progress milestones</p>
+                                        <div className="text-center mb-8 border-b-2 border-charcoal/20 dark:border-cream/20 pb-4">
+                                            <h2 className="text-3xl font-display text-charcoal dark:text-cream mb-2">Learning Milestones</h2>
+                                            <p className="text-charcoal/80 dark:text-cream/80">Track your progress milestones</p>
                                         </div>
                                         <ProgressMilestones progress={progressStats.overallProgress} />
                                     </div>
@@ -392,18 +392,18 @@ const AnalyticsDashboard = () => {
                             ) : (
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                     <div className="lg:col-span-2 card-editorial p-6">
-                                        <div className="flex items-center gap-3 mb-6 border-b-2 border-charcoal/20 pb-4">
+                                        <div className="flex items-center gap-3 mb-6 border-b-2 border-charcoal/20 dark:border-cream/20 pb-4">
                                             <span className="text-2xl">📊</span>
-                                            <h2 className="text-2xl font-display text-charcoal">Performance by Topic</h2>
+                                            <h2 className="text-2xl font-display text-charcoal dark:text-cream">Performance by Topic</h2>
                                         </div>
                                         <div className="h-96 w-full">
                                             <Bar options={barChartOptions} data={performanceData} />
                                         </div>
                                     </div>
                                      <div className="card-editorial p-6">
-                                        <div className="flex items-center gap-3 mb-6 border-b-2 border-charcoal/20 pb-4">
+                                        <div className="flex items-center gap-3 mb-6 border-b-2 border-charcoal/20 dark:border-cream/20 pb-4">
                                             <span className="text-2xl">📈</span>
-                                            <h2 className="text-2xl font-display text-charcoal">Progress Over Time</h2>
+                                            <h2 className="text-2xl font-display text-charcoal dark:text-cream">Progress Over Time</h2>
                                         </div>
                                         <div className="h-96 w-full">
                                             <Line options={lineChartOptions} data={progressData} />
@@ -427,18 +427,18 @@ const AnalyticsDashboard = () => {
                             ) : (
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                     <div className="card-editorial p-6">
-                                        <div className="flex items-center gap-3 mb-6 border-b-2 border-charcoal/20 pb-4">
+                                        <div className="flex items-center gap-3 mb-6 border-b-2 border-charcoal/20 dark:border-cream/20 pb-4">
                                             <span className="text-2xl">⚡</span>
-                                            <h2 className="text-2xl font-display text-charcoal">Daily Activity</h2>
+                                            <h2 className="text-2xl font-display text-charcoal dark:text-cream">Daily Activity</h2>
                                         </div>
                                         <div className="h-80 w-full">
                                             <Bar options={activityBarOptions} data={dailyActivityData} />
                                         </div>
                                     </div>
                                     <div className="card-editorial p-6">
-                                        <div className="flex items-center gap-3 mb-6 border-b-2 border-charcoal/20 pb-4">
+                                        <div className="flex items-center gap-3 mb-6 border-b-2 border-charcoal/20 dark:border-cream/20 pb-4">
                                             <span className="text-2xl">🎯</span>
-                                            <h2 className="text-2xl font-display text-charcoal">Mastery Ratio</h2>
+                                            <h2 className="text-2xl font-display text-charcoal dark:text-cream">Mastery Ratio</h2>
                                         </div>
                                         <div className="h-80 w-full flex items-center justify-center">
                                             <Doughnut options={masteryPieOptions} data={masteryRatioData} />

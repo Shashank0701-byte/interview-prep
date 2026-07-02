@@ -11,7 +11,10 @@ export default {
         cream: '#F5F0E8',
         charcoal: '#1A1A1A',
         crimson: '#DC2626',
-        dummy: '#000000',
+        // Dark mode palette
+        navy: '#0F1923',
+        'navy-light': '#162231',
+        'navy-input': '#1B2B3A',
       },
       fontFamily: {
         display: ['"Instrument Serif"', 'Georgia', 'serif'],

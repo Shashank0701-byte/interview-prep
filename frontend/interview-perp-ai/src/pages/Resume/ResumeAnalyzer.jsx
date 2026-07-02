@@ -171,29 +171,29 @@ const ResumeAnalyzer = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-cream font-body text-charcoal py-8 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-cream dark:bg-navy font-body text-charcoal dark:text-cream py-8 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-display font-bold text-charcoal mb-2">Resume ATS Analyzer</h1>
-                        <p className="text-charcoal/80 font-medium">Upload your resume to get instant feedback and improve your ATS score</p>
+                        <h1 className="text-3xl font-display font-bold text-charcoal dark:text-cream mb-2">Resume ATS Analyzer</h1>
+                        <p className="text-charcoal/80 dark:text-cream/80 font-medium">Upload your resume to get instant feedback and improve your ATS score</p>
                     </div>
 
                     {!analysisComplete ? (
                         <div className="card-editorial p-8 text-center">
                             <div className="max-w-md mx-auto">
-                                <div className="w-20 h-20 bg-cream border-2 border-charcoal rounded-md flex items-center justify-center mx-auto mb-6">
+                                <div className="w-20 h-20 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center mx-auto mb-6">
                                     {isAnalyzing ? (
-                                        <LuRefreshCw className="w-10 h-10 text-charcoal animate-spin" />
+                                        <LuRefreshCw className="w-10 h-10 text-charcoal dark:text-cream animate-spin" />
                                     ) : (
-                                        <LuFileText className="w-10 h-10 text-charcoal" />
+                                        <LuFileText className="w-10 h-10 text-charcoal dark:text-cream" />
                                     )}
                                 </div>
                                 
-                                <h2 className="text-2xl font-display font-bold text-charcoal mb-2">
+                                <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-2">
                                     {isAnalyzing ? 'Analyzing Your Resume...' : 'Upload Your Resume'}
                                 </h2>
                                 
-                                <p className="text-charcoal/80 mb-6 font-medium">
+                                <p className="text-charcoal/80 dark:text-cream/80 mb-6 font-medium">
                                     {isAnalyzing 
                                         ? 'We\'re analyzing your resume to provide personalized feedback.'
                                         : 'Get detailed feedback on how to optimize your resume for ATS systems.'}
@@ -201,7 +201,7 @@ const ResumeAnalyzer = () => {
                                 
                                 {!isAnalyzing && (
                                     <div className="mt-6">
-                                        <label className="cursor-pointer inline-flex flex-col items-center px-6 py-4 bg-white border-2 border-dashed border-charcoal rounded-md hover:border-solid hover:bg-cream transition-colors duration-200">
+                                        <label className="cursor-pointer inline-flex flex-col items-center px-6 py-4 bg-white dark:bg-navy-light border-2 border-dashed border-charcoal dark:border-cream/40 rounded-md hover:border-solid hover:bg-cream dark:hover:bg-cream/10 transition-colors duration-200">
                                             <input
                                                 ref={fileInputRef}
                                                 type="file"
@@ -210,11 +210,11 @@ const ResumeAnalyzer = () => {
                                                 onChange={handleFileChange}
                                                 disabled={isAnalyzing}
                                             />
-                                            <LuArrowUpToLine className="w-8 h-8 text-charcoal mb-2" />
-                                            <span className="text-sm font-bold uppercase tracking-wider text-charcoal">
+                                            <LuArrowUpToLine className="w-8 h-8 text-charcoal dark:text-cream mb-2" />
+                                            <span className="text-sm font-bold uppercase tracking-wider text-charcoal dark:text-cream">
                                                 Choose a file
                                             </span>
-                                            <span className="text-xs font-bold uppercase tracking-wider text-charcoal/60 mt-1">
+                                            <span className="text-xs font-bold uppercase tracking-wider text-charcoal/60 dark:text-cream/60 mt-1">
                                                 PDF, DOC, or DOCX (max 5MB)
                                             </span>
                                         </label>
@@ -222,8 +222,8 @@ const ResumeAnalyzer = () => {
                                 )}
                                 
                                 {isAnalyzing && (
-                                    <div className="mt-6 w-full bg-cream border-2 border-charcoal rounded-md h-3 p-[1px]">
-                                        <div className="bg-charcoal h-full rounded-sm animate-pulse" style={{ width: '70%' }}></div>
+                                    <div className="mt-6 w-full bg-cream dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md h-3 p-[1px]">
+                                        <div className="bg-charcoal dark:bg-cream h-full rounded-sm animate-pulse" style={{ width: '70%' }}></div>
                                     </div>
                                 )}
                             </div>
@@ -235,18 +235,18 @@ const ResumeAnalyzer = () => {
                                 <div className="p-6">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                         <div>
-                                            <h2 className="text-xl font-display font-bold text-charcoal">Your ATS Score</h2>
-                                            <p className="text-charcoal/80 font-medium">{getScoreFeedback(atsScore)}</p>
+                                            <h2 className="text-xl font-display font-bold text-charcoal dark:text-cream">Your ATS Score</h2>
+                                            <p className="text-charcoal/80 dark:text-cream/80 font-medium">{getScoreFeedback(atsScore)}</p>
                                         </div>
-                                        <div className={`text-5xl font-display font-bold text-charcoal`}>
+                                        <div className={`text-5xl font-display font-bold text-charcoal dark:text-cream`}>
                                             {atsScore}
-                                            <span className="text-2xl text-charcoal/60 font-body">/100</span>
+                                            <span className="text-2xl text-charcoal/60 dark:text-cream/60 font-body">/100</span>
                                         </div>
                                     </div>
                                     
-                                    <div className="mt-4 w-full bg-cream border-2 border-charcoal rounded-md h-4 p-[2px]">
+                                    <div className="mt-4 w-full bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md h-4 p-[2px]">
                                         <div 
-                                            className={`h-full rounded-sm bg-charcoal`}
+                                            className={`h-full rounded-sm bg-charcoal dark:bg-cream`}
                                             style={{ width: `${atsScore}%` }}
                                         ></div>
                                     </div>
@@ -254,12 +254,12 @@ const ResumeAnalyzer = () => {
                                     <div className="mt-6 flex flex-wrap gap-3">
                                         <button 
                                             onClick={handleRetry}
-                                            className="flex items-center gap-2 px-4 py-2 border-2 border-charcoal bg-white text-charcoal rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
+                                            className="flex items-center gap-2 px-4 py-2 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
                                         >
                                             <LuRefreshCw className="w-4 h-4" />
                                             Analyze Another
                                         </button>
-                                        <button className="flex items-center gap-2 px-4 py-2 border-2 border-charcoal bg-charcoal text-white rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer">
+                                        <button className="flex items-center gap-2 px-4 py-2 border-2 border-charcoal dark:border-cream/40 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer">
                                             <LuDownload className="w-4 h-4" />
                                             Download Report
                                         </button>
@@ -271,15 +271,15 @@ const ResumeAnalyzer = () => {
                             {strengths.length > 0 && (
                                 <div className="card-editorial overflow-hidden">
                                     <div className="p-6">
-                                        <h2 className="text-xl font-display font-bold text-charcoal mb-4 flex items-center gap-2">
+                                        <h2 className="text-xl font-display font-bold text-charcoal dark:text-cream mb-4 flex items-center gap-2">
                                             <LuCheckCircle2 className="w-5 h-5" />
                                             What's Working Well
                                         </h2>
                                         <div className="space-y-4">
                                             {strengths.map((suggestion) => (
-                                                <div key={suggestion.id} className="p-4 bg-cream border-2 border-charcoal rounded-md">
-                                                    <h3 className="font-bold text-charcoal">{suggestion.title}</h3>
-                                                    <p className="text-sm font-medium text-charcoal/80 mt-1">{suggestion.description}</p>
+                                                <div key={suggestion.id} className="p-4 bg-cream dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md">
+                                                    <h3 className="font-bold text-charcoal dark:text-cream">{suggestion.title}</h3>
+                                                    <p className="text-sm font-medium text-charcoal/80 dark:text-cream/80 mt-1">{suggestion.description}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -290,21 +290,21 @@ const ResumeAnalyzer = () => {
                             {/* Areas for Improvement */}
                             <div className="card-editorial overflow-hidden">
                                 <div className="p-6">
-                                    <h2 className="text-xl font-display font-bold text-charcoal mb-4 flex items-center gap-2">
+                                    <h2 className="text-xl font-display font-bold text-charcoal dark:text-cream mb-4 flex items-center gap-2">
                                         <LuAlertCircle className="w-5 h-5" />
                                         Areas for Improvement
                                     </h2>
                                     <div className="space-y-4">
                                         {areasForImprovement.length > 0 ? (
                                             areasForImprovement.map((suggestion) => (
-                                                <div key={suggestion.id} className="p-4 bg-white border-2 border-charcoal rounded-md shadow-[4px_4px_0px_0px_#1A1A1A]">
+                                                <div key={suggestion.id} className="p-4 bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)]">
                                                     <div className="flex justify-between items-start">
                                                         <div>
-                                                            <h3 className="font-bold text-charcoal">{suggestion.title}</h3>
-                                                            <p className="text-sm font-medium text-charcoal/80 mt-1">{suggestion.description}</p>
+                                                            <h3 className="font-bold text-charcoal dark:text-cream">{suggestion.title}</h3>
+                                                            <p className="text-sm font-medium text-charcoal/80 dark:text-cream/80 mt-1">{suggestion.description}</p>
                                                         </div>
                                                         {suggestion.priority === 'high' && (
-                                                            <span className="inline-flex items-center px-2 py-1 border-2 border-charcoal bg-charcoal text-white rounded-sm text-xs font-bold uppercase tracking-wider">
+                                                            <span className="inline-flex items-center px-2 py-1 border-2 border-charcoal dark:border-cream/40 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-sm text-xs font-bold uppercase tracking-wider">
                                                                 High Priority
                                                             </span>
                                                         )}
@@ -312,7 +312,7 @@ const ResumeAnalyzer = () => {
                                                 </div>
                                             ))
                                         ) : (
-                                            <p className="text-charcoal/60 font-bold uppercase tracking-wider text-center py-4">No major issues found! Your resume looks great.</p>
+                                            <p className="text-charcoal/60 dark:text-cream/60 font-bold uppercase tracking-wider text-center py-4">No major issues found! Your resume looks great.</p>
                                         )}
                                     </div>
                                 </div>
@@ -322,12 +322,12 @@ const ResumeAnalyzer = () => {
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <button 
                                     onClick={handleRetry}
-                                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border-2 border-charcoal bg-white text-charcoal rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
+                                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
                                 >
                                     <LuRefreshCw className="w-4 h-4" />
                                     Analyze Another Resume
                                 </button>
-                                <button className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border-2 border-charcoal bg-charcoal text-white rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer">
+                                <button className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border-2 border-charcoal dark:border-cream/40 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer">
                                     <LuFileEdit className="w-4 h-4" />
                                     Create Optimized Version
                                 </button>

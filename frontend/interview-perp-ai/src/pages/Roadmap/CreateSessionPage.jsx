@@ -104,10 +104,10 @@ const CreateSessionPage = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-cream font-body">
+            <div className="min-h-screen bg-cream dark:bg-navy font-body">
                 <div className="max-w-4xl mx-auto px-4 py-8">
                     {/* Header */}
-                    <div className={`bg-charcoal rounded-md p-8 mb-8 text-white border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A]`}>
+                    <div className={`bg-charcoal dark:bg-navy-input rounded-md p-8 mb-8 text-white dark:text-cream border-2 border-charcoal dark:border-cream/40 shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)]`}>
                         {/* Breadcrumb */}
                         <div className="flex items-center gap-2 text-white/80 mb-6">
                             <span 
@@ -146,7 +146,7 @@ const CreateSessionPage = () => {
                             
                             <button
                                 onClick={() => navigate(`/phase-sessions/${encodeURIComponent(role)}/${phaseId}`)}
-                                className="flex items-center gap-2 px-4 py-2 bg-white text-charcoal border-2 border-charcoal font-bold uppercase tracking-wider text-sm rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
+                                className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-navy-light text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 font-bold uppercase tracking-wider text-sm rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
                             >
                                 <LuArrowLeft className="w-4 h-4" />
                                 <span>Back to Library</span>
@@ -161,36 +161,36 @@ const CreateSessionPage = () => {
                             {/* Session Details */}
                             <div className="card-editorial p-8">
                                 <div className="flex items-center gap-3 mb-6">
-                                    <div className={`p-3 rounded-md bg-charcoal`}>
-                                        <LuRocket className="w-6 h-6 text-white" />
+                                    <div className={`p-3 rounded-md bg-charcoal dark:bg-cream`}>
+                                        <LuRocket className="w-6 h-6 text-white dark:text-navy" />
                                     </div>
-                                    <h2 className="text-2xl font-display font-bold text-charcoal">Session Details</h2>
+                                    <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream">Session Details</h2>
                                 </div>
 
                                 <div className="space-y-6">
                                     {/* Session Name */}
                                     <div>
-                                        <label className="block text-sm font-display font-bold text-charcoal mb-2">
+                                        <label className="block text-sm font-display font-bold text-charcoal dark:text-cream mb-2">
                                             Session Name
                                         </label>
                                         <input
                                             type="text"
                                             value={sessionData.role}
                                             onChange={(e) => setSessionData({...sessionData, role: e.target.value})}
-                                            className="w-full px-4 py-3 border-2 border-charcoal rounded-md focus:ring-0 focus:border-charcoal outline-none bg-white text-charcoal"
+                                            className="w-full px-4 py-3 border-2 border-charcoal dark:border-cream/40 rounded-md focus:ring-0 focus:border-charcoal outline-none bg-white dark:bg-navy-light text-charcoal dark:text-cream"
                                             placeholder="Enter session name"
                                         />
                                     </div>
 
                                     {/* Experience Level */}
                                     <div>
-                                        <label className="block text-sm font-display font-bold text-charcoal mb-2">
+                                        <label className="block text-sm font-display font-bold text-charcoal dark:text-cream mb-2">
                                             Experience Level (Years)
                                         </label>
                                         <select
                                             value={sessionData.experience}
                                             onChange={(e) => setSessionData({...sessionData, experience: e.target.value})}
-                                            className="w-full px-4 py-3 border-2 border-charcoal rounded-md focus:ring-0 focus:border-charcoal outline-none bg-white text-charcoal cursor-pointer"
+                                            className="w-full px-4 py-3 border-2 border-charcoal dark:border-cream/40 rounded-md focus:ring-0 focus:border-charcoal outline-none bg-white dark:bg-navy-light text-charcoal dark:text-cream cursor-pointer"
                                         >
                                             <option value="1">1 Year (Beginner)</option>
                                             <option value="2">2 Years (Junior)</option>
@@ -202,13 +202,13 @@ const CreateSessionPage = () => {
 
                                     {/* Number of Questions */}
                                     <div>
-                                        <label className="block text-sm font-display font-bold text-charcoal mb-2">
+                                        <label className="block text-sm font-display font-bold text-charcoal dark:text-cream mb-2">
                                             Number of Questions
                                         </label>
                                         <select
                                             value={sessionData.numberOfQuestions}
                                             onChange={(e) => setSessionData({...sessionData, numberOfQuestions: e.target.value})}
-                                            className="w-full px-4 py-3 border-2 border-charcoal rounded-md focus:ring-0 focus:border-charcoal outline-none bg-white text-charcoal cursor-pointer"
+                                            className="w-full px-4 py-3 border-2 border-charcoal dark:border-cream/40 rounded-md focus:ring-0 focus:border-charcoal outline-none bg-white dark:bg-navy-light text-charcoal dark:text-cream cursor-pointer"
                                         >
                                             <option value="5">5 Questions (Quick Practice)</option>
                                             <option value="10">10 Questions (Standard)</option>
@@ -220,28 +220,28 @@ const CreateSessionPage = () => {
 
                                     {/* Topics */}
                                     <div>
-                                        <label className="block text-sm font-display font-bold text-charcoal mb-2">
+                                        <label className="block text-sm font-display font-bold text-charcoal dark:text-cream mb-2">
                                             Topics to Focus On
                                         </label>
                                         <textarea
                                             value={sessionData.topicsToFocus}
                                             onChange={(e) => setSessionData({...sessionData, topicsToFocus: e.target.value})}
                                             rows={3}
-                                            className="w-full px-4 py-3 border-2 border-charcoal rounded-md focus:ring-0 focus:border-charcoal outline-none bg-white text-charcoal"
+                                            className="w-full px-4 py-3 border-2 border-charcoal dark:border-cream/40 rounded-md focus:ring-0 focus:border-charcoal outline-none bg-white dark:bg-navy-light text-charcoal dark:text-cream"
                                             placeholder="Enter topics separated by commas"
                                         />
                                     </div>
 
                                     {/* Description */}
                                     <div>
-                                        <label className="block text-sm font-display font-bold text-charcoal mb-2">
+                                        <label className="block text-sm font-display font-bold text-charcoal dark:text-cream mb-2">
                                             Description
                                         </label>
                                         <textarea
                                             value={sessionData.description}
                                             onChange={(e) => setSessionData({...sessionData, description: e.target.value})}
                                             rows={3}
-                                            className="w-full px-4 py-3 border-2 border-charcoal rounded-md focus:ring-0 focus:border-charcoal outline-none bg-white text-charcoal"
+                                            className="w-full px-4 py-3 border-2 border-charcoal dark:border-cream/40 rounded-md focus:ring-0 focus:border-charcoal outline-none bg-white dark:bg-navy-light text-charcoal dark:text-cream"
                                             placeholder="Describe what this session will cover"
                                         />
                                     </div>
@@ -252,42 +252,42 @@ const CreateSessionPage = () => {
                             <div className="space-y-6">
                                 {/* Session Preview */}
                                 <div className="card-editorial p-8">
-                                    <h3 className="text-xl font-display font-bold text-charcoal mb-4">Session Preview</h3>
+                                    <h3 className="text-xl font-display font-bold text-charcoal dark:text-cream mb-4">Session Preview</h3>
                                     
                                     <div className="space-y-4 font-body">
                                         <div className="flex items-center gap-3">
-                                            <LuBrain className="w-5 h-5 text-charcoal" />
+                                            <LuBrain className="w-5 h-5 text-charcoal dark:text-cream" />
                                             <div>
-                                                <div className="font-bold text-charcoal">{sessionData.role || 'Session Name'}</div>
-                                                <div className="text-sm text-charcoal/80">{sessionData.experience} years experience</div>
+                                                <div className="font-bold text-charcoal dark:text-cream">{sessionData.role || 'Session Name'}</div>
+                                                <div className="text-sm text-charcoal/80 dark:text-cream/80">{sessionData.experience} years experience</div>
                                             </div>
                                         </div>
 
                                         <div className="flex items-start gap-3">
-                                            <LuTarget className="w-5 h-5 text-charcoal mt-1" />
+                                            <LuTarget className="w-5 h-5 text-charcoal dark:text-cream mt-1" />
                                             <div>
-                                                <div className="font-bold text-charcoal mb-1">Topics</div>
-                                                <div className="text-sm text-charcoal/80">
+                                                <div className="font-bold text-charcoal dark:text-cream mb-1">Topics</div>
+                                                <div className="text-sm text-charcoal/80 dark:text-cream/80">
                                                     {sessionData.topicsToFocus || 'No topics specified'}
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="flex items-start gap-3">
-                                            <LuBookOpen className="w-5 h-5 text-charcoal mt-1" />
+                                            <LuBookOpen className="w-5 h-5 text-charcoal dark:text-cream mt-1" />
                                             <div>
-                                                <div className="font-bold text-charcoal mb-1">Description</div>
-                                                <div className="text-sm text-charcoal/80">
+                                                <div className="font-bold text-charcoal dark:text-cream mb-1">Description</div>
+                                                <div className="text-sm text-charcoal/80 dark:text-cream/80">
                                                     {sessionData.description || 'No description provided'}
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="flex items-start gap-3">
-                                            <LuTarget className="w-5 h-5 text-charcoal mt-1" />
+                                            <LuTarget className="w-5 h-5 text-charcoal dark:text-cream mt-1" />
                                             <div>
-                                                <div className="font-bold text-charcoal mb-1">Questions</div>
-                                                <div className="text-sm text-charcoal/80">
+                                                <div className="font-bold text-charcoal dark:text-cream mb-1">Questions</div>
+                                                <div className="text-sm text-charcoal/80 dark:text-cream/80">
                                                     {sessionData.numberOfQuestions} questions
                                                 </div>
                                             </div>
@@ -299,11 +299,13 @@ const CreateSessionPage = () => {
                                 <button
                                     onClick={handleCreateSession}
                                     disabled={isCreating || !sessionData.role.trim()}
-                                    className={`w-full flex items-center justify-center gap-3 px-6 py-4 font-bold uppercase tracking-wider text-sm border-2 border-charcoal rounded-md transition-all duration-300 ${
+                                    className={`w-full flex items-center justify-center gap-3 px-6 py-4 font-bold uppercase tracking-wider text-sm border-2 border-charcoal dark:border-cream/40 rounded-md transition-all duration-300 ${
                                         isCreating || !sessionData.role.trim()
-                                            ? 'bg-charcoal/20 text-charcoal/50 cursor-not-allowed'
-                                            : `bg-charcoal text-white hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer`
+                                            ? 'bg-charcoal/20 dark:bg-cream/20 text-charcoal/50 dark:text-cream/50 cursor-not-allowed'
+                                            : `bg-charcoal dark:bg-cream text-white dark:text-navy hover:-translate-y-1 cursor-pointer`
                                     }`}
+                                    onMouseEnter={(e) => { if (!isCreating && sessionData.role.trim()) e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'; }}
+                                    onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
                                 >
                                     {isCreating ? (
                                         <>
@@ -324,22 +326,22 @@ const CreateSessionPage = () => {
                         <>
                             {/* Success State */}
                             <div className="card-editorial p-12 text-center">
-                            <div className={`w-20 h-20 rounded-full bg-charcoal flex items-center justify-center mx-auto mb-6`}>
-                                <LuCheck className="w-10 h-10 text-white" />
+                            <div className={`w-20 h-20 rounded-full bg-charcoal dark:bg-cream flex items-center justify-center mx-auto mb-6`}>
+                                <LuCheck className="w-10 h-10 text-white dark:text-navy" />
                             </div>
                             
-                            <h2 className="text-3xl font-display font-bold text-charcoal mb-4">
+                            <h2 className="text-3xl font-display font-bold text-charcoal dark:text-cream mb-4">
                                 Session Created Successfully!
                             </h2>
                             
-                            <p className="text-xl text-charcoal/80 mb-8 font-body">
+                            <p className="text-xl text-charcoal/80 dark:text-cream/80 mb-8 font-body">
                                 Your session "{createdSession?.role}" is ready for practice.
                             </p>
 
                             <div className="flex gap-4 justify-center">
                                 <button
                                     onClick={handleStartSession}
-                                    className={`flex items-center gap-2 px-8 py-4 font-bold uppercase tracking-wider text-sm text-white rounded-md bg-charcoal border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer`}
+                                    className={`flex items-center gap-2 px-8 py-4 font-bold uppercase tracking-wider text-sm text-white dark:text-navy rounded-md bg-charcoal dark:bg-cream border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer`}
                                 >
                                     <LuRocket className="w-5 h-5" />
                                     <span>Start Session</span>
@@ -347,7 +349,9 @@ const CreateSessionPage = () => {
                                 
                                 <button
                                     onClick={() => navigate(`/phase-sessions/${encodeURIComponent(role)}/${phaseId}`)}
-                                    className="flex items-center gap-2 px-8 py-4 font-bold uppercase tracking-wider text-sm text-charcoal bg-white border-2 border-charcoal rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
+                                    className="flex items-center gap-2 px-8 py-4 font-bold uppercase tracking-wider text-sm text-charcoal dark:text-cream bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md hover:-translate-y-1 transition-all cursor-pointer"
+                                    onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
                                 >
                                     <LuArrowLeft className="w-5 h-5" />
                                     <span>Back to Library</span>

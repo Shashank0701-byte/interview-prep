@@ -24,10 +24,10 @@ const RatingModal = ({ isOpen, onClose, sessionData, onSubmit }) => {
             <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
                     <span className="section-label">{label}</span>
-                    <span className="text-sm font-bold text-charcoal">({value}/5)</span>
+                    <span className="text-sm font-bold text-charcoal dark:text-cream">({value}/5)</span>
                 </div>
                 {description && (
-                    <p className="text-xs text-charcoal/50 mb-3">{description}</p>
+                    <p className="text-xs text-charcoal/50 dark:text-cream/50 mb-3">{description}</p>
                 )}
                 <div className="flex gap-2 justify-center">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -35,8 +35,8 @@ const RatingModal = ({ isOpen, onClose, sessionData, onSubmit }) => {
                             key={star}
                             onClick={() => onChange(star)}
                             className={`text-3xl transition-colors duration-200 focus:outline-none ${
-                                star <= value ? 'text-charcoal' : 'text-charcoal/10'
-                            } hover:text-charcoal/80`}
+                                star <= value ? 'text-charcoal dark:text-cream' : 'text-charcoal/10 dark:text-cream/10'
+                            } hover:text-charcoal/80 dark:hover:text-cream/80`}
                             type="button"
                         >
                             <LuStar 
@@ -60,19 +60,19 @@ const RatingModal = ({ isOpen, onClose, sessionData, onSubmit }) => {
                     onClick={onClose}
                 />
                 
-                <div className="relative bg-white border-2 border-charcoal rounded-md shadow-lg max-w-md w-full mx-4 transform transition-all">
+                <div className="relative bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/20 rounded-md shadow-lg max-w-md w-full mx-4 transform transition-all">
                     {/* Header */}
-                    <div className="px-6 py-5 border-b-2 border-charcoal/10">
+                    <div className="px-6 py-5 border-b-2 border-charcoal/10 dark:border-cream/10">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h3 className="text-xl font-display text-charcoal">Rate Your Session</h3>
-                                <p className="text-sm text-charcoal/50 mt-1">
+                                <h3 className="text-xl font-display text-charcoal dark:text-cream">Rate Your Session</h3>
+                                <p className="text-sm text-charcoal/50 dark:text-cream/50 mt-1">
                                     {sessionData?.role} • {sessionData?.topicsToFocus}
                                 </p>
                             </div>
                             <button
                                 onClick={onClose}
-                                className="p-2 text-charcoal/40 hover:text-charcoal hover:bg-charcoal/5 rounded-md transition-all duration-200"
+                                className="p-2 text-charcoal/40 dark:text-cream/40 hover:text-charcoal dark:hover:text-cream hover:bg-charcoal/5 dark:hover:bg-cream/10 rounded-md transition-all duration-200"
                             >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -106,11 +106,11 @@ const RatingModal = ({ isOpen, onClose, sessionData, onSubmit }) => {
                     </div>
                     
                     {/* Footer */}
-                    <div className="px-6 py-4 bg-cream border-t-2 border-charcoal/10">
+                    <div className="px-6 py-4 bg-cream dark:bg-navy border-t-2 border-charcoal/10 dark:border-cream/10">
                         <div className="flex gap-3">
                             <button
                                 onClick={onClose}
-                                className="flex-1 px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-charcoal border-2 border-charcoal/20 hover:border-charcoal rounded-md transition-all duration-200"
+                                className="flex-1 px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-charcoal dark:text-cream border-2 border-charcoal/20 dark:border-cream/20 hover:border-charcoal dark:hover:border-cream/60 rounded-md transition-all duration-200"
                             >
                                 Cancel
                             </button>

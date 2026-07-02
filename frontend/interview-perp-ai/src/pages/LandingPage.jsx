@@ -28,7 +28,7 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="bg-cream text-charcoal overflow-x-hidden font-body">
+    <div data-theme="light" className="bg-cream text-charcoal overflow-x-hidden font-body">
       <div className='w-full min-h-full bg-cream relative'>
         <div className='w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-amber-200/20 blur-[65px] absolute top-0 left-0 pointer-events-none' />
         <div className='container mx-auto px-4 pt-6 pb-[200px] relative z-10'>

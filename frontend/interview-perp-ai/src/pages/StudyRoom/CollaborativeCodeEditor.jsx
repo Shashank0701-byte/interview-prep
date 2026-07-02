@@ -126,12 +126,12 @@ const CollaborativeCodeEditor = ({
   return (
     <div className="h-full flex flex-col font-body">
       {/* Toolbar */}
-      <div className="flex items-center justify-between p-4 border-b-2 border-charcoal bg-cream">
+      <div className="flex items-center justify-between p-4 border-b-2 border-charcoal/10 dark:border-cream/10 bg-white dark:bg-navy-light">
         <div className="flex items-center gap-3">
           <select
             value={language}
             onChange={(e) => onChange(editableCode, e.target.value)}
-            className="px-3 py-1 border-2 border-charcoal rounded-md text-sm focus:outline-none bg-white text-charcoal font-bold uppercase tracking-wider"
+            className="px-3 py-1 border-2 border-charcoal dark:border-cream/40 rounded-md text-sm focus:outline-none bg-white dark:bg-navy text-charcoal dark:text-cream font-bold uppercase tracking-wider"
           >
             {languages.map(lang => (
               <option key={lang.value} value={lang.value}>
@@ -143,10 +143,10 @@ const CollaborativeCodeEditor = ({
           <div className="flex items-center gap-1">
             <button
               onClick={() => setIsEditing(!isEditing)}
-              className={`px-3 py-1 rounded-md text-sm font-bold uppercase tracking-wider border-2 border-charcoal transition-colors hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer ${
+              className={`px-3 py-1 rounded-md text-sm font-bold uppercase tracking-wider border-2 transition-colors hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] cursor-pointer ${
                 isEditing 
-                  ? 'bg-charcoal text-white' 
-                  : 'bg-white text-charcoal'
+                  ? 'bg-charcoal dark:bg-cream text-white dark:text-navy border-charcoal dark:border-cream/40' 
+                  : 'bg-white dark:bg-navy text-charcoal dark:text-cream border-charcoal dark:border-cream/40'
               }`}
             >
               {isEditing ? 'Preview' : 'Edit'}
@@ -160,10 +160,10 @@ const CollaborativeCodeEditor = ({
             {participants.filter(p => p.isActive).map(participant => (
               <div
                 key={participant.userId}
-                className="flex items-center gap-1 px-2 py-1 bg-white border-2 border-charcoal text-charcoal font-bold rounded-sm text-xs uppercase tracking-wider"
+                className="flex items-center gap-1 px-2 py-1 bg-white dark:bg-navy border-2 border-charcoal dark:border-cream/40 text-charcoal dark:text-cream font-bold rounded-sm text-xs uppercase tracking-wider"
                 title={participant.username}
               >
-                <div className="w-2 h-2 bg-charcoal rounded-full"></div>
+                <div className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full"></div>
                 {participant.username}
               </div>
             ))}
@@ -171,7 +171,7 @@ const CollaborativeCodeEditor = ({
 
           <button
             onClick={copyCode}
-            className="p-2 text-charcoal hover:bg-white border-2 border-transparent hover:border-charcoal rounded-md transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer"
+            className="p-2 text-charcoal dark:text-cream hover:bg-white dark:hover:bg-navy border-2 border-transparent hover:border-charcoal dark:hover:border-cream/40 rounded-md transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] cursor-pointer"
             title="Copy code"
           >
             <Copy className="w-4 h-4" />
@@ -179,7 +179,7 @@ const CollaborativeCodeEditor = ({
 
           <button
             onClick={downloadCode}
-            className="p-2 text-charcoal hover:bg-white border-2 border-transparent hover:border-charcoal rounded-md transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer"
+            className="p-2 text-charcoal dark:text-cream hover:bg-white dark:hover:bg-navy border-2 border-transparent hover:border-charcoal dark:hover:border-cream/40 rounded-md transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] cursor-pointer"
             title="Download code"
           >
             <Download className="w-4 h-4" />
@@ -187,7 +187,7 @@ const CollaborativeCodeEditor = ({
 
           <button
             onClick={() => setShowSettings(!showSettings)}
-            className="p-2 text-charcoal hover:bg-white border-2 border-transparent hover:border-charcoal rounded-md transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer"
+            className="p-2 text-charcoal dark:text-cream hover:bg-white dark:hover:bg-navy border-2 border-transparent hover:border-charcoal dark:hover:border-cream/40 rounded-md transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] cursor-pointer"
             title="Settings"
           >
             <Settings className="w-4 h-4" />
@@ -238,7 +238,7 @@ const CollaborativeCodeEditor = ({
             })}
           </div>
         ) : (
-          <div className="h-full overflow-auto bg-white border-t-2 border-charcoal">
+          <div className="h-full overflow-auto bg-white dark:bg-[#1e1e1e] border-t-2 border-charcoal/10 dark:border-cream/10">
             <SyntaxHighlighter
               language={language}
               style={vscDarkPlus}
@@ -264,15 +264,15 @@ const CollaborativeCodeEditor = ({
 
       {/* Settings Panel */}
       {showSettings && (
-        <div className="absolute top-16 right-4 bg-white rounded-md shadow-[4px_4px_0px_0px_#1A1A1A] border-2 border-charcoal p-4 z-10 min-w-64">
-          <h3 className="font-display font-bold text-charcoal mb-3 uppercase tracking-wider">Editor Settings</h3>
+        <div className="absolute top-16 right-4 bg-white dark:bg-navy-light rounded-md shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] border-2 border-charcoal dark:border-cream/40 p-4 z-10 min-w-64">
+          <h3 className="font-display font-bold text-charcoal dark:text-cream mb-3 uppercase tracking-wider">Editor Settings</h3>
           
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-1 uppercase tracking-wider">
+              <label className="block text-sm font-bold text-charcoal dark:text-cream mb-1 uppercase tracking-wider">
                 Theme
               </label>
-              <select className="w-full px-3 py-2 border-2 border-charcoal rounded-md text-sm bg-white outline-none">
+              <select className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md text-sm bg-white dark:bg-navy text-charcoal dark:text-cream outline-none">
                 <option>VS Code Dark</option>
                 <option>VS Code Light</option>
                 <option>GitHub Dark</option>
@@ -281,10 +281,10 @@ const CollaborativeCodeEditor = ({
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-1 uppercase tracking-wider">
+              <label className="block text-sm font-bold text-charcoal dark:text-cream mb-1 uppercase tracking-wider">
                 Font Size
               </label>
-              <select className="w-full px-3 py-2 border-2 border-charcoal rounded-md text-sm bg-white outline-none">
+              <select className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md text-sm bg-white dark:bg-navy text-charcoal dark:text-cream outline-none">
                 <option>12px</option>
                 <option>14px</option>
                 <option>16px</option>
@@ -293,26 +293,26 @@ const CollaborativeCodeEditor = ({
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-sm font-bold text-charcoal uppercase tracking-wider">Word Wrap</span>
+              <span className="text-sm font-bold text-charcoal dark:text-cream uppercase tracking-wider">Word Wrap</span>
               <input
                 type="checkbox"
-                className="w-4 h-4 text-charcoal border-2 border-charcoal rounded-sm focus:ring-0"
+                className="w-4 h-4 text-charcoal border-2 border-charcoal dark:border-cream/40 rounded-sm focus:ring-0"
               />
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-sm font-bold text-charcoal uppercase tracking-wider">Show Minimap</span>
+              <span className="text-sm font-bold text-charcoal dark:text-cream uppercase tracking-wider">Show Minimap</span>
               <input
                 type="checkbox"
-                className="w-4 h-4 text-charcoal border-2 border-charcoal rounded-sm focus:ring-0"
+                className="w-4 h-4 text-charcoal border-2 border-charcoal dark:border-cream/40 rounded-sm focus:ring-0"
               />
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t-2 border-charcoal/10">
+          <div className="mt-4 pt-3 border-t-2 border-charcoal/10 dark:border-cream/10">
             <button
               onClick={() => setShowSettings(false)}
-              className="w-full bg-white text-charcoal border-2 border-charcoal py-2 px-4 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all"
+              className="w-full bg-white dark:bg-navy text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 py-2 px-4 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] cursor-pointer transition-all"
             >
               Close
             </button>
@@ -322,14 +322,14 @@ const CollaborativeCodeEditor = ({
 
       {/* Code Execution Panel (if applicable) */}
       {(language === 'javascript' || language === 'python') && (
-        <div className="border-t bg-gray-50/50 p-4">
+        <div className="border-t-2 border-charcoal/10 dark:border-cream/10 bg-white dark:bg-navy p-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-bold text-charcoal dark:text-cream uppercase tracking-wider">
               Run Code (Coming Soon)
             </span>
             <button
               disabled
-              className="bg-green-500 text-white px-4 py-2 rounded-lg opacity-50 cursor-not-allowed flex items-center gap-2"
+              className="bg-emerald-500 text-white px-4 py-2 rounded-md font-bold uppercase tracking-wider text-sm opacity-50 cursor-not-allowed flex items-center gap-2"
             >
               <Play className="w-4 h-4" />
               Run

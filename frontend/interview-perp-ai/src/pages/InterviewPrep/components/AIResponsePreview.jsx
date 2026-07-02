@@ -10,7 +10,7 @@ const AIResponsePreview = ({ content }) => {
     content = content.replace(/\\n/g, '\n');
     return (
         <div className='max-w-4xl mx-auto'>
-            <div className='text-[14px] font-body text-charcoal max-w-none prose prose-slate'>
+            <div className='text-[14px] font-body text-charcoal dark:text-cream max-w-none prose prose-slate dark:prose-invert'>
                 <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
@@ -25,7 +25,7 @@ const AIResponsePreview = ({ content }) => {
                                     language={language}
                                 />
                             ) : (
-                                <code className='px-1 py-0.5 bg-charcoal/5 border-2 border-charcoal/10 rounded-sm font-bold text-charcoal text-sm' {...props}>
+                                <code className='px-1 py-0.5 bg-charcoal/5 dark:bg-cream/5 border-2 border-charcoal/10 dark:border-cream/10 rounded-sm font-bold text-charcoal dark:text-cream text-sm' {...props}>
                                     {children}
                                 </code>
                             );
@@ -49,7 +49,7 @@ const AIResponsePreview = ({ content }) => {
                             return <li className='mb-1'>{children}</li>;
                         },
                         blockquote({ children }) {
-                            return <blockquote className='border-l-4 border-charcoal pl-4 italic my-4 text-charcoal/80'>{children}</blockquote>;
+                            return <blockquote className='border-l-4 border-charcoal dark:border-cream/40 pl-4 italic my-4 text-charcoal/80 dark:text-cream/80'>{children}</blockquote>;
                         },
                         h1({ children }) {
                             return <h1 className='text-2xl font-bold mt-6 mb-4'>{children}</h1>;
@@ -64,34 +64,34 @@ const AIResponsePreview = ({ content }) => {
                             return <h4 className='text-base font-display font-bold mt-4 mb-2'>{children}</h4>;
                         },
                         a({ children, href }) {
-                            return <a href={href} className='text-charcoal font-bold hover:underline'>{children}</a>;
+                            return <a href={href} className='text-charcoal dark:text-cream font-bold hover:underline'>{children}</a>;
                         },
                         table({ children }) {
                             return (
                                 <div className='overflow-x-auto my-4'>
-                                    <table className='min-w-full divide-y-2 divide-charcoal/20 border-2 border-charcoal'>
+                                    <table className='min-w-full divide-y-2 divide-charcoal/20 dark:divide-cream/20 border-2 border-charcoal dark:border-cream/40'>
                                         {children}
                                     </table>
                                 </div>
                             );
                         },
                         thead({ children }) {
-                            return <thead className='bg-cream'>{children}</thead>;
+                            return <thead className='bg-cream dark:bg-navy'>{children}</thead>;
                         },
                         tbody({ children }) {
-                            return <tbody className='divide-y-2 divide-charcoal/10'>{children}</tbody>;
+                            return <tbody className='divide-y-2 divide-charcoal/10 dark:divide-cream/10'>{children}</tbody>;
                         },
                         tr({ children }) {
                             return <tr>{children}</tr>;
                         },
                         th({ children }) {
-                            return <th className='px-3 py-2 text-left text-xs font-bold text-charcoal uppercase tracking-wider'>{children}</th>;
+                            return <th className='px-3 py-2 text-left text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider'>{children}</th>;
                         },
                         td({ children }) {
-                            return <td className='px-3 py-2 whitespace-nowrap text-sm text-charcoal/80'>{children}</td>;
+                            return <td className='px-3 py-2 whitespace-nowrap text-sm text-charcoal/80 dark:text-cream/80'>{children}</td>;
                         },
                         hr() {
-                            return <hr className='my-6 border-t-2 border-charcoal/10' />;
+                            return <hr className='my-6 border-t-2 border-charcoal/10 dark:border-cream/10' />;
                         },
                         img({ src, alt }) {
                             return <img src={src} alt={alt} className='my-4 max-w-full rounded' />;
@@ -116,17 +116,17 @@ function CodeBlock({ code, language }) {
     };
 
     return (
-        <div className='relative my-6 rounded-sm overflow-hidden bg-white border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A]'>
-            <div className='flex items-center justify-between px-4 py-2 bg-cream border-b-2 border-charcoal'>
+        <div className='relative my-6 rounded-sm overflow-hidden bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40' style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}>
+            <div className='flex items-center justify-between px-4 py-2 bg-cream dark:bg-navy border-b-2 border-charcoal dark:border-cream/40'>
                 <div className='flex items-center space-x-2'>
-                    <LuCode size={16} className='text-charcoal' />
-                    <span className='text-xs font-bold text-charcoal uppercase tracking-wider'>
+                    <LuCode size={16} className='text-charcoal dark:text-cream' />
+                    <span className='text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider'>
                         {language || 'Code'}
                     </span>
                 </div>
                 <button
                     onClick={copyCode}
-                    className='text-charcoal/80 hover:text-charcoal focus:outline-none relative group cursor-pointer'
+                    className='text-charcoal/80 dark:text-cream/80 hover:text-charcoal dark:hover:text-cream focus:outline-none relative group cursor-pointer'
                     aria-label='Copy code'
                 >
                     {copied ? (

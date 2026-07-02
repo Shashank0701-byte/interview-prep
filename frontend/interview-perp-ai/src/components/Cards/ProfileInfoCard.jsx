@@ -28,16 +28,16 @@ const ProfileInfoCard = () => {
           src={getProfileImage()}
           alt={user.name}
           onError={() => setImgError(true)}
-          className='w-10 h-10 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700'
+          className='w-10 h-10 rounded-full object-cover border-2 border-charcoal/20 dark:border-cream/20'
         />
         <div className="flex flex-col">
           <div
-            className='text-sm font-bold text-slate-900 dark:text-white leading-tight'
+            className='text-sm font-bold text-charcoal dark:text-cream leading-tight'
           >
             {user.name || "User"}
           </div>
           <button
-            className='text-amber-600 hover:text-amber-700 dark:text-amber-500 dark:hover:text-amber-400 text-xs font-semibold cursor-pointer hover:underline text-left mt-0.5'
+            className='text-crimson hover:text-crimson/80 text-xs font-semibold cursor-pointer hover:underline text-left mt-0.5'
             onClick={handleLogout}
           >
             Logout

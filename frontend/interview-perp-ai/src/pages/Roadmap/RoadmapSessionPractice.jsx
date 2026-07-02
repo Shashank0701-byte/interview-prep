@@ -183,7 +183,7 @@ const RoadmapSessionPractice = () => {
     if (isLoading) {
         return (
             <DashboardLayout>
-                <div className="flex items-center justify-center h-screen bg-cream font-body">
+                <div className="flex items-center justify-center h-screen bg-cream dark:bg-navy font-body">
                     <SpinnerLoader />
                 </div>
             </DashboardLayout>
@@ -193,11 +193,11 @@ const RoadmapSessionPractice = () => {
     if (errorMsg) {
         return (
             <DashboardLayout>
-                <div className="flex items-center justify-center h-screen bg-cream font-body">
+                <div className="flex items-center justify-center h-screen bg-cream dark:bg-navy font-body">
                     <div className="text-center">
-                        <LuCircleAlert className="w-16 h-16 text-charcoal mx-auto mb-4" />
-                        <h2 className="text-2xl font-display font-bold text-charcoal mb-2">Error Loading Session</h2>
-                        <p className="text-charcoal/80 mb-4 font-bold">{errorMsg}</p>
+                        <LuCircleAlert className="w-16 h-16 text-charcoal dark:text-cream mx-auto mb-4" />
+                        <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-2">Error Loading Session</h2>
+                        <p className="text-charcoal/80 dark:text-cream/80 mb-4 font-bold">{errorMsg}</p>
                         <button
                             onClick={() => navigate(-1)}
                             className="px-6 py-3 bg-charcoal text-white font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
@@ -213,10 +213,10 @@ const RoadmapSessionPractice = () => {
     if (!sessionData) {
         return (
             <DashboardLayout>
-                <div className="flex items-center justify-center h-screen bg-cream font-body">
+                <div className="flex items-center justify-center h-screen bg-cream dark:bg-navy font-body">
                     <div className="text-center">
-                        <h2 className="text-2xl font-display font-bold text-charcoal mb-2">Session Not Found</h2>
-                        <p className="text-charcoal/80 font-bold mb-4">The requested session could not be found.</p>
+                        <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-2">Session Not Found</h2>
+                        <p className="text-charcoal/80 dark:text-cream/80 font-bold mb-4">The requested session could not be found.</p>
                         <button
                             onClick={() => navigate(-1)}
                             className="px-6 py-3 bg-charcoal text-white font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
@@ -231,10 +231,10 @@ const RoadmapSessionPractice = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-cream font-body">
+            <div className="min-h-screen bg-cream dark:bg-navy font-body">
                 <div className="max-w-6xl mx-auto px-4 py-8">
                     {/* Roadmap Session Header */}
-                    <div className={`bg-charcoal border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A] rounded-md p-8 mb-8 text-white`}>
+                    <div className={`bg-charcoal dark:bg-navy-input border-2 border-charcoal dark:border-cream/40 shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] rounded-md p-8 mb-8 text-white dark:text-cream`}>
                         {/* Breadcrumb Navigation */}
                         {fromPhase && role && (
                             <div className="flex items-center gap-2 text-white/80 mb-6 font-bold">
@@ -265,17 +265,17 @@ const RoadmapSessionPractice = () => {
 
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-6">
-                                <div className="p-4 bg-white rounded-md">
-                                    <LuBrain className="w-8 h-8 text-charcoal" />
+                                <div className="p-4 bg-white dark:bg-navy-light rounded-md">
+                                    <LuBrain className="w-8 h-8 text-charcoal dark:text-cream" />
                                 </div>
                                 <div>
-                                    <h1 className="text-3xl md:text-4xl font-display font-bold mb-2 text-white">
+                                    <h1 className="text-3xl md:text-4xl font-display font-bold mb-2 text-white dark:text-cream">
                                         {sessionData.role}
                                     </h1>
-                                    <p className="text-xl text-white/90 mb-2 font-bold">
+                                    <p className="text-xl text-white/90 dark:text-cream/90 mb-2 font-bold">
                                         {phaseData?.name || sessionData.phaseName} • {sessionData.experience} years experience
                                     </p>
-                                    <div className="flex items-center gap-4 text-white/80 font-bold">
+                                    <div className="flex items-center gap-4 text-white/80 dark:text-cream/80 font-bold">
                                         <div className="flex items-center gap-2">
                                             <LuTarget className="w-4 h-4" />
                                             <span>{sessionData.questions?.length || 0} Questions</span>
@@ -290,7 +290,7 @@ const RoadmapSessionPractice = () => {
                             
                             <button
                                 onClick={() => navigate(-1)}
-                                className="flex items-center gap-2 px-4 py-2 bg-white text-charcoal font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
+                                className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-navy-light text-charcoal dark:text-cream font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
                             >
                                 <LuArrowLeft className="w-4 h-4" />
                                 <span>Back</span>
@@ -299,7 +299,7 @@ const RoadmapSessionPractice = () => {
 
                         {/* Phase Badge */}
                         <div className="mt-6">
-                            <span className="px-4 py-2 bg-white text-charcoal border-2 border-charcoal rounded-sm text-sm font-bold">
+                            <span className="px-4 py-2 bg-white dark:bg-navy-light text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 rounded-sm text-sm font-bold">
                                 🎯 Roadmap Session • {sessionData.sessionType || 'roadmap'}
                             </span>
                         </div>
@@ -339,12 +339,12 @@ const RoadmapSessionPractice = () => {
                                 </motion.div>
                             ))
                         ) : (
-                            <div className="text-center py-20 bg-cream">
-                                <div className="w-20 h-20 bg-charcoal rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <LuListCollapse className="w-10 h-10 text-white" />
+                            <div className="text-center py-20 bg-cream dark:bg-navy">
+                                <div className="w-20 h-20 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <LuListCollapse className="w-10 h-10 text-white dark:text-navy" />
                                 </div>
-                                <h3 className="text-2xl font-display font-bold text-charcoal mb-4">No Questions Available</h3>
-                                <p className="text-charcoal/80 font-bold">
+                                <h3 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4">No Questions Available</h3>
+                                <p className="text-charcoal/80 dark:text-cream/80 font-bold">
                                     This session doesn't have any questions yet.
                                 </p>
                             </div>

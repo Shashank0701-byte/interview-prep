@@ -195,9 +195,9 @@ const MultiFilePRReview = () => {
     if (isLoading) {
         return (
             <DashboardLayout>
-                <div className="flex flex-col items-center justify-center h-screen">
+                <div className="flex flex-col items-center justify-center h-screen bg-cream dark:bg-navy font-body">
                     <SpinnerLoader />
-                    <p className="text-slate-600 mt-4 text-center">
+                    <p className="text-charcoal/70 dark:text-cream/70 mt-4 text-center font-bold">
                         Loading pull request... 🔄
                     </p>
                 </div>
@@ -208,12 +208,12 @@ const MultiFilePRReview = () => {
     if (!currentPR) {
         return (
             <DashboardLayout>
-                <div className="flex flex-col items-center justify-center h-screen">
+                <div className="flex flex-col items-center justify-center h-screen bg-cream dark:bg-navy font-body">
                     <div className="text-center">
-                        <h2 className="text-2xl font-bold text-slate-800 mb-4">Pull Request Not Found</h2>
+                        <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4">Pull Request Not Found</h2>
                         <button
                             onClick={() => navigate('/code-review')}
-                            className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                            className="btn-primary"
                         >
                             Back to Code Review
                         </button>
@@ -225,31 +225,31 @@ const MultiFilePRReview = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/20">
+            <div className="min-h-screen bg-cream dark:bg-navy font-body">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                <div className="bg-charcoal dark:bg-navy-light text-cream border-b-2 border-charcoal dark:border-cream/20">
                     <div className="container mx-auto px-4 md:px-6 py-6">
                         <div className="max-w-7xl mx-auto">
                             <div className="flex items-center gap-4 mb-4">
                                 <button
                                     onClick={() => navigate('/code-review')}
-                                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                    className="p-2 hover:bg-cream/10 rounded-md transition-colors"
                                 >
                                     <LuArrowLeft className="w-5 h-5" />
                                 </button>
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                                    <div className="w-10 h-10 bg-cream/10 rounded-md flex items-center justify-center">
                                         <LuGitBranch className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <h1 className="text-xl font-bold">{currentPR.prNumber}: {currentPR.title}</h1>
-                                        <p className="text-white/80 text-sm">Multi-File Pull Request Review</p>
+                                        <h1 className="text-xl font-display font-bold text-cream">{currentPR.prNumber}: {currentPR.title}</h1>
+                                        <p className="text-cream/80 text-sm">Multi-File Pull Request Review</p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* PR Info */}
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                            <div className="bg-cream/5 border border-cream/10 rounded-md p-4">
                                 <div className="flex flex-wrap items-center gap-6 text-sm">
                                     <div className="flex items-center gap-2">
                                         <LuUser className="w-4 h-4" />
@@ -268,7 +268,7 @@ const MultiFilePRReview = () => {
                                         <span>{currentPR.files.length} files changed</span>
                                     </div>
                                 </div>
-                                <p className="text-white/90 mt-2 text-sm">{currentPR.summary}</p>
+                                <p className="text-cream/90 mt-2 text-sm">{currentPR.summary}</p>
                             </div>
                         </div>
                     </div>
@@ -280,11 +280,11 @@ const MultiFilePRReview = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                             {/* File Tree Sidebar */}
                             <div className="lg:col-span-1">
-                                <div className="bg-white rounded-2xl shadow-lg border border-slate-200/60 overflow-hidden sticky top-6">
-                                    <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                                <div className="card-editorial overflow-hidden sticky top-6">
+                                    <div className="bg-charcoal/5 dark:bg-cream/5 px-4 py-3 border-b-2 border-charcoal/10 dark:border-cream/10">
                                         <div className="flex items-center justify-between">
-                                            <h3 className="font-semibold text-slate-800">Files Changed</h3>
-                                            <span className="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded">
+                                            <h3 className="font-bold text-charcoal dark:text-cream uppercase tracking-wider text-sm">Files Changed</h3>
+                                            <span className="text-xs bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream px-2 py-1 rounded-sm font-bold">
                                                 {currentPR.files.length}
                                             </span>
                                         </div>
@@ -296,10 +296,10 @@ const MultiFilePRReview = () => {
                                                 <button
                                                     key={file.path}
                                                     onClick={() => setActiveFile(file)}
-                                                    className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all ${
+                                                    className={`w-full flex items-center gap-3 p-3 rounded-md text-left transition-all ${
                                                         activeFile?.path === file.path
-                                                            ? 'bg-indigo-50 border border-indigo-200'
-                                                            : 'hover:bg-slate-50'
+                                                            ? 'bg-charcoal/10 dark:bg-cream/10 border-2 border-charcoal/20 dark:border-cream/20'
+                                                            : 'hover:bg-charcoal/5 dark:hover:bg-cream/5 border-2 border-transparent'
                                                     }`}
                                                 >
                                                     <span className="text-lg">{getFileIcon(file.path)}</span>
@@ -308,11 +308,11 @@ const MultiFilePRReview = () => {
                                                             <span className={`text-xs ${status.color}`}>
                                                                 {status.icon}
                                                             </span>
-                                                            <span className="text-sm font-medium text-slate-800 truncate">
+                                                            <span className="text-sm font-bold text-charcoal dark:text-cream truncate">
                                                                 {file.path.split('/').pop()}
                                                             </span>
                                                         </div>
-                                                        <div className="text-xs text-slate-500 truncate">
+                                                        <div className="text-xs text-charcoal/70 dark:text-cream/70 truncate">
                                                             {file.path}
                                                         </div>
                                                         <div className="flex items-center gap-2 mt-1">
@@ -330,14 +330,14 @@ const MultiFilePRReview = () => {
                             {/* Code View */}
                             <div className="lg:col-span-3">
                                 {activeFile && (
-                                    <div className="bg-white rounded-2xl shadow-lg border border-slate-200/60 overflow-hidden">
+                                    <div className="card-editorial overflow-hidden">
                                         {/* File Header */}
-                                        <div className="bg-slate-50 px-6 py-4 border-b border-slate-200">
+                                        <div className="bg-charcoal/5 dark:bg-cream/5 px-6 py-4 border-b-2 border-charcoal/10 dark:border-cream/10">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <span className="text-lg">{getFileIcon(activeFile.path)}</span>
-                                                    <span className="font-semibold text-slate-800">{activeFile.path}</span>
-                                                    <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                                    <span className="font-bold text-charcoal dark:text-cream">{activeFile.path}</span>
+                                                    <span className={`px-2 py-1 rounded-sm text-xs font-bold uppercase tracking-wider ${
                                                         activeFile.status === 'new' ? 'bg-emerald-100 text-emerald-700' :
                                                         activeFile.status === 'modified' ? 'bg-orange-100 text-orange-700' :
                                                         'bg-red-100 text-red-700'
@@ -345,7 +345,7 @@ const MultiFilePRReview = () => {
                                                         {activeFile.status}
                                                     </span>
                                                 </div>
-                                                <div className="flex items-center gap-2 text-sm text-slate-600">
+                                                <div className="flex items-center gap-2 text-sm font-bold">
                                                     <span className="text-emerald-600">+{activeFile.additions}</span>
                                                     <span className="text-red-600">-{activeFile.deletions}</span>
                                                 </div>
@@ -389,7 +389,7 @@ const MultiFilePRReview = () => {
                                                 .map(comment => (
                                                 <div
                                                     key={comment.id}
-                                                    className="absolute right-4 w-3 h-3 bg-blue-500 rounded-full border-2 border-white shadow-sm"
+                                                    className="absolute right-4 w-3 h-3 bg-charcoal dark:bg-cream rounded-full border-2 border-cream shadow-sm"
                                                     style={{ top: `${comment.line * 1.5}em` }}
                                                     title={`Comment on line ${comment.line}`}
                                                 />
@@ -398,10 +398,10 @@ const MultiFilePRReview = () => {
 
                                         {/* Add Comment Form */}
                                         {selectedLine && selectedFile === activeFile.path && (
-                                            <div className="p-6 border-t border-slate-200 bg-slate-50">
+                                            <div className="p-6 border-t-2 border-charcoal/10 dark:border-cream/10 bg-charcoal/5 dark:bg-cream/5">
                                                 <div className="flex items-center gap-3 mb-4">
-                                                    <LuMessageSquare className="w-5 h-5 text-indigo-600" />
-                                                    <span className="font-semibold text-slate-800">
+                                                    <LuMessageSquare className="w-5 h-5 text-charcoal dark:text-cream" />
+                                                    <span className="font-bold text-charcoal dark:text-cream">
                                                         Add comment for line {selectedLine} in {activeFile.path}
                                                     </span>
                                                 </div>
@@ -409,13 +409,13 @@ const MultiFilePRReview = () => {
                                                     value={newComment}
                                                     onChange={(e) => setNewComment(e.target.value)}
                                                     placeholder="What issues do you see in this file? Consider how it relates to other files..."
-                                                    className="w-full p-4 border border-slate-300 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                                    className="w-full p-4 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md resize-none outline-none focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50"
                                                     rows={3}
                                                 />
                                                 <div className="flex gap-3 mt-4">
                                                     <button
                                                         onClick={() => addComment(selectedLine, activeFile.path)}
-                                                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                                                        className="btn-primary"
                                                     >
                                                         <LuSend className="w-4 h-4" />
                                                         Add Comment
@@ -425,7 +425,7 @@ const MultiFilePRReview = () => {
                                                             setSelectedLine(null);
                                                             setSelectedFile(null);
                                                         }}
-                                                        className="px-4 py-2 text-slate-600 hover:text-slate-800 transition-colors"
+                                                        className="px-4 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream font-bold transition-colors"
                                                     >
                                                         Cancel
                                                     </button>
@@ -436,19 +436,19 @@ const MultiFilePRReview = () => {
                                 )}
 
                                 {/* Cross-File Issues Section */}
-                                <div className="mt-6 bg-white rounded-2xl shadow-lg border border-slate-200/60 p-6">
+                                <div className="mt-6 card-editorial p-6">
                                     <div className="flex items-center gap-3 mb-4">
                                         <LuInfo className="w-5 h-5 text-orange-600" />
-                                        <h3 className="font-semibold text-slate-800">Cross-File Analysis</h3>
+                                        <h3 className="font-display font-bold text-charcoal dark:text-cream">Cross-File Analysis</h3>
                                     </div>
-                                    <p className="text-slate-600 text-sm mb-4">
+                                    <p className="text-charcoal/80 dark:text-cream/80 text-sm font-bold mb-4">
                                         Consider how these files work together. Look for architectural issues, data flow problems, 
                                         and inconsistencies between files.
                                     </p>
                                     
                                     <textarea
                                         placeholder="Describe any issues that span multiple files, architectural concerns, or integration problems you've identified..."
-                                        className="w-full p-4 border border-slate-300 rounded-lg resize-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        className="w-full p-4 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md resize-none outline-none focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50"
                                         rows={4}
                                         onBlur={(e) => {
                                             if (e.target.value.trim()) {
@@ -461,11 +461,11 @@ const MultiFilePRReview = () => {
                                     {/* Cross-file comments display */}
                                     {crossFileComments.length > 0 && (
                                         <div className="mt-4 space-y-3">
-                                            <h4 className="font-medium text-slate-800">Your Cross-File Comments:</h4>
+                                            <h4 className="font-bold text-charcoal dark:text-cream">Your Cross-File Comments:</h4>
                                             {crossFileComments.map(comment => (
-                                                <div key={comment.id} className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                                                    <p className="text-slate-700">{comment.text}</p>
-                                                    <span className="text-xs text-orange-600 mt-1 block">
+                                                <div key={comment.id} className="p-3 bg-charcoal/5 dark:bg-cream/5 border-2 border-charcoal/10 dark:border-cream/10 rounded-md">
+                                                    <p className="text-charcoal/90 dark:text-cream/90 font-medium">{comment.text}</p>
+                                                    <span className="text-xs text-orange-600 mt-1 block font-bold">
                                                         Architectural Comment • {comment.timestamp.toLocaleTimeString()}
                                                     </span>
                                                 </div>
@@ -479,7 +479,7 @@ const MultiFilePRReview = () => {
                                     <button
                                         onClick={submitReview}
                                         disabled={comments.length === 0 && crossFileComments.length === 0}
-                                        className="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="w-full py-4 btn-primary disabled:opacity-50 disabled:cursor-not-allowed text-center justify-center"
                                     >
                                         Submit Multi-File Review & Start Discussion
                                     </button>

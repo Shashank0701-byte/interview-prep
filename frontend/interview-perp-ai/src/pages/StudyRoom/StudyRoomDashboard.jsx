@@ -40,11 +40,11 @@ const StudyRoomDashboard = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'active': return 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300';
-      case 'waiting': return 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300';
-      case 'paused': return 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300';
-      case 'completed': return 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300';
-      default: return 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300';
+      case 'active': return 'bg-gray-100 dark:bg-navy text-gray-700 dark:text-cream/80';
+      case 'waiting': return 'bg-gray-100 dark:bg-navy text-gray-700 dark:text-cream/80';
+      case 'paused': return 'bg-gray-100 dark:bg-navy text-gray-700 dark:text-cream/80';
+      case 'completed': return 'bg-gray-100 dark:bg-navy text-gray-700 dark:text-cream/80';
+      default: return 'bg-gray-100 dark:bg-navy text-gray-700 dark:text-cream/80';
     }
   };
 
@@ -66,7 +66,7 @@ const StudyRoomDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cream font-body p-6 text-charcoal">
+    <div className="min-h-screen bg-cream dark:bg-navy font-body p-6 text-charcoal dark:text-cream">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="card-editorial p-8 mb-8">
@@ -74,23 +74,26 @@ const StudyRoomDashboard = () => {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigate('/dashboard')}
-                className="p-2 text-charcoal hover:bg-charcoal/10 rounded-md transition-all duration-200"
+                className="p-2 text-charcoal dark:text-cream hover:bg-charcoal/10 dark:hover:bg-cream/10 rounded-md transition-all duration-200"
                 title="Back to Dashboard"
               >
                 <ArrowLeft className="w-6 h-6" />
               </button>
               <div>
-                <h1 className="text-4xl font-display font-bold text-charcoal">
+                <h1 className="text-4xl font-display font-bold text-charcoal dark:text-cream">
                   Study Rooms
                 </h1>
-                <p className="text-charcoal/80 mt-2">
+                <p className="text-charcoal/80 dark:text-cream/80 mt-2">
                   Collaborate with friends and practice together in real-time
                 </p>
               </div>
             </div>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="border-2 border-charcoal bg-charcoal text-white px-6 py-3 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200 flex items-center gap-2"
+              className="border-2 border-charcoal bg-charcoal text-white px-6 py-3 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 cursor-pointer transition-all duration-200 flex items-center gap-2"
+              style={{ boxShadow: 'none' }}
+              onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+              onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
             >
               <Plus className="w-5 h-5" />
               Create Room
@@ -110,8 +113,11 @@ const StudyRoomDashboard = () => {
                 className={`px-4 py-2 rounded-md font-bold uppercase tracking-wider text-sm transition-all duration-200 border-2 ${
                   filter === key
                     ? 'bg-charcoal text-white border-charcoal'
-                    : 'bg-white text-charcoal border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer'
+                    : 'bg-white dark:bg-navy-light text-charcoal dark:text-cream border-charcoal dark:border-cream/40 hover:-translate-y-1 cursor-pointer'
                 }`}
+                style={filter !== key ? {} : {}}
+                onMouseEnter={(e) => { if (filter !== key) e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}
               >
                 {label}
               </button>
@@ -122,20 +128,23 @@ const StudyRoomDashboard = () => {
         {/* Study Rooms Grid */}
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-charcoal"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-charcoal dark:border-cream"></div>
           </div>
         ) : studyRooms.length === 0 ? (
           <div className="card-editorial p-12 text-center">
-            <Users className="w-16 h-16 text-charcoal/40 mx-auto mb-4" />
-            <h3 className="text-xl font-display font-bold text-charcoal mb-2">
+            <Users className="w-16 h-16 text-charcoal/40 dark:text-cream/40 mx-auto mb-4" />
+            <h3 className="text-xl font-display font-bold text-charcoal dark:text-cream mb-2">
               No Study Rooms Yet
             </h3>
-            <p className="text-charcoal/80 mb-6">
+            <p className="text-charcoal/80 dark:text-cream/80 mb-6">
               Create your first study room and invite friends to practice together!
             </p>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="border-2 border-charcoal bg-charcoal text-white px-6 py-3 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200"
+              className="border-2 border-charcoal bg-charcoal text-white px-6 py-3 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 cursor-pointer transition-all duration-200"
+              style={{}} 
+              onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+              onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
             >
               Create Your First Room
             </button>
@@ -150,20 +159,20 @@ const StudyRoomDashboard = () => {
                 {/* Room Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
-                    <h3 className="text-xl font-display font-bold text-charcoal mb-1">
+                    <h3 className="text-xl font-display font-bold text-charcoal dark:text-cream mb-1">
                       {room.name}
                     </h3>
-                    <p className="text-charcoal/80 text-sm line-clamp-2">
+                    <p className="text-charcoal/80 dark:text-cream/80 text-sm line-clamp-2">
                       {room.description || 'No description'}
                     </p>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold border-2 border-charcoal uppercase tracking-wider ${getStatusColor(room.status)}`}>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold border-2 border-charcoal dark:border-cream/40 uppercase tracking-wider ${getStatusColor(room.status)}`}>
                     {room.status}
                   </span>
                 </div>
 
                 {/* Room Stats */}
-                <div className="flex items-center gap-4 mb-4 text-sm text-charcoal/80">
+                <div className="flex items-center gap-4 mb-4 text-sm text-charcoal/80 dark:text-cream/80">
                   <div className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
                     <span>{room.participantCount}/{room.maxParticipants}</span>
@@ -176,18 +185,18 @@ const StudyRoomDashboard = () => {
 
                 {/* Host Info */}
                 <div className="mb-4">
-                  <p className="text-sm text-charcoal/60">
-                    Hosted by <span className="font-bold text-charcoal">{room.host.username}</span>
+                  <p className="text-sm text-charcoal/60 dark:text-cream/60">
+                    Hosted by <span className="font-bold text-charcoal dark:text-cream">{room.host.username}</span>
                   </p>
                 </div>
 
                 {/* Current Session */}
                 {room.currentSession?.sessionId && (
-                  <div className="bg-cream border-2 border-charcoal/10 rounded-md p-3 mb-4">
-                    <p className="text-sm font-bold text-charcoal">
+                  <div className="bg-cream dark:bg-navy border-2 border-charcoal/10 dark:border-cream/10 rounded-md p-3 mb-4">
+                    <p className="text-sm font-bold text-charcoal dark:text-cream">
                       Active Session
                     </p>
-                    <p className="text-xs text-charcoal/80">
+                    <p className="text-xs text-charcoal/80 dark:text-cream/80">
                       Question {room.currentSession.questionIndex + 1}
                     </p>
                   </div>
@@ -197,14 +206,18 @@ const StudyRoomDashboard = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => navigate(`/study-room/${room.roomId}`)}
-                    className="flex-1 bg-charcoal text-white py-2 px-4 rounded-md font-bold uppercase tracking-wider text-sm border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200"
+                    className="flex-1 bg-charcoal text-white py-2 px-4 rounded-md font-bold uppercase tracking-wider text-sm border-2 border-charcoal hover:-translate-y-1 cursor-pointer transition-all duration-200"
+                    onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+                    onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
                   >
                     Join Room
                   </button>
                   
                   <button
                     onClick={() => copyInviteLink(room.roomId)}
-                    className="p-2 text-charcoal border-2 border-charcoal rounded-md bg-white hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200"
+                    className="p-2 text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 rounded-md bg-white dark:bg-navy-light hover:-translate-y-1 cursor-pointer transition-all duration-200"
+                    onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+                    onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
                     title="Copy invite link"
                   >
                     <Share2 className="w-5 h-5" />
@@ -214,14 +227,18 @@ const StudyRoomDashboard = () => {
                     <>
                       <button
                         onClick={() => {/* Open edit modal */}}
-                        className="p-2 text-charcoal border-2 border-charcoal rounded-md bg-white hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200"
+                        className="p-2 text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 rounded-md bg-white dark:bg-navy-light hover:-translate-y-1 cursor-pointer transition-all duration-200"
+                        onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+                        onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
                         title="Edit room"
                       >
                         <Edit3 className="w-5 h-5" />
                       </button>
                       <button
                         onClick={() => deleteRoom(room.roomId)}
-                        className="p-2 text-white bg-charcoal border-2 border-charcoal rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200"
+                        className="p-2 text-white bg-charcoal border-2 border-charcoal rounded-md hover:-translate-y-1 cursor-pointer transition-all duration-200"
+                        onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+                        onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
                         title="Delete room"
                       >
                         <Trash2 className="w-5 h-5" />
@@ -283,14 +300,14 @@ const CreateRoomModal = ({ onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-charcoal/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 font-body">
+    <div className="fixed inset-0 bg-charcoal/80 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 font-body">
       <div className="card-editorial max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
-          <h2 className="text-2xl font-display font-bold text-charcoal mb-6">Create Study Room</h2>
+          <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-6">Create Study Room</h2>
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 uppercase tracking-wider">
+              <label className="block text-sm font-bold text-charcoal dark:text-cream mb-2 uppercase tracking-wider">
                 Room Name *
               </label>
               <input
@@ -298,32 +315,32 @@ const CreateRoomModal = ({ onClose, onSuccess }) => {
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-2 border-2 border-charcoal rounded-md focus:outline-none focus:ring-0 bg-white"
+                className="w-full px-4 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md focus:outline-none focus:ring-0 bg-white dark:bg-navy-input dark:text-cream"
                 placeholder="e.g., JavaScript Study Group"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 uppercase tracking-wider">
+              <label className="block text-sm font-bold text-charcoal dark:text-cream mb-2 uppercase tracking-wider">
                 Description
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full px-4 py-2 border-2 border-charcoal rounded-md focus:outline-none focus:ring-0 bg-white"
+                className="w-full px-4 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md focus:outline-none focus:ring-0 bg-white dark:bg-navy-input dark:text-cream"
                 rows="3"
                 placeholder="What will you be studying together?"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-charcoal mb-2 uppercase tracking-wider">
+              <label className="block text-sm font-bold text-charcoal dark:text-cream mb-2 uppercase tracking-wider">
                 Max Participants
               </label>
               <select
                 value={formData.maxParticipants}
                 onChange={(e) => setFormData({ ...formData, maxParticipants: parseInt(e.target.value) })}
-                className="w-full px-4 py-2 border-2 border-charcoal rounded-md focus:outline-none focus:ring-0 bg-white"
+                className="w-full px-4 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md focus:outline-none focus:ring-0 bg-white dark:bg-navy-input dark:text-cream"
               >
                 {[2, 3, 4, 5, 6, 8, 10].map(num => (
                   <option key={num} value={num}>{num} people</option>
@@ -333,7 +350,7 @@ const CreateRoomModal = ({ onClose, onSuccess }) => {
 
             {/* Settings */}
             <div className="space-y-3">
-              <h3 className="font-bold text-charcoal uppercase tracking-wider text-sm">Room Settings</h3>
+              <h3 className="font-bold text-charcoal dark:text-cream uppercase tracking-wider text-sm">Room Settings</h3>
               
               {[
                 { key: 'allowCodeEditing', label: 'Allow collaborative code editing' },
@@ -349,9 +366,9 @@ const CreateRoomModal = ({ onClose, onSuccess }) => {
                       ...formData,
                       settings: { ...formData.settings, [key]: e.target.checked }
                     })}
-                    className="w-4 h-4 text-charcoal border-2 border-charcoal rounded-sm focus:ring-0"
+                    className="w-4 h-4 text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 rounded-sm focus:ring-0"
                   />
-                  <span className="text-sm text-charcoal">{label}</span>
+                  <span className="text-sm text-charcoal dark:text-cream">{label}</span>
                 </label>
               ))}
             </div>
@@ -360,14 +377,18 @@ const CreateRoomModal = ({ onClose, onSuccess }) => {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 text-charcoal border-2 border-charcoal rounded-md hover:bg-charcoal/10 transition-colors font-bold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer"
+                className="flex-1 px-4 py-2 text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 rounded-md hover:bg-charcoal/10 dark:hover:bg-cream/10 transition-colors font-bold uppercase tracking-wider text-sm hover:-translate-y-1 cursor-pointer"
+                onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+                onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-charcoal text-white border-2 border-charcoal py-2 px-4 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] cursor-pointer transition-all duration-200 disabled:opacity-50"
+                className="flex-1 bg-charcoal text-white border-2 border-charcoal py-2 px-4 rounded-md font-bold uppercase tracking-wider text-sm hover:-translate-y-1 cursor-pointer transition-all duration-200 disabled:opacity-50"
+                onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+                onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
               >
                 {loading ? 'Creating...' : 'Create Room'}
               </button>

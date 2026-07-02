@@ -188,7 +188,7 @@ const InterviewPrep = () => {
                 lastUpdated={moment(sessionData.updatedAt).format("Do MMM YYYY")}
             />
             <div className='container mx-auto pt-4 pb-4 px-4 md:px-8'>
-                <h2 className='text-xl font-display font-bold text-charcoal'>Interview Q & A</h2>
+                <h2 className='text-xl font-display font-bold text-charcoal dark:text-cream'>Interview Q & A</h2>
                 <div className='grid grid-cols-12 gap-4 mt-5 mb-10'>
                     <div className={`col-span-12 ${isFollowUpDrawerOpen ? "md:col-span-7" : "md:col-span-8"}`}>
                         <AnimatePresence>
@@ -226,7 +226,10 @@ const InterviewPrep = () => {
                         </AnimatePresence>
                         <div className='flex items-center justify-center mt-5'>
                             <button
-                                className='flex items-center gap-3 text-sm text-charcoal font-bold bg-white border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] px-5 py-2 rounded-sm cursor-pointer transition-all duration-200 disabled:opacity-50 uppercase tracking-wider disabled:hover:translate-y-0 disabled:hover:shadow-none'
+                                className='flex items-center gap-3 text-sm text-charcoal dark:text-cream font-bold bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 px-5 py-2 rounded-sm cursor-pointer transition-all duration-200 disabled:opacity-50 uppercase tracking-wider disabled:hover:translate-y-0 disabled:hover:shadow-none'
+                                style={{ boxShadow: 'none' }}
+                                onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+                                onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
                                 disabled={isUpdateLoader}
                                 onClick={uploadMoreQuestions}
                             >
@@ -246,7 +249,7 @@ const InterviewPrep = () => {
                     {followUpError && <p className="text-amber-600 flex items-center gap-2 font-bold"><LuCircleAlert /> {followUpError}</p>}
                     {followUpContent && (
                         <div>
-                            <h3 className="font-display font-bold text-charcoal text-xl mb-4">{followUpContent.question}</h3>
+                            <h3 className="font-display font-bold text-charcoal dark:text-cream text-xl mb-4">{followUpContent.question}</h3>
                             <AIResponsePreview content={followUpContent.answer} />
                         </div>
                     )}

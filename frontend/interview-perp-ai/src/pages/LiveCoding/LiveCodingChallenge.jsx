@@ -270,50 +270,50 @@ const LiveCodingChallenge = () => {
 
     // Get score color
     const getScoreColor = (score) => {
-        if (score >= 80) return 'text-slate-700';
-        if (score >= 60) return 'text-slate-600';
-        return 'text-slate-500';
+        if (score >= 80) return 'text-emerald-600 dark:text-emerald-400';
+        if (score >= 60) return 'text-amber-600 dark:text-amber-400';
+        return 'text-red-600 dark:text-red-400';
     };
 
     const getScoreBg = (score) => {
-        if (score >= 80) return 'bg-slate-100';
-        if (score >= 60) return 'bg-slate-50';
-        return 'bg-gray-50';
+        if (score >= 80) return 'bg-emerald-50 dark:bg-emerald-900/20';
+        if (score >= 60) return 'bg-amber-50 dark:bg-amber-900/20';
+        return 'bg-red-50 dark:bg-red-900/20';
     };
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-cream py-6 px-4 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-cream dark:bg-navy py-6 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
-                    <div className="bg-white rounded-md border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A] p-6 mb-6">
+                    <div className="bg-white dark:bg-navy-light rounded-md border-2 border-charcoal dark:border-cream/40 shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] p-6 mb-6">
                         <div className="flex items-center justify-between mb-4">
                             <button
                                 onClick={() => navigate('/live-coding')}
-                                className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
+                                className="flex items-center gap-2 text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream transition-colors font-bold"
                             >
                                 <LuArrowLeft className="w-4 h-4" />
                                 Back to Challenges
                             </button>
                             
                             <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2 text-charcoal/80 font-bold">
+                                <div className="flex items-center gap-2 text-charcoal/80 dark:text-cream/80 font-bold">
                                     <LuClock className="w-4 h-4" />
                                     <span className="font-mono text-lg">{formatTime(timeElapsed)}</span>
                                 </div>
                                 
-                                <div className={`px-3 py-1 rounded-sm border-2 border-charcoal bg-white shadow-[2px_2px_0px_0px_#1A1A1A] text-xs font-bold uppercase tracking-wider text-charcoal`}>
+                                <div className={`px-3 py-1 rounded-sm border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light shadow-[2px_2px_0px_0px_#1A1A1A] dark:shadow-[2px_2px_0px_0px_var(--color-shadow)] text-xs font-bold uppercase tracking-wider text-charcoal dark:text-cream`}>
                                     {challenge.difficulty}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-charcoal text-white rounded-md border-2 border-charcoal shadow-[4px_4px_0px_0px_rgba(26,26,26,0.3)] p-6">
+                        <div className="bg-charcoal dark:bg-navy-input/50 text-white dark:text-cream rounded-md border-2 border-charcoal dark:border-cream/40 shadow-[4px_4px_0px_0px_rgba(26,26,26,0.3)] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] p-6">
                             <div className="flex items-center gap-3 mb-3">
                                 <LuCode className="w-6 h-6" />
                                 <h1 className="text-3xl font-display font-bold">{challenge.title}</h1>
                             </div>
-                            <p className="text-white/80 font-body mb-4">{challenge.description}</p>
+                            <p className="text-white/80 dark:text-cream/80 font-body mb-4">{challenge.description}</p>
                             
                             <div className="flex items-center gap-6 text-sm font-bold uppercase tracking-wider">
                                 <div className="flex items-center gap-2">
@@ -330,8 +330,8 @@ const LiveCodingChallenge = () => {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Code Editor */}
-                        <div className="bg-white rounded-md border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A] overflow-hidden">
-                            <div className="bg-charcoal text-white px-4 py-3 flex items-center justify-between border-b-2 border-charcoal">
+                        <div className="bg-white dark:bg-navy-light rounded-md border-2 border-charcoal dark:border-cream/40 shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] overflow-hidden">
+                            <div className="bg-charcoal dark:bg-navy-input/50 text-white dark:text-cream px-4 py-3 flex items-center justify-between border-b-2 border-charcoal dark:border-cream/40">
                                 <div className="flex items-center gap-2">
                                     <LuCode className="w-4 h-4" />
                                     <span className="font-display font-bold">Code Editor</span>
@@ -340,7 +340,7 @@ const LiveCodingChallenge = () => {
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={() => setShowHints(!showHints)}
-                                        className="px-3 py-1 bg-white text-charcoal border-2 border-charcoal hover:-translate-y-1 hover:shadow-[2px_2px_0px_0px_#1A1A1A] rounded-sm text-xs font-bold uppercase tracking-wider transition-all duration-200"
+                                        className="px-3 py-1 bg-white dark:bg-navy-light text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[2px_2px_0px_0px_#1A1A1A] dark:hover:shadow-[2px_2px_0px_0px_var(--color-shadow)] rounded-sm text-xs font-bold uppercase tracking-wider transition-all duration-200"
                                     >
                                         {showHints ? 'Hide Hints' : 'Show Hints'}
                                     </button>
@@ -348,7 +348,7 @@ const LiveCodingChallenge = () => {
                                     <button
                                         onClick={runCode}
                                         disabled={isRunning}
-                                        className="flex items-center gap-2 px-4 py-1.5 bg-white text-charcoal border-2 border-charcoal hover:-translate-y-1 hover:shadow-[2px_2px_0px_0px_#1A1A1A] disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none rounded-sm text-xs font-bold uppercase tracking-wider transition-all duration-200"
+                                        className="flex items-center gap-2 px-4 py-1.5 bg-white dark:bg-navy-light text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[2px_2px_0px_0px_#1A1A1A] dark:hover:shadow-[2px_2px_0px_0px_var(--color-shadow)] disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none rounded-sm text-xs font-bold uppercase tracking-wider transition-all duration-200"
                                     >
                                         {isRunning ? (
                                             <>
@@ -365,12 +365,12 @@ const LiveCodingChallenge = () => {
                                 </div>
                             </div>
 
-                            <div className="p-4">
+                            <div className="p-4 bg-charcoal dark:bg-[#1e1e1e]">
                                 <textarea
                                     ref={codeEditorRef}
                                     value={userCode}
                                     onChange={(e) => setUserCode(e.target.value)}
-                                    className="w-full h-96 font-mono text-sm border border-gray-300 rounded-lg p-4 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+                                    className="w-full h-96 font-mono text-sm p-4 resize-none rounded-sm focus:outline-none"
                                     placeholder="Write your solution here..."
                                     style={{
                                         backgroundColor: '#1e1e1e',
@@ -382,14 +382,14 @@ const LiveCodingChallenge = () => {
 
                             {/* Hints Section */}
                             {showHints && (
-                                <div className="border-t border-gray-200 p-4 bg-blue-50">
-                                    <h3 className="font-medium text-blue-800 mb-2 flex items-center gap-2">
+                                <div className="border-t border-charcoal/10 dark:border-cream/10 p-4 bg-white dark:bg-navy-light">
+                                    <h3 className="text-charcoal dark:text-cream font-bold mb-2 flex items-center gap-2">
                                         <LuZap className="w-4 h-4" />
                                         Hints
                                     </h3>
                                     <div className="space-y-2">
                                         {challenge.hints.map((hint, index) => (
-                                            <div key={index} className="text-sm text-blue-700 bg-blue-100 rounded p-2">
+                                            <div key={index} className="text-sm text-charcoal/80 dark:text-cream/80 bg-charcoal/5 dark:bg-navy-input p-2 rounded-sm border-l-2 border-charcoal dark:border-cream/40">
                                                 <strong>Hint {index + 1}:</strong> {hint}
                                             </div>
                                         ))}
@@ -403,43 +403,43 @@ const LiveCodingChallenge = () => {
                             {/* Test Results */}
                             {!hasRunCode ? (
                                 <div className="card-editorial p-6">
-                                    <h2 className="text-2xl font-display font-bold text-charcoal mb-4 flex items-center gap-2 border-b-2 border-charcoal/10 pb-2">
-                                        <LuTarget className="w-5 h-5 text-charcoal/80" />
+                                    <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4 flex items-center gap-2 border-b-2 border-charcoal/10 dark:border-cream/10 pb-2">
+                                        <LuTarget className="w-5 h-5 text-charcoal/80 dark:text-cream/80" />
                                         Test Results
                                     </h2>
                                     <div className="text-center py-8">
-                                        <LuPlay className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                                        <p className="text-gray-500 mb-2">No tests run yet</p>
-                                        <p className="text-sm text-gray-400">Write your solution and click "Run Code" to see test results</p>
+                                        <LuPlay className="w-12 h-12 text-charcoal/20 dark:text-cream/20 mx-auto mb-3" />
+                                        <p className="text-charcoal/60 dark:text-cream/60 font-bold mb-2">No tests run yet</p>
+                                        <p className="text-sm text-charcoal/40 dark:text-cream/40">Write your solution and click "Run Code" to see test results</p>
                                     </div>
                                 </div>
                             ) : testResults.length > 0 && (
                                 <div className="card-editorial p-6">
-                                    <h2 className="text-2xl font-display font-bold text-charcoal mb-4 flex items-center gap-2 border-b-2 border-charcoal/10 pb-2">
-                                        <LuCheck className="w-5 h-5 text-green-500" />
+                                    <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4 flex items-center gap-2 border-b-2 border-charcoal/10 dark:border-cream/10 pb-2">
+                                        <LuCheck className="w-5 h-5 text-emerald-500" />
                                         Test Results
                                     </h2>
                                     
                                     <div className="space-y-3">
                                         {testResults.map((result, index) => (
-                                            <div key={index} className={`p-3 rounded-lg border-l-4 ${
+                                            <div key={index} className={`p-3 rounded-sm border-l-4 ${
                                                 result.passed 
-                                                    ? 'bg-green-50 border-green-500' 
-                                                    : 'bg-red-50 border-red-500'
+                                                    ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-500' 
+                                                    : 'bg-red-50 dark:bg-red-900/20 border-red-500'
                                             }`}>
                                                 <div className="flex items-center justify-between mb-2">
-                                                    <span className="font-medium">Test Case {index + 1}</span>
+                                                    <span className="font-bold text-charcoal dark:text-cream">Test Case {index + 1}</span>
                                                     {result.passed ? (
-                                                        <LuCheck className="w-5 h-5 text-green-500" />
+                                                        <LuCheck className="w-5 h-5 text-emerald-500" />
                                                     ) : (
                                                         <LuX className="w-5 h-5 text-red-500" />
                                                     )}
                                                 </div>
-                                                <div className="text-sm text-gray-600">
+                                                <div className="text-sm text-charcoal/80 dark:text-cream/80 font-mono">
                                                     <div><strong>Input:</strong> {JSON.stringify(result.input)}</div>
                                                     <div><strong>Expected:</strong> {JSON.stringify(result.expected)}</div>
                                                     {!result.passed && (
-                                                        <div className="text-red-600">
+                                                        <div className="text-red-600 dark:text-red-400 mt-1 font-bold">
                                                             <strong>Got:</strong> {JSON.stringify(result.actual)}
                                                         </div>
                                                     )}
@@ -453,27 +453,27 @@ const LiveCodingChallenge = () => {
                             {/* AI Code Review */}
                             {!hasRunCode ? (
                                 <div className="card-editorial p-6">
-                                    <h2 className="text-2xl font-display font-bold text-charcoal mb-4 flex items-center gap-2 border-b-2 border-charcoal/10 pb-2">
-                                        <LuBrain className="w-5 h-5 text-charcoal/80" />
+                                    <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4 flex items-center gap-2 border-b-2 border-charcoal/10 dark:border-cream/10 pb-2">
+                                        <LuBrain className="w-5 h-5 text-charcoal/80 dark:text-cream/80" />
                                         AI Code Review
                                     </h2>
                                     <div className="text-center py-8">
-                                        <LuBrain className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                                        <p className="text-gray-500 mb-2">No code analysis yet</p>
-                                        <p className="text-sm text-gray-400">Run your code to get AI feedback on correctness, efficiency, and style</p>
+                                        <LuBrain className="w-12 h-12 text-charcoal/20 dark:text-cream/20 mx-auto mb-3" />
+                                        <p className="text-charcoal/60 dark:text-cream/60 font-bold mb-2">No code analysis yet</p>
+                                        <p className="text-sm text-charcoal/40 dark:text-cream/40">Run your code to get AI feedback on correctness, efficiency, and style</p>
                                     </div>
                                 </div>
                             ) : aiReview && (
                                 <div className="card-editorial p-6">
-                                    <h2 className="text-2xl font-display font-bold text-charcoal mb-4 flex items-center gap-2 border-b-2 border-charcoal/10 pb-2">
-                                        <LuBrain className="w-5 h-5 text-charcoal" />
+                                    <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4 flex items-center gap-2 border-b-2 border-charcoal/10 dark:border-cream/10 pb-2">
+                                        <LuBrain className="w-5 h-5 text-charcoal dark:text-cream" />
                                         AI Code Review
                                     </h2>
 
                                     {/* Overall Score */}
-                                    <div className={`p-4 rounded-lg mb-4 ${getScoreBg(aiReview.overallScore)}`}>
+                                    <div className={`p-4 rounded-sm border-2 border-charcoal/10 dark:border-cream/10 mb-4 ${getScoreBg(aiReview.overallScore)}`}>
                                         <div className="flex items-center justify-between">
-                                            <span className="font-medium">Overall Score</span>
+                                            <span className="font-bold text-charcoal dark:text-cream uppercase tracking-wider text-sm">Overall Score</span>
                                             <span className={`text-2xl font-bold ${getScoreColor(aiReview.overallScore)}`}>
                                                 {aiReview.overallScore}/100
                                             </span>
@@ -486,35 +486,35 @@ const LiveCodingChallenge = () => {
                                             <div className={`text-2xl font-bold ${getScoreColor(aiReview.correctness)}`}>
                                                 {aiReview.correctness}
                                             </div>
-                                            <div className="text-sm text-gray-600">Correctness</div>
+                                            <div className="text-xs text-charcoal/80 dark:text-cream/80 font-bold uppercase tracking-wider mt-1">Correctness</div>
                                         </div>
                                         <div className="text-center">
                                             <div className={`text-2xl font-bold ${getScoreColor(aiReview.efficiency)}`}>
                                                 {aiReview.efficiency}
                                             </div>
-                                            <div className="text-sm text-gray-600">Efficiency</div>
+                                            <div className="text-xs text-charcoal/80 dark:text-cream/80 font-bold uppercase tracking-wider mt-1">Efficiency</div>
                                         </div>
                                         <div className="text-center">
                                             <div className={`text-2xl font-bold ${getScoreColor(aiReview.codeStyle)}`}>
                                                 {aiReview.codeStyle}
                                             </div>
-                                            <div className="text-sm text-gray-600">Code Style</div>
+                                            <div className="text-xs text-charcoal/80 dark:text-cream/80 font-bold uppercase tracking-wider mt-1">Code Style</div>
                                         </div>
                                     </div>
 
                                     {/* Big O Analysis */}
-                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                                        <h3 className="font-medium text-blue-800 mb-2">Time Complexity Analysis</h3>
-                                        <p className="text-blue-700 text-sm">{aiReview.bigOAnalysis}</p>
+                                    <div className="bg-charcoal/5 dark:bg-navy-input border-2 border-charcoal/10 dark:border-cream/10 rounded-sm p-4 mb-4">
+                                        <h3 className="font-bold text-charcoal dark:text-cream mb-2">Time Complexity Analysis</h3>
+                                        <p className="text-charcoal/80 dark:text-cream/80 text-sm font-medium">{aiReview.bigOAnalysis}</p>
                                     </div>
 
                                     {/* Suggestions */}
                                     {aiReview.suggestions.length > 0 && (
                                         <div className="space-y-2">
-                                            <h3 className="font-medium text-gray-800">Suggestions for Improvement</h3>
+                                            <h3 className="font-bold text-charcoal dark:text-cream mb-2">Suggestions for Improvement</h3>
                                             {aiReview.suggestions.map((suggestion, index) => (
-                                                <div key={index} className="flex items-start gap-2 text-sm text-gray-600 bg-yellow-50 p-3 rounded">
-                                                    <LuInfo className="w-4 h-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                                                <div key={index} className="flex items-start gap-2 text-sm font-medium text-charcoal/80 dark:text-cream/80 bg-charcoal/5 dark:bg-navy-input p-3 rounded-sm border-l-2 border-charcoal/20 dark:border-cream/20">
+                                                    <LuInfo className="w-4 h-4 text-charcoal/60 dark:text-cream/60 mt-0.5 flex-shrink-0" />
                                                     {suggestion}
                                                 </div>
                                             ))}
@@ -524,12 +524,12 @@ const LiveCodingChallenge = () => {
                                     {/* Bugs */}
                                     {aiReview.bugs.length > 0 && (
                                         <div className="mt-4 space-y-2">
-                                            <h3 className="font-medium text-gray-800">Potential Issues</h3>
+                                            <h3 className="font-bold text-charcoal dark:text-cream mb-2">Potential Issues</h3>
                                             {aiReview.bugs.map((bug, index) => (
-                                                <div key={index} className="flex items-start gap-2 text-sm text-red-600 bg-red-50 p-3 rounded">
+                                                <div key={index} className="flex items-start gap-2 text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-sm border-l-2 border-red-500">
                                                     <LuX className="w-4 h-4 mt-0.5 flex-shrink-0" />
                                                     <div>
-                                                        <div className="font-medium">{bug.type}</div>
+                                                        <div className="font-bold uppercase tracking-wider text-xs mb-1">{bug.type}</div>
                                                         <div>{bug.message}</div>
                                                     </div>
                                                 </div>
@@ -541,18 +541,18 @@ const LiveCodingChallenge = () => {
 
                             {/* Execution Feedback */}
                             {feedback && (
-                                <div className={`p-4 rounded-lg ${
+                                <div className={`p-4 rounded-sm border-2 ${
                                     feedback.success 
-                                        ? 'bg-green-50 border border-green-200' 
-                                        : 'bg-red-50 border border-red-200'
+                                        ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-500' 
+                                        : 'bg-red-50 dark:bg-red-900/20 border-red-500'
                                 }`}>
-                                    <div className={`font-medium ${
-                                        feedback.success ? 'text-green-800' : 'text-red-800'
+                                    <div className={`font-bold ${
+                                        feedback.success ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'
                                     }`}>
                                         {feedback.message}
                                     </div>
                                     {feedback.testsPassedRatio && (
-                                        <div className="text-sm text-gray-600 mt-1">
+                                        <div className="text-sm font-medium text-charcoal/80 dark:text-cream/80 mt-1">
                                             Tests passed: {feedback.testsPassedRatio}
                                         </div>
                                     )}

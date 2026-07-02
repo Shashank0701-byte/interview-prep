@@ -45,26 +45,26 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                     {/* Search Input */}
                     <div className="relative flex-1 max-w-md">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <LuSearch className="h-4 w-4 text-[#1A1A1A]" />
+                            <LuSearch className="h-4 w-4 text-charcoal dark:text-cream/60" />
                         </div>
                         <input
                             type="text"
                             placeholder="Search sessions by role or topics..."
                             value={filters.searchTerm}
                             onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
-                            className="block w-full pl-10 pr-4 py-3 border-2 border-[#1A1A1A] rounded-md text-sm placeholder-[#1A1A1A]/50 focus:outline-none bg-white text-[#1A1A1A] transition-all duration-200 font-bold"
+                            className="block w-full pl-10 pr-4 py-3 border-2 border-charcoal dark:border-cream/40 rounded-md text-sm placeholder-charcoal/50 dark:placeholder-cream/50 focus:outline-none bg-white dark:bg-navy-input text-charcoal dark:text-cream transition-all duration-200 font-bold focus:border-charcoal dark:focus:border-cream/60"
                         />
                     </div>
                     
                     {/* Filter Toggle Button */}
                     <button
                         onClick={() => setIsOpen(!isOpen)}
-                        className="flex items-center gap-2 px-4 py-3 bg-white border-2 border-[#1A1A1A] rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 cursor-pointer"
+                        className="flex items-center gap-2 px-4 py-3 bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all duration-200 cursor-pointer"
                     >
-                        <LuFilter className="w-4 h-4 text-[#1A1A1A]" />
-                        <span className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]">Filters</span>
+                        <LuFilter className="w-4 h-4 text-charcoal dark:text-cream" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-charcoal dark:text-cream">Filters</span>
                         {getActiveFilterCount() > 0 && (
-                            <span className="bg-[#1A1A1A] text-white text-[10px] px-2 py-0.5 rounded-sm font-bold">
+                            <span className="bg-charcoal dark:bg-cream text-white dark:text-navy text-[10px] px-2 py-0.5 rounded-sm font-bold">
                                 {getActiveFilterCount()}
                             </span>
                         )}
@@ -80,7 +80,7 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                             handleFilterChange('sortBy', sortBy);
                             handleFilterChange('sortOrder', sortOrder);
                         }}
-                        className="px-4 py-3 border-2 border-[#1A1A1A] rounded-md focus:outline-none bg-white text-sm font-bold text-[#1A1A1A] transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]"
+                        className="px-4 py-3 border-2 border-charcoal dark:border-cream/40 rounded-md focus:outline-none bg-white dark:bg-navy-input text-sm font-bold text-charcoal dark:text-cream transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
                     >
                         <option value="lastUpdated-desc">📅 Latest Updated</option>
                         <option value="lastUpdated-asc">📅 Oldest Updated</option>
@@ -118,12 +118,12 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                         className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[9998]"
                         onClick={() => setIsOpen(false)}
                     />
-                    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] p-6 mx-4">
+                    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl bg-white dark:bg-navy border border-charcoal/20 dark:border-cream/20 rounded-xl shadow-2xl z-[9999] p-6 mx-4">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-800">Filter Interview Sessions</h3>
+                        <h3 className="text-lg font-semibold text-charcoal dark:text-cream">Filter Interview Sessions</h3>
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="text-gray-400 hover:text-gray-600 transition-colors"
+                            className="text-charcoal/40 dark:text-cream/40 hover:text-charcoal dark:hover:text-cream transition-colors"
                         >
                             <LuX className="w-5 h-5" />
                         </button>
@@ -132,13 +132,13 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {/* Experience Filter */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-charcoal dark:text-cream mb-2">
                                 Experience Level
                             </label>
                             <select
                                 value={filters.experience}
                                 onChange={(e) => handleFilterChange('experience', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                className="w-full px-3 py-2 border border-charcoal/30 dark:border-cream/30 rounded-lg focus:ring-2 focus:ring-charcoal dark:focus:ring-cream focus:border-transparent outline-none bg-white dark:bg-navy-input text-charcoal dark:text-cream"
                             >
                                 <option value="">All Experience</option>
                                 <option value="0">Fresh Graduate</option>
@@ -152,13 +152,13 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
 
                         {/* Status Filter */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-charcoal dark:text-cream mb-2">
                                 Session Status
                             </label>
                             <select
                                 value={filters.status}
                                 onChange={(e) => handleFilterChange('status', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                className="w-full px-3 py-2 border border-charcoal/30 dark:border-cream/30 rounded-lg focus:ring-2 focus:ring-charcoal dark:focus:ring-cream focus:border-transparent outline-none bg-white dark:bg-navy-input text-charcoal dark:text-cream"
                             >
                                 <option value="">All Status</option>
                                 <option value="Active">🟢 Active</option>
@@ -169,13 +169,13 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
 
                         {/* Rating Filter */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-charcoal dark:text-cream mb-2">
                                 Minimum Rating
                             </label>
                             <select
                                 value={filters.minRating}
                                 onChange={(e) => handleFilterChange('minRating', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                className="w-full px-3 py-2 border border-charcoal/30 dark:border-cream/30 rounded-lg focus:ring-2 focus:ring-charcoal dark:focus:ring-cream focus:border-transparent outline-none bg-white dark:bg-navy-input text-charcoal dark:text-cream"
                             >
                                 <option value="">Any Rating</option>
                                 <option value="1">⭐ 1+ Stars</option>
@@ -188,19 +188,19 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
 
                         {/* Quick Filters */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-charcoal dark:text-cream mb-2">
                                 Quick Filters
                             </label>
                             <div className="space-y-2">
                                 <button
                                     onClick={() => handleFilterChange('status', 'Active')}
-                                    className="w-full text-left px-3 py-2 text-sm bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
+                                    className="w-full text-left px-3 py-2 text-sm bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors"
                                 >
                                     🟢 Active Sessions
                                 </button>
                                 <button
                                     onClick={() => handleFilterChange('minRating', '4')}
-                                    className="w-full text-left px-3 py-2 text-sm bg-yellow-50 text-yellow-700 rounded-lg hover:bg-yellow-100 transition-colors"
+                                    className="w-full text-left px-3 py-2 text-sm bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-900/40 transition-colors"
                                 >
                                     ⭐ High Rated (4+)
                                 </button>
@@ -210,14 +210,14 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
 
                     {/* Active Filters Summary */}
                     {getActiveFilterCount() > 0 && (
-                        <div className="mt-4 pt-4 border-t border-gray-200">
+                        <div className="mt-4 pt-4 border-t border-charcoal/10 dark:border-cream/10">
                             <div className="flex items-center justify-between">
-                                <span className="text-sm text-gray-600">
+                                <span className="text-sm text-charcoal/60 dark:text-cream/60">
                                     {getActiveFilterCount()} filter{getActiveFilterCount() > 1 ? 's' : ''} active
                                 </span>
                                 <button
                                     onClick={clearFilters}
-                                    className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                                    className="text-sm text-charcoal dark:text-cream hover:text-crimson dark:hover:text-crimson font-semibold transition-colors"
                                 >
                                     Clear all filters
                                 </button>

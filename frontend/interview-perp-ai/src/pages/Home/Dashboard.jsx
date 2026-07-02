@@ -185,29 +185,29 @@ const Dashboard = () => {
 
     return (
         <DashboardLayout>
-            <div className='min-h-screen bg-cream dark:from-slate-900 dark:via-slate-800/50 dark:to-slate-900/80 transition-colors duration-300'>
+            <div className='min-h-screen bg-cream dark:bg-navy transition-colors duration-300'>
                 {/* Hero Section */}
-                <div className="border-b-2 border-charcoal/10 dark:border-slate-700/60 transition-colors duration-300">
+                <div className="border-b-2 border-charcoal/10 dark:border-cream/10 transition-colors duration-300">
                     <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-10 md:py-12">
                         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 sm:gap-8">
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display text-charcoal dark:text-white leading-tight">
+                                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display text-charcoal dark:text-cream leading-tight">
                                         My Interview Sessions
                                     </h1>
-                                    <p className="text-base sm:text-lg text-charcoal/50 dark:text-slate-300 max-w-2xl transition-colors duration-300">
+                                    <p className="text-base sm:text-lg text-charcoal/50 dark:text-cream/50 max-w-2xl transition-colors duration-300">
                                         Track your progress, practice with AI-generated questions, and ace your next interview
                                     </p>
                                 </div>
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 text-sm">
-                                    <div className="flex items-center gap-3 bg-white border-2 border-charcoal/10 px-4 py-2 rounded-md transition-colors duration-300">
-                                        <div className="w-2 h-2 bg-charcoal rounded-full"></div>
-                                        <span className="font-semibold text-charcoal/70 dark:text-slate-200 text-xs uppercase tracking-[0.1em]">
+                                    <div className="flex items-center gap-3 bg-white dark:bg-navy-light border-2 border-charcoal/10 dark:border-cream/10 px-4 py-2 rounded-md transition-colors duration-300">
+                                        <div className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full"></div>
+                                        <span className="font-semibold text-charcoal/70 dark:text-cream/70 text-xs uppercase tracking-[0.1em]">
                                             {getFilterStats().filtered} of {getFilterStats().total} sessions
                                         </span>
                                     </div>
                                     {getFilterStats().filtered !== getFilterStats().total && (
-                                        <div className="flex items-center gap-2 bg-white border-2 border-crimson/30 px-4 py-2 rounded-md transition-colors duration-300">
+                                        <div className="flex items-center gap-2 bg-white dark:bg-navy-light border-2 border-crimson/30 px-4 py-2 rounded-md transition-colors duration-300">
                                             <div className="w-2 h-2 bg-crimson rounded-full"></div>
                                             <span className="text-crimson font-semibold text-xs uppercase tracking-[0.1em]">
                                                 Filtered view active
@@ -221,15 +221,15 @@ const Dashboard = () => {
                                 {reviewCount > 0 && (
                                     <Link 
                                         to="/review" 
-                                        className="bg-transparent border-2 border-charcoal flex flex-col items-center justify-center gap-3 px-4 py-5 min-h-[110px] relative rounded-md transition-all duration-200 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]"
+                                        className="bg-transparent border-2 border-charcoal dark:border-cream/40 flex flex-col items-center justify-center gap-3 px-4 py-5 min-h-[110px] relative rounded-md transition-all duration-200 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
                                     >
                                         <div className="absolute top-2 right-2 w-2 h-2 bg-crimson rounded-full"></div>
-                                        <div className="w-9 h-9 border-2 border-charcoal rounded-md flex items-center justify-center">
-                                            <svg className="w-4 h-4 text-charcoal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="w-9 h-9 border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center">
+                                            <svg className="w-4 h-4 text-charcoal dark:text-cream" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </div>
-                                        <span className="text-center text-xs font-bold uppercase tracking-[0.08em] text-charcoal">
+                                        <span className="text-center text-xs font-bold uppercase tracking-[0.08em] text-charcoal dark:text-cream">
                                             Review ({reviewCount})
                                         </span>
                                     </Link>
@@ -238,32 +238,32 @@ const Dashboard = () => {
                                     <Link
                                         key={link.to}
                                         to={link.to}
-                                        className="bg-transparent border-2 border-charcoal flex flex-col items-center justify-center gap-3 px-4 py-5 min-h-[110px] relative rounded-md transition-all duration-200 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]"
+                                        className="bg-transparent border-2 border-charcoal dark:border-cream/40 flex flex-col items-center justify-center gap-3 px-4 py-5 min-h-[110px] relative rounded-md transition-all duration-200 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
                                     >
                                         {link.badge && (
-                                            <div className="absolute top-2 right-2 bg-charcoal text-white text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm">
+                                            <div className="absolute top-2 right-2 bg-charcoal dark:bg-cream text-white dark:text-navy text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm">
                                                 {link.badge}
                                             </div>
                                         )}
-                                        <div className="w-9 h-9 border-2 border-charcoal rounded-md flex items-center justify-center">
-                                            <svg className="w-4 h-4 text-charcoal" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div className="w-9 h-9 border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center">
+                                            <svg className="w-4 h-4 text-charcoal dark:text-cream" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={link.icon} />
                                             </svg>
                                         </div>
-                                        <span className="text-center text-xs font-bold uppercase tracking-[0.08em] text-charcoal">{link.label}</span>
+                                        <span className="text-center text-xs font-bold uppercase tracking-[0.08em] text-charcoal dark:text-cream">{link.label}</span>
                                     </Link>
                                 ))}
                                 
                                 <button
                                     onClick={() => setOpenCreateModal(true)}
-                                    className="flex flex-col items-center justify-center gap-3 bg-transparent border-2 border-dashed border-charcoal/30 hover:border-charcoal px-4 py-5 rounded-md transition-all duration-200 min-h-[110px] group hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]"
+                                    className="flex flex-col items-center justify-center gap-3 bg-transparent border-2 border-dashed border-charcoal/30 dark:border-cream/20 hover:border-charcoal dark:hover:border-cream/60 px-4 py-5 rounded-md transition-all duration-200 min-h-[110px] group hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
                                 >
-                                    <div className="w-9 h-9 border-2 border-charcoal/30 group-hover:border-charcoal rounded-md flex items-center justify-center transition-colors">
-                                        <svg className="w-4 h-4 text-charcoal/40 group-hover:text-charcoal group-hover:rotate-90 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div className="w-9 h-9 border-2 border-charcoal/30 dark:border-cream/20 group-hover:border-charcoal dark:group-hover:border-cream/60 rounded-md flex items-center justify-center transition-colors">
+                                        <svg className="w-4 h-4 text-charcoal/40 dark:text-cream/40 group-hover:text-charcoal dark:group-hover:text-cream group-hover:rotate-90 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                         </svg>
                                     </div>
-                                    <span className="text-center text-xs font-bold uppercase tracking-[0.08em] text-charcoal/40 group-hover:text-charcoal transition-colors">Create New Session</span>
+                                    <span className="text-center text-xs font-bold uppercase tracking-[0.08em] text-charcoal/40 dark:text-cream/40 group-hover:text-charcoal dark:group-hover:text-cream transition-colors">Create New Session</span>
                                 </button>
                             </div>
                         </div>
@@ -272,14 +272,14 @@ const Dashboard = () => {
 
                 {/* Filter Section */}
                 <div className="container mx-auto px-4 md:px-6 py-2">
-                    <div className="mb-8 border-b-2 border-charcoal/10 pb-6 pt-2">
+                    <div className="mb-8 border-b-2 border-charcoal/10 dark:border-cream/10 pb-6 pt-2">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-8 h-8 bg-charcoal rounded-md flex items-center justify-center">
-                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="w-8 h-8 bg-charcoal dark:bg-cream rounded-md flex items-center justify-center">
+                                <svg className="w-4 h-4 text-white dark:text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
                                 </svg>
                             </div>
-                            <h2 className="text-xl font-display text-charcoal dark:text-slate-200">Filter & Search Sessions</h2>
+                            <h2 className="text-xl font-display text-charcoal dark:text-cream">Filter & Search Sessions</h2>
                         </div>
                         <SessionFilter 
                             onFilterChange={updateFilters} 
@@ -287,7 +287,7 @@ const Dashboard = () => {
                         />
                         
                         {/* Color Legend */}
-                        <div className="mt-6 pt-6 border-t-2 border-charcoal/10 dark:border-slate-700">
+                        <div className="mt-6 pt-6 border-t-2 border-charcoal/10 dark:border-cream/10">
                             <h3 className="section-label mb-3">Session Progress</h3>
                             <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
                                 {[
@@ -298,8 +298,8 @@ const Dashboard = () => {
                                     { label: 'Completed', color: '#1A1A1A' },
                                 ].map((item) => (
                                     <div key={item.label} className="flex items-center gap-2">
-                                        <div className="w-4 h-4 rounded-sm border border-charcoal/20" style={{background: item.color}}></div>
-                                        <span className="text-charcoal/50 font-medium uppercase tracking-wider text-[10px]">{item.label}</span>
+                                        <div className="w-4 h-4 rounded-sm border border-charcoal/20 dark:border-cream/20" style={{background: item.color}}></div>
+                                        <span className="text-charcoal/50 dark:text-cream/50 font-medium uppercase tracking-wider text-[10px]">{item.label}</span>
                                     </div>
                                 ))}
                             </div>
@@ -314,11 +314,11 @@ const Dashboard = () => {
                             <div className="col-span-full flex items-center justify-center py-24">
                                 <div className="text-center space-y-6">
                                     <div className="relative">
-                                        <div className="animate-spin rounded-full h-12 w-12 border-2 border-charcoal/10 border-t-charcoal mx-auto"></div>
+                                        <div className="animate-spin rounded-full h-12 w-12 border-2 border-charcoal/10 dark:border-cream/10 border-t-charcoal dark:border-t-cream mx-auto"></div>
                                     </div>
                                     <div className="space-y-2">
-                                        <p className="text-lg font-display text-charcoal">Loading your sessions...</p>
-                                        <p className="text-sm text-charcoal/40 uppercase tracking-wider">Preparing your dashboard</p>
+                                        <p className="text-lg font-display text-charcoal dark:text-cream">Loading your sessions...</p>
+                                        <p className="text-sm text-charcoal/40 dark:text-cream/40 uppercase tracking-wider">Preparing your dashboard</p>
                                     </div>
                                 </div>
                             </div>
@@ -346,14 +346,14 @@ const Dashboard = () => {
                     ) : getFilterStats().total > 0 ? (
                         <div className="col-span-full flex items-center justify-center py-24">
                             <div className="text-center space-y-6 max-w-lg">
-                                <div className="w-20 h-20 mx-auto border-2 border-charcoal rounded-md flex items-center justify-center">
-                                    <svg className="w-10 h-10 text-charcoal/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="w-20 h-20 mx-auto border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center">
+                                    <svg className="w-10 h-10 text-charcoal/40 dark:text-cream/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
                                 </div>
                                 <div className="space-y-3">
-                                    <h3 className="text-2xl font-display text-charcoal">No matching sessions found</h3>
-                                    <p className="text-charcoal/50">Try adjusting your search criteria or explore different filter options.</p>
+                                    <h3 className="text-2xl font-display text-charcoal dark:text-cream">No matching sessions found</h3>
+                                    <p className="text-charcoal/50 dark:text-cream/50">Try adjusting your search criteria or explore different filter options.</p>
                                     <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
                                         <button 
                                             onClick={() => updateFilters({})}
@@ -368,16 +368,16 @@ const Dashboard = () => {
                     ) : (
                         <div className="col-span-full flex items-center justify-center py-24">
                             <div className="text-center space-y-6 max-w-xl">
-                                <div className="w-24 h-24 mx-auto border-2 border-charcoal rounded-md flex items-center justify-center">
-                                    <svg className="w-12 h-12 text-charcoal/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="w-24 h-24 mx-auto border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center">
+                                    <svg className="w-12 h-12 text-charcoal/30 dark:text-cream/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                     </svg>
                                 </div>
                                 <div className="space-y-3">
-                                    <h3 className="text-3xl font-display text-charcoal">
+                                    <h3 className="text-3xl font-display text-charcoal dark:text-cream">
                                         Ready to ace your interviews?
                                     </h3>
-                                    <p className="text-charcoal/50">
+                                    <p className="text-charcoal/50 dark:text-cream/50">
                                         Create your first interview session and get AI-generated questions tailored to your role.
                                     </p>
                                 </div>
@@ -391,25 +391,25 @@ const Dashboard = () => {
                                     </button>
                                     <Link
                                         to="/progress"
-                                        className="inline-flex items-center justify-center gap-2 text-charcoal border-2 border-charcoal px-6 py-3 rounded-md font-bold text-sm uppercase tracking-wider hover:bg-charcoal hover:text-white transition-all"
+                                        className="inline-flex items-center justify-center gap-2 text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 px-6 py-3 rounded-md font-bold text-sm uppercase tracking-wider hover:bg-charcoal hover:text-white dark:hover:bg-cream dark:hover:text-navy transition-all"
                                     >
                                         View Analytics
                                     </Link>
                                 </div>
                                 
-                                <div className="pt-6 border-t-2 border-charcoal/10">
+                                <div className="pt-6 border-t-2 border-charcoal/10 dark:border-cream/10">
                                     <p className="section-label mb-4">What you'll get with your first session</p>
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-                                        <div className="flex items-center gap-2 text-charcoal/60">
-                                            <div className="w-2 h-2 bg-charcoal rounded-full"></div>
+                                        <div className="flex items-center gap-2 text-charcoal/60 dark:text-cream/60">
+                                            <div className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full"></div>
                                             AI-generated questions
                                         </div>
-                                        <div className="flex items-center gap-2 text-charcoal/60">
-                                            <div className="w-2 h-2 bg-charcoal rounded-full"></div>
+                                        <div className="flex items-center gap-2 text-charcoal/60 dark:text-cream/60">
+                                            <div className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full"></div>
                                             Progress tracking
                                         </div>
-                                        <div className="flex items-center gap-2 text-charcoal/60">
-                                            <div className="w-2 h-2 bg-charcoal rounded-full"></div>
+                                        <div className="flex items-center gap-2 text-charcoal/60 dark:text-cream/60">
+                                            <div className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full"></div>
                                             Performance analytics
                                         </div>
                                     </div>

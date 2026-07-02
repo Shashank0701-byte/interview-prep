@@ -169,25 +169,25 @@ const ScenarioSelector = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-[#F5F0E8] dark:bg-slate-900 pb-12">
+            <div className="min-h-screen bg-cream dark:bg-navy pb-12">
                 {/* Header */}
-                <div className="text-[#1A1A1A]">
+                <div className="text-charcoal dark:text-cream">
                     <div className="container mx-auto px-4 md:px-6 py-8">
                         <div className="max-w-6xl mx-auto">
                             <div className="flex items-center gap-4 mb-6">
                                 <button
                                     onClick={() => navigate('/dashboard')}
-                                    className="p-2 hover:bg-[#1A1A1A]/5 rounded-md transition-colors"
+                                    className="p-2 hover:bg-charcoal/5 dark:hover:bg-cream/5 rounded-md transition-colors"
                                 >
                                     <LuArrowLeft className="w-5 h-5" />
                                 </button>
                                 <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 bg-[#1A1A1A] text-white rounded-md flex items-center justify-center">
+                                    <div className="w-12 h-12 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md flex items-center justify-center">
                                         <LuCode className="w-6 h-6" />
                                     </div>
                                     <div>
                                         <h1 className="text-3xl font-display font-bold">Code Review Scenarios</h1>
-                                        <p className="text-[#1A1A1A]/80 font-body">Choose your challenge level</p>
+                                        <p className="text-charcoal/80 dark:text-cream/80 font-body">Choose your challenge level</p>
                                     </div>
                                 </div>
                             </div>
@@ -196,8 +196,8 @@ const ScenarioSelector = () => {
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
                                 <button
                                     onClick={() => setSelectedDifficulty('beginner')}
-                                    className={`p-4 text-center cursor-pointer border-2 border-[#1A1A1A] transition-all duration-200 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] ${
-                                        selectedDifficulty === 'beginner' ? 'bg-[#1A1A1A] text-white shadow-[4px_4px_0px_0px_#1A1A1A] -translate-y-1' : 'bg-transparent text-[#1A1A1A]'
+                                    className={`p-4 text-center cursor-pointer border-2 border-charcoal dark:border-cream/40 transition-all duration-200 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
+                                        selectedDifficulty === 'beginner' ? 'bg-charcoal dark:bg-cream text-white dark:text-navy shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] -translate-y-1' : 'bg-transparent text-charcoal dark:text-cream'
                                     }`}
                                 >
                                     <div className="text-2xl font-bold mb-1">
@@ -207,8 +207,8 @@ const ScenarioSelector = () => {
                                 </button>
                                 <button
                                     onClick={() => setSelectedDifficulty('intermediate')}
-                                    className={`p-4 text-center cursor-pointer border-2 border-[#1A1A1A] transition-all duration-200 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] ${
-                                        selectedDifficulty === 'intermediate' ? 'bg-[#1A1A1A] text-white shadow-[4px_4px_0px_0px_#1A1A1A] -translate-y-1' : 'bg-transparent text-[#1A1A1A]'
+                                    className={`p-4 text-center cursor-pointer border-2 border-charcoal dark:border-cream/40 transition-all duration-200 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
+                                        selectedDifficulty === 'intermediate' ? 'bg-charcoal dark:bg-cream text-white dark:text-navy shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] -translate-y-1' : 'bg-transparent text-charcoal dark:text-cream'
                                     }`}
                                 >
                                     <div className="text-2xl font-bold mb-1">
@@ -218,8 +218,8 @@ const ScenarioSelector = () => {
                                 </button>
                                 <button
                                     onClick={() => setSelectedDifficulty('advanced')}
-                                    className={`p-4 text-center cursor-pointer border-2 border-[#1A1A1A] transition-all duration-200 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] ${
-                                        selectedDifficulty === 'advanced' ? 'bg-[#1A1A1A] text-white shadow-[4px_4px_0px_0px_#1A1A1A] -translate-y-1' : 'bg-transparent text-[#1A1A1A]'
+                                    className={`p-4 text-center cursor-pointer border-2 border-charcoal dark:border-cream/40 transition-all duration-200 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
+                                        selectedDifficulty === 'advanced' ? 'bg-charcoal dark:bg-cream text-white dark:text-navy shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] -translate-y-1' : 'bg-transparent text-charcoal dark:text-cream'
                                     }`}
                                 >
                                     <div className="text-2xl font-bold mb-1">
@@ -229,8 +229,8 @@ const ScenarioSelector = () => {
                                 </button>
                                 <button
                                     onClick={() => setSelectedDifficulty('all')}
-                                    className={`p-4 text-center cursor-pointer border-2 border-[#1A1A1A] transition-all duration-200 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] ${
-                                        selectedDifficulty === 'all' ? 'bg-[#1A1A1A] text-white shadow-[4px_4px_0px_0px_#1A1A1A] -translate-y-1' : 'bg-transparent text-[#1A1A1A]'
+                                    className={`p-4 text-center cursor-pointer border-2 border-charcoal dark:border-cream/40 transition-all duration-200 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
+                                        selectedDifficulty === 'all' ? 'bg-charcoal dark:bg-cream text-white dark:text-navy shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] -translate-y-1' : 'bg-transparent text-charcoal dark:text-cream'
                                     }`}
                                 >
                                     <div className="text-2xl font-bold mb-1">
@@ -247,23 +247,23 @@ const ScenarioSelector = () => {
                 <div className="container mx-auto px-4 md:px-6 py-8">
                     <div className="max-w-6xl mx-auto">
                         {/* Enhanced Filtering Section */}
-                        <div className="mb-8 border-b-2 border-[#1A1A1A]/10 pb-6 pt-2">
+                        <div className="mb-8 border-b-2 border-charcoal/10 dark:border-cream/10 pb-6 pt-2">
                             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
                                 <div className="flex items-center gap-3">
-                                    <LuFilter className="w-5 h-5 text-[#1A1A1A]" />
-                                    <h2 className="text-2xl font-display font-semibold text-[#1A1A1A]">Filters & Search</h2>
+                                    <LuFilter className="w-5 h-5 text-charcoal dark:text-cream" />
+                                    <h2 className="text-2xl font-display font-semibold text-charcoal dark:text-cream">Filters & Search</h2>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <button
                                         onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-                                        className="flex items-center gap-2 px-3 py-2 text-slate-600 hover:text-slate-800 transition-colors"
+                                        className="flex items-center gap-2 px-3 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream transition-colors"
                                     >
                                         {viewMode === 'grid' ? <LuList className="w-4 h-4" /> : <LuGrid3X3 className="w-4 h-4" />}
                                         {viewMode === 'grid' ? 'List View' : 'Grid View'}
                                     </button>
                                     <button
                                         onClick={clearFilters}
-                                        className="flex items-center gap-2 px-3 py-2 text-slate-600 hover:text-slate-800 transition-colors"
+                                        className="flex items-center gap-2 px-3 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream transition-colors"
                                     >
                                         <LuRotateCcw className="w-4 h-4" />
                                         Clear All
@@ -274,13 +274,13 @@ const ScenarioSelector = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             {/* Search Bar */}
                             <div className="relative">
-                                <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#1A1A1A]" />
+                                <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-charcoal/50 dark:text-cream/50" />
                                 <input
                                     type="text"
                                     placeholder="Search scenarios..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-3 border-2 border-[#1A1A1A] bg-white text-[#1A1A1A] rounded-md outline-none focus:outline-none transition-colors font-bold placeholder-[#1A1A1A]/50"
+                                    className="w-full pl-10 pr-4 py-3 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md outline-none focus:outline-none transition-colors font-bold placeholder-charcoal/50 dark:placeholder-cream/50"
                                 />
                             </div>
 
@@ -289,14 +289,14 @@ const ScenarioSelector = () => {
                                 <select
                                     value={selectedDifficulty}
                                     onChange={(e) => setSelectedDifficulty(e.target.value)}
-                                    className="w-full px-4 py-3 border-2 border-[#1A1A1A] bg-white text-[#1A1A1A] rounded-md outline-none focus:outline-none font-bold transition-all duration-200 appearance-none cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]"
+                                    className="w-full px-4 py-3 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md outline-none focus:outline-none font-bold transition-all duration-200 appearance-none cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
                                 >
                                     <option value="all">All Difficulties</option>
                                     <option value="beginner">Beginner</option>
                                     <option value="intermediate">Intermediate</option>
                                     <option value="advanced">Advanced</option>
                                 </select>
-                                <LuChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#1A1A1A] pointer-events-none" />
+                                <LuChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-charcoal dark:text-cream pointer-events-none" />
                             </div>
 
                             {/* Tag Filter */}
@@ -304,14 +304,14 @@ const ScenarioSelector = () => {
                                 <select
                                     value={selectedTag}
                                     onChange={(e) => setSelectedTag(e.target.value)}
-                                    className="w-full px-4 py-3 border-2 border-[#1A1A1A] bg-white text-[#1A1A1A] rounded-md outline-none focus:outline-none font-bold transition-all duration-200 appearance-none cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]"
+                                    className="w-full px-4 py-3 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md outline-none focus:outline-none font-bold transition-all duration-200 appearance-none cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
                                 >
                                     <option value="">All Tags</option>
                                     {getAllTags().map(tag => (
                                         <option key={tag} value={tag}>{tag}</option>
                                     ))}
                                 </select>
-                                <LuChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#1A1A1A] pointer-events-none" />
+                                <LuChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-charcoal dark:text-cream pointer-events-none" />
                             </div>
 
                             {/* Sort Options */}
@@ -319,7 +319,7 @@ const ScenarioSelector = () => {
                                 <select
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value)}
-                                    className="w-full px-4 py-3 border-2 border-[#1A1A1A] bg-white text-[#1A1A1A] rounded-md outline-none focus:outline-none font-bold transition-all duration-200 appearance-none cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A]"
+                                    className="w-full px-4 py-3 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md outline-none focus:outline-none font-bold transition-all duration-200 appearance-none cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
                                 >
                                     <option value="latest">Latest First</option>
                                     <option value="difficulty-easy">Easiest First</option>
@@ -327,11 +327,11 @@ const ScenarioSelector = () => {
                                     <option value="time-short">Shortest Time</option>
                                     <option value="time-long">Longest Time</option>
                                 </select>
-                                <LuChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#1A1A1A] pointer-events-none" />
+                                <LuChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-charcoal dark:text-cream pointer-events-none" />
                             </div>
 
                             {/* Results Count */}
-                            <div className="mt-4 text-sm text-slate-600">
+                            <div className="mt-4 text-sm text-charcoal/70 dark:text-cream/70">
                                 Showing {getAllScenarios().length} scenarios
                                 {searchTerm && ` matching "${searchTerm}"`}
                                 {selectedTag && ` tagged with "${selectedTag}"`}
@@ -354,7 +354,7 @@ const ScenarioSelector = () => {
                                 {/* Completion Badge */}
                                 {isCompleted && (
                                     <div className="absolute top-4 right-4 z-10">
-                                        <div className="flex items-center gap-1 bg-[#1A1A1A] text-white px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider">
+                                        <div className="flex items-center gap-1 bg-charcoal dark:bg-cream text-white dark:text-navy px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider">
                                             <LuCheck className="w-3 h-3" />
                                             {score ? `${score.overall}%` : 'Completed'}
                                         </div>
@@ -362,7 +362,7 @@ const ScenarioSelector = () => {
                                 )}
 
                                 {/* Header */}
-                                <div className="bg-[#1A1A1A] border-b-2 border-[#1A1A1A] p-6 text-white relative flex-shrink-0">
+                                <div className="bg-charcoal dark:bg-navy-input border-b-2 border-charcoal dark:border-cream/40 p-6 text-white dark:text-cream relative flex-shrink-0">
                                     <div className="flex items-center justify-between mb-3">
                                         <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-xs">
                                             {difficultyIcons[scenario.difficulty]}
@@ -374,12 +374,12 @@ const ScenarioSelector = () => {
                                         </div>
                                     </div>
                                     <h3 className="text-2xl font-display mb-2">{scenario.title}</h3>
-                                    <p className="text-white/80 text-sm font-body">{scenario.description}</p>
+                                    <p className="text-white/80 dark:text-cream/80 text-sm font-body">{scenario.description}</p>
                                 </div>
 
                                 {/* Content */}
                                 <div className="p-6 flex-grow flex flex-col">
-                                    <div className="flex items-center gap-2 text-sm text-[#1A1A1A] font-bold uppercase tracking-wider mb-4">
+                                    <div className="flex items-center gap-2 text-sm text-charcoal dark:text-cream font-bold uppercase tracking-wider mb-4">
                                         <LuUser className="w-4 h-4" />
                                         <span>by {scenario.author}</span>
                                     </div>
@@ -392,8 +392,8 @@ const ScenarioSelector = () => {
                                                 onClick={() => setSelectedTag(selectedTag === tag ? '' : tag)}
                                                 className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider border-2 rounded-md transition-all ${
                                                     selectedTag === tag 
-                                                        ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]' 
-                                                        : 'bg-transparent text-[#1A1A1A] border-[rgba(26,26,26,0.2)] hover:border-[rgba(26,26,26,0.5)]'
+                                                        ? 'bg-charcoal dark:bg-cream text-white dark:text-navy border-charcoal dark:border-cream/40' 
+                                                        : 'bg-transparent text-charcoal dark:text-cream border-charcoal/20 dark:border-cream/20 hover:border-charcoal/50 dark:hover:border-cream/50'
                                                 }`}
                                             >
                                                 {tag}
@@ -407,7 +407,7 @@ const ScenarioSelector = () => {
                                     <div className="flex-grow"></div>
 
                                     {/* Stats */}
-                                    <div className="flex items-center justify-between text-sm text-[#1A1A1A] font-bold uppercase tracking-wider mb-6 pt-4 border-t-2 border-[rgba(26,26,26,0.1)]">
+                                    <div className="flex items-center justify-between text-sm text-charcoal dark:text-cream font-bold uppercase tracking-wider mb-6 pt-4 border-t-2 border-charcoal/10 dark:border-cream/10">
                                         <div className="flex items-center gap-1">
                                             <LuTarget className="w-4 h-4" />
                                             <span>
@@ -427,12 +427,12 @@ const ScenarioSelector = () => {
 
                                     {/* Score Display */}
                                     {score && (
-                                        <div className="mb-4 p-3 bg-white border-2 border-[rgba(26,26,26,0.2)] rounded-md">
+                                        <div className="mb-4 p-3 bg-white dark:bg-navy-light border-2 border-charcoal/20 dark:border-cream/20 rounded-md">
                                             <div className="flex items-center justify-between text-sm">
-                                                <span className="text-[#1A1A1A] font-bold uppercase tracking-wider text-xs">Last Score:</span>
+                                                <span className="text-charcoal dark:text-cream font-bold uppercase tracking-wider text-xs">Last Score:</span>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-[#1A1A1A] font-bold">{score.overall}%</span>
-                                                    <span className="text-[#1A1A1A]/60 font-bold text-xs">({score.issuesFound}/{score.totalIssues} issues)</span>
+                                                    <span className="text-charcoal dark:text-cream font-bold">{score.overall}%</span>
+                                                    <span className="text-charcoal/60 dark:text-cream/60 font-bold text-xs">({score.issuesFound}/{score.totalIssues} issues)</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -458,11 +458,11 @@ const ScenarioSelector = () => {
                 {/* Empty State */}
                 {getAllScenarios().length === 0 && (
                     <div className="text-center py-12">
-                        <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <LuCode className="w-8 h-8 text-slate-400" />
+                        <div className="w-16 h-16 bg-charcoal/5 dark:bg-cream/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <LuCode className="w-8 h-8 text-charcoal/40 dark:text-cream/40" />
                         </div>
-                        <h3 className="text-lg font-semibold text-slate-800 mb-2">No scenarios found</h3>
-                        <p className="text-slate-600">Try adjusting your filters or search terms.</p>
+                        <h3 className="text-lg font-semibold text-charcoal dark:text-cream mb-2">No scenarios found</h3>
+                        <p className="text-charcoal/70 dark:text-cream/70">Try adjusting your filters or search terms.</p>
                     </div>
                 )}
             </div>

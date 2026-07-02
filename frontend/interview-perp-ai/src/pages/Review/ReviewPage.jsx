@@ -63,20 +63,20 @@ const ReviewPage = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-cream font-body text-charcoal">
+            <div className="min-h-screen bg-cream dark:bg-navy font-body text-charcoal dark:text-cream">
                 {/* Enhanced Hero Header */}
-                <div className="bg-cream border-b-2 border-charcoal/10">
+                <div className="bg-cream dark:bg-navy border-b-2 border-charcoal/10 dark:border-cream/10">
                     <div className="container mx-auto px-4 md:px-6 py-8">
                         <div className="text-center space-y-4">
                             <div className="flex items-center justify-center gap-3 mb-4">
-                                <div className="w-12 h-12 bg-charcoal rounded-md flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(26,26,26,0.2)]">
-                                    <LuBrain className="w-6 h-6 text-white" />
+                                <div className="w-12 h-12 bg-charcoal dark:bg-cream rounded-md flex items-center justify-center" style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}>
+                                    <LuBrain className="w-6 h-6 text-white dark:text-navy" />
                                 </div>
-                                <h1 className="text-3xl md:text-4xl font-display font-bold text-charcoal">
+                                <h1 className="text-3xl md:text-4xl font-display font-bold text-charcoal dark:text-cream">
                                     Review Session
                                 </h1>
                             </div>
-                            <p className="text-charcoal/80 text-lg max-w-2xl mx-auto leading-relaxed font-medium">
+                            <p className="text-charcoal/80 dark:text-cream/80 text-lg max-w-2xl mx-auto leading-relaxed font-medium">
                                 {currentQuestion ? 
                                     "Take your time, breathe deeply, and trust your knowledge. Every review strengthens your understanding." :
                                     "All caught up! Your dedication to consistent learning is paying off beautifully."
@@ -84,13 +84,13 @@ const ReviewPage = () => {
                             </p>
                             {currentQuestion && (
                                 <div className="flex items-center justify-center gap-6 text-sm mt-6">
-                                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-md border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A]">
-                                        <LuTarget className="w-4 h-4 text-charcoal" />
-                                        <span className="text-charcoal font-bold uppercase tracking-wider">Question {currentCardNumber} of {initialCount}</span>
+                                    <div className="flex items-center gap-2 bg-white dark:bg-navy-input px-4 py-2 rounded-md border-2 border-charcoal dark:border-cream/40" style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}>
+                                        <LuTarget className="w-4 h-4 text-charcoal dark:text-cream" />
+                                        <span className="text-charcoal dark:text-cream font-bold uppercase tracking-wider">Question {currentCardNumber} of {initialCount}</span>
                                     </div>
-                                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-md border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A]">
-                                        <LuCheck className="w-4 h-4 text-charcoal" />
-                                        <span className="text-charcoal font-bold uppercase tracking-wider">{Math.round((currentCardNumber / initialCount) * 100)}% Complete</span>
+                                    <div className="flex items-center gap-2 bg-white dark:bg-navy-input px-4 py-2 rounded-md border-2 border-charcoal dark:border-cream/40" style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}>
+                                        <LuCheck className="w-4 h-4 text-charcoal dark:text-cream" />
+                                        <span className="text-charcoal dark:text-cream font-bold uppercase tracking-wider">{Math.round((currentCardNumber / initialCount) * 100)}% Complete</span>
                                     </div>
                                 </div>
                             )}
@@ -113,7 +113,7 @@ const ReviewPage = () => {
                                                 stroke="currentColor"
                                                 strokeWidth="8"
                                                 fill="none"
-                                                className="text-charcoal/20"
+                                                className="text-charcoal/20 dark:text-cream/20"
                                             />
                                             <circle
                                                 cx="50"
@@ -125,11 +125,11 @@ const ReviewPage = () => {
                                                 strokeLinecap="square"
                                                 strokeDasharray={`${2 * Math.PI * 40}`}
                                                 strokeDashoffset={`${2 * Math.PI * 40 * (1 - (currentCardNumber / initialCount))}`}
-                                                className="transition-all duration-1000 ease-out text-charcoal"
+                                                className="transition-all duration-1000 ease-out text-charcoal dark:text-cream"
                                             />
                                         </svg>
                                         <div className="absolute inset-0 flex items-center justify-center">
-                                            <span className="text-lg font-display font-bold text-charcoal">
+                                            <span className="text-lg font-display font-bold text-charcoal dark:text-cream">
                                                 {Math.round((currentCardNumber / initialCount) * 100)}%
                                             </span>
                                         </div>
@@ -138,15 +138,15 @@ const ReviewPage = () => {
 
                                 {/* Enhanced Question Card */}
                                 <div className="card-editorial overflow-hidden mb-8 transition-all duration-300">
-                                    <div className="bg-cream p-6 border-b-2 border-charcoal">
+                                    <div className="bg-cream dark:bg-navy border-b-2 border-charcoal dark:border-cream/40">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 bg-charcoal rounded-md flex items-center justify-center">
-                                                    <span className="text-white font-bold text-sm">Q</span>
+                                                <div className="w-8 h-8 bg-charcoal dark:bg-cream rounded-md flex items-center justify-center">
+                                                    <span className="text-white dark:text-navy font-bold text-sm">Q</span>
                                                 </div>
-                                                <span className="text-charcoal font-bold uppercase tracking-wider">Interview Question</span>
+                                                <span className="text-charcoal dark:text-cream font-bold uppercase tracking-wider">Interview Question</span>
                                             </div>
-                                            <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-charcoal/60">
+                                            <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-charcoal/60 dark:text-cream/60">
                                                 <LuStar className="w-4 h-4" />
                                                 <span>Spaced Repetition</span>
                                             </div>
@@ -155,32 +155,33 @@ const ReviewPage = () => {
                                     
                                     <div className="p-8">
                                         <div className="min-h-[120px] flex items-center justify-center">
-                                            <p className="text-xl md:text-2xl font-display font-bold text-charcoal leading-relaxed text-center">
+                                            <p className="text-xl md:text-2xl font-display font-bold text-charcoal dark:text-cream leading-relaxed text-center">
                                                 {currentQuestion.question}
                                             </p>
                                         </div>
                                         
                                         {showAnswer ? (
-                                            <div className="mt-8 pt-8 border-t-2 border-charcoal/10">
-                                                <div className="bg-cream rounded-md p-6 mb-8 border-2 border-charcoal">
+                                            <div className="mt-8 pt-8 border-t-2 border-charcoal/10 dark:border-cream/10">
+                                                <div className="bg-cream dark:bg-navy rounded-md p-6 mb-8 border-2 border-charcoal dark:border-cream/40">
                                                     <div className="flex items-center gap-2 mb-4">
-                                                        <LuCheck className="w-5 h-5 text-charcoal" />
-                                                        <span className="font-bold uppercase tracking-wider text-charcoal">Answer</span>
+                                                        <LuCheck className="w-5 h-5 text-charcoal dark:text-cream" />
+                                                        <span className="font-bold uppercase tracking-wider text-charcoal dark:text-cream">Answer</span>
                                                     </div>
-                                                    <div className="prose prose-lg max-w-none font-medium text-charcoal/80">
+                                                    <div className="prose prose-lg max-w-none font-medium text-charcoal/80 dark:text-cream/80 prose-slate dark:prose-invert">
                                                         <ReactMarkdown>{currentQuestion.answer}</ReactMarkdown>
                                                     </div>
                                                 </div>
                                                 
                                                 {/* Professional Review Buttons */}
                                                 <div className="space-y-4">
-                                                    <p className="text-center font-bold uppercase tracking-wider text-charcoal/80 mb-6">
+                                                    <p className="text-center font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80 mb-6">
                                                         How well did you recall this answer? Be honest with yourself - it helps you learn better!
                                                     </p>
                                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                                         <button 
                                                             onClick={() => handleReview(currentQuestion._id, 'again')} 
-                                                            className="bg-cream text-charcoal border-2 border-charcoal py-4 px-6 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 cursor-pointer"
+                                                            className="bg-cream dark:bg-navy text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 py-4 px-6 rounded-md hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                                                            style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}
                                                         >
                                                             <div className="flex flex-col items-center gap-2">
                                                                 <LuRefreshCw className="w-5 h-5" />
@@ -190,7 +191,8 @@ const ReviewPage = () => {
                                                         </button>
                                                         <button 
                                                             onClick={() => handleReview(currentQuestion._id, 'hard')} 
-                                                            className="bg-cream text-charcoal border-2 border-charcoal py-4 px-6 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 cursor-pointer"
+                                                            className="bg-cream dark:bg-navy text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 py-4 px-6 rounded-md hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                                                            style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}
                                                         >
                                                             <div className="flex flex-col items-center gap-2">
                                                                 <LuTarget className="w-5 h-5" />
@@ -200,7 +202,8 @@ const ReviewPage = () => {
                                                         </button>
                                                         <button 
                                                             onClick={() => handleReview(currentQuestion._id, 'good')} 
-                                                            className="bg-cream text-charcoal border-2 border-charcoal py-4 px-6 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 cursor-pointer"
+                                                            className="bg-cream dark:bg-navy text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 py-4 px-6 rounded-md hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                                                            style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}
                                                         >
                                                             <div className="flex flex-col items-center gap-2">
                                                                 <LuCheck className="w-5 h-5" />
@@ -210,7 +213,8 @@ const ReviewPage = () => {
                                                         </button>
                                                         <button 
                                                             onClick={() => handleReview(currentQuestion._id, 'easy')} 
-                                                            className="bg-charcoal text-white border-2 border-charcoal py-4 px-6 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 cursor-pointer"
+                                                            className="bg-charcoal dark:bg-cream text-white dark:text-navy border-2 border-charcoal dark:border-cream/40 py-4 px-6 rounded-md hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                                                            style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}
                                                         >
                                                             <div className="flex flex-col items-center gap-2">
                                                                 <LuStar className="w-5 h-5" />
@@ -225,14 +229,15 @@ const ReviewPage = () => {
                                             <div className="text-center mt-8">
                                                 <button 
                                                     onClick={() => setShowAnswer(true)} 
-                                                    className="bg-charcoal text-white font-bold uppercase tracking-wider py-4 px-12 rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 cursor-pointer"
+                                                    className="bg-charcoal dark:bg-cream text-white dark:text-navy font-bold uppercase tracking-wider py-4 px-12 rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                                                    style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <LuPlay className="w-5 h-5" />
                                                         <span>Show Answer</span>
                                                     </div>
                                                 </button>
-                                                <p className="text-charcoal/60 font-bold uppercase tracking-wider text-sm mt-4">
+                                                <p className="text-charcoal/60 dark:text-cream/60 font-bold uppercase tracking-wider text-sm mt-4">
                                                     Take a moment to think through your answer first
                                                 </p>
                                             </div>
@@ -244,7 +249,8 @@ const ReviewPage = () => {
                                 <div className="text-center">
                                     <button
                                         onClick={() => handlePractice(currentQuestion)}
-                                        className="bg-cream text-charcoal border-2 border-charcoal font-bold uppercase tracking-wider py-3 px-8 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-200 cursor-pointer"
+                                        className="bg-cream dark:bg-navy text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 font-bold uppercase tracking-wider py-3 px-8 rounded-md hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                                        style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}
                                     >
                                         <div className="flex items-center gap-2">
                                             <LuPlay className="w-4 h-4" />
@@ -258,20 +264,20 @@ const ReviewPage = () => {
                             <div className="text-center card-editorial p-12">
                                 <div className="space-y-6">
                                     <div className="flex justify-center">
-                                        <div className="w-20 h-20 bg-charcoal rounded-md flex items-center justify-center border-2 border-charcoal">
-                                            <LuCheck className="w-10 h-10 text-white" />
+                                        <div className="w-20 h-20 bg-charcoal dark:bg-cream rounded-md flex items-center justify-center border-2 border-charcoal dark:border-cream/40">
+                                            <LuCheck className="w-10 h-10 text-white dark:text-navy" />
                                         </div>
                                     </div>
                                     <div className="space-y-3">
-                                        <h2 className="text-2xl md:text-3xl font-display font-bold text-charcoal">
+                                        <h2 className="text-2xl md:text-3xl font-display font-bold text-charcoal dark:text-cream">
                                             All Caught Up!
                                         </h2>
-                                        <p className="text-lg font-medium text-charcoal/80 max-w-md mx-auto leading-relaxed">
+                                        <p className="text-lg font-medium text-charcoal/80 dark:text-cream/80 max-w-md mx-auto leading-relaxed">
                                             You have no questions due for review right now. Your consistent learning is paying off beautifully!
                                         </p>
                                     </div>
-                                    <div className="bg-cream rounded-md p-6 border-2 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A]">
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm font-bold uppercase tracking-wider text-charcoal">
+                                    <div className="bg-cream dark:bg-navy rounded-md p-6 border-2 border-charcoal dark:border-cream/40" style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm font-bold uppercase tracking-wider text-charcoal dark:text-cream">
                                             <div className="flex items-center gap-2 justify-center">
                                                 <LuCheck className="w-4 h-4" />
                                                 <span>Reviews completed</span>
@@ -286,7 +292,7 @@ const ReviewPage = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <p className="text-charcoal/60 font-bold uppercase tracking-wider text-sm">
+                                    <p className="text-charcoal/60 dark:text-cream/60 font-bold uppercase tracking-wider text-sm">
                                         Come back later for your next review session, or practice some questions to keep the momentum going!
                                     </p>
                                 </div>
