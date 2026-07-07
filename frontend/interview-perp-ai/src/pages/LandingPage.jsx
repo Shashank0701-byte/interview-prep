@@ -596,7 +596,7 @@ const LandingPage = () => {
       </div>
 
       {/* -------------------- GAME CONSOLE FAQ -------------------- */}
-      <div className="w-full bg-cream py-32 border-b-2 border-charcoal">
+      <div className="w-full bg-cream py-32">
         <div className="container mx-auto px-4 max-w-3xl">
           
           <div className="text-center mb-16">
@@ -688,19 +688,54 @@ const LandingPage = () => {
 
       {/* -------------------- FOOTER CTA -------------------- */}
       <div className='w-full bg-cream py-32'>
-        <div className='container mx-auto px-4 text-center'>
-          <h2 className='text-4xl md:text-5xl font-display font-bold text-charcoal mb-6'>
-            Stop memorizing. <br/> Start understanding.
-          </h2>
-          <p className="text-lg text-charcoal/70 mb-10 max-w-2xl mx-auto">
-            Join the developers preparing for their next big role with an AI coach that actually understands software engineering.
-          </p>
-          <button
-            className='bg-charcoal text-cream text-sm font-bold uppercase tracking-wider px-12 py-5 rounded-sm hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(26,26,26,0.2)] transition-all cursor-pointer'
-            onClick={handleCTA}
-          >
-            Create Free Account
-          </button>
+        <div className='container mx-auto px-4'>
+          <div className="max-w-4xl mx-auto bg-cream text-charcoal rounded-[2rem] p-8 md:p-12 border-4 border-charcoal shadow-[12px_12px_0px_0px_#1A1A1A]">
+            
+            {/* Top section */}
+            <div className="flex items-start gap-5 mb-12">
+              <div className="w-12 h-12 rounded-lg border-2 border-charcoal/20 flex items-center justify-center shrink-0 bg-charcoal/5">
+                <span className="text-charcoal font-bold">✓</span>
+              </div>
+              <div>
+                <div className="text-[10px] uppercase font-bold tracking-widest text-charcoal/50 mb-1">System Ready</div>
+                <h2 className='text-3xl md:text-4xl font-display font-bold text-charcoal'>
+                  Stop memorizing. <br className="hidden md:block" /> Start understanding.
+                </h2>
+              </div>
+            </div>
+
+            {/* Checkmarks row */}
+            <div className="flex flex-col md:flex-row gap-6 md:gap-12 text-sm text-charcoal/80 font-mono mb-12">
+              <div className="flex items-center gap-2">
+                <span className="text-charcoal font-bold">✓</span> Role-specific decks
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-charcoal font-bold">✓</span> Real-time AI critiques
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-charcoal font-bold">✓</span> Spaced repetition
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="w-full h-px bg-charcoal/10 mb-10"></div>
+
+            {/* Bottom section */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+              <div>
+                <div className="font-bold text-charcoal mb-1 text-lg">Ready to begin interview</div>
+                <div className="text-sm text-charcoal/70 max-w-md">Join the developers preparing for their next big role with an AI coach that actually understands software engineering.</div>
+              </div>
+              <button
+                className='shrink-0 bg-charcoal text-cream text-sm font-bold uppercase tracking-wider px-8 py-4 rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(26,26,26,0.2)] transition-all cursor-pointer flex items-center gap-3 group'
+                onClick={handleCTA}
+              >
+                Create Free Account
+                <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+
+          </div>
         </div>
       </div>
 
