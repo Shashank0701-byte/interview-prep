@@ -115,6 +115,17 @@ const LandingPage = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [activeWorkflowStep, setActiveWorkflowStep] = useState(0);
   const [openFaq, setOpenFaq] = useState(0);
+  
+  const [ahaInput, setAhaInput] = useState("");
+  const [ahaState, setAhaState] = useState("idle");
+
+  const handleAhaSubmit = () => {
+    if (!ahaInput.trim()) return;
+    setAhaState("analyzing");
+    setTimeout(() => {
+      setAhaState("complete");
+    }, 1500);
+  };
 
   // Initialize random scenario
   useEffect(() => {
@@ -591,6 +602,97 @@ const LandingPage = () => {
               <p className="text-sm text-cream/70 relative z-10">Don't wait. Get immediate feedback on tone, clarity, and technical accuracy the moment you finish speaking.</p>
             </div>
 
+          </div>
+        </div>
+      </div>
+
+      {/* -------------------- INTERACTIVE AHA MOMENT -------------------- */}
+      <div className="w-full bg-white border-b-2 border-charcoal py-32">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className='text-4xl md:text-5xl font-display font-bold text-charcoal mb-4'>
+              Try it yourself
+            </h2>
+            <p className="text-lg text-charcoal/70">
+              Answer the question below to see our AI critique engine in action.
+            </p>
+          </div>
+
+          <div className="bg-cream border-4 border-charcoal rounded-sm p-6 md:p-10 shadow-[12px_12px_0px_0px_#1A1A1A]">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="bg-crimson text-white text-xs font-bold px-3 py-1 rounded-sm tracking-wider uppercase">Senior Backend Engineer</span>
+            </div>
+            
+            <h3 className="text-2xl font-display font-bold text-charcoal mb-8">
+              "How does a Hash Map work under the hood?"
+            </h3>
+
+            <textarea
+              className="w-full bg-white border-2 border-charcoal rounded-sm p-4 text-charcoal font-mono text-sm resize-none h-32 focus:outline-none focus:ring-2 focus:ring-crimson disabled:opacity-50"
+              placeholder="Type your answer here..."
+              value={ahaInput}
+              onChange={(e) => setAhaInput(e.target.value)}
+              disabled={ahaState !== "idle"}
+            ></textarea>
+
+            {ahaState === "idle" && (
+              <div className="mt-6 flex justify-end">
+                <button
+                  className="bg-charcoal text-cream text-sm font-bold uppercase tracking-wider px-8 py-3 rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(26,26,26,0.2)] transition-all cursor-pointer"
+                  onClick={handleAhaSubmit}
+                >
+                  Critique My Answer
+                </button>
+              </div>
+            )}
+
+            {ahaState === "analyzing" && (
+              <div className="mt-6 bg-charcoal text-cream rounded-sm p-6 font-mono text-sm animate-pulse flex flex-col items-center justify-center min-h-[160px]">
+                <div className="w-6 h-6 border-2 border-cream border-t-transparent rounded-full animate-spin mb-4"></div>
+                <span>_ [System] Analyzing structural semantics...</span>
+              </div>
+            )}
+
+            {ahaState === "complete" && (
+              <div className="mt-8">
+                <div className="bg-charcoal text-cream rounded-sm p-6 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-crimson"></div>
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="text-xs font-bold uppercase tracking-widest text-cream/50">AI Critique</div>
+                    <div className="text-xl font-display font-bold text-crimson">7/10</div>
+                  </div>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <h4 className="font-bold text-cream mb-2 flex items-center gap-2">
+                        <span className="text-green-400">✓</span> What you did well
+                      </h4>
+                      <p className="text-sm text-cream/70 font-mono">Good mention of key-value pairs and the basic concept of hashing.</p>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-bold text-cream mb-2 flex items-center gap-2">
+                        <span className="text-crimson">✗</span> What you missed
+                      </h4>
+                      <p className="text-sm text-cream/70 font-mono">You forgot to explain collision resolution (e.g., Chaining vs. Open Addressing), which is critical for senior roles.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-8 p-6 border-2 border-charcoal bg-white flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="text-charcoal text-sm font-bold">
+                    Want personalized feedback on 1,000+ more engineering questions?
+                  </div>
+                  <button
+                    className="shrink-0 bg-charcoal text-cream text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(26,26,26,0.2)] transition-all cursor-pointer flex items-center gap-2 group"
+                    onClick={handleCTA}
+                  >
+                    Create Free Account
+                    <LuArrowRight className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
