@@ -25,6 +25,14 @@ export default {
         'spin-slow': 'spin 3s linear infinite',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'bounce-slow': 'bounce 2s infinite',
+        'shimmer': 'shimmer 1.5s infinite linear',
+      },
+      keyframes: {
+        shimmer: {
+          '0%': { transform: 'scaleX(0)' },
+          '50%': { transform: 'scaleX(1)' },
+          '100%': { transform: 'scaleX(0)' },
+        }
       },
       backdropBlur: {
         xs: '2px',
