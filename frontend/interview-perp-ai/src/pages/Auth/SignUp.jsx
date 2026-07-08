@@ -1,15 +1,14 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Input from '../../components/Inputs/Input'; // Assuming correct path
-import ProfilePhotoSelector from '../../components/Inputs/ProfilePhotoSelector'; // Assuming correct path
+import React, { useState, useContext, useRef, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { validateEmail } from '../../utils/helper';
 import { UserContext } from '../../context/userContext';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import uploadImage from '../../utils/uploadImage';
-// import AuthLayout from '../../components/layouts/AuthLayout';
+import AuthLayout from '../../components/layouts/AuthLayout';
+import TerminalLoader from '../../components/TerminalLoader';
 
-const SignUp = ({ setCurrentPage }) => {
+const SignUp = () => {
     const [profilePic, setProfilePic] = useState(null);
     const [preview, setPreview] = useState(null);
     const [fullName, setFullName] = useState("");
@@ -18,9 +17,23 @@ const SignUp = ({ setCurrentPage }) => {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const {updateUser} = useContext(UserContext);
-
+    const { updateUser } = useContext(UserContext);
     const navigate = useNavigate();
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        return () => {
+            if (preview) URL.revokeObjectURL(preview);
+        };
+    }, [preview]);
+
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setProfilePic(file);
+            setPreview(URL.createObjectURL(file));
+        }
+    };
 
     const handleSignUp = async (e) => {
         e.preventDefault();
@@ -40,124 +53,170 @@ const SignUp = ({ setCurrentPage }) => {
             return;
         }
 
-        setError(null); // Clear any previous errors if validation passes
+        setError(null);
         setIsLoading(true);
 
-        // SignUp API Call
         try {
-        // Upload image if present
             if (profilePic) {
                 const imgUploadRes = await uploadImage(profilePic);
                 profileImageUrl = imgUploadRes.imageUrl || "";
             }
 
-        const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
-            name: fullName,
-            email,
-            password,
-            profileImageUrl,
-        });
+            const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+                name: fullName,
+                email,
+                password,
+                profileImageUrl,
+            });
 
-        const { token } = response.data;
+            const { token } = response.data;
 
-        if (token) {
-            localStorage.setItem("token", token);
-            updateUser(response.data);
-            navigate("/dashboard");
-        }
+            if (token) {
+                localStorage.setItem("token", token);
+                updateUser(response.data);
+                setTimeout(() => {
+                    navigate("/dashboard");
+                }, 1000);
+            }
         } catch (error) {
-            if (error.response && error.response.data.message) {
+            setIsLoading(false);
+            if (error.response && error.response.data && error.response.data.message) {
                 setError(error.response.data.message);
             } else {
-                setError("Something went wrong. Please try again.");
+                setError("System failure. Could not initialize workspace.");
             }
-        } finally {
-            setIsLoading(false);
         }
     };
 
     return (
-        <div className="w-full px-8 py-10 flex flex-col justify-center min-h-[600px]">
-            {/* Header Section */}
-            <div className="text-center mb-8">
-                <h3 className="text-2xl sm:text-3xl font-display font-bold text-charcoal mb-3 transition-colors duration-300">
-                    Create an Account
-                </h3>
-                <p className="text-base font-body text-charcoal/80 transition-colors duration-300">
-                    Join us today by entering your details below.
-                </p>
-            </div>
-
-            <form onSubmit={handleSignUp} className="space-y-1">
-                {/* Profile Photo Section */}
-                <div className="mb-8">
-                    <ProfilePhotoSelector
-                        image={profilePic}
-                        setImage={setProfilePic}
-                        preview={preview}
-                        setPreview={setPreview}
-                    />
-                </div>
-
-                <Input
-                    value={fullName}
-                    onChange={({ target }) => setFullName(target.value)}
-                    label="Full Name"
-                    placeholder="John Doe"
-                    type="text"
-                />
-
-                <Input
-                    value={email}
-                    onChange={({ target }) => setEmail(target.value)}
-                    label="Email Address"
-                    placeholder="john@example.com"
-                    type="email"
-                />
-
-                <Input
-                    value={password}
-                    onChange={({ target }) => setPassword(target.value)}
-                    label="Password"
-                    placeholder="Min 8 Characters"
-                    type="password"
-                />
-
-                {error && (
-                    <div className='bg-red-50 border-2 border-red-500 rounded-sm p-4 mb-6'>
-                        <p className='text-red-600 text-sm font-bold text-center'>{error}</p>
-                    </div>
-                )}
-
-                <button
-                    type="submit"
-                    className="w-full bg-charcoal text-white font-bold uppercase tracking-wider text-sm py-4 px-6 rounded-sm border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none mb-6"
-                    disabled={isLoading}
-                >
-                    {isLoading ? (
-                        <div className="flex items-center justify-center">
-                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                            Creating Account...
+        <AuthLayout>
+            <div className="w-full bg-white border-4 border-charcoal rounded-sm p-8 sm:p-10 shadow-[8px_8px_0px_0px_#1A1A1A]">
+                
+                {isLoading ? (
+                    <TerminalLoader text="INITIALIZING WORKSPACE..." />
+                ) : (
+                    <>
+                        {/* Header */}
+                        <div className="text-center mb-10">
+                            <h2 className="text-3xl font-display font-bold text-charcoal tracking-wide mb-3">
+                                Initialize Workspace
+                            </h2>
+                            <p className="text-charcoal/70 font-mono text-xs tracking-wider font-bold">
+                                Create an account to access the interview engine.
+                            </p>
                         </div>
-                    ) : (
-                        "Sign Up"
-                    )}
-                </button>
 
-                <div className="text-center pt-4">
-                    <p className="text-sm font-body text-charcoal/80">
-                        Already have an account?{" "}
-                        <button
-                            type="button"
-                            className="font-bold text-charcoal hover:underline transition-colors duration-200 underline decoration-2 underline-offset-2"
-                            onClick={() => setCurrentPage("login")}
-                        >
-                            Login
-                        </button>
-                    </p>
-                </div>
-            </form>
-        </div>
+                        {error && (
+                            <div className="mb-6 p-4 border-4 border-charcoal bg-red-50 rounded-sm flex items-start gap-3 shadow-[4px_4px_0px_0px_rgba(239,68,68,1)]">
+                                <span className="text-red-500 font-bold bg-white px-2 border-2 border-charcoal">ERR</span>
+                                <p className="text-charcoal text-xs font-mono font-bold mt-1">{error}</p>
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSignUp} className="space-y-6">
+                            
+                            {/* Profile Photo */}
+                            <div className='flex justify-center mb-6'>
+                                <input
+                                    type='file'
+                                    accept='image/*'
+                                    ref={inputRef}
+                                    onChange={handleImageChange}
+                                    className='hidden'
+                                />
+
+                                {!profilePic ? (
+                                    <div 
+                                        className='w-20 h-20 flex items-center justify-center bg-cream border-4 border-charcoal rounded-sm relative cursor-pointer group hover:bg-white hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all' 
+                                        onClick={() => inputRef.current.click()}
+                                    >
+                                        <span className='text-3xl font-bold text-charcoal/30 group-hover:text-charcoal transition-colors'>+</span>
+                                        <div className='absolute -bottom-3 -right-3 bg-charcoal text-cream text-[10px] font-bold px-2 border-2 border-cream'>
+                                            UP
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className='relative'>
+                                        <img
+                                            src={preview}
+                                            alt="profile photo"
+                                            className='w-20 h-20 rounded-sm object-cover border-4 border-charcoal shadow-[4px_4px_0px_0px_#1A1A1A]'
+                                        />
+                                        <button
+                                            type='button'
+                                            className='absolute -bottom-3 -right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 border-2 border-charcoal hover:bg-red-600 transition-colors'
+                                            onClick={() => {
+                                                setProfilePic(null);
+                                                setPreview(null);
+                                            }}
+                                        >
+                                            DEL
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Full Name Input */}
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-charcoal/70">Developer Identity</label>
+                                <input 
+                                    type="text" 
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
+                                    placeholder="John Doe"
+                                    className="w-full bg-cream border-4 border-charcoal rounded-sm py-4 px-4 text-charcoal font-mono text-sm placeholder:text-charcoal/30 focus:outline-none focus:bg-white focus:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all"
+                                />
+                            </div>
+
+                            {/* Email Input */}
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-charcoal/70">Email Address</label>
+                                <input 
+                                    type="email" 
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="you@example.com"
+                                    className="w-full bg-cream border-4 border-charcoal rounded-sm py-4 px-4 text-charcoal font-mono text-sm placeholder:text-charcoal/30 focus:outline-none focus:bg-white focus:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all"
+                                />
+                            </div>
+
+                            {/* Password Input */}
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold uppercase tracking-widest text-charcoal/70">Secure Protocol</label>
+                                <input 
+                                    type="password" 
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Min 8 Characters"
+                                    className="w-full bg-cream border-4 border-charcoal rounded-sm py-4 px-4 text-charcoal font-mono text-sm placeholder:text-charcoal/30 focus:outline-none focus:bg-white focus:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all"
+                                />
+                            </div>
+
+                            {/* Submit Button */}
+                            <button 
+                                type="submit"
+                                className="w-full bg-charcoal text-cream font-bold tracking-widest uppercase text-xs py-4 rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(26,26,26,0.3)] transition-all mt-6 cursor-pointer"
+                            >
+                                Initialize Architecture
+                            </button>
+
+                            <div className="text-center pt-6 border-t-4 border-charcoal mt-6">
+                                <p className="text-xs font-bold text-charcoal">
+                                    Session active?{' '}
+                                    <Link to="/login" className="underline hover:bg-charcoal hover:text-cream transition-colors px-1">Resume Workspace</Link>
+                                </p>
+                            </div>
+                        </form>
+                    </>
+                )}
+            </div>
+            
+            {/* Footer Links */}
+            <div className="flex justify-center items-center gap-6 mt-8 text-[10px] font-bold text-charcoal/60 font-mono tracking-widest uppercase">
+                <Link to="#" className="hover:text-charcoal transition-colors">Terms of Service</Link>
+                <Link to="#" className="hover:text-charcoal transition-colors">Privacy Policy</Link>
+            </div>
+        </AuthLayout>
     );
 };
 

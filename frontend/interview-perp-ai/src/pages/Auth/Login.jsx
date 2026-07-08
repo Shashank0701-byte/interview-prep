@@ -1,13 +1,14 @@
 import React, { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Input from '../../components/Inputs/Input';
+import { useNavigate, Link } from 'react-router-dom';
 import { validateEmail } from '../../utils/helper';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import { UserContext } from '../../context/userContext';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-// import AuthLayout from '../../components/layouts/AuthLayout';
-const Login = ({ setCurrentPage }) => {
+import AuthLayout from '../../components/layouts/AuthLayout';
+import TerminalLoader from '../../components/TerminalLoader';
+
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -15,8 +16,7 @@ const Login = ({ setCurrentPage }) => {
   const [requiresOTP, setRequiresOTP] = useState(false);
   const [otp, setOtp] = useState("");
 
-  const {updateUser} = useContext(UserContext);
-
+  const { updateUser } = useContext(UserContext);
   const navigate = useNavigate();
   const { executeRecaptcha } = useGoogleReCaptcha();
 
@@ -33,7 +33,7 @@ const Login = ({ setCurrentPage }) => {
     }
     
     if (!executeRecaptcha) {
-      setError("reCAPTCHA is still loading. Please try again in a moment.");
+      setError("System handshake pending. Please try again in a moment.");
       return;
     }
 
@@ -50,29 +50,31 @@ const Login = ({ setCurrentPage }) => {
 
       if (response.data.requiresOTP) {
         setRequiresOTP(true);
+        setIsLoading(false);
       } else {
         const { token } = response.data;
         if (token) {
           localStorage.setItem("token", token);
           updateUser(response.data);
-          navigate("/dashboard");
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 1000);
         }
       }
     } catch (error) {
+      setIsLoading(false);
       if (error.response && error.response.data && error.response.data.message) {
         setError(error.response.data.message);
       } else {
-        setError("An unexpected error occurred. Please try again.");
+        setError("Connection refused. Invalid credentials or network error.");
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
     if (!otp || otp.length < 6) {
-      setError("Please enter a valid 6-digit OTP.");
+      setError("Invalid security token.");
       return;
     }
 
@@ -89,131 +91,139 @@ const Login = ({ setCurrentPage }) => {
       if (token) {
         localStorage.setItem("token", token);
         updateUser(response.data);
-        navigate("/dashboard");
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
       }
     } catch (error) {
+      setIsLoading(false);
       if (error.response && error.response.data && error.response.data.message) {
         setError(error.response.data.message);
       } else {
-        setError("An unexpected error occurred during OTP verification.");
+        setError("Token verification failed.");
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full px-4 sm:px-8 py-6 sm:py-10 flex flex-col justify-center min-h-[400px] sm:min-h-[500px]">
-      {/* Header Section */}
-      <div className="text-center mb-6 sm:mb-8">
-        <h3 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-charcoal mb-2 sm:mb-3 transition-colors duration-300">
-          {requiresOTP ? "Verify Login OTP" : "Welcome Back"}
-        </h3>
-        <p className="text-sm sm:text-base font-body text-charcoal/80 transition-colors duration-300">
-          {requiresOTP ? `We've sent a code to ${email}` : "Please enter your details to log in"}
-        </p>
+    <AuthLayout>
+      <div className="w-full bg-white border-4 border-charcoal rounded-sm p-8 sm:p-10 shadow-[8px_8px_0px_0px_#1A1A1A]">
+        
+        {isLoading ? (
+          <TerminalLoader text="AUTHENTICATING..." />
+        ) : (
+          <>
+            {/* Header */}
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-display font-bold text-charcoal tracking-wide mb-3">
+                {requiresOTP ? "Verify Session" : "Resume Session"}
+              </h2>
+              <p className="text-charcoal/70 font-mono text-xs tracking-wider">
+                {requiresOTP ? "Enter security token from email." : "Initialize session to resume work on active architectures."}
+              </p>
+            </div>
+
+            {error && (
+              <div className="mb-6 p-4 border-4 border-charcoal bg-red-50 rounded-sm flex items-start gap-3 shadow-[4px_4px_0px_0px_rgba(239,68,68,1)]">
+                <span className="text-red-500 font-bold bg-white px-2 border-2 border-charcoal">ERR</span>
+                <p className="text-charcoal text-xs font-mono font-bold mt-1">{error}</p>
+              </div>
+            )}
+
+            {!requiresOTP ? (
+              <form onSubmit={handleLogin} className="space-y-6">
+                
+                {/* Email Input */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-charcoal/70">Email</label>
+                  <input 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full bg-cream border-4 border-charcoal rounded-sm py-4 px-4 text-charcoal font-mono text-sm placeholder:text-charcoal/30 focus:outline-none focus:bg-white focus:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all"
+                  />
+                </div>
+
+                {/* Password Input */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-charcoal/70">Password</label>
+                    <Link to="#" className="text-[10px] font-bold text-charcoal hover:underline">Forgot password?</Link>
+                  </div>
+                  <input 
+                    type="password" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full bg-cream border-4 border-charcoal rounded-sm py-4 px-4 text-charcoal font-mono text-sm placeholder:text-charcoal/30 focus:outline-none focus:bg-white focus:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <button 
+                  type="submit"
+                  className="w-full bg-charcoal text-cream font-bold tracking-widest uppercase text-xs py-4 rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(26,26,26,0.3)] transition-all mt-6 cursor-pointer"
+                >
+                  Authenticate
+                </button>
+
+                <div className="text-center pt-8 border-t-4 border-charcoal mt-8">
+                  <p className="text-xs font-bold text-charcoal">
+                    New to Interview Prep AI?{' '}
+                    <Link to="/signUp" className="underline hover:bg-charcoal hover:text-cream transition-colors px-1">Create a workspace</Link>
+                  </p>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifyOTP} className="space-y-6">
+                
+                {/* OTP Input */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-charcoal/70">Security Token</label>
+                  <input 
+                    type="text" 
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="6-digit code"
+                    maxLength={6}
+                    className="w-full bg-cream border-4 border-charcoal rounded-sm py-4 px-4 text-charcoal font-mono text-lg tracking-[0.5em] font-bold placeholder:text-charcoal/30 focus:outline-none focus:bg-white focus:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all text-center"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <button 
+                  type="submit"
+                  className="w-full bg-charcoal text-cream font-bold tracking-widest uppercase text-xs py-4 rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(26,26,26,0.3)] transition-all mt-6 cursor-pointer"
+                >
+                  Verify Protocol
+                </button>
+                
+                <div className="text-center pt-6">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setRequiresOTP(false);
+                      setOtp("");
+                      setError("");
+                    }}
+                    className="text-[10px] font-bold uppercase tracking-widest text-charcoal/60 hover:text-charcoal transition-colors cursor-pointer"
+                  >
+                    Abort & Return
+                  </button>
+                </div>
+              </form>
+            )}
+          </>
+        )}
       </div>
-
-      {!requiresOTP ? (
-        <form onSubmit={handleLogin} className="space-y-3 sm:space-y-4">
-          <Input
-            value={email}
-            onChange={({ target }) => setEmail(target.value)}
-            label="Email Address"
-            placeholder="john@example.com"
-            type="email"
-          />
-          
-          <Input
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
-            label="Password"
-            placeholder="Min 8 Characters"
-            type="password"
-          />
-
-          {error && (
-            <div className='bg-red-50 border-2 border-red-500 rounded-sm p-3 sm:p-4 mb-4 sm:mb-6'>
-              <p className='text-red-600 text-sm font-bold'>{error}</p>
-            </div>
-          )}
-
-          <button 
-            type="submit" 
-            className="w-full bg-charcoal text-white font-bold uppercase tracking-wider text-sm py-3 sm:py-4 px-4 sm:px-6 rounded-sm border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none mb-4 sm:mb-6" 
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Logging in...
-              </div>
-            ) : (
-              "Login"
-            )}
-          </button>
-
-          <div className="text-center pt-4">
-            <p className='text-sm text-charcoal/80 font-body'>
-              Don't have an account?{" "}
-              <button
-                type="button"
-                className='font-bold text-charcoal hover:underline transition-colors duration-200 underline decoration-2 underline-offset-2'
-                onClick={() => setCurrentPage("signup")}
-              >
-                Sign Up
-              </button>
-            </p>
-          </div>
-        </form>
-      ) : (
-        <form onSubmit={handleVerifyOTP} className="space-y-3 sm:space-y-4">
-          <Input
-            value={otp}
-            onChange={({ target }) => setOtp(target.value)}
-            label="6-Digit OTP"
-            placeholder="Enter the code from your email"
-            type="text"
-            maxLength={6}
-          />
-
-          {error && (
-            <div className='bg-red-50 border-2 border-red-500 rounded-sm p-3 sm:p-4 mb-4 sm:mb-6'>
-              <p className='text-red-600 text-sm font-bold'>{error}</p>
-            </div>
-          )}
-
-          <button 
-            type="submit" 
-            className="w-full bg-charcoal text-white font-bold uppercase tracking-wider text-sm py-3 sm:py-4 px-4 sm:px-6 rounded-sm border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none mb-4 sm:mb-6" 
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Verifying...
-              </div>
-            ) : (
-              "Verify OTP"
-            )}
-          </button>
-          
-          <div className="text-center pt-4">
-            <button
-              type="button"
-              className='text-sm font-bold text-charcoal/80 hover:text-charcoal transition-colors duration-200'
-              onClick={() => {
-                setRequiresOTP(false);
-                setOtp("");
-                setError("");
-              }}
-            >
-              Back to Login
-            </button>
-          </div>
-        </form>
-      )}
-    </div>
+      
+      {/* Footer Links */}
+      <div className="flex justify-center items-center gap-6 mt-8 text-[10px] font-bold text-charcoal/60 font-mono tracking-widest uppercase">
+        <Link to="#" className="hover:text-charcoal transition-colors">Terms of Service</Link>
+        <Link to="#" className="hover:text-charcoal transition-colors">Privacy Policy</Link>
+      </div>
+    </AuthLayout>
   );
 };
 

@@ -5,9 +5,6 @@ import {
   LuChevronDown, LuArrowRight,
   LuMessageSquare
 } from 'react-icons/lu';
-import Modal from '../components/Modal';
-import Login from './Auth/Login';
-import SignUp from './Auth/SignUp';
 import { UserContext } from '../context/userContext';
 import ProfileInfoCard from '../components/Cards/ProfileInfoCard';
 
@@ -105,9 +102,6 @@ const ScoreCounter = ({ targetScore }) => {
 const LandingPage = () => {
   const { user } = useContext(UserContext);
   const navigate = useNavigate();
-
-  const [openAuthModal, setOpenAuthModal] = useState(false);
-  const [currentPage, setCurrentPage] = useState("login");
   
   // Interactive states
   const [demoStep, setDemoStep] = useState(0); // 0: input, 1: analyzing, 2: result, 3: crossfading
@@ -162,7 +156,7 @@ const LandingPage = () => {
 
   const handleCTA = () => {
     if (!user) {
-      setOpenAuthModal(true);
+      navigate("/signUp");
     } else {
       navigate("/dashboard");
     }
@@ -191,12 +185,20 @@ const LandingPage = () => {
           {user ? (
             <ProfileInfoCard />
           ) : (
-            <button
-              className='bg-charcoal text-cream px-5 py-2 text-xs md:text-sm font-bold uppercase tracking-wider rounded-sm hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(26,26,26,0.3)] transition-all cursor-pointer'
-              onClick={() => setOpenAuthModal(true)}
-            >
-              Start for Free
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                className='text-xs md:text-sm font-bold uppercase tracking-wider text-charcoal hover:opacity-70 transition-opacity cursor-pointer'
+                onClick={() => navigate('/login')}
+              >
+                Login
+              </button>
+              <button
+                className='bg-charcoal text-cream px-5 py-2 text-xs md:text-sm font-bold uppercase tracking-wider rounded-sm hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(26,26,26,0.3)] transition-all cursor-pointer'
+                onClick={() => navigate('/signUp')}
+              >
+                Start for Free
+              </button>
+            </div>
           )}
         </div>
       </header>
@@ -876,26 +878,6 @@ const LandingPage = () => {
           </div>
         </div>
       </footer>
-
-      {/* AUTH MODAL */}
-      <Modal
-        isOpen={openAuthModal}
-        onClose={() => {
-          setOpenAuthModal(false);
-          setCurrentPage("login");
-        }}
-        hideHeader={false}
-        title="Welcome"
-      >
-        <div>
-          {currentPage === "login" && (
-            <Login setCurrentPage={setCurrentPage} />
-          )}
-          {currentPage === "signup" && (
-            <SignUp setCurrentPage={setCurrentPage} />
-          )}
-        </div>
-      </Modal>
     </div>
   );
 };

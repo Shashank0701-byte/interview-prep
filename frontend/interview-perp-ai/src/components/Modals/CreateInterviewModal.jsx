@@ -21,19 +21,15 @@ const CreateInterviewModal = ({ isOpen, onClose, onCreateSession }) => {
     ];
 
     const popularRoles = [
-        'Frontend Developer',
-        'Backend Developer',
-        'Full Stack Developer',
-        'Software Engineer',
-        'DevOps Engineer',
-        'Data Scientist',
-        'Product Manager',
-        'UI/UX Designer'
+        'Frontend',
+        'Backend',
+        'Full Stack',
+        'DevOps',
+        'Product Manager'
     ];
 
     const popularCompanies = [
-        'Google', 'Meta', 'Amazon', 'Apple', 'Microsoft',
-        'Netflix', 'Tesla', 'Spotify', 'Airbnb', 'Uber'
+        'Google', 'Meta', 'Amazon', 'Apple', 'Microsoft'
     ];
 
     const handleSubmit = async (e) => {
@@ -67,172 +63,173 @@ const CreateInterviewModal = ({ isOpen, onClose, onCreateSession }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-2 sm:p-4 z-50">
-            <div className="bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/20 rounded-md shadow-lg w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
+        <div className="fixed inset-0 bg-charcoal/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-hidden selection:bg-charcoal selection:text-cream">
+            <div className="bg-white border-4 border-charcoal rounded-sm shadow-[8px_8px_0px_0px_#1A1A1A] w-full max-w-2xl flex flex-col max-h-[90vh]">
+                
                 {/* Header */}
-                <div className="flex items-start justify-between p-4 sm:p-6 border-b-2 border-charcoal/10 dark:border-cream/10">
-                    <div className="flex-1 pr-4">
-                        <h2 className="text-xl sm:text-2xl md:text-3xl font-display text-charcoal dark:text-cream">
-                            Start a New Interview Journey
+                <div className="flex items-center justify-between p-6 border-b-4 border-charcoal bg-cream">
+                    <div>
+                        <h2 className="text-3xl font-display font-bold text-charcoal tracking-wide uppercase">
+                            Initialize Session
                         </h2>
-                        <p className="text-sm text-charcoal/50 dark:text-cream/50 mt-1">
-                            Fill out a few quick details and unlock your personalized set of interview questions
+                        <p className="text-xs font-mono font-bold text-charcoal/60 mt-1 uppercase tracking-widest">
+                            Configure simulation parameters
                         </p>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-1.5 sm:p-2 hover:bg-charcoal/5 dark:hover:bg-cream/10 rounded-md transition-colors flex-shrink-0"
+                        className="p-2 border-2 border-charcoal hover:bg-charcoal hover:text-cream transition-colors rounded-sm group flex-shrink-0"
                     >
-                        <X className="w-4 h-4 sm:w-5 sm:h-5 text-charcoal/50 dark:text-cream/50" />
+                        <X className="w-5 h-5 text-charcoal group-hover:text-cream transition-colors" strokeWidth={3} />
                     </button>
                 </div>
 
                 {/* Content */}
-                <form onSubmit={handleSubmit} className="p-4 sm:p-6 overflow-y-auto max-h-[calc(95vh-140px)] sm:max-h-[calc(90vh-140px)]">
-                    <div className="space-y-4 sm:space-y-6">
-                        {/* Target Role */}
+                <div className="overflow-y-auto p-6 bg-white font-mono flex-1 custom-scrollbar">
+                    <form id="create-session-form" onSubmit={handleSubmit} className="space-y-8">
+                        
+                        {/* Target Role & Experience Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Target Role */}
+                            <div>
+                                <label className="flex items-center gap-2 text-xs font-bold text-charcoal uppercase tracking-widest mb-3">
+                                    <div className="w-2 h-2 bg-charcoal"></div>
+                                    Target Role
+                                </label>
+                                <input
+                                    type="text"
+                                    value={formData.targetRole}
+                                    onChange={(e) => handleInputChange('targetRole', e.target.value)}
+                                    placeholder="e.g. Frontend Developer"
+                                    className="w-full p-3 border-4 border-charcoal bg-cream text-charcoal text-sm font-bold placeholder:text-charcoal/30 focus:bg-white focus:outline-none focus:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all rounded-sm mb-3"
+                                    required
+                                />
+                                <div className="flex flex-wrap gap-2">
+                                    {popularRoles.map((role) => (
+                                        <button
+                                            key={role}
+                                            type="button"
+                                            onClick={() => handleInputChange('targetRole', role)}
+                                            className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 border-2 border-charcoal rounded-sm transition-all ${
+                                                formData.targetRole === role 
+                                                ? 'bg-charcoal text-cream' 
+                                                : 'bg-white text-charcoal hover:bg-cream'
+                                            }`}
+                                        >
+                                            {role}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Experience Level */}
+                            <div>
+                                <label className="flex items-center gap-2 text-xs font-bold text-charcoal uppercase tracking-widest mb-3">
+                                    <div className="w-2 h-2 bg-charcoal"></div>
+                                    Experience
+                                </label>
+                                <select
+                                    value={formData.experience}
+                                    onChange={(e) => handleInputChange('experience', e.target.value)}
+                                    className="w-full p-3 border-4 border-charcoal bg-cream text-charcoal text-sm font-bold focus:bg-white focus:outline-none focus:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all rounded-sm cursor-pointer appearance-none"
+                                    required
+                                >
+                                    <option value="">Select Level</option>
+                                    {experienceOptions.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Topics */}
                         <div>
-                            <label className="flex items-center gap-2 section-label mb-3">
-                                <Briefcase className="w-4 h-4" />
-                                Target Role
+                            <label className="flex items-center gap-2 text-xs font-bold text-charcoal uppercase tracking-widest mb-3">
+                                <div className="w-2 h-2 bg-charcoal"></div>
+                                Focus Vectors (Topics)
+                            </label>
+                            <textarea
+                                value={formData.topics}
+                                onChange={(e) => handleInputChange('topics', e.target.value)}
+                                placeholder="React, System Design, Algorithms..."
+                                rows={2}
+                                className="w-full p-3 border-4 border-charcoal bg-cream text-charcoal text-sm font-bold placeholder:text-charcoal/30 focus:bg-white focus:outline-none focus:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all rounded-sm resize-none"
+                            />
+                        </div>
+
+                        {/* Target Company */}
+                        <div>
+                            <label className="flex items-center gap-2 text-xs font-bold text-charcoal uppercase tracking-widest mb-3">
+                                <div className="w-2 h-2 bg-charcoal"></div>
+                                Target Corporation (Optional)
                             </label>
                             <input
                                 type="text"
-                                value={formData.targetRole}
-                                onChange={(e) => handleInputChange('targetRole', e.target.value)}
-                                placeholder="e.g. Frontend Developer, UI/UX Designer, etc."
-                                className="w-full p-3 border-2 border-charcoal/20 dark:border-cream/20 bg-white dark:bg-navy-input text-charcoal dark:text-cream rounded-md focus:border-charcoal dark:focus:border-cream/60 focus:outline-none transition-all"
-                                required
+                                value={formData.targetCompany}
+                                onChange={(e) => handleInputChange('targetCompany', e.target.value)}
+                                placeholder="Search companies..."
+                                className="w-full p-3 border-4 border-charcoal bg-cream text-charcoal text-sm font-bold placeholder:text-charcoal/30 focus:bg-white focus:outline-none focus:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all rounded-sm mb-3"
                             />
-                            <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
-                                {popularRoles.map((role) => (
+                            <div className="flex flex-wrap gap-2">
+                                {popularCompanies.map((company) => (
                                     <button
-                                        key={role}
+                                        key={company}
                                         type="button"
-                                        onClick={() => handleInputChange('targetRole', role)}
-                                        className={formData.targetRole === role ? 'chip-active' : 'chip-inactive'}
+                                        onClick={() => handleInputChange('targetCompany', company)}
+                                        className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 border-2 border-charcoal rounded-sm transition-all ${
+                                            formData.targetCompany === company 
+                                            ? 'bg-charcoal text-cream' 
+                                            : 'bg-white text-charcoal hover:bg-cream'
+                                        }`}
                                     >
-                                        {role}
+                                        {company}
                                     </button>
                                 ))}
                             </div>
                         </div>
 
-                        {/* Experience Level */}
-                        <div>
-                            <label className="flex items-center gap-2 section-label mb-3">
-                                <Clock className="w-4 h-4" />
-                                Years of Experience
-                            </label>
-                            <select
-                                value={formData.experience}
-                                onChange={(e) => handleInputChange('experience', e.target.value)}
-                                className="w-full p-3 border-2 border-charcoal/20 dark:border-cream/20 bg-white dark:bg-navy-input text-charcoal dark:text-cream rounded-md focus:border-charcoal dark:focus:border-cream/60 focus:outline-none transition-all"
-                                required
-                            >
-                                <option value="">Select your experience level</option>
-                                {experienceOptions.map((option) => (
-                                    <option key={option.value} value={option.value}>
-                                        {option.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Two Column Layout for Topics and Company */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                            {/* Topics */}
-                            <div>
-                                <label className="flex items-center gap-2 section-label mb-3">
-                                    <Target className="w-4 h-4" />
-                                    Topics to Focus On
-                                </label>
-                                <textarea
-                                    value={formData.topics}
-                                    onChange={(e) => handleInputChange('topics', e.target.value)}
-                                    placeholder="Comma-separated, e.g. React, Node.js, MongoDB"
-                                    rows={3}
-                                    className="w-full p-3 border-2 border-charcoal/20 dark:border-cream/20 bg-white dark:bg-navy-input text-charcoal dark:text-cream rounded-md focus:border-charcoal dark:focus:border-cream/60 focus:outline-none transition-all resize-none"
-                                />
-                            </div>
-
-                            {/* Target Company */}
-                            <div>
-                                <label className="flex items-center gap-2 section-label mb-3">
-                                    <Building2 className="w-4 h-4" />
-                                    Target Company (Optional)
-                                </label>
-                                <input
-                                    type="text"
-                                    value={formData.targetCompany}
-                                    onChange={(e) => handleInputChange('targetCompany', e.target.value)}
-                                    placeholder="Search companies like Google, Meta, Amazon..."
-                                    className="w-full p-3 border-2 border-charcoal/20 dark:border-cream/20 bg-white dark:bg-navy-input text-charcoal dark:text-cream rounded-md focus:border-charcoal dark:focus:border-cream/60 focus:outline-none transition-all"
-                                />
-                                <div className="flex flex-wrap gap-1 sm:gap-1.5 mt-2">
-                                    {popularCompanies.slice(0, 5).map((company) => (
-                                        <button
-                                            key={company}
-                                            type="button"
-                                            onClick={() => handleInputChange('targetCompany', company)}
-                                            className={formData.targetCompany === company ? 'chip-active' : 'chip-inactive'}
-                                        >
-                                            {company}
-                                        </button>
-                                    ))}
-                                </div>
-                                <p className="text-xs text-charcoal/40 dark:text-cream/40 mt-1">
-                                    Select a company to get questions specifically asked there
-                                </p>
-                            </div>
-                        </div>
-
                         {/* Description */}
                         <div>
-                            <label className="flex items-center gap-2 section-label mb-3">
-                                <FileText className="w-4 h-4" />
-                                Description
+                            <label className="flex items-center gap-2 text-xs font-bold text-charcoal uppercase tracking-widest mb-3">
+                                <div className="w-2 h-2 bg-charcoal"></div>
+                                Additional Parameters
                             </label>
                             <textarea
                                 value={formData.description}
                                 onChange={(e) => handleInputChange('description', e.target.value)}
-                                placeholder="Any specific goals or notes for this session"
+                                placeholder="Specific goals for this simulation..."
                                 rows={2}
-                                className="w-full p-3 border-2 border-charcoal/20 dark:border-cream/20 bg-white dark:bg-navy-input text-charcoal dark:text-cream rounded-md focus:border-charcoal dark:focus:border-cream/60 focus:outline-none transition-all resize-none"
+                                className="w-full p-3 border-4 border-charcoal bg-cream text-charcoal text-sm font-bold placeholder:text-charcoal/30 focus:bg-white focus:outline-none focus:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all rounded-sm resize-none"
                             />
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
 
                 {/* Footer */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 sm:p-6 border-t-2 border-charcoal/10 dark:border-cream/10 bg-cream dark:bg-navy gap-3 sm:gap-0">
-                    <div className="text-xs uppercase tracking-[0.1em] font-semibold text-charcoal/40 dark:text-cream/40 text-center sm:text-left">
-                        <span className="font-bold text-charcoal/60 dark:text-cream/60">Required:</span> Target Role & Experience Level
+                <div className="p-6 border-t-4 border-charcoal bg-cream flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="text-[10px] uppercase font-bold text-charcoal/50 tracking-widest text-center sm:text-left">
+                        <span className="text-charcoal font-black">REQ:</span> Role & Experience
                     </div>
-                    <div className="flex gap-2 sm:gap-3">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="flex-1 sm:flex-initial px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-charcoal dark:text-cream border-2 border-charcoal/20 dark:border-cream/20 hover:border-charcoal dark:hover:border-cream/60 rounded-md transition-all"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={handleSubmit}
-                            disabled={isCreating || !formData.targetRole || !formData.experience}
-                            className="flex-1 sm:flex-initial px-6 py-2.5 bg-charcoal text-white text-sm font-bold uppercase tracking-wider rounded-md hover:bg-charcoal/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                        >
-                            {isCreating ? (
-                                <>
-                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                    Creating...
-                                </>
-                            ) : (
-                                'Create Session'
-                            )}
-                        </button>
-                    </div>
+                    
+                    <button
+                        type="submit"
+                        form="create-session-form"
+                        disabled={isCreating || !formData.targetRole || !formData.experience}
+                        className="w-full sm:w-auto px-8 py-3 bg-charcoal text-cream font-bold text-xs uppercase tracking-widest border-2 border-charcoal rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(26,26,26,0.3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 cursor-pointer"
+                    >
+                        {isCreating ? (
+                            <>
+                                <div className="w-3 h-3 bg-cream animate-ping rounded-sm"></div>
+                                Initializing...
+                            </>
+                        ) : (
+                            'Launch Session'
+                        )}
+                    </button>
                 </div>
+
             </div>
         </div>
     );
