@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import moment from "moment";
-import { AnimatePresence, motion } from "framer-motion";
 import { LuCircleAlert, LuListCollapse, LuArrowLeft, LuChevronRight, LuBrain, LuTarget, LuTrendingUp } from "react-icons/lu";
 import SpinnerLoader from "../../components/Loader/SpinnerLoader.jsx";
 import { toast } from "react-hot-toast";
@@ -10,7 +8,6 @@ import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import QuestionCard from '../../components/Cards/QuestionCard_enhanced';
 import Drawer from '../../components/Drawer';
-import SkeletonLoader from '../../components/Loader/SkeletonLoader';
 import AIResponsePreview from '../InterviewPrep/components/AIResponsePreview';
 
 const RoadmapSessionPractice = () => {
@@ -170,21 +167,14 @@ const RoadmapSessionPractice = () => {
         }
     };
 
-    const getPhaseColor = (color) => {
-        const colors = {
-            blue: 'from-blue-500 to-cyan-500',
-            purple: 'from-purple-500 to-indigo-500',
-            emerald: 'from-emerald-500 to-teal-500',
-            orange: 'from-orange-500 to-red-500',
-        };
-        return colors[color] || 'from-indigo-500 to-purple-500';
-    };
-
     if (isLoading) {
         return (
             <DashboardLayout>
-                <div className="flex items-center justify-center h-screen bg-cream dark:bg-navy font-body">
+                <div className="flex flex-col items-center justify-center h-screen bg-cream dark:bg-navy font-body">
                     <SpinnerLoader />
+                    <p className="text-charcoal dark:text-cream mt-4 text-center font-bold font-mono text-xs uppercase tracking-widest">
+                        Loading practice session... ✨
+                    </p>
                 </div>
             </DashboardLayout>
         );
@@ -194,13 +184,13 @@ const RoadmapSessionPractice = () => {
         return (
             <DashboardLayout>
                 <div className="flex items-center justify-center h-screen bg-cream dark:bg-navy font-body">
-                    <div className="text-center">
-                        <LuCircleAlert className="w-16 h-16 text-charcoal dark:text-cream mx-auto mb-4" />
+                    <div className="text-center py-20 bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 rounded-sm shadow-[8px_8px_0px_0px_var(--color-shadow)] max-w-xl mx-auto my-12 px-6">
+                        <LuCircleAlert className="w-16 h-16 text-charcoal dark:text-cream mx-auto mb-4" strokeWidth={2} />
                         <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-2">Error Loading Session</h2>
-                        <p className="text-charcoal/80 dark:text-cream/80 mb-4 font-bold">{errorMsg}</p>
+                        <p className="text-charcoal/80 dark:text-cream/80 mb-6 font-bold">{errorMsg}</p>
                         <button
                             onClick={() => navigate(-1)}
-                            className="px-6 py-3 bg-charcoal text-white font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
+                            className="px-5 py-2.5 bg-charcoal text-white dark:bg-cream dark:text-navy font-bold uppercase tracking-widest text-xs rounded-sm border-3 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
                         >
                             Go Back
                         </button>
@@ -214,12 +204,12 @@ const RoadmapSessionPractice = () => {
         return (
             <DashboardLayout>
                 <div className="flex items-center justify-center h-screen bg-cream dark:bg-navy font-body">
-                    <div className="text-center">
+                    <div className="text-center py-20 bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 rounded-sm shadow-[8px_8px_0px_0px_var(--color-shadow)] max-w-xl mx-auto my-12 px-6">
                         <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-2">Session Not Found</h2>
-                        <p className="text-charcoal/80 dark:text-cream/80 font-bold mb-4">The requested session could not be found.</p>
+                        <p className="text-charcoal/80 dark:text-cream/80 font-bold mb-6">The requested session could not be found.</p>
                         <button
                             onClick={() => navigate(-1)}
-                            className="px-6 py-3 bg-charcoal text-white font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all cursor-pointer"
+                            className="px-5 py-2.5 bg-charcoal text-white dark:bg-cream dark:text-navy font-bold uppercase tracking-widest text-xs rounded-sm border-3 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
                         >
                             Go Back
                         </button>
@@ -231,90 +221,89 @@ const RoadmapSessionPractice = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-cream dark:bg-navy font-body">
-                <div className="max-w-6xl mx-auto px-4 py-8">
-                    {/* Roadmap Session Header */}
-                    <div className={`bg-charcoal dark:bg-navy-input border-2 border-charcoal dark:border-cream/40 shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] rounded-md p-8 mb-8 text-white dark:text-cream`}>
+            <div className="min-h-screen bg-cream dark:bg-navy font-body transition-colors duration-300">
+                {/* Header */}
+                <div className="bg-cream dark:bg-navy text-charcoal dark:text-cream border-b-4 border-charcoal/15 dark:border-cream/20">
+                    <div className="container mx-auto px-4 py-8 max-w-6xl">
                         {/* Breadcrumb Navigation */}
                         {fromPhase && role && (
-                            <div className="flex items-center gap-2 text-white/80 mb-6 font-bold">
+                            <div className="flex items-center gap-2 text-charcoal/60 dark:text-cream/60 text-xs font-mono font-bold uppercase tracking-wider mb-6">
                                 <span 
-                                    onClick={() => navigate('/roadmap')}
-                                    className="hover:text-white cursor-pointer transition-colors"
+                                    onClick={() => navigate(`/roadmap?role=${encodeURIComponent(role)}`)}
+                                    className="hover:text-charcoal dark:hover:text-cream hover:underline cursor-pointer transition-colors"
                                 >
                                     {role}
                                 </span>
-                                <LuChevronRight className="w-4 h-4" />
+                                <LuChevronRight className="w-4 h-4 text-charcoal/45" strokeWidth={3} />
                                 <span 
                                     onClick={() => navigate(`/phase/${encodeURIComponent(role)}/${fromPhase}`)}
-                                    className="hover:text-white cursor-pointer transition-colors"
+                                    className="hover:text-charcoal dark:hover:text-cream hover:underline cursor-pointer transition-colors"
                                 >
                                     {phaseData?.name || sessionData.phaseName}
                                 </span>
-                                <LuChevronRight className="w-4 h-4" />
+                                <LuChevronRight className="w-4 h-4 text-charcoal/45" strokeWidth={3} />
                                 <span 
                                     onClick={() => navigate(`/phase-sessions/${encodeURIComponent(role)}/${fromPhase}`)}
-                                    className="hover:text-white cursor-pointer transition-colors"
+                                    className="hover:text-charcoal dark:hover:text-cream hover:underline cursor-pointer transition-colors"
                                 >
                                     Session Library
                                 </span>
-                                <LuChevronRight className="w-4 h-4" />
-                                <span className="text-white">Practice Session</span>
+                                <LuChevronRight className="w-4 h-4 text-charcoal/45" strokeWidth={3} />
+                                <span className="text-charcoal dark:text-cream font-bold">Practice Session</span>
                             </div>
                         )}
 
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-6">
-                                <div className="p-4 bg-white dark:bg-navy-light rounded-md">
-                                    <LuBrain className="w-8 h-8 text-charcoal dark:text-cream" />
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm flex items-center justify-center shadow-[3px_3px_0px_0px_var(--color-shadow)] shrink-0">
+                                    <LuBrain className="w-6 h-6 text-charcoal dark:text-cream" strokeWidth={2.5} />
                                 </div>
-                                <div>
-                                    <h1 className="text-3xl md:text-4xl font-display font-bold mb-2 text-white dark:text-cream">
+                                <div className="min-w-0">
+                                    <h1 className="text-2xl md:text-3xl font-display font-bold uppercase tracking-wider leading-tight truncate">
                                         {sessionData.role}
                                     </h1>
-                                    <p className="text-xl text-white/90 dark:text-cream/90 mb-2 font-bold">
-                                        {phaseData?.name || sessionData.phaseName} • {sessionData.experience} years experience
-                                    </p>
-                                    <div className="flex items-center gap-4 text-white/80 dark:text-cream/80 font-bold">
-                                        <div className="flex items-center gap-2">
-                                            <LuTarget className="w-4 h-4" />
-                                            <span>{sessionData.questions?.length || 0} Questions</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <LuTrendingUp className="w-4 h-4" />
-                                            <span>{sessionData.completionPercentage || 0}% Complete</span>
-                                        </div>
+                                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-charcoal/70 dark:text-cream/70 mt-1 font-bold">
+                                        <span>{phaseData?.name || sessionData.phaseName}</span>
+                                        <span className="hidden sm:inline text-charcoal/30 dark:text-cream/20">•</span>
+                                        <span>{sessionData.experience}y experience</span>
+                                        <span className="hidden sm:inline text-charcoal/30 dark:text-cream/20">•</span>
+                                        <span className="flex items-center gap-1 font-mono">
+                                            <LuTarget className="w-3.5 h-3.5" />
+                                            {sessionData.questions?.length || 0} Questions
+                                        </span>
+                                        <span className="hidden sm:inline text-charcoal/30 dark:text-cream/20">•</span>
+                                        <span className="flex items-center gap-1 font-mono">
+                                            <LuTrendingUp className="w-3.5 h-3.5" />
+                                            {sessionData.completionPercentage || 0}% Complete
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                             
                             <button
                                 onClick={() => navigate(-1)}
-                                className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-navy-light text-charcoal dark:text-cream font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
+                                className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-navy-light text-charcoal dark:text-cream font-mono font-bold uppercase tracking-widest text-[10px] rounded-sm border-3 border-charcoal dark:border-cream/40 hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer shadow-[2px_2px_0px_0px_var(--color-shadow)] shrink-0"
                             >
-                                <LuArrowLeft className="w-4 h-4" />
+                                <LuArrowLeft className="w-3.5 h-3.5" strokeWidth={3} />
                                 <span>Back</span>
                             </button>
                         </div>
 
                         {/* Phase Badge */}
-                        <div className="mt-6">
-                            <span className="px-4 py-2 bg-white dark:bg-navy-light text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 rounded-sm text-sm font-bold">
+                        <div className="mt-5">
+                            <span className="px-3 py-1.5 bg-white dark:bg-navy-light text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 rounded-sm text-xs font-mono font-bold uppercase tracking-wider shadow-[2px_2px_0px_0px_var(--color-shadow)]">
                                 🎯 Roadmap Session • {sessionData.sessionType || 'roadmap'}
                             </span>
                         </div>
                     </div>
+                </div>
 
+                <div className="container mx-auto px-4 py-8 max-w-4xl">
                     {/* Questions Section */}
                     <div className="space-y-6">
                         {sessionData.questions && sessionData.questions.length > 0 ? (
                             sessionData.questions.map((question, index) => (
-                                <motion.div
-                                    key={question._id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.1 }}
-                                >
+                                <div key={question._id}>
                                     <QuestionCard
                                         questionId={question._id}
                                         question={question.question}
@@ -336,16 +325,16 @@ const RoadmapSessionPractice = () => {
                                         isRoadmapSession={true}
                                         phaseColor={phaseData?.color || sessionData.phaseColor}
                                     />
-                                </motion.div>
+                                </div>
                             ))
                         ) : (
-                            <div className="text-center py-20 bg-cream dark:bg-navy">
-                                <div className="w-20 h-20 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <LuListCollapse className="w-10 h-10 text-white dark:text-navy" />
+                            <div className="text-center py-20 bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 rounded-sm shadow-[8px_8px_0px_0px_var(--color-shadow)] max-w-xl mx-auto">
+                                <div className="w-16 h-16 bg-charcoal dark:bg-cream rounded-sm flex items-center justify-center mx-auto mb-6 shadow-[3px_3px_0px_0px_var(--color-shadow)]">
+                                    <LuListCollapse className="w-8 h-8 text-white dark:text-navy" strokeWidth={2.5} />
                                 </div>
-                                <h3 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4">No Questions Available</h3>
-                                <p className="text-charcoal/80 dark:text-cream/80 font-bold">
-                                    This session doesn't have any questions yet.
+                                <h3 className="text-2xl font-display font-bold text-charcoal dark:text-cream uppercase tracking-wide">No Questions Available</h3>
+                                <p className="text-charcoal/60 dark:text-cream/60 font-body text-sm max-w-xs mx-auto leading-relaxed">
+                                    This session doesn't have any questions configured yet.
                                 </p>
                             </div>
                         )}

@@ -6,7 +6,6 @@ import DashboardLayout from '../../components/layouts/DashboardLayout';
 import SpinnerLoader from '../../components/Loader/SpinnerLoader';
 import { 
     LuSearch, 
-    LuFilter, 
     LuChevronRight, 
     LuArrowLeft, 
     LuBookOpen,
@@ -20,49 +19,36 @@ import {
     LuTrendingUp,
     LuCalendar,
     LuClock,
-    LuUsers,
-    LuStar,
     LuRocket
 } from 'react-icons/lu';
 
-// Helper functions outside component
-const getPhaseColor = (color) => {
-    const colors = {
-        blue: 'from-blue-500 to-cyan-500',
-        purple: 'from-purple-500 to-indigo-500',
-        emerald: 'from-emerald-500 to-teal-500',
-        orange: 'from-orange-500 to-red-500',
-    };
-    return colors[color] || 'from-gray-500 to-gray-600';
-};
-
 const getStatusIcon = (completionPercentage) => {
     if (completionPercentage >= 100) {
-        return <LuCheck className="w-4 h-4 text-emerald-500" />;
+        return <LuCheck className="w-4 h-4 text-emerald-500" strokeWidth={3} />;
     } else if (completionPercentage > 0) {
-        return <LuPlay className="w-4 h-4 text-blue-500" />;
+        return <LuPlay className="w-4 h-4 text-blue-500 animate-pulse" strokeWidth={3} />;
     } else {
-        return <LuTarget className="w-4 h-4 text-gray-400" />;
+        return <LuTarget className="w-4 h-4 text-charcoal/40 dark:text-cream/40" strokeWidth={3} />;
     }
 };
 
 const getStatusBadge = (completionPercentage) => {
     if (completionPercentage >= 100) {
-        return <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Completed</span>;
+        return <span className="px-2 py-0.5 border-2 border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-mono font-bold uppercase tracking-wider rounded-sm">Completed</span>;
     } else if (completionPercentage > 0) {
-        return <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">In Progress</span>;
+        return <span className="px-2 py-0.5 border-2 border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-mono font-bold uppercase tracking-wider rounded-sm">In Progress</span>;
     } else {
-        return <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">Not Started</span>;
+        return <span className="px-2 py-0.5 border-2 border-charcoal/20 dark:border-cream/20 bg-cream dark:bg-navy text-charcoal/50 dark:text-cream/50 text-[10px] font-mono font-bold uppercase tracking-wider rounded-sm">Not Started</span>;
     }
 };
 
 const getDifficultyBadge = (experience) => {
     if (experience <= 2) {
-        return <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Easy</span>;
+        return <span className="px-2.5 py-0.5 border-2 border-green-500 bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-mono font-bold uppercase tracking-wider rounded-sm">Easy</span>;
     } else if (experience <= 5) {
-        return <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full">Medium</span>;
+        return <span className="px-2.5 py-0.5 border-2 border-amber-500 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-mono font-bold uppercase tracking-wider rounded-sm">Medium</span>;
     } else {
-        return <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">Hard</span>;
+        return <span className="px-2.5 py-0.5 border-2 border-red-500 bg-red-500/10 text-red-600 dark:text-red-400 text-[10px] font-mono font-bold uppercase tracking-wider rounded-sm">Hard</span>;
     }
 };
 
@@ -75,13 +61,13 @@ const getTypeIcon = (topics) => {
     }
     
     if (topicStr.includes('algorithm') || topicStr.includes('data structure') || topicStr.includes('coding')) {
-        return <LuCode className="w-4 h-4 text-blue-500" />;
+        return <LuCode className="w-4 h-4 text-charcoal dark:text-cream" strokeWidth={2.5} />;
     } else if (topicStr.includes('system') || topicStr.includes('design')) {
-        return <LuSettings className="w-4 h-4 text-purple-500" />;
+        return <LuSettings className="w-4 h-4 text-charcoal dark:text-cream" strokeWidth={2.5} />;
     } else if (topicStr.includes('behavioral') || topicStr.includes('leadership')) {
-        return <LuMessageSquare className="w-4 h-4 text-emerald-500" />;
+        return <LuMessageSquare className="w-4 h-4 text-charcoal dark:text-cream" strokeWidth={2.5} />;
     }
-    return <LuBrain className="w-4 h-4 text-gray-500" />;
+    return <LuBrain className="w-4 h-4 text-charcoal dark:text-cream" strokeWidth={2.5} />;
 };
 
 const PhaseSessionLibrary = () => {
@@ -132,191 +118,6 @@ const PhaseSessionLibrary = () => {
         }
     };
 
-    // REMOVED: Static templates - all templates now come from backend API with Gemini-generated questions
-    // The backend getPhaseSessionTemplates() function provides templates that are created with AI-generated content
-    const generatePhaseSessionTemplates_DEPRECATED = (phase, role) => {
-        // This function is no longer used - kept for reference only
-        const sessionTemplates_DEPRECATED = {
-            'Foundation': [
-                {
-                    _id: 'template-big-o',
-                    role: 'Big O Notation Fundamentals',
-                    experience: 1,
-                    topicsToFocus: ['Big O Notation', 'Time Complexity', 'Space Complexity'],
-                    completionPercentage: 0,
-                    status: 'Available',
-                    questions: Array(12).fill({}),
-                    masteredQuestions: 0,
-                    createdAt: new Date().toISOString(),
-                    isTemplate: true,
-                    isRelevant: true,
-                    description: 'Master the fundamentals of algorithm analysis and complexity'
-                },
-                {
-                    _id: 'template-arrays',
-                    role: 'Arrays & Strings Basics',
-                    experience: 1,
-                    topicsToFocus: ['Arrays', 'Strings', 'Two Pointers'],
-                    completionPercentage: 0,
-                    status: 'Available',
-                    questions: Array(15).fill({}),
-                    masteredQuestions: 0,
-                    createdAt: new Date().toISOString(),
-                    isTemplate: true,
-                    isRelevant: true,
-                    description: 'Essential array and string manipulation techniques'
-                },
-                {
-                    _id: 'template-linked-lists',
-                    role: 'Linked Lists Introduction',
-                    experience: 1,
-                    topicsToFocus: ['Linked Lists', 'Pointers', 'Node Manipulation'],
-                    completionPercentage: 0,
-                    status: 'Available',
-                    questions: Array(10).fill({}),
-                    masteredQuestions: 0,
-                    createdAt: new Date().toISOString(),
-                    isTemplate: true,
-                    isRelevant: true,
-                    description: 'Understanding linked data structures and pointer manipulation'
-                },
-                {
-                    _id: 'template-stacks-queues',
-                    role: 'Stacks & Queues Fundamentals',
-                    experience: 1,
-                    topicsToFocus: ['Stacks', 'Queues', 'LIFO', 'FIFO'],
-                    completionPercentage: 0,
-                    status: 'Available',
-                    questions: Array(8).fill({}),
-                    masteredQuestions: 0,
-                    createdAt: new Date().toISOString(),
-                    isTemplate: true,
-                    isRelevant: true,
-                    description: 'Master stack and queue data structures'
-                },
-                {
-                    _id: 'template-basic-sorting',
-                    role: 'Basic Sorting Algorithms',
-                    experience: 2,
-                    topicsToFocus: ['Bubble Sort', 'Selection Sort', 'Insertion Sort'],
-                    completionPercentage: 0,
-                    status: 'Available',
-                    questions: Array(6).fill({}),
-                    masteredQuestions: 0,
-                    createdAt: new Date().toISOString(),
-                    isTemplate: true,
-                    isRelevant: true,
-                    description: 'Introduction to fundamental sorting techniques'
-                }
-            ],
-            'Problem Solving': [
-                {
-                    _id: 'template-advanced-arrays',
-                    role: 'Advanced Array Techniques',
-                    experience: 3,
-                    topicsToFocus: ['Sliding Window', 'Prefix Sum', 'Kadane Algorithm'],
-                    completionPercentage: 0,
-                    status: 'Available',
-                    questions: Array(18).fill({}),
-                    masteredQuestions: 0,
-                    createdAt: new Date().toISOString(),
-                    isTemplate: true,
-                    isRelevant: true,
-                    description: 'Advanced array manipulation and optimization techniques'
-                },
-                {
-                    _id: 'template-trees',
-                    role: 'Binary Trees & BST',
-                    experience: 3,
-                    topicsToFocus: ['Binary Trees', 'BST', 'Tree Traversal'],
-                    completionPercentage: 0,
-                    status: 'Available',
-                    questions: Array(20).fill({}),
-                    masteredQuestions: 0,
-                    createdAt: new Date().toISOString(),
-                    isTemplate: true,
-                    isRelevant: true,
-                    description: 'Master tree data structures and traversal algorithms'
-                },
-                {
-                    _id: 'template-graphs',
-                    role: 'Graph Algorithms',
-                    experience: 4,
-                    topicsToFocus: ['Graphs', 'DFS', 'BFS', 'Shortest Path'],
-                    completionPercentage: 0,
-                    status: 'Available',
-                    questions: Array(16).fill({}),
-                    masteredQuestions: 0,
-                    createdAt: new Date().toISOString(),
-                    isTemplate: true,
-                    isRelevant: true,
-                    description: 'Graph representation and traversal algorithms'
-                }
-            ],
-            'System Design': [
-                {
-                    _id: 'template-scalability',
-                    role: 'Scalability Fundamentals',
-                    experience: 4,
-                    topicsToFocus: ['Load Balancing', 'Caching', 'Database Scaling'],
-                    completionPercentage: 0,
-                    status: 'Available',
-                    questions: Array(12).fill({}),
-                    masteredQuestions: 0,
-                    createdAt: new Date().toISOString(),
-                    isTemplate: true,
-                    isRelevant: true,
-                    description: 'Learn to design scalable distributed systems'
-                },
-                {
-                    _id: 'template-databases',
-                    role: 'Database Design Patterns',
-                    experience: 4,
-                    topicsToFocus: ['SQL vs NoSQL', 'ACID', 'CAP Theorem'],
-                    completionPercentage: 0,
-                    status: 'Available',
-                    questions: Array(10).fill({}),
-                    masteredQuestions: 0,
-                    createdAt: new Date().toISOString(),
-                    isTemplate: true,
-                    isRelevant: true,
-                    description: 'Database selection and design principles'
-                }
-            ],
-            'Behavioral': [
-                {
-                    _id: 'template-leadership',
-                    role: 'Leadership & Communication',
-                    experience: 3,
-                    topicsToFocus: ['Leadership', 'Team Management', 'Communication'],
-                    completionPercentage: 0,
-                    status: 'Available',
-                    questions: Array(8).fill({}),
-                    masteredQuestions: 0,
-                    createdAt: new Date().toISOString(),
-                    isTemplate: true,
-                    isRelevant: true,
-                    description: 'Demonstrate leadership and communication skills'
-                },
-                {
-                    _id: 'template-conflict',
-                    role: 'Conflict Resolution',
-                    experience: 3,
-                    topicsToFocus: ['Conflict Resolution', 'Problem Solving', 'Collaboration'],
-                    completionPercentage: 0,
-                    status: 'Available',
-                    questions: Array(6).fill({}),
-                    masteredQuestions: 0,
-                    createdAt: new Date().toISOString(),
-                    isTemplate: true,
-                    isRelevant: true,
-                    description: 'Handle workplace conflicts and challenges'
-                }
-            ]
-        };
-        return sessionTemplates[phase.name] || [];
-    };
-
     useEffect(() => {
         applyFilters();
     }, [allSessions, searchTerm, selectedTopic, selectedDifficulty, selectedType, selectedStatus, currentPhase]);
@@ -334,20 +135,8 @@ const PhaseSessionLibrary = () => {
 
             // Fetch roadmap sessions for this specific phase
             const sessionUrl = API_PATHS.ROADMAP_SESSIONS.GET_PHASE_SESSIONS(role, phaseId);
-            console.log('Calling roadmap sessions API:', sessionUrl);
-            console.log('Role:', role, 'PhaseId:', phaseId);
+            const sessionsResponse = await axiosInstance.get(sessionUrl);
             
-            let sessionsResponse;
-            try {
-                sessionsResponse = await axiosInstance.get(sessionUrl);
-                console.log('Roadmap sessions response:', sessionsResponse.data);
-            } catch (sessionError) {
-                console.error('Error fetching roadmap sessions:', sessionError);
-                console.error('Session URL that failed:', sessionUrl);
-                throw sessionError;
-            }
-            
-            // Handle different response structures
             let userSessions = [];
             if (Array.isArray(sessionsResponse.data)) {
                 userSessions = sessionsResponse.data;
@@ -357,16 +146,7 @@ const PhaseSessionLibrary = () => {
                 userSessions = sessionsResponse.data.data;
             }
             
-            console.log('User sessions after processing:', userSessions);
-            
-            console.log('User sessions:', userSessions);
-            console.log('Phase topics:', phase?.topics);
-            
-            // Generate phase-specific session recommendations
-            let phaseSessions = [];
-            
-            // The API now returns pre-defined templates with status, so use them directly
-            phaseSessions = userSessions.map(session => ({
+            const phaseSessions = userSessions.map(session => ({
                 ...session,
                 isRelevant: true,
                 isRoadmapSession: true,
@@ -374,12 +154,9 @@ const PhaseSessionLibrary = () => {
                 isUserSession: session.isStarted // Only started sessions are user sessions
             }));
             
-            console.log('Filtered phase sessions:', phaseSessions);
-
             setAllSessions(phaseSessions);
         } catch (error) {
             console.error("Failed to fetch phase and sessions", error);
-            console.error("Error details:", error.response?.data || error.message);
         } finally {
             setIsLoading(false);
         }
@@ -486,15 +263,13 @@ const PhaseSessionLibrary = () => {
         setFilteredSessions(filtered);
     };
 
-
-
     if (isLoading) {
         return (
             <DashboardLayout>
                 <div className="flex flex-col items-center justify-center h-screen bg-cream dark:bg-navy font-body">
                     <SpinnerLoader />
-                    <p className="text-charcoal dark:text-cream mt-4 text-center font-bold">
-                        Loading phase sessions... ✨
+                    <p className="text-charcoal dark:text-cream mt-4 text-center font-bold font-mono text-xs uppercase tracking-widest">
+                        Loading library sessions... ✨
                     </p>
                 </div>
             </DashboardLayout>
@@ -504,17 +279,17 @@ const PhaseSessionLibrary = () => {
     if (!currentPhase) {
         return (
             <DashboardLayout>
-                <div className="text-center py-20 bg-cream dark:bg-navy min-h-screen font-body">
-                    <div className="w-20 h-20 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-6">
-                        <LuBookOpen className="w-10 h-10 text-white dark:text-navy" />
+                <div className="text-center py-20 bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 rounded-sm shadow-[8px_8px_0px_0px_var(--color-shadow)] max-w-xl mx-auto my-12 font-body">
+                    <div className="w-16 h-16 bg-charcoal dark:bg-cream rounded-sm flex items-center justify-center mx-auto mb-6 shadow-[3px_3px_0px_0px_var(--color-shadow)]">
+                        <LuBookOpen className="w-8 h-8 text-white dark:text-navy" strokeWidth={2.5} />
                     </div>
-                    <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4">Phase Not Found</h2>
-                    <p className="text-charcoal/80 dark:text-cream/80 mb-6">
+                    <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream uppercase tracking-wide">Phase Not Found</h2>
+                    <p className="text-charcoal/65 dark:text-cream/65 mb-6">
                         The requested phase could not be found.
                     </p>
                     <button
                         onClick={() => navigate(`/roadmap?role=${encodeURIComponent(role)}`)}
-                        className="px-6 py-3 bg-charcoal dark:bg-cream text-white dark:text-navy font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
+                        className="px-5 py-2.5 bg-charcoal text-white dark:bg-cream dark:text-navy font-bold uppercase tracking-widest text-xs rounded-sm border-3 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
                     >
                         Back to Roadmap
                     </button>
@@ -525,66 +300,64 @@ const PhaseSessionLibrary = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-cream dark:bg-navy font-body">
+            <div className="min-h-screen bg-cream dark:bg-navy font-body transition-colors duration-300">
                 {/* Header */}
-                <div className={`bg-charcoal dark:bg-navy-input text-white dark:text-cream border-b-2 border-charcoal dark:border-cream/40`}>
-                    <div className="container mx-auto px-4 md:px-6 py-8">
-                        <div className="max-w-6xl mx-auto">
-                            {/* Breadcrumb */}
-                            <div className="flex items-center gap-2 text-white/80 text-sm mb-4 font-bold">
-                                <button
-                                    onClick={() => navigate(`/roadmap?role=${encodeURIComponent(role)}`)}
-                                    className="hover:text-white transition-colors cursor-pointer"
-                                >
-                                    {role}
-                                </button>
-                                <LuChevronRight className="w-4 h-4" />
-                                <button
-                                    onClick={() => navigate(`/phase/${encodeURIComponent(role)}/${phaseId}`)}
-                                    className="hover:text-white transition-colors cursor-pointer"
-                                >
-                                    {currentPhase.name}
-                                </button>
-                                <LuChevronRight className="w-4 h-4" />
-                                <span className="text-white">Session Library</span>
-                            </div>
+                <div className="bg-cream dark:bg-navy text-charcoal dark:text-cream border-b-4 border-charcoal/15 dark:border-cream/20">
+                    <div className="container mx-auto px-4 md:px-6 py-10 max-w-6xl">
+                        {/* Breadcrumb */}
+                        <div className="flex items-center gap-2 text-charcoal/60 dark:text-cream/60 text-xs font-mono font-bold uppercase tracking-wider mb-6">
+                            <button
+                                onClick={() => navigate(`/roadmap?role=${encodeURIComponent(role)}`)}
+                                className="hover:text-charcoal dark:hover:text-cream hover:underline transition-colors cursor-pointer"
+                            >
+                                {role}
+                            </button>
+                            <LuChevronRight className="w-4 h-4 text-charcoal/45" strokeWidth={3} />
+                            <button
+                                onClick={() => navigate(`/phase/${encodeURIComponent(role)}/${phaseId}`)}
+                                className="hover:text-charcoal dark:hover:text-cream hover:underline transition-colors cursor-pointer"
+                            >
+                                {currentPhase.name}
+                            </button>
+                            <LuChevronRight className="w-4 h-4 text-charcoal/45" strokeWidth={3} />
+                            <span className="text-charcoal dark:text-cream">Session Library</span>
+                        </div>
 
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <h1 className="text-3xl md:text-4xl font-display font-bold mb-2">
-                                        {currentPhase.name} Sessions
-                                    </h1>
-                                    <p className="text-xl text-white/90 font-bold">
-                                        {filteredSessions.length} sessions available • {filteredSessions.filter(s => s.isRelevant).length} recommended
-                                    </p>
-                                </div>
-                                
-                                <button
-                                    onClick={() => navigate(`/phase/${encodeURIComponent(role)}/${phaseId}`)}
-                                    className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-navy-light text-charcoal dark:text-cream font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
-                                >
-                                    <LuArrowLeft className="w-4 h-4" />
-                                    <span>Back to Phase</span>
-                                </button>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                            <div>
+                                <h1 className="text-3xl md:text-4xl font-display font-bold uppercase tracking-wider leading-tight">
+                                    {currentPhase.name} Sessions
+                                </h1>
+                                <p className="text-sm text-charcoal/70 dark:text-cream/70 mt-1.5 font-bold">
+                                    {filteredSessions.length} sessions available • {filteredSessions.filter(s => s.isRelevant).length} recommended
+                                </p>
                             </div>
+                            
+                            <button
+                                onClick={() => navigate(`/phase/${encodeURIComponent(role)}/${phaseId}`)}
+                                className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-navy-light text-charcoal dark:text-cream font-mono font-bold uppercase tracking-widest text-[10px] rounded-sm border-3 border-charcoal dark:border-cream/40 hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer shadow-[2px_2px_0px_0px_var(--color-shadow)]"
+                            >
+                                <LuArrowLeft className="w-3.5 h-3.5" strokeWidth={3} />
+                                <span>Back to Phase</span>
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <div className="container mx-auto px-4 md:px-6 py-8 max-w-6xl">
                     {/* Filters */}
-                    <div className="card-editorial p-6 mb-8">
+                    <div className="card-editorial p-6 mb-8 bg-white dark:bg-navy-light">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 font-bold text-charcoal dark:text-cream">
                             {/* Search */}
                             <div className="lg:col-span-2">
                                 <div className="relative">
-                                    <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-charcoal/50 dark:text-cream/50 w-4 h-4" />
+                                    <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-charcoal/50 dark:text-cream/50 w-4 h-4" strokeWidth={3} />
                                     <input
                                         type="text"
                                         placeholder="Search sessions..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md outline-none focus:ring-0 text-charcoal dark:text-cream bg-white dark:bg-navy-light"
+                                        className="w-full pl-10 pr-4 py-2 border-2 border-charcoal dark:border-cream/40 rounded-sm outline-none focus:ring-0 text-charcoal dark:text-cream bg-cream dark:bg-navy text-xs font-mono font-bold focus:shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-all"
                                     />
                                 </div>
                             </div>
@@ -594,7 +367,7 @@ const PhaseSessionLibrary = () => {
                                 <select
                                     value={selectedTopic}
                                     onChange={(e) => setSelectedTopic(e.target.value)}
-                                    className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md outline-none focus:ring-0 text-charcoal dark:text-cream bg-white dark:bg-navy-light cursor-pointer"
+                                    className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-sm outline-none focus:ring-0 text-charcoal dark:text-cream bg-cream dark:bg-navy text-xs font-mono font-bold cursor-pointer focus:shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-all"
                                 >
                                     <option value="all">All Topics</option>
                                     {currentPhase.topics.map(topic => (
@@ -608,12 +381,12 @@ const PhaseSessionLibrary = () => {
                                 <select
                                     value={selectedDifficulty}
                                     onChange={(e) => setSelectedDifficulty(e.target.value)}
-                                    className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md outline-none focus:ring-0 text-charcoal dark:text-cream bg-white dark:bg-navy-light cursor-pointer"
+                                    className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-sm outline-none focus:ring-0 text-charcoal dark:text-cream bg-cream dark:bg-navy text-xs font-mono font-bold cursor-pointer focus:shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-all"
                                 >
                                     <option value="all">All Levels</option>
-                                    <option value="easy">Easy (0-2 years)</option>
-                                    <option value="medium">Medium (3-5 years)</option>
-                                    <option value="hard">Hard (5+ years)</option>
+                                    <option value="easy">Easy (0-2y)</option>
+                                    <option value="medium">Medium (3-5y)</option>
+                                    <option value="hard">Hard (5y+)</option>
                                 </select>
                             </div>
 
@@ -622,7 +395,7 @@ const PhaseSessionLibrary = () => {
                                 <select
                                     value={selectedType}
                                     onChange={(e) => setSelectedType(e.target.value)}
-                                    className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md outline-none focus:ring-0 text-charcoal dark:text-cream bg-white dark:bg-navy-light cursor-pointer"
+                                    className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-sm outline-none focus:ring-0 text-charcoal dark:text-cream bg-cream dark:bg-navy text-xs font-mono font-bold cursor-pointer focus:shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-all"
                                 >
                                     <option value="all">All Types</option>
                                     <option value="coding">Coding</option>
@@ -636,7 +409,7 @@ const PhaseSessionLibrary = () => {
                                 <select
                                     value={selectedStatus}
                                     onChange={(e) => setSelectedStatus(e.target.value)}
-                                    className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md outline-none focus:ring-0 text-charcoal dark:text-cream bg-white dark:bg-navy-light cursor-pointer"
+                                    className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-sm outline-none focus:ring-0 text-charcoal dark:text-cream bg-cream dark:bg-navy text-xs font-mono font-bold cursor-pointer focus:shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-all"
                                 >
                                     <option value="all">All Status</option>
                                     <option value="recommended">Recommended</option>
@@ -650,22 +423,22 @@ const PhaseSessionLibrary = () => {
 
                     {/* Sessions Grid */}
                     {filteredSessions.length === 0 ? (
-                        <div className="text-center py-20">
-                            <div className="w-20 h-20 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-6">
-                                <LuBookOpen className="w-10 h-10 text-white dark:text-navy" />
+                        <div className="text-center py-20 bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 rounded-sm shadow-[8px_8px_0px_0px_var(--color-shadow)] max-w-xl mx-auto">
+                            <div className="w-16 h-16 bg-charcoal dark:bg-cream rounded-sm flex items-center justify-center mx-auto mb-6 shadow-[3px_3px_0px_0px_var(--color-shadow)]">
+                                <LuBookOpen className="w-8 h-8 text-white dark:text-navy" strokeWidth={2.5} />
                             </div>
-                            <h3 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4">No Sessions Found</h3>
-                            <p className="text-charcoal/80 dark:text-cream/80 mb-6 font-bold">
+                            <h3 className="text-2xl font-display font-bold text-charcoal dark:text-cream uppercase tracking-wide">No Sessions Found</h3>
+                            <p className="text-charcoal/60 dark:text-cream/60 mb-6 font-body text-sm max-w-xs mx-auto leading-relaxed">
                                 {allSessions.length === 0 
-                                    ? "No sessions available for this phase yet. Create some sessions to get started!"
-                                    : "No sessions match your current filters. Try adjusting your search criteria."
+                                    ? "No sessions available for this phase yet."
+                                    : "No sessions match your active filters. Try adjusting search queries."
                                 }
                             </p>
                             <button
                                 onClick={() => navigate('/dashboard')}
-                                className="px-6 py-3 bg-charcoal dark:bg-cream text-white dark:text-navy font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
+                                className="px-5 py-2.5 bg-charcoal text-white dark:bg-cream dark:text-navy font-bold uppercase tracking-widest text-xs border-3 border-charcoal dark:border-cream/40 rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
                             >
-                                Create New Session
+                                Create Custom Session
                             </button>
                         </div>
                     ) : (
@@ -673,149 +446,145 @@ const PhaseSessionLibrary = () => {
                             {filteredSessions.map((session) => (
                                 <div
                                     key={session._id}
-                                    className="bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md p-6 hover:-translate-y-1 transition-all duration-300 group flex flex-col"
-                                    style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}
-                                    onMouseEnter={(e) => e.currentTarget.style.boxShadow = '6px 6px 0px 0px var(--color-shadow)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
+                                    className="bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 rounded-sm p-6 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_var(--color-shadow)] shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all duration-300 group flex flex-col justify-between min-h-[300px]"
                                 >
-                                    {/* Session Header */}
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md">
-                                                {getTypeIcon(session.topicsToFocus)}
+                                    <div>
+                                        {/* Session Header */}
+                                        <div className="flex items-start justify-between gap-3 mb-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-9 h-9 border-2 border-charcoal dark:border-cream/40 bg-cream dark:bg-navy rounded-sm flex items-center justify-center shadow-[2px_2px_0px_0px_var(--color-shadow)] flex-shrink-0">
+                                                    {getTypeIcon(session.topicsToFocus)}
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <h3 className="font-display font-bold text-charcoal dark:text-cream group-hover:text-charcoal/80 dark:group-hover:text-cream/80 transition-colors truncate">
+                                                        {session.role}
+                                                    </h3>
+                                                    <p className="text-xs font-mono font-bold text-charcoal/50 dark:text-cream/50 mt-0.5">
+                                                        {session.experience} years experience
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h3 className="font-display font-bold text-charcoal dark:text-cream group-hover:text-charcoal/80 dark:group-hover:text-cream/80 transition-colors">
-                                                    {session.role}
-                                                </h3>
-                                                <p className="text-sm text-charcoal/80 dark:text-cream/80 font-bold">
-                                                    {session.experience} years experience
-                                                </p>
+                                            <div className="flex-shrink-0 mt-1">
+                                                {getStatusIcon(session.completionPercentage)}
                                             </div>
                                         </div>
-                                        {getStatusIcon(session.completionPercentage)}
-                                    </div>
 
-                                    {/* Topics */}
-                                    <div className="mb-4">
-                                        <div className="flex flex-wrap gap-2">
-                                            {session.topicsToFocus ? (
-                                                (() => {
-                                                    // Handle both string and array formats
-                                                    const topics = Array.isArray(session.topicsToFocus) 
-                                                        ? session.topicsToFocus 
-                                                        : session.topicsToFocus.split(',').map(t => t.trim()).filter(t => t);
-                                                    
-                                                    return topics.length > 0 ? (
-                                                        <>
-                                                            {topics.slice(0, 3).map((topic, index) => (
-                                                                <span
-                                                                    key={index}
-                                                                    className="px-2 py-1 bg-cream dark:bg-navy border border-charcoal dark:border-cream/40 text-charcoal dark:text-cream text-xs font-bold rounded-sm"
-                                                                >
-                                                                    {topic}
-                                                                </span>
-                                                            ))}
-                                                            {topics.length > 3 && (
-                                                                <span className="px-2 py-1 bg-cream dark:bg-navy border border-charcoal/20 dark:border-cream/20 text-charcoal/80 dark:text-cream/80 text-xs font-bold rounded-sm">
-                                                                    +{topics.length - 3} more
-                                                                </span>
-                                                            )}
-                                                        </>
-                                                    ) : (
-                                                        <span className="px-2 py-1 bg-cream dark:bg-navy border border-charcoal/20 dark:border-cream/20 text-charcoal/80 dark:text-cream/80 text-xs font-bold rounded-sm">
-                                                            General Practice
-                                                        </span>
-                                                    );
-                                                })()
-                                            ) : (
-                                                <span className="px-2 py-1 bg-cream dark:bg-navy border border-charcoal/20 dark:border-cream/20 text-charcoal/80 dark:text-cream/80 text-xs font-bold rounded-sm">
-                                                    General Practice
-                                                </span>
-                                            )}
+                                        {/* Topics */}
+                                        <div className="mb-4">
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {session.topicsToFocus ? (
+                                                    (() => {
+                                                        const topics = Array.isArray(session.topicsToFocus) 
+                                                            ? session.topicsToFocus 
+                                                            : session.topicsToFocus.split(',').map(t => t.trim()).filter(t => t);
+                                                        
+                                                        return topics.length > 0 ? (
+                                                            <>
+                                                                {topics.slice(0, 2).map((topic, index) => (
+                                                                    <span
+                                                                        key={index}
+                                                                        className="px-2 py-0.5 bg-cream dark:bg-navy border-2 border-charcoal/15 dark:border-cream/20 text-charcoal dark:text-cream text-[10px] font-mono font-bold rounded-sm"
+                                                                    >
+                                                                        {topic}
+                                                                    </span>
+                                                                ))}
+                                                                {topics.length > 2 && (
+                                                                    <span className="px-2 py-0.5 bg-cream dark:bg-navy border-2 border-charcoal/15 dark:border-cream/20 text-charcoal/50 dark:text-cream/50 text-[10px] font-mono font-bold rounded-sm">
+                                                                        +{topics.length - 2}
+                                                                    </span>
+                                                                )}
+                                                            </>
+                                                        ) : (
+                                                            <span className="px-2 py-0.5 bg-cream dark:bg-navy border border-charcoal/20 dark:border-cream/20 text-charcoal/80 dark:text-cream/80 text-[10px] font-mono font-bold rounded-sm">
+                                                                General
+                                                            </span>
+                                                        );
+                                                    })()
+                                                ) : (
+                                                    <span className="px-2 py-0.5 bg-cream dark:bg-navy border border-charcoal/20 dark:border-cream/20 text-charcoal/80 dark:text-cream/80 text-[10px] font-mono font-bold rounded-sm">
+                                                        General
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Stats */}
+                                        <div className="grid grid-cols-2 gap-3 mb-4">
+                                            <div className="text-center p-2.5 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-sm shadow-[2px_2px_0px_0px_var(--color-shadow)]">
+                                                <LuTarget className="w-3.5 h-3.5 text-charcoal/50 dark:text-cream/50 mx-auto mb-1" />
+                                                <div className="text-sm font-mono font-bold text-charcoal dark:text-cream">{session.questions?.length || 0}</div>
+                                                <div className="text-[9px] text-charcoal/50 dark:text-cream/50 font-bold uppercase tracking-wider font-mono">Questions</div>
+                                            </div>
+                                            <div className="text-center p-2.5 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-sm shadow-[2px_2px_0px_0px_var(--color-shadow)]">
+                                                <LuTrendingUp className="w-3.5 h-3.5 text-charcoal/50 dark:text-cream/50 mx-auto mb-1" />
+                                                <div className="text-sm font-mono font-bold text-charcoal dark:text-cream">{session.completionPercentage || 0}%</div>
+                                                <div className="text-[9px] text-charcoal/50 dark:text-cream/50 font-bold uppercase tracking-wider font-mono">Complete</div>
+                                            </div>
+                                        </div>
+
+                                        {/* Badges */}
+                                        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                                            <div className="flex items-center gap-1.5">
+                                                {getDifficultyBadge(session.experience)}
+                                                {session.isTemplate && (
+                                                    <span className="px-2.5 py-0.5 border-2 border-charcoal bg-charcoal text-white dark:border-cream dark:bg-cream dark:text-navy text-[10px] font-mono font-bold uppercase tracking-wider rounded-sm">
+                                                        Template
+                                                    </span>
+                                                )}
+                                                {session.isRelevant && !session.isTemplate && (
+                                                    <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider rounded-sm border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream">
+                                                        {session.isRoadmapSession ? 'Roadmap' : 'Custom'}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            {getStatusBadge(session.completionPercentage)}
                                         </div>
                                     </div>
 
-                                    {/* Stats */}
-                                    <div className="grid grid-cols-2 gap-4 mb-4">
-                                        <div className="text-center p-3 bg-white dark:bg-navy-light border-2 border-charcoal/20 dark:border-cream/20 rounded-md">
-                                            <LuTarget className="w-4 h-4 text-charcoal dark:text-cream mx-auto mb-1" />
-                                            <div className="text-sm font-bold text-charcoal dark:text-cream">{session.questions?.length || 0}</div>
-                                            <div className="text-xs text-charcoal/80 dark:text-cream/80 font-bold">Questions</div>
-                                        </div>
-                                        <div className="text-center p-3 bg-white dark:bg-navy-light border-2 border-charcoal/20 dark:border-cream/20 rounded-md">
-                                            <LuTrendingUp className="w-4 h-4 text-charcoal dark:text-cream mx-auto mb-1" />
-                                            <div className="text-sm font-bold text-charcoal dark:text-cream">{session.completionPercentage || 0}%</div>
-                                            <div className="text-xs text-charcoal/80 dark:text-cream/80 font-bold">Complete</div>
-                                        </div>
-                                    </div>
-
-                                    {/* Badges */}
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className="flex items-center gap-2">
-                                            {getDifficultyBadge(session.experience)}
-                                            {session.isTemplate && (
-                                                <span className="px-2 py-1 bg-charcoal dark:bg-cream text-white dark:text-navy text-xs font-bold rounded-sm">
-                                                    Template
-                                                </span>
-                                            )}
-                                            {session.isRelevant && !session.isTemplate && (
-                                                <span className={`px-2 py-1 text-xs font-bold rounded-sm border border-charcoal dark:border-cream/40 ${
-                                                    session.isRoadmapSession 
-                                                        ? 'bg-cream dark:bg-navy text-charcoal dark:text-cream' 
-                                                        : 'bg-white dark:bg-navy-light text-charcoal dark:text-cream'
-                                                }`}>
-                                                    {session.isRoadmapSession ? 'Roadmap Session' : 'Your Session'}
-                                                </span>
-                                            )}
-                                        </div>
-                                        {getStatusBadge(session.completionPercentage)}
-                                    </div>
-
-                                    {/* Description for templates or Created Date for user sessions */}
-                                    {session.isTemplate ? (
-                                        <div className="mb-4 flex-grow">
-                                            <p className="text-sm text-charcoal/80 dark:text-cream/80 font-bold">
+                                    <div>
+                                        {/* Description for templates or Created Date for user sessions */}
+                                        {session.isTemplate ? (
+                                            <div className="mb-4 text-xs text-charcoal/70 dark:text-cream/70 font-bold leading-normal">
                                                 {session.description}
-                                            </p>
-                                        </div>
-                                    ) : (
-                                        <div className="flex items-center gap-2 text-xs text-charcoal/50 dark:text-cream/50 mb-4 font-bold flex-grow">
-                                            <LuCalendar className="w-3 h-3" />
-                                            <span>Created {new Date(session.createdAt).toLocaleDateString()}</span>
-                                        </div>
-                                    )}
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center gap-2 text-[10px] font-mono font-bold text-charcoal/50 dark:text-cream/50 mb-4 uppercase tracking-wider">
+                                                <LuCalendar className="w-3.5 h-3.5" />
+                                                <span>Created {new Date(session.createdAt).toLocaleDateString()}</span>
+                                            </div>
+                                        )}
 
-                                    {/* Action Button */}
-                                    {session.isTemplate ? (
-                                        <button
-                                            onClick={() => handleStartTemplate(session)}
-                                            className={`w-full flex items-center justify-center gap-2 px-4 py-3 font-bold uppercase tracking-wider text-xs rounded-md text-white dark:text-navy bg-charcoal dark:bg-cream border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all duration-300 mt-auto cursor-pointer`}
-                                        >
-                                            <LuPlay className="w-4 h-4" />
-                                            <span>Start Session</span>
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={() => {
-                                                // Navigate to roadmap session practice for roadmap sessions, regular interview prep for others
-                                                if (session.isRoadmapSession) {
-                                                    navigate(`/roadmap-session/${session.sessionId}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`);
-                                                } else {
-                                                    navigate(`/interview-prep/${session.sessionId}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`);
-                                                }
-                                            }}
-                                            className={`w-full flex items-center justify-center gap-2 px-4 py-3 font-semibold rounded-2xl text-white bg-gradient-to-r ${getPhaseColor(currentPhase.color)} hover:shadow-lg transition-all duration-300 transform group-hover:scale-105`}
-                                        >
-                                            <LuPlay className="w-4 h-4" />
-                                            <span>
-                                                {session.completionPercentage >= 100 
-                                                    ? 'Review Session' 
-                                                    : 'Continue Session'
-                                                }
-                                            </span>
-                                        </button>
-                                    )}
+                                        {/* Action Button */}
+                                        {session.isTemplate ? (
+                                            <button
+                                                onClick={() => handleStartTemplate(session)}
+                                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-charcoal text-white dark:bg-cream dark:text-navy border-3 border-charcoal dark:border-cream/40 font-mono font-bold uppercase tracking-widest text-[10px] rounded-sm hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all duration-200 cursor-pointer"
+                                            >
+                                                <LuPlay className="w-3.5 h-3.5" strokeWidth={3} />
+                                                <span>Start Session</span>
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={() => {
+                                                    // Navigate to roadmap session practice for roadmap sessions, regular interview prep for others
+                                                    if (session.isRoadmapSession) {
+                                                        navigate(`/roadmap-session/${session.sessionId}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`);
+                                                    } else {
+                                                        navigate(`/interview-prep/${session.sessionId}?fromPhase=${phaseId}&role=${encodeURIComponent(role)}`);
+                                                    }
+                                                }}
+                                                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white dark:bg-navy-light text-charcoal dark:text-cream border-3 border-charcoal dark:border-cream/40 font-mono font-bold uppercase tracking-widest text-[10px] rounded-sm hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all duration-200 cursor-pointer"
+                                            >
+                                                <LuPlay className="w-3.5 h-3.5" strokeWidth={3} />
+                                                <span>
+                                                    {session.completionPercentage >= 100 
+                                                        ? 'Review Practice' 
+                                                        : 'Continue Practice'
+                                                    }
+                                                </span>
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             ))}
                         </div>
