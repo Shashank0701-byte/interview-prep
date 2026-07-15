@@ -25,16 +25,16 @@ const AIResponsePreview = ({ content }) => {
                                     language={language}
                                 />
                             ) : (
-                                <code className='px-1 py-0.5 bg-charcoal/5 dark:bg-cream/5 border-2 border-charcoal/10 dark:border-cream/10 rounded-sm font-bold text-charcoal dark:text-cream text-sm' {...props}>
+                                <code className='px-1.5 py-0.5 bg-charcoal/10 dark:bg-cream/10 border-2 border-charcoal/20 dark:border-cream/20 rounded-sm font-bold font-mono text-charcoal dark:text-cream text-sm' {...props}>
                                     {children}
                                 </code>
                             );
                         },
                         p({ children }) {
-                            return <p className='mb-4 leading-5'>{children}</p>; // tighter spacing
+                            return <p className='mb-4 leading-6'>{children}</p>;
                         },
                         strong({ children }) {
-                            return <strong>{children}</strong>;
+                            return <strong className='font-bold text-charcoal dark:text-cream'>{children}</strong>;
                         },
                         em({ children }) {
                             return <em>{children}</em>;
@@ -49,27 +49,27 @@ const AIResponsePreview = ({ content }) => {
                             return <li className='mb-1'>{children}</li>;
                         },
                         blockquote({ children }) {
-                            return <blockquote className='border-l-4 border-charcoal dark:border-cream/40 pl-4 italic my-4 text-charcoal/80 dark:text-cream/80'>{children}</blockquote>;
+                            return <blockquote className='border-l-4 border-charcoal dark:border-cream/40 pl-4 italic my-4 text-charcoal/80 dark:text-cream/80 bg-cream/50 dark:bg-navy/50 py-2'>{children}</blockquote>;
                         },
                         h1({ children }) {
-                            return <h1 className='text-2xl font-bold mt-6 mb-4'>{children}</h1>;
+                            return <h1 className='text-2xl font-display font-bold mt-6 mb-4 text-charcoal dark:text-cream'>{children}</h1>;
                         },
                         h2({ children }) {
-                            return <h2 className='text-xl font-bold mt-6 mb-3'>{children}</h2>;
+                            return <h2 className='text-xl font-display font-bold mt-6 mb-3 text-charcoal dark:text-cream'>{children}</h2>;
                         },
                         h3({ children }) {
-                            return <h3 className='text-lg font-bold mt-5 mb-2'>{children}</h3>;
+                            return <h3 className='text-lg font-display font-bold mt-5 mb-2 text-charcoal dark:text-cream'>{children}</h3>;
                         },
                         h4({ children }) {
-                            return <h4 className='text-base font-display font-bold mt-4 mb-2'>{children}</h4>;
+                            return <h4 className='text-base font-display font-bold mt-4 mb-2 text-charcoal dark:text-cream'>{children}</h4>;
                         },
                         a({ children, href }) {
-                            return <a href={href} className='text-charcoal dark:text-cream font-bold hover:underline'>{children}</a>;
+                            return <a href={href} className='text-charcoal dark:text-cream font-bold underline decoration-2 underline-offset-2 hover:decoration-crimson transition-colors'>{children}</a>;
                         },
                         table({ children }) {
                             return (
                                 <div className='overflow-x-auto my-4'>
-                                    <table className='min-w-full divide-y-2 divide-charcoal/20 dark:divide-cream/20 border-2 border-charcoal dark:border-cream/40'>
+                                    <table className='min-w-full divide-y-2 divide-charcoal/30 dark:divide-cream/30 border-2 border-charcoal dark:border-cream/40'>
                                         {children}
                                     </table>
                                 </div>
@@ -85,16 +85,16 @@ const AIResponsePreview = ({ content }) => {
                             return <tr>{children}</tr>;
                         },
                         th({ children }) {
-                            return <th className='px-3 py-2 text-left text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider'>{children}</th>;
+                            return <th className='px-3 py-2 text-left text-xs font-bold font-mono text-charcoal dark:text-cream uppercase tracking-widest'>{children}</th>;
                         },
                         td({ children }) {
                             return <td className='px-3 py-2 whitespace-nowrap text-sm text-charcoal/80 dark:text-cream/80'>{children}</td>;
                         },
                         hr() {
-                            return <hr className='my-6 border-t-2 border-charcoal/10 dark:border-cream/10' />;
+                            return <hr className='my-6 border-t-2 border-charcoal/20 dark:border-cream/20' />;
                         },
                         img({ src, alt }) {
-                            return <img src={src} alt={alt} className='my-4 max-w-full rounded' />;
+                            return <img src={src} alt={alt} className='my-4 max-w-full rounded-sm border-2 border-charcoal dark:border-cream/40' />;
                         }
                     }}
                 >
@@ -116,27 +116,27 @@ function CodeBlock({ code, language }) {
     };
 
     return (
-        <div className='relative my-6 rounded-sm overflow-hidden bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40' style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}>
-            <div className='flex items-center justify-between px-4 py-2 bg-cream dark:bg-navy border-b-2 border-charcoal dark:border-cream/40'>
+        <div className='relative my-6 rounded-sm overflow-hidden bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 shadow-[6px_6px_0px_0px_var(--color-shadow)]'>
+            <div className='flex items-center justify-between px-4 py-2.5 bg-charcoal dark:bg-[#0a1118] border-b-4 border-charcoal dark:border-cream/40'>
                 <div className='flex items-center space-x-2'>
-                    <LuCode size={16} className='text-charcoal dark:text-cream' />
-                    <span className='text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider'>
+                    <LuCode size={14} className='text-cream/70' strokeWidth={3} />
+                    <span className='text-xs font-bold font-mono text-cream/70 uppercase tracking-widest'>
                         {language || 'Code'}
                     </span>
                 </div>
                 <button
                     onClick={copyCode}
-                    className='text-charcoal/80 dark:text-cream/80 hover:text-charcoal dark:hover:text-cream focus:outline-none relative group cursor-pointer'
+                    className='text-cream/60 hover:text-cream focus:outline-none relative group cursor-pointer transition-colors'
                     aria-label='Copy code'
                 >
                     {copied ? (
-                        <LuCheck size={16} className='text-green-600' />
+                        <LuCheck size={14} className='text-green-400' strokeWidth={3} />
                     ) : (
-                        <LuCopy size={16} />
+                        <LuCopy size={14} strokeWidth={3} />
                     )}
                     {copied && (
-                        <span className='absolute -top-8 right-0 bg-charcoal text-white font-bold text-xs rounded-sm px-2 py-1 opacity-100 transition'>
-                            Copied!
+                        <span className='absolute -top-8 right-0 bg-charcoal text-cream font-bold font-mono text-[10px] rounded-sm px-2 py-1 border border-cream/20 uppercase tracking-wider'>
+                            Copied
                         </span>
                     )}
                 </button>

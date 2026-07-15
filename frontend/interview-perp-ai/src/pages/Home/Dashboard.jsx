@@ -180,36 +180,36 @@ const Dashboard = () => {
         { to: '/live-coding', label: 'Live Coding', icon: 'M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', badge: 'LIVE' },
         { to: '/salary-negotiation', label: 'Salary Negotiation', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', badge: 'NEW' },
         { to: '/study-rooms', label: 'Study Rooms', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', badge: 'NEW' },
-        { to: '/ai-interview-coach', label: 'AI Interview Coach', icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z', badge: 'AI' },
+        { to: '/ai-interview-coach', label: 'AI Coach', icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z', badge: 'AI' },
     ];
 
     return (
         <DashboardLayout>
             <div className='min-h-screen bg-cream dark:bg-navy transition-colors duration-300'>
                 {/* Hero Section */}
-                <div className="border-b-2 border-charcoal/10 dark:border-cream/10 transition-colors duration-300">
+                <div className="transition-colors duration-300">
                     <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-10 md:py-12">
                         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 sm:gap-8">
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display text-charcoal dark:text-cream leading-tight">
-                                        My Interview Sessions
+                                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold text-charcoal dark:text-cream leading-tight uppercase tracking-wider">
+                                        My Sessions
                                     </h1>
                                     <p className="text-base sm:text-lg text-charcoal/50 dark:text-cream/50 max-w-2xl transition-colors duration-300">
                                         Track your progress, practice with AI-generated questions, and ace your next interview
                                     </p>
                                 </div>
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 text-sm">
-                                    <div className="flex items-center gap-3 bg-white dark:bg-navy-light border-2 border-charcoal/10 dark:border-cream/10 px-4 py-2 rounded-md transition-colors duration-300">
-                                        <div className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full"></div>
-                                        <span className="font-semibold text-charcoal/70 dark:text-cream/70 text-xs uppercase tracking-[0.1em]">
+                                    <div className="flex items-center gap-3 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 px-4 py-2.5 rounded-sm transition-colors duration-300 shadow-[3px_3px_0px_0px_var(--color-shadow)]">
+                                        <div className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full animate-pulse"></div>
+                                        <span className="font-semibold text-charcoal/70 dark:text-cream/70 text-xs font-mono uppercase tracking-[0.1em]">
                                             {getFilterStats().filtered} of {getFilterStats().total} sessions
                                         </span>
                                     </div>
                                     {getFilterStats().filtered !== getFilterStats().total && (
-                                        <div className="flex items-center gap-2 bg-white dark:bg-navy-light border-2 border-crimson/30 px-4 py-2 rounded-md transition-colors duration-300">
-                                            <div className="w-2 h-2 bg-crimson rounded-full"></div>
-                                            <span className="text-crimson font-semibold text-xs uppercase tracking-[0.1em]">
+                                        <div className="flex items-center gap-2 bg-white dark:bg-navy-light border-3 border-crimson px-4 py-2.5 rounded-sm transition-colors duration-300 shadow-[3px_3px_0px_0px_#DC2626]">
+                                            <div className="w-2 h-2 bg-crimson rounded-full animate-ping"></div>
+                                            <span className="text-crimson font-semibold text-xs font-mono uppercase tracking-[0.1em]">
                                                 Filtered view active
                                             </span>
                                         </div>
@@ -217,20 +217,22 @@ const Dashboard = () => {
                                 </div>
                             </div>
                             
-                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                                 {reviewCount > 0 && (
                                     <Link 
                                         to="/review" 
-                                        className="bg-transparent border-2 border-charcoal dark:border-cream/40 flex flex-col items-center justify-center gap-3 px-4 py-5 min-h-[110px] relative rounded-md transition-all duration-200 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
+                                        className="bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 flex flex-col items-center justify-center gap-3 px-4 py-5 min-h-[110px] relative rounded-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_var(--color-shadow)] shadow-[4px_4px_0px_0px_var(--color-shadow)]"
                                     >
-                                        <div className="absolute top-2 right-2 w-2 h-2 bg-crimson rounded-full"></div>
-                                        <div className="w-9 h-9 border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center">
+                                        <div className="absolute top-2 right-2 bg-crimson text-white text-[9px] px-1.5 py-0.5 rounded-sm font-mono font-bold uppercase tracking-wider border border-charcoal">
+                                            {reviewCount}
+                                        </div>
+                                        <div className="w-9 h-9 border-2 border-charcoal dark:border-cream/40 rounded-sm flex items-center justify-center bg-cream dark:bg-navy">
                                             <svg className="w-4 h-4 text-charcoal dark:text-cream" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </div>
                                         <span className="text-center text-xs font-bold uppercase tracking-[0.08em] text-charcoal dark:text-cream">
-                                            Review ({reviewCount})
+                                            Review Queue
                                         </span>
                                     </Link>
                                 )}
@@ -238,16 +240,16 @@ const Dashboard = () => {
                                     <Link
                                         key={link.to}
                                         to={link.to}
-                                        className="bg-transparent border-2 border-charcoal dark:border-cream/40 flex flex-col items-center justify-center gap-3 px-4 py-5 min-h-[110px] relative rounded-md transition-all duration-200 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
+                                        className="bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 flex flex-col items-center justify-center gap-3 px-4 py-5 min-h-[110px] relative rounded-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_var(--color-shadow)] shadow-[4px_4px_0px_0px_var(--color-shadow)]"
                                     >
                                         {link.badge && (
-                                            <div className="absolute top-2 right-2 bg-charcoal dark:bg-cream text-white dark:text-navy text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm">
+                                            <div className="absolute top-2 right-2 bg-charcoal dark:bg-cream text-white dark:text-navy text-[9px] font-mono font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm border border-charcoal dark:border-cream/20">
                                                 {link.badge}
                                             </div>
                                         )}
-                                        <div className="w-9 h-9 border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center">
+                                        <div className="w-9 h-9 border-2 border-charcoal dark:border-cream/40 rounded-sm flex items-center justify-center bg-cream dark:bg-navy">
                                             <svg className="w-4 h-4 text-charcoal dark:text-cream" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={link.icon} />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d={link.icon} />
                                             </svg>
                                         </div>
                                         <span className="text-center text-xs font-bold uppercase tracking-[0.08em] text-charcoal dark:text-cream">{link.label}</span>
@@ -256,14 +258,14 @@ const Dashboard = () => {
                                 
                                 <button
                                     onClick={() => setOpenCreateModal(true)}
-                                    className="flex flex-col items-center justify-center gap-3 bg-transparent border-2 border-dashed border-charcoal/30 dark:border-cream/20 hover:border-charcoal dark:hover:border-cream/60 px-4 py-5 rounded-md transition-all duration-200 min-h-[110px] group hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
+                                    className="flex flex-col items-center justify-center gap-3 bg-white dark:bg-navy-light border-4 border-dashed border-charcoal/40 dark:border-cream/30 hover:border-charcoal dark:hover:border-cream px-4 py-5 rounded-sm transition-all duration-200 min-h-[110px] group hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_var(--color-shadow)] shadow-[4px_4px_0px_0px_var(--color-shadow)] cursor-pointer"
                                 >
-                                    <div className="w-9 h-9 border-2 border-charcoal/30 dark:border-cream/20 group-hover:border-charcoal dark:group-hover:border-cream/60 rounded-md flex items-center justify-center transition-colors">
+                                    <div className="w-9 h-9 border-2 border-charcoal/30 dark:border-cream/20 group-hover:border-charcoal dark:group-hover:border-cream rounded-sm flex items-center justify-center transition-colors bg-cream dark:bg-navy">
                                         <svg className="w-4 h-4 text-charcoal/40 dark:text-cream/40 group-hover:text-charcoal dark:group-hover:text-cream group-hover:rotate-90 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
                                         </svg>
                                     </div>
-                                    <span className="text-center text-xs font-bold uppercase tracking-[0.08em] text-charcoal/40 dark:text-cream/40 group-hover:text-charcoal dark:group-hover:text-cream transition-colors">Create New Session</span>
+                                    <span className="text-center text-xs font-bold uppercase tracking-[0.08em] text-charcoal/40 dark:text-cream/40 group-hover:text-charcoal dark:group-hover:text-cream transition-colors">Create Session</span>
                                 </button>
                             </div>
                         </div>
@@ -271,15 +273,15 @@ const Dashboard = () => {
                 </div>
 
                 {/* Filter Section */}
-                <div className="container mx-auto px-4 md:px-6 py-2">
-                    <div className="mb-8 border-b-2 border-charcoal/10 dark:border-cream/10 pb-6 pt-2">
+                <div className="container mx-auto px-4 md:px-6 py-4">
+                    <div className="bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 rounded-sm shadow-[4px_4px_0px_0px_var(--color-shadow)] p-6 mb-8">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-8 h-8 bg-charcoal dark:bg-cream rounded-md flex items-center justify-center">
+                            <div className="w-8 h-8 bg-charcoal dark:bg-cream rounded-sm flex items-center justify-center border-2 border-charcoal dark:border-cream">
                                 <svg className="w-4 h-4 text-white dark:text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
                                 </svg>
                             </div>
-                            <h2 className="text-xl font-display text-charcoal dark:text-cream">Filter & Search Sessions</h2>
+                            <h2 className="text-2xl font-display font-bold uppercase tracking-wider text-charcoal dark:text-cream">Filter & Search</h2>
                         </div>
                         <SessionFilter 
                             onFilterChange={updateFilters} 
@@ -287,7 +289,7 @@ const Dashboard = () => {
                         />
                         
                         {/* Color Legend */}
-                        <div className="mt-6 pt-6 border-t-2 border-charcoal/10 dark:border-cream/10">
+                        <div className="mt-6 pt-6 border-t-2 border-charcoal/20 dark:border-cream/20">
                             <h3 className="section-label mb-3">Session Progress</h3>
                             <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
                                 {[
@@ -298,8 +300,8 @@ const Dashboard = () => {
                                     { label: 'Completed', color: '#1A1A1A' },
                                 ].map((item) => (
                                     <div key={item.label} className="flex items-center gap-2">
-                                        <div className="w-4 h-4 rounded-sm border border-charcoal/20 dark:border-cream/20" style={{background: item.color}}></div>
-                                        <span className="text-charcoal/50 dark:text-cream/50 font-medium uppercase tracking-wider text-[10px]">{item.label}</span>
+                                        <div className="w-4 h-4 rounded-sm border-2 border-charcoal dark:border-cream/40" style={{background: item.color}}></div>
+                                        <span className="text-charcoal/50 dark:text-cream/50 font-mono font-medium uppercase tracking-wider text-[10px]">{item.label}</span>
                                     </div>
                                 ))}
                             </div>
@@ -314,11 +316,11 @@ const Dashboard = () => {
                             <div className="col-span-full flex items-center justify-center py-24">
                                 <div className="text-center space-y-6">
                                     <div className="relative">
-                                        <div className="animate-spin rounded-full h-12 w-12 border-2 border-charcoal/10 dark:border-cream/10 border-t-charcoal dark:border-t-cream mx-auto"></div>
+                                        <div className="animate-spin rounded-full h-12 w-12 border-3 border-charcoal/20 dark:border-cream/20 border-t-charcoal dark:border-t-cream mx-auto"></div>
                                     </div>
                                     <div className="space-y-2">
                                         <p className="text-lg font-display text-charcoal dark:text-cream">Loading your sessions...</p>
-                                        <p className="text-sm text-charcoal/40 dark:text-cream/40 uppercase tracking-wider">Preparing your dashboard</p>
+                                        <p className="text-sm text-charcoal/40 dark:text-cream/40 uppercase tracking-wider font-mono">Preparing your dashboard</p>
                                     </div>
                                 </div>
                             </div>
@@ -346,14 +348,14 @@ const Dashboard = () => {
                     ) : getFilterStats().total > 0 ? (
                         <div className="col-span-full flex items-center justify-center py-24">
                             <div className="text-center space-y-6 max-w-lg">
-                                <div className="w-20 h-20 mx-auto border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center">
+                                <div className="w-20 h-20 mx-auto border-3 border-charcoal dark:border-cream/40 rounded-sm bg-cream dark:bg-navy-light flex items-center justify-center shadow-[4px_4px_0px_0px_var(--color-shadow)]">
                                     <svg className="w-10 h-10 text-charcoal/40 dark:text-cream/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
                                 </div>
                                 <div className="space-y-3">
-                                    <h3 className="text-2xl font-display text-charcoal dark:text-cream">No matching sessions found</h3>
-                                    <p className="text-charcoal/50 dark:text-cream/50">Try adjusting your search criteria or explore different filter options.</p>
+                                    <h3 className="text-2xl font-display font-bold text-charcoal dark:text-cream uppercase tracking-wide">No sessions found</h3>
+                                    <p className="text-charcoal/50 dark:text-cream/50 font-body">Try adjusting your search criteria or explore different filter options.</p>
                                     <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
                                         <button 
                                             onClick={() => updateFilters({})}
@@ -368,41 +370,41 @@ const Dashboard = () => {
                     ) : (
                         <div className="col-span-full flex items-center justify-center py-24">
                             <div className="text-center space-y-6 max-w-xl">
-                                <div className="w-24 h-24 mx-auto border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center">
+                                <div className="w-24 h-24 mx-auto border-3 border-charcoal dark:border-cream/40 rounded-sm bg-cream dark:bg-navy-light flex items-center justify-center shadow-[4px_4px_0px_0px_var(--color-shadow)]">
                                     <svg className="w-12 h-12 text-charcoal/30 dark:text-cream/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                     </svg>
                                 </div>
                                 <div className="space-y-3">
-                                    <h3 className="text-3xl font-display text-charcoal dark:text-cream">
+                                    <h3 className="text-3xl font-display font-bold text-charcoal dark:text-cream uppercase tracking-wide">
                                         Ready to ace your interviews?
                                     </h3>
-                                    <p className="text-charcoal/50 dark:text-cream/50">
+                                    <p className="text-charcoal/50 dark:text-cream/50 font-body">
                                         Create your first interview session and get AI-generated questions tailored to your role.
                                     </p>
                                 </div>
                                 
-                                <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+                                <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                                     <button
                                         onClick={() => setOpenCreateModal(true)}
                                         className="btn-primary max-w-xs"
                                     >
-                                        Create Your First Session
+                                        Create First Session
                                     </button>
                                     <Link
                                         to="/progress"
-                                        className="inline-flex items-center justify-center gap-2 text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 px-6 py-3 rounded-md font-bold text-sm uppercase tracking-wider hover:bg-charcoal hover:text-white dark:hover:bg-cream dark:hover:text-navy transition-all"
+                                        className="inline-flex items-center justify-center gap-2 text-charcoal dark:text-cream bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 px-6 py-3 rounded-sm font-bold text-sm uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-all"
                                     >
                                         View Analytics
                                     </Link>
                                 </div>
                                 
-                                <div className="pt-6 border-t-2 border-charcoal/10 dark:border-cream/10">
+                                <div className="pt-6 border-t-3 border-charcoal/20 dark:border-cream/20">
                                     <p className="section-label mb-4">What you'll get with your first session</p>
-                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm font-mono">
                                         <div className="flex items-center gap-2 text-charcoal/60 dark:text-cream/60">
                                             <div className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full"></div>
-                                            AI-generated questions
+                                            AI-questions
                                         </div>
                                         <div className="flex items-center gap-2 text-charcoal/60 dark:text-cream/60">
                                             <div className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full"></div>
@@ -410,7 +412,7 @@ const Dashboard = () => {
                                         </div>
                                         <div className="flex items-center gap-2 text-charcoal/60 dark:text-cream/60">
                                             <div className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full"></div>
-                                            Performance analytics
+                                            AI Analytics
                                         </div>
                                     </div>
                                 </div>
@@ -426,7 +428,7 @@ const Dashboard = () => {
                 onCreateSession={handleCreateSession}
             />
             <Modal isOpen={openDeleteAlert.open} onClose={() => setOpenDeleteAlert({ open: false, data: null })} title="Delete Session">
-                <div className='w-[30vw]'>
+                <div className='w-full max-w-[90vw] sm:w-[400px] p-6'>
                     <DeleteAlertContent
                         content="Are you sure you want to delete this session?"
                         onDelete={() => deleteSession(openDeleteAlert.data)}

@@ -10,91 +10,68 @@ const Navbar = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    const navLinkClass = "text-xs font-semibold uppercase tracking-[0.1em] px-3 py-2 rounded-md transition-all duration-200";
+    const navLinkClass = "text-xs font-semibold uppercase tracking-widest px-3 py-2 rounded-sm transition-all duration-200";
     
     return (
-        <div className="border-b-2 sticky top-0 z-50 transition-all duration-300" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
+        <div className="border-b-4 border-charcoal dark:border-cream/40 sticky top-0 z-50 bg-cream dark:bg-navy transition-all duration-300">
             <div className="h-16 py-2.5 px-4 md:px-0">
                 <div className="container mx-auto flex items-center justify-between gap-5">
                     <div className="flex items-center gap-8">
-                        <Link to="/dashboard" className="group">
-                            <h2 className="text-xl md:text-2xl font-display font-normal leading-5 transition-colors duration-300" style={{ color: 'var(--color-text)' }}>
+                        <Link to="/dashboard" className="group flex items-center gap-2.5">
+                            <div className="w-6 h-6 bg-charcoal dark:bg-cream rounded-sm flex items-center justify-center">
+                                <span className="text-cream dark:text-navy text-[9px] font-bold tracking-tight leading-none">IP</span>
+                            </div>
+                            <h2 className="text-xl md:text-2xl font-display font-bold leading-5 text-charcoal dark:text-cream transition-colors duration-300">
                                 Interview Prep AI
                             </h2>
                         </Link>
 
                         {/* Desktop Navigation */}
-                        <nav className="hidden md:flex items-center gap-1">
+                        <nav className="hidden md:flex items-center gap-2">
                         <NavLink 
                             to="/dashboard" 
-                            className={({ isActive }) => `${navLinkClass} ${isActive ? 'font-bold' : ''}`}
-                            style={({ isActive }) => ({
-                                color: isActive ? 'var(--color-text)' : 'var(--color-text-secondary)',
-                                borderBottom: isActive ? '2px solid var(--color-text)' : 'none',
-                                borderRadius: isActive ? '0' : undefined,
-                            })}
+                            className={({ isActive }) => `${navLinkClass} ${isActive ? 'font-bold text-charcoal dark:text-cream border-b-4 border-charcoal dark:border-cream !rounded-none' : 'text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream'}`}
                         >
                             Dashboard
                         </NavLink>
                         <NavLink 
                             to="/progress" 
-                            className={({ isActive }) => `${navLinkClass} ${isActive ? 'font-bold' : ''}`}
-                            style={({ isActive }) => ({
-                                color: isActive ? 'var(--color-text)' : 'var(--color-text-secondary)',
-                                borderBottom: isActive ? '2px solid var(--color-text)' : 'none',
-                                borderRadius: isActive ? '0' : undefined,
-                            })}
+                            className={({ isActive }) => `${navLinkClass} ${isActive ? 'font-bold text-charcoal dark:text-cream border-b-4 border-charcoal dark:border-cream !rounded-none' : 'text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream'}`}
                         >
                             Progress
                         </NavLink>
                         <NavLink 
                             to="/roadmap" 
-                            className={({ isActive }) => `${navLinkClass} ${isActive ? 'font-bold' : ''}`}
-                            style={({ isActive }) => ({
-                                color: isActive ? 'var(--color-text)' : 'var(--color-text-secondary)',
-                                borderBottom: isActive ? '2px solid var(--color-text)' : 'none',
-                                borderRadius: isActive ? '0' : undefined,
-                            })}
+                            className={({ isActive }) => `${navLinkClass} ${isActive ? 'font-bold text-charcoal dark:text-cream border-b-4 border-charcoal dark:border-cream !rounded-none' : 'text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream'}`}
                         >
                             Roadmap
                         </NavLink>
                         <NavLink 
                             to="/code-review" 
-                            className={({ isActive }) => `${navLinkClass} ${isActive ? 'font-bold' : ''}`}
-                            style={({ isActive }) => ({
-                                color: isActive ? 'var(--color-text)' : 'var(--color-text-secondary)',
-                                borderBottom: isActive ? '2px solid var(--color-text)' : 'none',
-                                borderRadius: isActive ? '0' : undefined,
-                            })}
+                            className={({ isActive }) => `${navLinkClass} ${isActive ? 'font-bold text-charcoal dark:text-cream border-b-4 border-charcoal dark:border-cream !rounded-none' : 'text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream'}`}
                         >
                             Code Review
                         </NavLink>
                         <NavLink 
                             to="/study-rooms" 
-                            className={({ isActive }) => `${navLinkClass} relative ${isActive ? 'font-bold' : ''}`}
-                            style={({ isActive }) => ({
-                                color: isActive ? 'var(--color-text)' : 'var(--color-text-secondary)',
-                                borderBottom: isActive ? '2px solid var(--color-text)' : 'none',
-                                borderRadius: isActive ? '0' : undefined,
-                            })}
+                            className={({ isActive }) => `${navLinkClass} ${isActive ? 'font-bold text-charcoal dark:text-cream border-b-4 border-charcoal dark:border-cream !rounded-none' : 'text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream'}`}
                         >
-                            Study Rooms
-                            <span className="absolute -top-1 -right-1 bg-crimson text-white text-[9px] px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wider">
-                                NEW
+                            <span className="flex items-center gap-1.5">
+                                Study Rooms
+                                <span className="bg-crimson text-white text-[8px] px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wider leading-none">
+                                    NEW
+                                </span>
                             </span>
                         </NavLink>
                         <NavLink 
                             to="/ai-interview-coach" 
-                            className={({ isActive }) => `${navLinkClass} relative ${isActive ? 'font-bold' : ''}`}
-                            style={({ isActive }) => ({
-                                color: isActive ? 'var(--color-text)' : 'var(--color-text-secondary)',
-                                borderBottom: isActive ? '2px solid var(--color-text)' : 'none',
-                                borderRadius: isActive ? '0' : undefined,
-                            })}
+                            className={({ isActive }) => `${navLinkClass} ${isActive ? 'font-bold text-charcoal dark:text-cream border-b-4 border-charcoal dark:border-cream !rounded-none' : 'text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream'}`}
                         >
-                            AI Coach
-                            <span className="absolute -top-1 -right-1 bg-charcoal dark:bg-cream text-white dark:text-navy text-[9px] px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wider">
-                                AI
+                            <span className="flex items-center gap-1.5">
+                                AI Coach
+                                <span className="bg-charcoal dark:bg-cream text-white dark:text-navy text-[8px] px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wider leading-none">
+                                    AI
+                                </span>
                             </span>
                         </NavLink>
                         </nav>
@@ -107,15 +84,14 @@ const Navbar = () => {
                         {/* Mobile menu button */}
                         <button
                             onClick={toggleMobileMenu}
-                            className="md:hidden p-2 rounded-md focus:outline-none transition-colors"
-                            style={{ color: 'var(--color-text)' }}
+                            className="md:hidden p-2 rounded-sm border-2 border-charcoal dark:border-cream/40 text-charcoal dark:text-cream focus:outline-none transition-colors hover:bg-charcoal/10 dark:hover:bg-cream/10"
                             aria-label="Toggle mobile menu"
                         >
                             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 {isMobileMenuOpen ? (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                                 ) : (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
                                 )}
                             </svg>
                         </button>
@@ -125,7 +101,7 @@ const Navbar = () => {
             
             {/* Mobile Navigation Menu */}
             {isMobileMenuOpen && (
-                <div className="md:hidden border-t-2 transition-colors duration-300" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
+                <div className="md:hidden border-t-4 border-charcoal dark:border-cream/40 bg-cream dark:bg-navy transition-colors duration-300">
                     <div className="px-4 py-3 space-y-1">
                         {[
                             { to: '/dashboard', label: 'Dashboard' },
@@ -140,11 +116,7 @@ const Navbar = () => {
                             <NavLink
                                 key={link.to}
                                 to={link.to}
-                                className="block text-sm font-semibold uppercase tracking-wider transition-colors py-2 px-2 rounded-md"
-                                style={({ isActive }) => ({
-                                    color: isActive ? 'var(--color-text)' : 'var(--color-text-secondary)',
-                                    fontWeight: isActive ? '700' : undefined,
-                                })}
+                                className={({ isActive }) => `block text-sm font-semibold uppercase tracking-widest transition-colors py-2 px-3 rounded-sm ${isActive ? 'font-bold text-charcoal dark:text-cream bg-charcoal/10 dark:bg-cream/10 border-l-4 border-charcoal dark:border-cream' : 'text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream hover:bg-charcoal/5 dark:hover:bg-cream/5'}`}
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 {link.label}
