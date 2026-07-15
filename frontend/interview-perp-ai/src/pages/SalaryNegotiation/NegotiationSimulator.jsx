@@ -57,7 +57,6 @@ const NegotiationSimulator = () => {
     const startNegotiation = async () => {
         try {
             const token = localStorage.getItem('token');
-            // Use relative URL if VITE_API_URL is not set, otherwise use the full URL
             const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
             const apiUrl = `${baseUrl}/api/salary-negotiation/start`;
 
@@ -75,7 +74,6 @@ const NegotiationSimulator = () => {
             setLoading(false);
         } catch (error) {
             console.error('Error starting negotiation:', error);
-            console.error('Error details:', error.response?.data);
             setLoading(false);
             alert('Failed to start negotiation. Please make sure the backend server is running.');
         }
@@ -89,7 +87,6 @@ const NegotiationSimulator = () => {
             const token = localStorage.getItem('token');
             const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
-            // Create a minimum delay to simulate "reviewing" time (2.5 seconds)
             const minDelay = new Promise(resolve => setTimeout(resolve, 2500));
 
             const apiCall = axios.post(
@@ -105,10 +102,8 @@ const NegotiationSimulator = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            // Wait for both the API and the delay
             const [response] = await Promise.all([apiCall, minDelay]);
 
-            // Update conversation history
             setNegotiation(prev => ({
                 ...prev,
                 conversationHistory: [
@@ -171,7 +166,6 @@ const NegotiationSimulator = () => {
     };
 
     const formatCurrency = (amount) => {
-        // Convert to Lakhs and format as INR
         const lakhs = amount / 100000;
         return `₹${lakhs.toFixed(2)} LPA`;
     };
@@ -195,20 +189,20 @@ const NegotiationSimulator = () => {
         const market = negotiation?.marketData;
         if (!market) return null;
 
-        if (salary >= market.p90) return { label: 'Top 10%', color: 'emerald', percentile: 90 };
-        if (salary >= market.p75) return { label: 'Top 25%', color: 'blue', percentile: 75 };
-        if (salary >= market.p50) return { label: 'Above Median', color: 'indigo', percentile: 50 };
-        if (salary >= market.p25) return { label: 'Below Median', color: 'amber', percentile: 25 };
-        return { label: 'Bottom 25%', color: 'red', percentile: 10 };
+        if (salary >= market.p90) return { label: 'Top 10%', percentile: 90 };
+        if (salary >= market.p75) return { label: 'Top 25%', percentile: 75 };
+        if (salary >= market.p50) return { label: 'Above Median', percentile: 50 };
+        if (salary >= market.p25) return { label: 'Below Median', percentile: 25 };
+        return { label: 'Bottom 25%', percentile: 10 };
     };
 
     if (loading || !negotiation) {
         return (
             <DashboardLayout>
-                <div className="flex items-center justify-center min-h-screen bg-cream dark:bg-navy font-body">
-                    <div className="text-center">
+                <div className="flex items-center justify-center min-h-screen bg-cream dark:bg-navy font-body text-charcoal dark:text-cream">
+                    <div className="text-center font-mono">
                         <LuLoader className="w-12 h-12 text-charcoal dark:text-cream animate-spin mx-auto mb-4" />
-                        <p className="text-charcoal/80 dark:text-cream/80 font-bold uppercase tracking-wider">Starting your negotiation...</p>
+                        <p className="font-bold uppercase tracking-wider text-xs">Simulating Recruiter Setup...</p>
                     </div>
                 </div>
             </DashboardLayout>
@@ -221,134 +215,131 @@ const NegotiationSimulator = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-cream dark:bg-navy py-6 px-4 font-body">
-                <div className="max-w-7xl mx-auto">
+            <div className="min-h-screen bg-cream dark:bg-navy py-6 px-6 font-body text-charcoal dark:text-cream transition-colors duration-300">
+                <div className="max-w-7xl mx-auto space-y-6">
                     {/* Header */}
-                    <div className="card-editorial p-6 mb-6 bg-white dark:bg-navy-light">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <button
-                                    onClick={() => navigate('/salary-negotiation')}
-                                    className="flex items-center gap-2 px-4 py-2 text-charcoal dark:text-cream hover:bg-cream dark:hover:bg-navy-input border-2 border-transparent hover:border-charcoal dark:hover:border-cream/40 rounded-md transition-all font-bold uppercase tracking-wider text-sm"
-                                >
-                                    <LuArrowLeft className="w-5 h-5" />
-                                    <span>Back</span>
-                                </button>
-                                <div>
-                                    <h1 className="text-2xl font-display font-bold text-charcoal dark:text-cream flex items-center gap-2 uppercase tracking-wider">
-                                        <LuMessageSquare className="w-6 h-6 text-charcoal dark:text-cream" />
-                                        {negotiation.role} Negotiation
-                                    </h1>
-                                    <p className="text-charcoal/80 dark:text-cream/80 font-medium mt-1">
-                                        {negotiation.scenario} • {negotiation.location} • {negotiation.recruiterPersonality} recruiter
-                                    </p>
-                                </div>
+                    <div className="card-editorial p-6 bg-white dark:bg-navy-light flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => navigate('/salary-negotiation')}
+                                className="w-10 h-10 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy text-charcoal dark:text-cream rounded-sm flex items-center justify-center shadow-[2px_2px_0px_0px_var(--color-shadow)] hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
+                            >
+                                <LuArrowLeft className="w-5 h-5" strokeWidth={2.5} />
+                            </button>
+                            <div>
+                                <h1 className="text-2xl font-display font-bold text-charcoal dark:text-cream flex items-center gap-2 uppercase tracking-wider">
+                                    <LuMessageSquare className="w-6 h-6 text-charcoal/60 dark:text-cream/60" />
+                                    <span>{negotiation.role} Simulator</span>
+                                </h1>
+                                <p className="text-[10px] font-mono font-bold text-charcoal/60 dark:text-cream/60 uppercase tracking-widest mt-1">
+                                    {negotiation.scenario} • {negotiation.location} • {negotiation.recruiterPersonality} recruiter
+                                </p>
                             </div>
-                            <div className="text-right">
-                                <div className="text-sm font-bold text-charcoal dark:text-cream uppercase tracking-wider">Round</div>
-                                <div className="text-3xl font-display font-bold text-charcoal dark:text-cream">
-                                    {Math.floor((negotiation.conversationHistory?.length || 0) / 2)}
-                                </div>
+                        </div>
+                        <div className="text-right flex flex-col items-end md:items-start font-mono">
+                            <div className="text-[9px] font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-widest">Active Round</div>
+                            <div className="text-2xl font-display font-bold text-charcoal dark:text-cream leading-tight mt-0.5">
+                                {Math.floor((negotiation.conversationHistory?.length || 0) / 2)}
                             </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {/* Left Sidebar - Current Offer */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                        {/* Left Sidebar - Current Offer Metrics */}
                         <div className="lg:col-span-1 space-y-6">
                             {/* Current Offer Card */}
                             <div className="card-editorial p-6 bg-white dark:bg-navy-light">
-                                <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream mb-4 flex items-center gap-2 uppercase tracking-wider">
-                                    <LuDollarSign className="w-5 h-5 text-charcoal dark:text-cream" />
-                                    Current Offer
+                                <h3 className="text-xs font-mono font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-widest mb-4 border-b border-dashed border-charcoal/10 pb-2 flex items-center gap-1.5">
+                                    <LuDollarSign className="w-4 h-4 text-charcoal/60" />
+                                    <span>CTC Offer</span>
                                 </h3>
 
                                 <div className="space-y-4">
                                     <div>
-                                        <div className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1">Base Salary</div>
-                                        <div className="text-2xl font-display font-bold text-charcoal dark:text-cream">
+                                        <div className="text-[9px] font-mono font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-wider mb-0.5">Base Salary</div>
+                                        <div className="text-xl font-display font-bold text-charcoal dark:text-cream">
                                             {formatCurrency(currentOffer?.baseSalary || 0)}
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <div className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1">Equity</div>
-                                            <div className="text-lg font-bold text-charcoal dark:text-cream">
+                                            <div className="text-[9px] font-mono font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-wider mb-0.5">Equity options</div>
+                                            <div className="text-sm font-bold text-charcoal dark:text-cream">
                                                 {formatCurrency(currentOffer?.equity || 0)}
                                             </div>
                                         </div>
                                         <div>
-                                            <div className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1">Signing Bonus</div>
-                                            <div className="text-lg font-bold text-charcoal dark:text-cream">
+                                            <div className="text-[9px] font-mono font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-wider mb-0.5">Signing Bonus</div>
+                                            <div className="text-sm font-bold text-charcoal dark:text-cream">
                                                 {formatCurrency(currentOffer?.signingBonus || 0)}
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="pt-4 border-t-2 border-charcoal/10 dark:border-cream/10">
-                                        <div className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1">Total Compensation</div>
-                                        <div className="text-3xl font-display font-bold text-charcoal dark:text-cream">
+                                    <div className="pt-4 border-t-2 border-dashed border-charcoal/10 dark:border-cream/10">
+                                        <div className="text-[9px] font-mono font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-wider mb-0.5">Total CTC Package</div>
+                                        <div className="text-2xl font-display font-bold text-charcoal dark:text-cream">
                                             {formatCurrency(totalComp)}
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Market Data Card */}
-                            <div className="bg-cream dark:bg-navy-light rounded-md p-6 border-2 border-charcoal/10 dark:border-cream/10">
-                                <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream mb-4 flex items-center gap-2 uppercase tracking-wider">
-                                    <LuActivity className="w-5 h-5 text-charcoal dark:text-cream" />
-                                    Market Data
+                            {/* Market Data indices */}
+                            <div className="card-editorial p-6 bg-white dark:bg-navy-light">
+                                <h3 className="text-xs font-mono font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-widest mb-4 border-b border-dashed border-charcoal/10 pb-2 flex items-center gap-1.5">
+                                    <LuActivity className="w-4 h-4 text-charcoal/60" />
+                                    <span>Market Benchmarks</span>
                                 </h3>
 
                                 {marketPosition && (
-                                    <div className={`mb-4 p-3 bg-white dark:bg-navy border-2 border-charcoal/10 dark:border-cream/10 rounded-md`}>
-                                        <div className={`text-sm font-bold text-charcoal dark:text-cream uppercase tracking-wider`}>
-                                            Your Position: {marketPosition.label}
+                                    <div className="mb-4 p-3 bg-cream dark:bg-navy border-2 border-charcoal/15 dark:border-cream/15 rounded-sm shadow-[1px_1px_0px_0px_var(--color-shadow)]">
+                                        <div className="text-[10px] font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wide">
+                                            CTC percentile: {marketPosition.label}
                                         </div>
-                                        <div className={`text-xs font-medium text-charcoal/80 dark:text-cream/80 mt-1`}>
-                                            {marketPosition.percentile}th percentile
+                                        <div className="text-[9px] font-mono text-charcoal/60 dark:text-cream/60 uppercase tracking-widest mt-0.5">
+                                            {marketPosition.percentile}th percentile cost index
                                         </div>
                                     </div>
                                 )}
 
-                                <div className="space-y-2 text-sm">
+                                <div className="space-y-2 text-[10px] font-mono font-bold uppercase tracking-wider">
                                     <div className="flex justify-between">
-                                        <span className="text-charcoal/80 dark:text-cream/80 font-bold uppercase tracking-wider text-xs">90th percentile:</span>
-                                        <span className="font-bold text-charcoal dark:text-cream text-sm">{formatCurrency(negotiation.marketData?.p90)}</span>
+                                        <span className="text-charcoal/50 dark:text-cream/50">90th percentile:</span>
+                                        <span className="text-charcoal dark:text-cream">{formatCurrency(negotiation.marketData?.p90)}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-charcoal/80 dark:text-cream/80 font-bold uppercase tracking-wider text-xs">75th percentile:</span>
-                                        <span className="font-bold text-charcoal dark:text-cream text-sm">{formatCurrency(negotiation.marketData?.p75)}</span>
+                                        <span className="text-charcoal/50 dark:text-cream/50">75th percentile:</span>
+                                        <span className="text-charcoal dark:text-cream">{formatCurrency(negotiation.marketData?.p75)}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-charcoal/80 dark:text-cream/80 font-bold uppercase tracking-wider text-xs">Median (50th):</span>
-                                        <span className="font-bold text-charcoal dark:text-cream text-sm">{formatCurrency(negotiation.marketData?.p50)}</span>
+                                        <span className="text-charcoal/50 dark:text-cream/50">Median (50th):</span>
+                                        <span className="text-charcoal dark:text-cream">{formatCurrency(negotiation.marketData?.p50)}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-charcoal/80 dark:text-cream/80 font-bold uppercase tracking-wider text-xs">25th percentile:</span>
-                                        <span className="font-bold text-charcoal dark:text-cream text-sm">{formatCurrency(negotiation.marketData?.p25)}</span>
+                                        <span className="text-charcoal/50 dark:text-cream/50">25th percentile:</span>
+                                        <span className="text-charcoal dark:text-cream">{formatCurrency(negotiation.marketData?.p25)}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Analysis Card */}
+                            {/* Analysis card */}
                             {analysis && (
                                 <div className="card-editorial p-6 bg-white dark:bg-navy-light">
-                                    <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream mb-4 flex items-center gap-2 uppercase tracking-wider">
-                                        <LuSparkles className="w-5 h-5 text-charcoal dark:text-cream" />
-                                        AI Analysis
+                                    <h3 className="text-xs font-mono font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-widest mb-4 border-b border-dashed border-charcoal/10 pb-2 flex items-center gap-1.5">
+                                        <LuSparkles className="w-4 h-4 text-charcoal/60" />
+                                        <span>AI Recruiter Analysis</span>
                                     </h3>
 
                                     {analysis.tacticsDetected?.length > 0 && (
                                         <div className="mb-4">
-                                            <div className="text-sm font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-2">✓ Good Tactics</div>
-                                            <div className="space-y-1">
+                                            <div className="text-[10px] font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wide mb-2">✓ Valid Tactics detected</div>
+                                            <div className="space-y-1.5">
                                                 {analysis.tacticsDetected.map((tactic, idx) => (
-                                                    <div key={idx} className="text-sm text-charcoal/80 dark:text-cream/80 font-medium flex items-start gap-2">
-                                                        <LuCheck className="w-4 h-4 text-charcoal dark:text-cream mt-0.5 flex-shrink-0" />
-                                                        {tactic}
+                                                    <div key={idx} className="text-[10px] font-mono font-bold text-charcoal/70 dark:text-cream/70 uppercase tracking-wider flex items-start gap-1.5">
+                                                        <LuCheck className="w-3.5 h-3.5 text-charcoal dark:text-cream flex-shrink-0" />
+                                                        <span>{tactic}</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -357,12 +348,12 @@ const NegotiationSimulator = () => {
 
                                     {analysis.suggestions?.length > 0 && (
                                         <div>
-                                            <div className="text-sm font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-2">💡 Suggestions</div>
-                                            <div className="space-y-1">
+                                            <div className="text-[10px] font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wide mb-2">💡 Next Suggestions</div>
+                                            <div className="space-y-1.5">
                                                 {analysis.suggestions.map((suggestion, idx) => (
-                                                    <div key={idx} className="text-sm text-charcoal/80 dark:text-cream/80 font-medium flex items-start gap-2">
-                                                        <LuInfo className="w-4 h-4 text-charcoal dark:text-cream mt-0.5 flex-shrink-0" />
-                                                        {suggestion}
+                                                    <div key={idx} className="text-[10px] font-mono font-bold text-charcoal/70 dark:text-cream/70 uppercase tracking-wider flex items-start gap-1.5">
+                                                        <LuInfo className="w-3.5 h-3.5 text-charcoal dark:text-cream flex-shrink-0" />
+                                                        <span>{suggestion}</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -372,10 +363,10 @@ const NegotiationSimulator = () => {
                             )}
                         </div>
 
-                        {/* Main Chat/Email Area */}
-                        <div className="lg:col-span-2">
+                        {/* Main Chat/Email Dialogue simulator */}
+                        <div className="lg:col-span-2 space-y-6">
                             {negotiation.communicationMode === 'email' ? (
-                                <div className="card-editorial h-[calc(100vh-12rem)] bg-white dark:bg-navy-light">
+                                <div className="card-editorial h-[calc(100vh-12rem)] bg-white dark:bg-navy-light overflow-hidden">
                                     <EmailNegotiationView
                                         negotiation={negotiation}
                                         conversationHistory={negotiation.conversationHistory || []}
@@ -384,25 +375,26 @@ const NegotiationSimulator = () => {
                                 </div>
                             ) : (
                                 <div className="card-editorial h-[calc(100vh-12rem)] flex flex-col bg-white dark:bg-navy-light">
-                                    {/* Messages */}
-                                    <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                                    {/* Conversation thread log */}
+                                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
                                         {negotiation.conversationHistory?.map((msg, idx) => (
                                             <div
                                                 key={idx}
                                                 className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                                             >
-                                                <div className={`max-w-[80%] ${msg.sender === 'user'
-                                                    ? 'bg-charcoal dark:bg-cream text-white dark:text-navy border-charcoal dark:border-cream/40'
-                                                    : 'bg-cream dark:bg-navy-input text-charcoal dark:text-cream border-charcoal dark:border-cream/40'
-                                                    } rounded-md p-4 border-2`}>
-                                                    <div className="text-sm font-bold uppercase tracking-wider mb-2">
+                                                <div className={`max-w-[80%] rounded-sm p-4 border-2 shadow-[2px_2px_0px_0px_var(--color-shadow)] ${
+                                                    msg.sender === 'user'
+                                                        ? 'bg-charcoal text-white border-charcoal dark:bg-cream dark:text-navy dark:border-cream/80'
+                                                        : 'bg-cream text-charcoal border-charcoal dark:bg-navy-input dark:text-cream dark:border-cream/20'
+                                                }`}>
+                                                    <div className="text-[9px] font-mono font-bold uppercase tracking-widest mb-1.5 opacity-70">
                                                         {msg.sender === 'user' ? 'You' : 'Recruiter'}
                                                     </div>
-                                                    <div className="text-sm font-medium leading-relaxed whitespace-pre-wrap">
+                                                    <div className="text-xs font-mono font-bold leading-relaxed whitespace-pre-wrap">
                                                         {msg.message}
                                                     </div>
                                                     {msg.offer && (
-                                                        <div className="mt-3 pt-3 border-t-2 border-current/20 text-sm space-y-1 font-bold">
+                                                        <div className="mt-3 pt-3 border-t border-dashed border-current/25 text-[10px] font-mono font-bold space-y-0.5 uppercase tracking-wider">
                                                             <div>Base: {formatCurrency(msg.offer.baseSalary)}</div>
                                                             {msg.offer.equity > 0 && <div>Equity: {formatCurrency(msg.offer.equity)}</div>}
                                                             {msg.offer.signingBonus > 0 && <div>Signing: {formatCurrency(msg.offer.signingBonus)}</div>}
@@ -412,14 +404,14 @@ const NegotiationSimulator = () => {
                                             </div>
                                         ))}
 
-                                        {/* Recruiter Typing/Reviewing Indicator */}
+                                        {/* Loading Simulator */}
                                         {sending && (
                                             <div className="flex justify-start animate-pulse">
-                                                <div className="max-w-[80%] bg-cream dark:bg-navy text-charcoal dark:text-cream rounded-md p-4 border-2 border-charcoal dark:border-cream/40 shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)]">
-                                                    <div className="text-sm font-bold uppercase tracking-wider mb-2">Recruiter</div>
-                                                    <div className="text-sm font-medium italic flex items-center gap-2">
-                                                        <LuLoader className="w-4 h-4 animate-spin" />
-                                                        Reviewing your request with the team...
+                                                <div className="max-w-[80%] bg-cream text-charcoal border-2 border-charcoal dark:bg-navy dark:text-cream dark:border-cream/40 rounded-sm p-4 shadow-[2px_2px_0px_0px_var(--color-shadow)]">
+                                                    <div className="text-[9px] font-mono font-bold uppercase tracking-widest mb-1">Recruiter</div>
+                                                    <div className="text-xs font-mono font-bold flex items-center gap-1.5 uppercase tracking-wider">
+                                                        <LuLoader className="w-3.5 h-3.5 animate-spin" />
+                                                        <span>Evaluating proposal counter...</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -428,40 +420,40 @@ const NegotiationSimulator = () => {
                                         <div ref={messagesEndRef} />
                                     </div>
 
-                                    {/* Input Area */}
-                                    <div className="border-t-2 border-charcoal/10 dark:border-cream/10 p-6">
+                                    {/* Action Counteroffer & message inputs */}
+                                    <div className="border-t-4 border-charcoal dark:border-cream/40 p-4 bg-white dark:bg-navy-light">
                                         {showCounterOffer && (
-                                            <div className="mb-4 p-4 bg-cream dark:bg-navy border-2 border-charcoal/10 dark:border-cream/10 rounded-md">
-                                                <div className="text-sm font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-3">Counter Offer (in Lakhs)</div>
-                                                <div className="grid grid-cols-3 gap-3">
+                                            <div className="mb-4 p-4 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-sm shadow-[1.5px_1.5px_0px_0px_var(--color-shadow)]">
+                                                <div className="text-[10px] font-mono font-bold text-charcoal dark:text-cream uppercase tracking-widest mb-3">Submit Counter CTC (in Lakhs)</div>
+                                                <div className="grid grid-cols-3 gap-3 font-mono">
                                                     <div>
-                                                        <label className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1 block">Base (LPA)</label>
+                                                        <label className="text-[8px] font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1 block">Base LPA</label>
                                                         <input
                                                             type="number"
                                                             placeholder="e.g. 12"
                                                             value={counterOffer.baseSalary}
                                                             onChange={(e) => setCounterOffer({ ...counterOffer, baseSalary: e.target.value })}
-                                                            className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md bg-white dark:bg-navy text-charcoal dark:text-cream font-bold text-sm focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50"
+                                                            className="w-full px-2.5 py-1.5 border-2 border-charcoal dark:border-cream/40 rounded-sm bg-white dark:bg-navy text-charcoal dark:text-cream font-bold text-xs outline-none"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1 block">Equity (LPA)</label>
+                                                        <label className="text-[8px] font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1 block">Equity LPA</label>
                                                         <input
                                                             type="number"
                                                             placeholder="e.g. 2"
                                                             value={counterOffer.equity}
                                                             onChange={(e) => setCounterOffer({ ...counterOffer, equity: e.target.value })}
-                                                            className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md bg-white dark:bg-navy text-charcoal dark:text-cream font-bold text-sm focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50"
+                                                            className="w-full px-2.5 py-1.5 border-2 border-charcoal dark:border-cream/40 rounded-sm bg-white dark:bg-navy text-charcoal dark:text-cream font-bold text-xs outline-none"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1 block">Signing (LPA)</label>
+                                                        <label className="text-[8px] font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1 block">Signing LPA</label>
                                                         <input
                                                             type="number"
                                                             placeholder="e.g. 1"
                                                             value={counterOffer.signingBonus}
                                                             onChange={(e) => setCounterOffer({ ...counterOffer, signingBonus: e.target.value })}
-                                                            className="w-full px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-md bg-white dark:bg-navy text-charcoal dark:text-cream font-bold text-sm focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50"
+                                                            className="w-full px-2.5 py-1.5 border-2 border-charcoal dark:border-cream/40 rounded-sm bg-white dark:bg-navy text-charcoal dark:text-cream font-bold text-xs outline-none"
                                                         />
                                                     </div>
                                                 </div>
@@ -478,21 +470,21 @@ const NegotiationSimulator = () => {
                                                         handleSendMessage();
                                                     }
                                                 }}
-                                                placeholder="Type your response... (Shift+Enter for new line)"
-                                                className="flex-1 px-4 py-3 border-2 border-charcoal dark:border-cream/40 rounded-md bg-white dark:bg-navy-input text-charcoal dark:text-cream font-bold placeholder-charcoal/50 dark:placeholder-cream/50 resize-none focus:outline-none"
+                                                placeholder="Type your message proposal..."
+                                                className="flex-1 px-3 py-2 border-2 border-charcoal dark:border-cream/40 rounded-sm bg-white dark:bg-navy-input text-charcoal dark:text-cream font-mono font-bold text-xs resize-none focus:outline-none focus:shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-all"
                                                 rows="3"
                                             />
                                             <div className="flex flex-col gap-2">
                                                 <button
                                                     onClick={handleSendMessage}
                                                     disabled={sending || (!userMessage.trim() && !showCounterOffer)}
-                                                    className="px-6 py-3 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer font-bold uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    className="px-4 py-2 bg-charcoal text-white dark:bg-cream dark:text-navy rounded-sm border-2 border-charcoal dark:border-cream/40 hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer font-mono font-bold uppercase tracking-wider text-[10px] disabled:opacity-40 shadow-[1.5px_1.5px_0px_0px_var(--color-shadow)]"
                                                 >
-                                                    {sending ? <LuLoader className="w-5 h-5 animate-spin mx-auto" /> : <LuSend className="w-5 h-5 mx-auto" />}
+                                                    {sending ? <LuLoader className="w-4 h-4 animate-spin mx-auto" /> : <LuSend className="w-4 h-4 mx-auto" />}
                                                 </button>
                                                 <button
                                                     onClick={() => setShowCounterOffer(!showCounterOffer)}
-                                                    className="px-6 py-3 bg-white dark:bg-navy text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 rounded-md font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer text-sm"
+                                                    className="px-4 py-2 bg-white text-charcoal dark:bg-navy dark:text-cream border-2 border-charcoal dark:border-cream/40 rounded-sm font-mono font-bold uppercase tracking-wider hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer text-[10px] shadow-[1.5px_1.5px_0px_0px_var(--color-shadow)]"
                                                 >
                                                     {showCounterOffer ? 'Cancel' : 'Counter'}
                                                 </button>
@@ -500,21 +492,21 @@ const NegotiationSimulator = () => {
                                         </div>
                                     </div>
 
-                                    {/* Action Buttons */}
-                                    <div className="flex gap-3 mt-3 p-6 pt-0">
+                                    {/* Accept / Reject actions */}
+                                    <div className="flex gap-3 px-4 pb-4 bg-white dark:bg-navy-light">
                                         <button
                                             onClick={handleAcceptOffer}
-                                            className="flex-1 px-4 py-3 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all flex items-center justify-center gap-2 font-bold uppercase tracking-wider text-sm cursor-pointer"
+                                            className="flex-1 px-4 py-2.5 bg-charcoal text-white dark:bg-cream dark:text-navy rounded-sm border-2 border-charcoal dark:border-cream/40 hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center gap-1.5 font-mono font-bold uppercase tracking-wider text-[10px] cursor-pointer shadow-[2px_2px_0px_0px_var(--color-shadow)]"
                                         >
-                                            <LuCheck className="w-4 h-4" />
-                                            Accept Offer
+                                            <LuCheck className="w-3.5 h-3.5" />
+                                            <span>Accept CTC Offer</span>
                                         </button>
                                         <button
                                             onClick={handleRejectOffer}
-                                            className="flex-1 px-4 py-3 bg-white dark:bg-navy text-charcoal dark:text-cream rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all flex items-center justify-center gap-2 font-bold uppercase tracking-wider text-sm cursor-pointer"
+                                            className="flex-1 px-4 py-2.5 bg-white text-charcoal dark:bg-navy dark:text-cream rounded-sm border-2 border-charcoal dark:border-cream/40 hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center gap-1.5 font-mono font-bold uppercase tracking-wider text-[10px] cursor-pointer shadow-[2px_2px_0px_0px_var(--color-shadow)]"
                                         >
-                                            <LuX className="w-4 h-4" />
-                                            Reject & Walk Away
+                                            <LuX className="w-3.5 h-3.5" />
+                                            <span>Reject & Walk away</span>
                                         </button>
                                     </div>
                                 </div>

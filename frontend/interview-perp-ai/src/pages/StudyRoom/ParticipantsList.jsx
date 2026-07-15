@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { 
   Users, 
   Crown, 
-  Mic, 
   MicOff, 
-  Video, 
   VideoOff, 
   MoreVertical,
   UserX,
@@ -28,134 +26,132 @@ const ParticipantsList = ({ participants, currentUser, isHost }) => {
 
   const getStatusColor = (participant) => {
     if (!participant.isActive) return 'bg-gray-400';
-    // You can add logic here for different statuses
-    return 'bg-green-400';
+    return 'bg-green-500';
   };
 
   const handleKickUser = (userId) => {
-    // Implement kick user functionality
     console.log('Kick user:', userId);
     setShowMenu(null);
   };
 
   const handleMakeHost = (userId) => {
-    // Implement make host functionality
     console.log('Make host:', userId);
     setShowMenu(null);
   };
 
   return (
-    <div className="card-editorial p-6 h-80 bg-white dark:bg-navy-light">
-      <div className="flex items-center justify-between mb-4 border-b-2 border-charcoal/10 dark:border-cream/10 pb-4">
-        <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream flex items-center gap-2 uppercase tracking-wider">
-          <Users className="w-5 h-5 text-charcoal dark:text-cream" />
-          Participants ({participants.filter(p => p.isActive).length})
-        </h3>
-      </div>
+    <div className="card-editorial p-6 h-80 bg-white dark:bg-navy-light flex flex-col justify-between relative z-20 flex-1 min-h-0">
+      <div>
+        <div className="flex items-center justify-between mb-4 border-b-2 border-charcoal/10 dark:border-cream/10 pb-4 bg-cream dark:bg-navy p-3 rounded-sm">
+          <h3 className="text-xs font-mono font-bold text-charcoal dark:text-cream flex items-center gap-1.5 uppercase tracking-widest">
+            <Users className="w-4 h-4" />
+            <span>Peers ({participants.filter(p => p.isActive).length})</span>
+          </h3>
+        </div>
 
-      <div className="space-y-3 overflow-y-auto max-h-64">
-        {participants
-          .filter(p => p.isActive)
-          .sort((a, b) => {
-            // Sort by role (host first), then by join time
-            if (a.role === 'host' && b.role !== 'host') return -1;
-            if (b.role === 'host' && a.role !== 'host') return 1;
-            return new Date(a.joinedAt) - new Date(b.joinedAt);
-          })
-          .map((participant) => (
-            <div
-              key={participant.userId}
-              className="flex items-center justify-between p-3 bg-cream dark:bg-navy border-2 border-charcoal/10 dark:border-cream/10 rounded-md hover:border-charcoal dark:hover:border-cream/40 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                {/* Avatar */}
-                <div className="relative">
-                  <div className="w-10 h-10 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light rounded-full flex items-center justify-center text-charcoal dark:text-cream font-bold">
-                    {participant.username.charAt(0).toUpperCase()}
+        <div className="space-y-2.5 overflow-y-auto max-h-36 pr-1">
+          {participants
+            .filter(p => p.isActive)
+            .sort((a, b) => {
+              if (a.role === 'host' && b.role !== 'host') return -1;
+              if (b.role === 'host' && a.role !== 'host') return 1;
+              return new Date(a.joinedAt) - new Date(b.joinedAt);
+            })
+            .map((participant) => (
+              <div
+                key={participant.userId}
+                className="flex items-center justify-between p-2.5 bg-cream dark:bg-navy border-2 border-charcoal/10 dark:border-cream/10 rounded-sm hover:border-charcoal dark:hover:border-cream/40 transition-all shadow-[1.5px_1.5px_0px_0px_var(--color-shadow)]"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  {/* Avatar */}
+                  <div className="relative flex-shrink-0">
+                    <div className="w-8 h-8 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light rounded-sm flex items-center justify-center text-charcoal dark:text-cream font-mono font-bold text-xs shadow-[1px_1px_0px_0px_var(--color-shadow)]">
+                      {participant.username.charAt(0).toUpperCase()}
+                    </div>
+                    {/* Status indicator */}
+                    <div className={`absolute -bottom-1 -right-1 w-2.5 h-2.5 ${getStatusColor(participant)} rounded-full border-2 border-charcoal`}></div>
                   </div>
-                  {/* Status indicator */}
-                  <div className={`absolute -bottom-1 -right-1 w-3 h-3 ${getStatusColor(participant)} rounded-full border-2 border-charcoal`}></div>
-                </div>
 
-                {/* User info */}
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-charcoal dark:text-cream">
-                      {participant.username}
-                    </span>
-                    {participant.role === 'host' && (
-                      <Crown className="w-4 h-4 text-charcoal dark:text-cream" title="Host" />
-                    )}
-                    {participant.userId === currentUser?._id && (
-                      <span className="text-xs bg-charcoal text-white px-2 py-0.5 rounded-sm font-bold uppercase tracking-wider">
-                        You
+                  {/* User info */}
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-bold text-xs text-charcoal dark:text-cream truncate">
+                        {participant.username}
                       </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-charcoal/60 dark:text-cream/60 font-medium">
-                    {formatJoinTime(participant.joinedAt)}
-                  </p>
-                </div>
-              </div>
-
-              {/* Controls */}
-              <div className="flex items-center gap-2">
-                {/* Voice/Video status */}
-                <div className="flex items-center gap-1">
-                  <div className="p-1 rounded bg-red-100 text-red-600" title="Microphone off">
-                    <MicOff className="w-3 h-3" />
-                  </div>
-                  <div className="p-1 rounded bg-red-100 text-red-600" title="Camera off">
-                    <VideoOff className="w-3 h-3" />
+                      {participant.role === 'host' && (
+                        <Crown className="w-3.5 h-3.5 text-charcoal dark:text-cream" title="Host" />
+                      )}
+                      {participant.userId === currentUser?._id && (
+                        <span className="text-[8px] bg-charcoal text-white dark:bg-cream dark:text-navy px-1.5 py-0.5 rounded-sm font-mono font-bold uppercase tracking-wider">
+                          You
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[9px] text-charcoal/50 dark:text-cream/50 font-mono font-bold uppercase tracking-wider">
+                      {formatJoinTime(participant.joinedAt)}
+                    </p>
                   </div>
                 </div>
 
-                {/* Menu for host actions */}
-                {isHost && participant.userId !== currentUser?._id && (
-                  <div className="relative">
-                    <button
-                      onClick={() => setShowMenu(showMenu === participant.userId ? null : participant.userId)}
-                      className="p-1 text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream hover:bg-charcoal/10 dark:hover:bg-cream/10 rounded-sm transition-colors"
-                    >
-                      <MoreVertical className="w-4 h-4" />
-                    </button>
-
-                    {showMenu === participant.userId && (
-                      <div className="absolute right-0 top-8 bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md py-1 z-10 min-w-32" style={{ boxShadow: '4px 4px 0px 0px var(--color-shadow)' }}>
-                        <button
-                          onClick={() => handleMakeHost(participant.userId)}
-                          className="w-full px-3 py-2 text-left text-sm font-bold text-charcoal dark:text-cream hover:bg-cream dark:hover:bg-navy flex items-center gap-2 uppercase tracking-wider"
-                        >
-                          <Shield className="w-4 h-4" />
-                          Make Host
-                        </button>
-                        <button
-                          onClick={() => handleKickUser(participant.userId)}
-                          className="w-full px-3 py-2 text-left text-sm font-bold text-red-600 hover:bg-red-50 flex items-center gap-2 uppercase tracking-wider"
-                        >
-                          <UserX className="w-4 h-4" />
-                          Remove
-                        </button>
-                      </div>
-                    )}
+                {/* Controls */}
+                <div className="flex items-center gap-1.5">
+                  {/* Voice/Video status icons */}
+                  <div className="flex items-center gap-1">
+                    <div className="p-1 rounded-sm bg-red-500/10 text-red-600 dark:text-red-400" title="Microphone off">
+                      <MicOff className="w-3 h-3" />
+                    </div>
+                    <div className="p-1 rounded-sm bg-red-500/10 text-red-600 dark:text-red-400" title="Camera off">
+                      <VideoOff className="w-3 h-3" />
+                    </div>
                   </div>
-                )}
+
+                  {/* Menu for host actions */}
+                  {isHost && participant.userId !== currentUser?._id && (
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowMenu(showMenu === participant.userId ? null : participant.userId)}
+                        className="p-1 text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream hover:bg-charcoal/10 dark:hover:bg-cream/10 rounded-sm transition-colors cursor-pointer"
+                      >
+                        <MoreVertical className="w-3.5 h-3.5" />
+                      </button>
+
+                      {showMenu === participant.userId && (
+                        <div className="absolute right-0 top-7 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm py-1 z-30 min-w-[120px] shadow-[3px_3px_0px_0px_var(--color-shadow)]">
+                          <button
+                            onClick={() => handleMakeHost(participant.userId)}
+                            className="w-full px-3 py-2.5 text-left text-[10px] font-mono font-bold text-charcoal dark:text-cream hover:bg-cream dark:hover:bg-navy flex items-center gap-1.5 uppercase tracking-wider"
+                          >
+                            <Shield className="w-3.5 h-3.5" />
+                            Make Host
+                          </button>
+                          <button
+                            onClick={() => handleKickUser(participant.userId)}
+                            className="w-full px-3 py-2.5 text-left text-[10px] font-mono font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-1.5 uppercase tracking-wider"
+                          >
+                            <UserX className="w-3.5 h-3.5" />
+                            Remove
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+        </div>
       </div>
 
       {/* Room capacity indicator */}
-      <div className="mt-4 pt-4 border-t border-charcoal/10 dark:border-cream/10">
-        <div className="flex items-center justify-between text-sm text-charcoal/60 dark:text-cream/60">
-          <span>Room Capacity</span>
+      <div className="mt-4 pt-4 border-t border-dashed border-charcoal/10 dark:border-cream/10">
+        <div className="flex items-center justify-between text-xs font-mono font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-wider">
+          <span>Capacity</span>
           <span>
-            {participants.filter(p => p.isActive).length} / {participants.length > 0 ? '6' : '6'} {/* You might want to get this from room data */}
+            {participants.filter(p => p.isActive).length} / 6
           </span>
         </div>
-        <div className="mt-2 w-full bg-charcoal/10 dark:bg-cream/10 rounded-full h-2">
+        <div className="w-full bg-cream dark:bg-navy border-2 border-charcoal/20 dark:border-cream/20 rounded-sm h-3 mt-2 overflow-hidden shadow-[1px_1px_0px_0px_var(--color-shadow)]">
           <div
-            className="bg-charcoal dark:bg-cream h-2 rounded-full transition-all duration-300"
+            className="bg-charcoal dark:bg-cream h-full transition-all duration-300"
             style={{
               width: `${(participants.filter(p => p.isActive).length / 6) * 100}%`
             }}
@@ -163,22 +159,9 @@ const ParticipantsList = ({ participants, currentUser, isHost }) => {
         </div>
       </div>
 
-      {/* Quick actions */}
-      <div className="mt-4 flex gap-2">
-        <button className="flex-1 bg-charcoal text-white border-2 border-charcoal py-2 px-3 rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 cursor-pointer transition-all duration-200" onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}>
-          Invite More
-        </button>
-        {isHost && (
-          <button className="flex-1 bg-white dark:bg-navy text-charcoal dark:text-cream border-2 border-charcoal dark:border-cream/40 py-2 px-3 rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 cursor-pointer transition-all duration-200" onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}>
-            Settings
-          </button>
-        )}
-      </div>
-
-      {/* Click outside to close menu */}
       {showMenu && (
         <div
-          className="fixed inset-0 z-5"
+          className="fixed inset-0 z-10"
           onClick={() => setShowMenu(null)}
         ></div>
       )}

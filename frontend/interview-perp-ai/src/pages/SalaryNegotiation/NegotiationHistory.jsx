@@ -58,18 +58,18 @@ const NegotiationHistory = () => {
 
     const getStatusBadge = (status) => {
         const badges = {
-            'accepted': { color: 'emerald', icon: LuCheck, text: 'Accepted' },
-            'rejected': { color: 'red', icon: LuX, text: 'Rejected' },
-            'walked-away': { color: 'amber', icon: LuX, text: 'Walked Away' },
-            'in-progress': { color: 'blue', icon: LuClock, text: 'In Progress' }
+            'accepted': { icon: LuCheck, text: 'Accepted' },
+            'rejected': { icon: LuX, text: 'Rejected' },
+            'walked-away': { icon: LuX, text: 'Walked Away' },
+            'in-progress': { icon: LuClock, text: 'In Progress' }
         };
         const badge = badges[status] || badges['in-progress'];
         const Icon = badge.icon;
         
         return (
-            <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-${badge.color}-100 dark:bg-${badge.color}-900/20 text-${badge.color}-700 dark:text-${badge.color}-400`}>
-                <Icon className="w-3 h-3" />
-                {badge.text}
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-sm border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-[9px] font-mono font-bold uppercase tracking-wider shadow-[1px_1px_0px_0px_var(--color-shadow)]">
+                <Icon className="w-3.5 h-3.5" />
+                <span>{badge.text}</span>
             </span>
         );
     };
@@ -89,10 +89,10 @@ const NegotiationHistory = () => {
     if (loading) {
         return (
             <DashboardLayout>
-                <div className="flex items-center justify-center min-h-screen bg-cream dark:bg-navy font-body">
-                    <div className="text-center">
+                <div className="flex items-center justify-center min-h-screen bg-cream dark:bg-navy font-body text-charcoal dark:text-cream">
+                    <div className="text-center font-mono">
                         <LuActivity className="w-12 h-12 text-charcoal dark:text-cream animate-spin mx-auto mb-4" />
-                        <p className="text-charcoal/80 dark:text-cream/80 font-bold uppercase tracking-wider">Loading your history...</p>
+                        <p className="font-bold uppercase tracking-wider text-xs">Syncing logs and trophies history...</p>
                     </div>
                 </div>
             </DashboardLayout>
@@ -101,134 +101,99 @@ const NegotiationHistory = () => {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-cream dark:bg-navy py-8 px-4 font-body">
-                <div className="max-w-7xl mx-auto">
+            <div className="min-h-screen bg-cream dark:bg-navy py-8 px-6 font-body text-charcoal dark:text-cream transition-colors duration-300">
+                <div className="max-w-7xl mx-auto space-y-6">
                     {/* Header */}
-                    <div className="mb-8">
-                        <button
-                            onClick={() => navigate('/salary-negotiation')}
-                            className="flex items-center gap-2 px-4 py-2 mb-4 text-charcoal dark:text-cream hover:bg-white dark:hover:bg-navy-light border-2 border-transparent hover:border-charcoal dark:hover:border-cream/40 rounded-md transition-all font-bold uppercase tracking-wider text-sm cursor-pointer"
-                        >
-                            <LuArrowLeft className="w-5 h-5" />
-                            <span>Back to Scenarios</span>
-                        </button>
-                        
-                        <h1 className="text-3xl md:text-4xl font-display font-bold text-charcoal dark:text-cream mb-2 uppercase tracking-wider">
-                            Negotiation History
-                        </h1>
-                        <p className="text-charcoal/80 dark:text-cream/80 font-medium">
-                            Track your progress and improve your negotiation skills
-                        </p>
+                    <div className="card-editorial p-6 bg-white dark:bg-navy-light flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => navigate('/salary-negotiation')}
+                                className="w-10 h-10 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy text-charcoal dark:text-cream rounded-sm flex items-center justify-center shadow-[2px_2px_0px_0px_var(--color-shadow)] hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
+                            >
+                                <LuArrowLeft className="w-5 h-5" strokeWidth={2.5} />
+                            </button>
+                            <div>
+                                <h1 className="text-3xl font-display font-bold text-charcoal dark:text-cream uppercase tracking-wider">Negotiation History</h1>
+                                <p className="text-[10px] font-mono font-bold text-charcoal/60 dark:text-cream/60 uppercase tracking-widest mt-1">
+                                    Assess previous salary counter profiles and details.
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Analytics Dashboard */}
+                    {/* Analytics metrics */}
                     {analytics && (
                         <>
-                            {/* Key Metrics */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                                <div className="bg-white dark:bg-navy-light border-2 border-charcoal/20 dark:border-cream/20 rounded-md p-6 shadow-sm hover:border-charcoal dark:hover:border-cream/40 transition-colors">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-3 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md">
-                                            <LuActivity className="w-6 h-6 text-charcoal dark:text-cream" />
+                            {/* Key Stats Cards Grid */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {[
+                                    { label: 'Total Simulations', value: analytics.totalNegotiations, sub: `${analytics.completedNegotiations} completed`, icon: LuActivity },
+                                    { label: 'Avg CTC Gained', value: `${analytics.avgImprovement}%`, sub: 'Across simulations', icon: LuTrendingUp },
+                                    { label: 'Confidence Score', value: `${analytics.avgConfidence}/100`, sub: 'Recruiter rating', icon: LuTarget },
+                                    { label: 'Activity Streak', value: `${analytics.streak} Days`, sub: 'Streak multiplier', icon: LuFlame }
+                                ].map((card, idx) => {
+                                    const IconComp = card.icon;
+                                    return (
+                                        <div key={idx} className="card-editorial p-6 bg-white dark:bg-navy-light flex flex-col justify-between">
+                                            <div className="flex items-center justify-between gap-3 mb-4">
+                                                <div>
+                                                    <span className="text-[9px] font-mono font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-widest">{card.label}</span>
+                                                    <h3 className="text-2xl font-display font-bold text-charcoal dark:text-cream mt-1">{card.value}</h3>
+                                                </div>
+                                                <div className="w-10 h-10 border-2 border-charcoal/20 bg-cream dark:bg-navy rounded-sm flex items-center justify-center shadow-[1.5px_1.5px_0px_0px_var(--color-shadow)]">
+                                                    <IconComp className="w-5 h-5 text-charcoal/60 dark:text-cream/60" />
+                                                </div>
+                                            </div>
+                                            <div className="text-[9px] font-mono font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-widest border-t border-dashed border-charcoal/10 dark:border-cream/10 pt-2.5 mt-auto">
+                                                {card.sub}
+                                            </div>
                                         </div>
-                                        <div>
-                                            <div className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider">Total Negotiations</div>
-                                            <div className="text-2xl font-display font-bold text-charcoal dark:text-cream">{analytics.totalNegotiations}</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-xs text-charcoal/80 dark:text-cream/80 font-medium mt-1">
-                                        {analytics.completedNegotiations} completed
-                                    </div>
-                                </div>
-
-                                <div className="bg-white dark:bg-navy-light border-2 border-charcoal/20 dark:border-cream/20 rounded-md p-6 shadow-sm hover:border-charcoal dark:hover:border-cream/40 transition-colors">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-3 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md">
-                                            <LuTrendingUp className="w-6 h-6 text-charcoal dark:text-cream" />
-                                        </div>
-                                        <div>
-                                            <div className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider">Avg Improvement</div>
-                                            <div className="text-2xl font-display font-bold text-charcoal dark:text-cream">{analytics.avgImprovement}%</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-xs text-charcoal/80 dark:text-cream/80 font-medium mt-1">
-                                        Across all negotiations
-                                    </div>
-                                </div>
-
-                                <div className="bg-white dark:bg-navy-light border-2 border-charcoal/20 dark:border-cream/20 rounded-md p-6 shadow-sm hover:border-charcoal dark:hover:border-cream/40 transition-colors">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-3 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md">
-                                            <LuTarget className="w-6 h-6 text-charcoal dark:text-cream" />
-                                        </div>
-                                        <div>
-                                            <div className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider">Avg Confidence</div>
-                                            <div className="text-2xl font-display font-bold text-charcoal dark:text-cream">{analytics.avgConfidence}/100</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-xs text-charcoal/80 dark:text-cream/80 font-medium mt-1">
-                                        Confidence score
-                                    </div>
-                                </div>
-
-                                <div className="bg-white dark:bg-navy-light border-2 border-charcoal/20 dark:border-cream/20 rounded-md p-6 shadow-sm hover:border-charcoal dark:hover:border-cream/40 transition-colors">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-3 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md">
-                                            <LuFlame className="w-6 h-6 text-charcoal dark:text-cream" />
-                                        </div>
-                                        <div>
-                                            <div className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider">Current Streak</div>
-                                            <div className="text-2xl font-display font-bold text-charcoal dark:text-cream">{analytics.streak} days</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-xs text-charcoal/80 dark:text-cream/80 font-medium mt-1">
-                                        Keep it going!
-                                    </div>
-                                </div>
+                                    );
+                                })}
                             </div>
 
-                            {/* Achievements */}
-                            {analytics.achievements.length > 0 && (
-                                <div className="card-editorial p-6 bg-white dark:bg-navy-light mb-8">
-                                    <h2 className="text-xl font-display font-bold text-charcoal dark:text-cream mb-4 flex items-center gap-2 uppercase tracking-wider">
-                                        <LuTrophy className="w-6 h-6 text-charcoal dark:text-cream" />
-                                        Achievements
+                            {/* Achievements Cards */}
+                            {analytics.achievements?.length > 0 && (
+                                <div className="card-editorial p-6 bg-white dark:bg-navy-light">
+                                    <h2 className="text-lg font-display font-bold text-charcoal dark:text-cream mb-4 flex items-center gap-2 uppercase tracking-wide border-b border-dashed border-charcoal/10 pb-3">
+                                        <LuTrophy className="w-5.5 h-5.5 text-charcoal/60" />
+                                        <span>Earned Badges</span>
                                     </h2>
                                     <div className="flex flex-wrap gap-3">
                                         {analytics.achievements.map((achievement, idx) => (
                                             <div
                                                 key={idx}
-                                                className="flex items-center gap-2 px-4 py-2 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md"
+                                                className="flex items-center gap-2.5 px-4 py-2.5 bg-cream dark:bg-navy border-2 border-charcoal/15 dark:border-cream/15 rounded-sm shadow-[1.5px_1.5px_0px_0px_var(--color-shadow)]"
                                             >
-                                                <span className="text-2xl">{achievement.icon}</span>
-                                                <span className="font-bold text-charcoal dark:text-cream uppercase tracking-wider text-sm">{achievement.name}</span>
+                                                <span className="text-xl flex-shrink-0">{achievement.icon}</span>
+                                                <span className="font-mono font-bold text-[10px] text-charcoal dark:text-cream uppercase tracking-wider">{achievement.name}</span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                             )}
 
-                            {/* Top Tactics */}
-                            {analytics.topTactics.length > 0 && (
-                                <div className="card-editorial p-6 bg-white dark:bg-navy-light mb-8">
-                                    <h2 className="text-xl font-display font-bold text-charcoal dark:text-cream mb-4 flex items-center gap-2 uppercase tracking-wider">
-                                        <LuStar className="w-6 h-6 text-charcoal dark:text-cream" />
-                                        Your Top Tactics
+                            {/* Top Tactics progress charts */}
+                            {analytics.topTactics?.length > 0 && (
+                                <div className="card-editorial p-6 bg-white dark:bg-navy-light">
+                                    <h2 className="text-lg font-display font-bold text-charcoal dark:text-cream mb-4 flex items-center gap-2 uppercase tracking-wide border-b border-dashed border-charcoal/10 pb-3">
+                                        <LuStar className="w-5.5 h-5.5 text-charcoal/60" />
+                                        <span>Valued Tactics Utilized</span>
                                     </h2>
-                                    <div className="space-y-3">
+                                    <div className="space-y-4">
                                         {analytics.topTactics.map((tactic, idx) => (
-                                            <div key={idx} className="flex items-center justify-between">
-                                                <span className="text-charcoal dark:text-cream font-bold text-sm uppercase tracking-wider">
+                                            <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                                <span className="text-[10px] font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wide w-48 truncate">
                                                     {tactic.tactic.replace('-', ' ')}
                                                 </span>
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-32 h-2 bg-charcoal/10 dark:bg-cream/10 rounded-none overflow-hidden">
+                                                <div className="flex-1 flex items-center gap-3 w-full">
+                                                    <div className="flex-1 h-3 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-sm p-[1px]">
                                                         <div
                                                             className="h-full bg-charcoal dark:bg-cream"
                                                             style={{ width: `${(tactic.count / analytics.totalNegotiations) * 100}%` }}
                                                         />
                                                     </div>
-                                                    <span className="text-sm font-bold text-charcoal dark:text-cream w-8 text-right">
+                                                    <span className="text-xs font-mono font-bold text-charcoal dark:text-cream w-8 text-right">
                                                         {tactic.count}
                                                     </span>
                                                 </div>
@@ -240,22 +205,22 @@ const NegotiationHistory = () => {
                         </>
                     )}
 
-                    {/* Negotiations List */}
+                    {/* Simulations list */}
                     <div className="card-editorial p-6 bg-white dark:bg-navy-light">
-                        <h2 className="text-xl font-display font-bold text-charcoal dark:text-cream mb-6 flex items-center gap-2 uppercase tracking-wider">
-                            <LuCalendar className="w-6 h-6 text-charcoal dark:text-cream" />
-                            All Negotiations
+                        <h2 className="text-lg font-display font-bold text-charcoal dark:text-cream mb-6 flex items-center gap-2 uppercase tracking-wide border-b border-dashed border-charcoal/10 pb-3">
+                            <LuCalendar className="w-5.5 h-5.5 text-charcoal/60" />
+                            <span>Simulation Log Archive</span>
                         </h2>
 
                         {negotiations.length === 0 ? (
-                            <div className="text-center py-12">
-                                <LuActivity className="w-16 h-16 text-charcoal/20 dark:text-cream/20 mx-auto mb-4" />
-                                <p className="text-charcoal/80 dark:text-cream/80 font-medium mb-4">No negotiations yet</p>
+                            <div className="text-center py-12 bg-cream dark:bg-navy rounded-sm border-2 border-dashed border-charcoal/20">
+                                <LuActivity className="w-12 h-12 text-charcoal/30 dark:text-cream/30 mx-auto mb-3" />
+                                <p className="text-xs font-mono font-bold text-charcoal/60 dark:text-cream/60 uppercase tracking-widest mb-4">No archives found</p>
                                 <button
                                     onClick={() => navigate('/salary-negotiation')}
-                                    className="px-6 py-3 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer border-2 border-charcoal dark:border-cream/40"
+                                    className="px-5 py-2.5 bg-charcoal text-white dark:bg-cream dark:text-navy rounded-sm font-mono font-bold uppercase tracking-wider text-[10px] border-2 border-charcoal hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer shadow-[2px_2px_0px_0px_var(--color-shadow)]"
                                 >
-                                    Start Your First Negotiation
+                                    Launch first simulation
                                 </button>
                             </div>
                         ) : (
@@ -268,62 +233,51 @@ const NegotiationHistory = () => {
                                     return (
                                         <div
                                             key={negotiation._id}
-                                            className="p-6 bg-cream dark:bg-navy border-2 border-charcoal/20 dark:border-cream/20 rounded-md hover:border-charcoal dark:hover:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
+                                            className="p-5 bg-cream dark:bg-navy border-3 border-charcoal/15 dark:border-cream/15 rounded-sm hover:-translate-y-0.5 hover:shadow-[3.5px_3.5px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none cursor-pointer transition-all duration-200 shadow-[2px_2px_0px_0px_var(--color-shadow)] flex flex-col gap-4"
                                             onClick={() => {
                                                 if (negotiation.status === 'in-progress') {
                                                     navigate('/salary-negotiation/simulator', { state: negotiation });
                                                 }
                                             }}
                                         >
-                                            <div className="flex items-start justify-between mb-4">
+                                            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                                                 <div>
-                                                    <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream mb-1 uppercase tracking-wider">
+                                                    <h3 className="text-base font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wide">
                                                         {negotiation.role}
                                                     </h3>
-                                                    <p className="text-sm text-charcoal/80 dark:text-cream/80 font-medium">
+                                                    <p className="text-[10px] font-mono font-bold text-charcoal/60 dark:text-cream/60 uppercase tracking-widest mt-0.5">
                                                         {getScenarioName(negotiation.scenario)} • {negotiation.location}
                                                     </p>
                                                 </div>
-                                                {getStatusBadge(negotiation.status)}
+                                                <div className="flex-shrink-0">
+                                                    {getStatusBadge(negotiation.status)}
+                                                </div>
                                             </div>
 
-                                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                                                <div>
-                                                    <div className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1">Initial Offer</div>
-                                                    <div className="text-sm font-bold text-charcoal dark:text-cream">
-                                                        {formatCurrency(initial)}
+                                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-dashed border-charcoal/10 dark:border-cream/10 pt-4">
+                                                {[
+                                                    { label: 'Initial CTC', value: formatCurrency(initial) },
+                                                    { label: 'Final CTC', value: formatCurrency(final) },
+                                                    { label: 'Improvement', value: negotiation.status !== 'in-progress' ? `+${improvement.toFixed(1)}%` : '-' },
+                                                    { label: 'Archived Date', value: formatDate(negotiation.createdAt) }
+                                                ].map((stat, idx) => (
+                                                    <div key={idx}>
+                                                        <div className="text-[8px] font-mono font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-widest mb-0.5">{stat.label}</div>
+                                                        <div className="text-xs font-mono font-bold text-charcoal dark:text-cream">{stat.value}</div>
                                                     </div>
-                                                </div>
-                                                <div>
-                                                    <div className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1">Final Offer</div>
-                                                    <div className="text-sm font-bold text-charcoal dark:text-cream">
-                                                        {formatCurrency(final)}
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1">Improvement</div>
-                                                    <div className={`text-sm font-bold text-charcoal dark:text-cream`}>
-                                                        {negotiation.status !== 'in-progress' ? `+${improvement.toFixed(1)}%` : '-'}
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider mb-1">Date</div>
-                                                    <div className="text-sm font-bold text-charcoal dark:text-cream">
-                                                        {formatDate(negotiation.createdAt)}
-                                                    </div>
-                                                </div>
+                                                ))}
                                             </div>
 
                                             {negotiation.performance?.confidenceScore && (
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-xs font-bold text-charcoal dark:text-cream uppercase tracking-wider">Confidence:</span>
-                                                    <div className="flex-1 h-2 bg-charcoal/10 dark:bg-cream/10 rounded-none overflow-hidden max-w-xs">
+                                                <div className="flex items-center gap-2.5 border-t border-dashed border-charcoal/10 dark:border-cream/10 pt-3">
+                                                    <span className="text-[9px] font-mono font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-widest">Confidence Index:</span>
+                                                    <div className="flex-1 h-2 bg-charcoal/10 dark:bg-cream/10 border border-charcoal/20 rounded-none overflow-hidden max-w-xs p-[1px]">
                                                         <div
                                                             className="h-full bg-charcoal dark:bg-cream"
                                                             style={{ width: `${negotiation.performance.confidenceScore}%` }}
                                                         />
                                                     </div>
-                                                    <span className="text-xs font-bold text-charcoal dark:text-cream">
+                                                    <span className="text-[10px] font-mono font-bold text-charcoal dark:text-cream">
                                                         {negotiation.performance.confidenceScore}/100
                                                     </span>
                                                 </div>

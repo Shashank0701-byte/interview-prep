@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
     ArrowLeft, Download, Share2, Calendar, Clock, 
-    Eye, Mic, User, Monitor, TrendingUp, TrendingDown,
+    Eye, Mic, User, TrendingUp, TrendingDown,
     CheckCircle, AlertTriangle, Target, BookOpen,
     BarChart3, PieChart, Activity, Award
 } from 'lucide-react';
@@ -23,7 +23,6 @@ const InterviewReport = () => {
     const fetchInterviewReport = async () => {
         try {
             const response = await axiosInstance.get(`/api/ai-interview-coach/${sessionId}`);
-            
             if (response.data.success) {
                 setInterview(response.data.interview);
             }
@@ -37,28 +36,25 @@ const InterviewReport = () => {
     };
 
     const downloadReport = () => {
-        // Generate and download PDF report
-        toast.success('Report downloaded!');
+        toast.success('Report download simulated!');
     };
 
     const shareReport = () => {
-        // Share report functionality
         navigator.clipboard.writeText(window.location.href);
         toast.success('Report link copied to clipboard!');
     };
 
     const scheduleFollowUp = () => {
-        // Navigate to schedule new interview
         navigate('/ai-interview-coach');
-        toast.success('Ready to schedule your next interview!');
+        toast.success('Initiating next session setup!');
     };
 
     if (loading) {
         return (
             <div className="min-h-screen bg-cream dark:bg-navy flex items-center justify-center font-body text-charcoal dark:text-cream">
-                <div className="text-center">
+                <div className="text-center font-mono">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-charcoal dark:border-cream mx-auto mb-4"></div>
-                    <p className="font-bold uppercase tracking-wider text-sm">Loading interview report...</p>
+                    <p className="font-bold uppercase tracking-wider text-xs">Analyzing and compiling report...</p>
                 </div>
             </div>
         );
@@ -67,14 +63,14 @@ const InterviewReport = () => {
     if (!interview) {
         return (
             <div className="min-h-screen bg-cream dark:bg-navy flex items-center justify-center font-body text-charcoal dark:text-cream">
-                <div className="text-center">
+                <div className="text-center font-mono max-w-md p-6 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm shadow-[4px_4px_0px_0px_var(--color-shadow)]">
                     <AlertTriangle className="w-12 h-12 text-charcoal dark:text-cream mx-auto mb-4" />
-                    <p className="font-bold uppercase tracking-wider text-sm">Interview report not found</p>
+                    <p className="font-bold uppercase tracking-wider text-xs">Interview session report not found</p>
                     <button
                         onClick={() => navigate('/ai-interview-coach')}
-                        className="mt-4 bg-charcoal dark:bg-cream text-white dark:text-navy px-4 py-2 rounded-md font-bold uppercase tracking-wider text-sm transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] border-2 border-charcoal dark:border-cream/40"
+                        className="mt-6 w-full bg-charcoal text-white dark:bg-cream dark:text-navy px-4 py-2.5 rounded-sm font-bold uppercase tracking-wider text-xs transition-all duration-200 cursor-pointer hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none border-2 border-charcoal"
                     >
-                        Back to AI Interview Coach
+                        Back to Interview Coach
                     </button>
                 </div>
             </div>
@@ -84,118 +80,98 @@ const InterviewReport = () => {
     const tabs = [
         { id: 'overview', name: 'Overview', icon: BarChart3 },
         { id: 'performance', name: 'Performance', icon: TrendingUp },
-        { id: 'analysis', name: 'Detailed Analysis', icon: Activity },
-        { id: 'recommendations', name: 'Recommendations', icon: Target }
+        { id: 'analysis', name: 'Analysis Log', icon: Activity },
+        { id: 'recommendations', name: 'Next Steps', icon: Target }
     ];
 
     return (
-        <div className="min-h-screen bg-cream dark:bg-navy font-body text-charcoal dark:text-cream">
-            {/* Header */}
-            <div className="bg-cream dark:bg-navy-light border-b-2 border-charcoal/10 dark:border-cream/10">
-                <div className="max-w-7xl mx-auto px-4 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                            <button
-                                onClick={() => navigate('/ai-interview-coach')}
-                                className="p-2 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy rounded-md transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
-                            >
-                                <ArrowLeft className="w-5 h-5 text-charcoal dark:text-cream" />
-                            </button>
-                            <div>
-                                <h1 className="text-2xl font-display font-bold text-charcoal dark:text-cream">Interview Report</h1>
-                                <p className="text-charcoal/80 dark:text-cream/80 capitalize font-medium">
-                                    {interview.interviewType.replace('-', ' ')} • {interview.industryFocus} • {interview.role.replace('-', ' ')}
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <div className="flex items-center space-x-3">
-                            <button
-                                onClick={shareReport}
-                                className="flex items-center space-x-2 px-4 py-2 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy text-charcoal dark:text-cream rounded-md font-bold uppercase tracking-wider text-sm transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
-                            >
-                                <Share2 className="w-4 h-4" />
-                                <span>Share</span>
-                            </button>
-                            <button
-                                onClick={downloadReport}
-                                className="flex items-center space-x-2 px-4 py-2 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy text-charcoal dark:text-cream rounded-md font-bold uppercase tracking-wider text-sm transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
-                            >
-                                <Download className="w-4 h-4" />
-                                <span>Download</span>
-                            </button>
-                            <button
-                                onClick={scheduleFollowUp}
-                                className="flex items-center space-x-2 px-4 py-2 border-2 border-charcoal dark:border-cream bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md font-bold uppercase tracking-wider text-sm transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
-                            >
-                                <Calendar className="w-4 h-4" />
-                                <span>Schedule Follow-up</span>
-                            </button>
+        <div className="min-h-screen bg-cream dark:bg-navy font-body text-charcoal dark:text-cream p-6 transition-colors duration-300">
+            <div className="max-w-7xl mx-auto">
+                {/* Header Section */}
+                <div className="bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 rounded-sm p-6 mb-6 shadow-[4px_4px_0px_0px_var(--color-shadow)] flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                    <div className="flex items-center space-x-4">
+                        <button
+                            onClick={() => navigate('/ai-interview-coach')}
+                            className="w-10 h-10 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy text-charcoal dark:text-cream rounded-sm flex items-center justify-center shadow-[2px_2px_0px_0px_var(--color-shadow)] hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
+                        >
+                            <ArrowLeft className="w-5 h-5" strokeWidth={2.5} />
+                        </button>
+                        <div>
+                            <h1 className="text-3xl font-display font-bold text-charcoal dark:text-cream uppercase tracking-wide">Interview Report</h1>
+                            <p className="text-[10px] font-mono font-bold text-charcoal/60 dark:text-cream/60 capitalize tracking-widest mt-1">
+                                {interview.interviewType.replace('-', ' ')} • {interview.industryFocus} Focus • {interview.role.replace('-', ' ')}
+                            </p>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div className="max-w-7xl mx-auto px-4 py-6">
-                {/* Session Info */}
-                <div className="card-editorial p-6 mb-6">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center">
-                                <Calendar className="w-5 h-5 text-charcoal dark:text-cream" />
-                            </div>
-                            <div>
-                                <p className="text-sm font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80">Date</p>
-                                <p className="font-display font-bold">{new Date(interview.createdAt).toLocaleDateString()}</p>
-                            </div>
-                        </div>
-                        
-                        <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center">
-                                <Clock className="w-5 h-5 text-charcoal dark:text-cream" />
-                            </div>
-                            <div>
-                                <p className="text-sm font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80">Duration</p>
-                                <p className="font-display font-bold">{interview.totalDuration || interview.duration} min</p>
-                            </div>
-                        </div>
-                        
-                        <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center">
-                                <User className="w-5 h-5 text-charcoal dark:text-cream" />
-                            </div>
-                            <div>
-                                <p className="text-sm font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80">Interviewer</p>
-                                <p className="font-display font-bold">{interview.aiPersona?.name}</p>
-                            </div>
-                        </div>
-                        
-                        <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-charcoal dark:bg-cream border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center">
-                                <Award className="w-5 h-5 text-white dark:text-navy" />
-                            </div>
-                            <div>
-                                <p className="text-sm font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80">Overall Score</p>
-                                <p className="font-display font-bold text-2xl">{interview.scores?.overall || 0}%</p>
-                            </div>
-                        </div>
+                    
+                    <div className="flex flex-wrap items-center gap-3">
+                        <button
+                            onClick={shareReport}
+                            className="flex items-center space-x-2 px-4 py-2 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy text-charcoal dark:text-cream rounded-sm font-mono font-bold uppercase tracking-wider text-xs transition-all duration-200 cursor-pointer hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none shadow-[1.5px_1.5px_0px_0px_var(--color-shadow)]"
+                        >
+                            <Share2 className="w-4 h-4" />
+                            <span>Share</span>
+                        </button>
+                        <button
+                            onClick={downloadReport}
+                            className="flex items-center space-x-2 px-4 py-2 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy text-charcoal dark:text-cream rounded-sm font-mono font-bold uppercase tracking-wider text-xs transition-all duration-200 cursor-pointer hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none shadow-[1.5px_1.5px_0px_0px_var(--color-shadow)]"
+                        >
+                            <Download className="w-4 h-4" />
+                            <span>Download</span>
+                        </button>
+                        <button
+                            onClick={scheduleFollowUp}
+                            className="flex items-center space-x-2 px-4 py-2 border-2 border-charcoal dark:border-cream bg-charcoal text-white dark:bg-cream dark:text-navy rounded-sm font-mono font-bold uppercase tracking-wider text-xs transition-all duration-200 cursor-pointer hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none shadow-[2px_2px_0px_0px_var(--color-shadow)]"
+                        >
+                            <Calendar className="w-4 h-4" />
+                            <span>Schedule Follow-up</span>
+                        </button>
                     </div>
                 </div>
 
-                {/* Tabs */}
-                <div className="bg-cream dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] overflow-hidden">
-                    <div className="border-b-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy">
-                        <nav className="flex space-x-8 px-6">
+                {/* Session Info Grid */}
+                <div className="card-editorial p-6 mb-6 bg-white dark:bg-navy-light">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {[
+                            { label: 'Date Conducted', value: new Date(interview.createdAt).toLocaleDateString(), icon: Calendar },
+                            { label: 'Session Duration', value: `${interview.totalDuration || interview.duration || 0} min`, icon: Clock },
+                            { label: 'Conducting AI', value: interview.aiPersona?.name || 'Assigned AI', icon: User },
+                            { label: 'Overall Score', value: `${interview.scores?.overall || 0}%`, icon: Award, highlight: true }
+                        ].map((info, idx) => {
+                            const IconComp = info.icon;
+                            return (
+                                <div key={idx} className="flex items-center space-x-4 border-r last:border-r-0 border-dashed border-charcoal/10 dark:border-cream/10 pr-4 last:pr-0">
+                                    <div className={`w-10 h-10 border-2 rounded-sm flex items-center justify-center shadow-[1.5px_1.5px_0px_0px_var(--color-shadow)] ${
+                                        info.highlight 
+                                            ? 'bg-charcoal text-white dark:bg-cream dark:text-navy border-charcoal' 
+                                            : 'bg-cream dark:bg-navy text-charcoal dark:text-cream border-charcoal/30 dark:border-cream/20'
+                                    }`}>
+                                        <IconComp className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[9px] font-mono font-bold uppercase tracking-wider text-charcoal/50 dark:text-cream/50">{info.label}</p>
+                                        <p className="font-display font-bold text-sm text-charcoal dark:text-cream mt-0.5">{info.value}</p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Tabs Panel */}
+                <div className="bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 rounded-sm shadow-[4px_4px_0px_0px_var(--color-shadow)] overflow-hidden">
+                    <div className="border-b-4 border-charcoal dark:border-cream/40 bg-cream dark:bg-navy">
+                        <nav className="flex flex-wrap">
                             {tabs.map((tab) => {
                                 const Icon = tab.icon;
                                 return (
                                     <button
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
-                                        className={`flex items-center space-x-2 py-4 px-1 border-b-4 font-bold uppercase tracking-wider text-sm transition-colors cursor-pointer ${
+                                        className={`flex items-center space-x-2 py-4 px-6 border-r-2 border-charcoal dark:border-cream/20 font-mono font-bold uppercase tracking-wider text-xs transition-colors cursor-pointer ${
                                             activeTab === tab.id
-                                                ? 'border-charcoal dark:border-cream text-charcoal dark:text-cream'
-                                                : 'border-transparent text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream hover:border-charcoal/20 dark:hover:border-cream/20'
+                                                ? 'bg-white text-charcoal dark:bg-navy-light dark:text-cream'
+                                                : 'text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream'
                                         }`}
                                     >
                                         <Icon className="w-4 h-4" />
@@ -206,7 +182,7 @@ const InterviewReport = () => {
                         </nav>
                     </div>
 
-                    <div className="p-6 bg-cream dark:bg-navy-light">
+                    <div className="p-6 bg-cream dark:bg-navy">
                         {activeTab === 'overview' && <OverviewTab interview={interview} />}
                         {activeTab === 'performance' && <PerformanceTab interview={interview} />}
                         {activeTab === 'analysis' && <AnalysisTab interview={interview} />}
@@ -223,55 +199,35 @@ const OverviewTab = ({ interview }) => {
     
     return (
         <div className="space-y-6">
-            {/* Score Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <ScoreCard
-                    title="Eye Contact"
-                    score={scores.eyeContact || 0}
-                    icon={Eye}
-                    color="charcoal"
-                />
-                <ScoreCard
-                    title="Voice Clarity"
-                    score={scores.voiceClarity || 0}
-                    icon={Mic}
-                    color="charcoal"
-                />
-                <ScoreCard
-                    title="Confidence"
-                    score={scores.confidence || 0}
-                    icon={TrendingUp}
-                    color="charcoal"
-                />
-                <ScoreCard
-                    title="Professionalism"
-                    score={scores.professionalism || 0}
-                    icon={User}
-                    color="charcoal"
-                />
+            {/* Score Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <ScoreCard title="Eye Contact" score={scores.eyeContact || 0} icon={Eye} />
+                <ScoreCard title="Voice Clarity" score={scores.voiceClarity || 0} icon={Mic} />
+                <ScoreCard title="Confidence" score={scores.confidence || 0} icon={TrendingUp} />
+                <ScoreCard title="Professionalism" score={scores.professionalism || 0} icon={User} />
             </div>
 
             {/* Overall Performance */}
-            <div className="card-editorial p-6">
-                <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream mb-4">Overall Performance</h3>
-                <div className="flex items-center space-x-6">
-                    <div className="relative w-32 h-32">
+            <div className="card-editorial p-6 bg-white dark:bg-navy-light">
+                <h3 className="text-xs font-mono font-bold text-charcoal/50 dark:text-cream/50 uppercase tracking-widest mb-4 border-b border-dashed border-charcoal/10 pb-2">Overall Assessment</h3>
+                <div className="flex flex-col md:flex-row items-center gap-8">
+                    <div className="relative w-32 h-32 flex-shrink-0">
                         <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
                             <circle
                                 cx="60"
                                 cy="60"
                                 r="50"
                                 stroke="currentColor"
-                                strokeWidth="8"
+                                strokeWidth="10"
                                 fill="none"
-                                className="text-charcoal/20 dark:text-cream/20"
+                                className="text-charcoal/10 dark:text-cream/10"
                             />
                             <circle
                                 cx="60"
                                 cy="60"
                                 r="50"
                                 stroke="currentColor"
-                                strokeWidth="8"
+                                strokeWidth="10"
                                 fill="none"
                                 strokeDasharray={`${(scores.overall || 0) * 3.14} 314`}
                                 className="text-charcoal dark:text-cream"
@@ -283,90 +239,68 @@ const OverviewTab = ({ interview }) => {
                         </div>
                     </div>
                     
-                    <div className="flex-1">
-                        <div className="space-y-4">
-                            <div>
-                                <div className="flex justify-between items-center mb-1">
-                                    <span className="text-sm font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80">Technical Skills</span>
-                                    <span className="font-display font-bold">{scores.technical || 0}%</span>
+                    <div className="flex-1 w-full space-y-4">
+                        {[
+                            { name: 'Technical Skills', val: scores.technical || 0 },
+                            { name: 'Communication Style', val: scores.communication || 0 },
+                            { name: 'Body Language', val: scores.bodyLanguage || 0 }
+                        ].map((sc, idx) => (
+                            <div key={idx}>
+                                <div className="flex justify-between items-center mb-1 text-xs font-mono font-bold">
+                                    <span className="text-charcoal/80 dark:text-cream/80 uppercase tracking-wider">{sc.name}</span>
+                                    <span>{sc.val}%</span>
                                 </div>
-                                <div className="w-full bg-cream dark:bg-navy-input border-2 border-charcoal dark:border-cream/40 rounded-md h-3 p-[1px]">
+                                <div className="w-full bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-sm h-3.5 p-[1px]">
                                     <div 
-                                        className="bg-charcoal dark:bg-cream h-full rounded-sm transition-all duration-1000"
-                                        style={{ width: `${scores.technical || 0}%` }}
+                                        className="bg-charcoal dark:bg-cream h-full rounded-none transition-all duration-1000"
+                                        style={{ width: `${sc.val}%` }}
                                     ></div>
                                 </div>
                             </div>
-                            
-                            <div>
-                                <div className="flex justify-between items-center mb-1">
-                                    <span className="text-sm font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80">Communication</span>
-                                    <span className="font-display font-bold">{scores.communication || 0}%</span>
-                                </div>
-                                <div className="w-full bg-cream dark:bg-navy-input border-2 border-charcoal dark:border-cream/40 rounded-md h-3 p-[1px]">
-                                    <div 
-                                        className="bg-charcoal dark:bg-cream h-full rounded-sm transition-all duration-1000"
-                                        style={{ width: `${scores.communication || 0}%` }}
-                                    ></div>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <div className="flex justify-between items-center mb-1">
-                                    <span className="text-sm font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80">Body Language</span>
-                                    <span className="font-display font-bold">{scores.bodyLanguage || 0}%</span>
-                                </div>
-                                <div className="w-full bg-cream dark:bg-navy-input border-2 border-charcoal dark:border-cream/40 rounded-md h-3 p-[1px]">
-                                    <div 
-                                        className="bg-charcoal dark:bg-cream h-full rounded-sm transition-all duration-1000"
-                                        style={{ width: `${scores.bodyLanguage || 0}%` }}
-                                    ></div>
-                                </div>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>
 
             {/* Quick Insights */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="card-editorial p-6">
-                    <div className="flex items-center space-x-3 mb-4">
-                        <CheckCircle className="w-6 h-6 text-charcoal dark:text-cream" />
-                        <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream">Strengths</h3>
+                <div className="card-editorial p-6 bg-white dark:bg-navy-light">
+                    <div className="flex items-center space-x-2.5 mb-4 border-b border-dashed border-charcoal/10 pb-3">
+                        <CheckCircle className="w-5 h-5 text-charcoal dark:text-cream" strokeWidth={2.5} />
+                        <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-charcoal dark:text-cream">Strengths</h3>
                     </div>
-                    <ul className="space-y-2">
-                        {interview.report?.strengths?.map((strength, index) => (
-                            <li key={index} className="text-charcoal/80 dark:text-cream/80 flex items-start space-x-2 font-medium">
-                                <span className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full mt-2 flex-shrink-0"></span>
-                                <span>{strength}</span>
+                    <ul className="space-y-3 font-body text-xs font-bold leading-relaxed text-charcoal/80 dark:text-cream/80">
+                        {interview.report?.strengths?.map((str, idx) => (
+                            <li key={idx} className="flex items-start space-x-2">
+                                <span className="w-2 h-2 bg-charcoal dark:bg-cream rounded-none mt-1.5 flex-shrink-0"></span>
+                                <span>{str}</span>
                             </li>
-                        )) || [
-                            <li key="default" className="text-charcoal/80 dark:text-cream/80 flex items-start space-x-2 font-medium">
-                                <span className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full mt-2 flex-shrink-0"></span>
-                                <span>Maintained good composure throughout the interview</span>
+                        )) || (
+                            <li className="flex items-start space-x-2">
+                                <span className="w-2 h-2 bg-charcoal dark:bg-cream rounded-none mt-1.5 flex-shrink-0"></span>
+                                <span>Pacing metrics were optimal and structure criteria were validated.</span>
                             </li>
-                        ]}
+                        )}
                     </ul>
                 </div>
 
-                <div className="card-editorial p-6">
-                    <div className="flex items-center space-x-3 mb-4">
-                        <Target className="w-6 h-6 text-charcoal dark:text-cream" />
-                        <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream">Areas for Improvement</h3>
+                <div className="card-editorial p-6 bg-white dark:bg-navy-light">
+                    <div className="flex items-center space-x-2.5 mb-4 border-b border-dashed border-charcoal/10 pb-3">
+                        <Target className="w-5 h-5 text-charcoal dark:text-cream" strokeWidth={2.5} />
+                        <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-charcoal dark:text-cream">Areas to Refine</h3>
                     </div>
-                    <ul className="space-y-2">
-                        {interview.report?.improvements?.map((improvement, index) => (
-                            <li key={index} className="text-charcoal/80 dark:text-cream/80 flex items-start space-x-2 font-medium">
-                                <span className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full mt-2 flex-shrink-0"></span>
-                                <span>{improvement}</span>
+                    <ul className="space-y-3 font-body text-xs font-bold leading-relaxed text-charcoal/80 dark:text-cream/80">
+                        {interview.report?.improvements?.map((imp, idx) => (
+                            <li key={idx} className="flex items-start space-x-2">
+                                <span className="w-2 h-2 bg-charcoal dark:bg-cream rounded-none mt-1.5 flex-shrink-0"></span>
+                                <span>{imp}</span>
                             </li>
-                        )) || [
-                            <li key="default" className="text-charcoal/80 dark:text-cream/80 flex items-start space-x-2 font-medium">
-                                <span className="w-2 h-2 bg-charcoal dark:bg-cream rounded-full mt-2 flex-shrink-0"></span>
-                                <span>Practice maintaining consistent eye contact with the camera</span>
+                        )) || (
+                            <li className="flex items-start space-x-2">
+                                <span className="w-2 h-2 bg-charcoal dark:bg-cream rounded-none mt-1.5 flex-shrink-0"></span>
+                                <span>Work on reducing fillers and aligning camera eye contact vectors.</span>
                             </li>
-                        ]}
+                        )}
                     </ul>
                 </div>
             </div>
@@ -376,24 +310,24 @@ const OverviewTab = ({ interview }) => {
 
 const PerformanceTab = ({ interview }) => {
     return (
-        <div className="space-y-6">
-            <div className="text-center py-8">
-                <PieChart className="w-16 h-16 text-charcoal/40 dark:text-cream/40 mx-auto mb-4" />
-                <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream mb-2">Detailed Performance Analysis</h3>
-                <p className="text-charcoal/80 dark:text-cream/80 font-medium">Performance charts and detailed metrics will be displayed here</p>
-            </div>
+        <div className="card-editorial p-8 bg-white dark:bg-navy-light text-center flex flex-col items-center">
+            <PieChart className="w-12 h-12 text-charcoal/40 dark:text-cream/40 mb-4" strokeWidth={2} />
+            <h3 className="text-xs font-mono font-bold text-charcoal dark:text-cream uppercase tracking-widest mb-1">Detailed Charts</h3>
+            <p className="text-[10px] font-mono text-charcoal/60 dark:text-cream/60 uppercase tracking-wider leading-relaxed">
+                Comparative logs and timeline score metrics will populate here upon completing standard evaluation sets.
+            </p>
         </div>
     );
 };
 
 const AnalysisTab = ({ interview }) => {
     return (
-        <div className="space-y-6">
-            <div className="text-center py-8">
-                <Activity className="w-16 h-16 text-charcoal/40 dark:text-cream/40 mx-auto mb-4" />
-                <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream mb-2">Detailed Analysis</h3>
-                <p className="text-charcoal/80 dark:text-cream/80 font-medium">Comprehensive analysis of your interview performance will be displayed here</p>
-            </div>
+        <div className="card-editorial p-8 bg-white dark:bg-navy-light text-center flex flex-col items-center">
+            <Activity className="w-12 h-12 text-charcoal/40 dark:text-cream/40 mb-4" strokeWidth={2} />
+            <h3 className="text-xs font-mono font-bold text-charcoal dark:text-cream uppercase tracking-widest mb-1">AI Diagnostics Timeline</h3>
+            <p className="text-[10px] font-mono text-charcoal/60 dark:text-cream/60 uppercase tracking-wider leading-relaxed">
+                Raw capture markers and noise suppression profiles are archived for structural reviews.
+            </p>
         </div>
     );
 };
@@ -401,68 +335,68 @@ const AnalysisTab = ({ interview }) => {
 const RecommendationsTab = ({ interview }) => {
     return (
         <div className="space-y-6">
-            {/* Next Steps */}
-            <div className="card-editorial p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                    <BookOpen className="w-6 h-6 text-charcoal dark:text-cream" />
-                    <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream">Recommended Next Steps</h3>
+            {/* Recommended Next Steps */}
+            <div className="card-editorial p-6 bg-white dark:bg-navy-light">
+                <div className="flex items-center space-x-2.5 mb-4 border-b border-dashed border-charcoal/10 pb-3">
+                    <BookOpen className="w-5 h-5 text-charcoal dark:text-cream" strokeWidth={2.5} />
+                    <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-charcoal dark:text-cream">Recommended Next Steps</h3>
                 </div>
-                <ul className="space-y-3">
-                    {interview.report?.nextSteps?.map((step, index) => (
-                        <li key={index} className="flex items-start space-x-3">
-                            <span className="flex-shrink-0 w-6 h-6 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md flex items-center justify-center text-sm font-bold border-2 border-charcoal dark:border-cream/40">
-                                {index + 1}
+                <ul className="space-y-3 font-body text-xs font-bold leading-relaxed text-charcoal/80 dark:text-cream/80">
+                    {interview.report?.nextSteps?.map((st, idx) => (
+                        <li key={idx} className="flex items-start space-x-3">
+                            <span className="flex-shrink-0 w-6 h-6 bg-charcoal text-white dark:bg-cream dark:text-navy rounded-sm flex items-center justify-center text-xs font-mono font-bold border-2 border-charcoal">
+                                {idx + 1}
                             </span>
-                            <span className="text-charcoal/80 dark:text-cream/80 font-medium">{step}</span>
+                            <span className="mt-0.5">{st}</span>
                         </li>
-                    )) || [
-                        <li key="default" className="flex items-start space-x-3">
-                            <span className="flex-shrink-0 w-6 h-6 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md flex items-center justify-center text-sm font-bold border-2 border-charcoal dark:border-cream/40">
+                    )) || (
+                        <li className="flex items-start space-x-3">
+                            <span className="flex-shrink-0 w-6 h-6 bg-charcoal text-white dark:bg-cream dark:text-navy rounded-sm flex items-center justify-center text-xs font-mono font-bold border-2 border-charcoal">
                                 1
                             </span>
-                            <span className="text-charcoal/80 dark:text-cream/80 font-medium">Schedule a follow-up interview to practice improvements</span>
+                            <span className="mt-0.5">Schedule a followup simulation focusing on FAANG scenario configurations.</span>
                         </li>
-                    ]}
+                    )}
                 </ul>
             </div>
 
             {/* Practice Recommendations */}
-            <div className="card-editorial p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                    <Target className="w-6 h-6 text-charcoal dark:text-cream" />
-                    <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream">Practice Recommendations</h3>
+            <div className="card-editorial p-6 bg-white dark:bg-navy-light">
+                <div className="flex items-center space-x-2.5 mb-4 border-b border-dashed border-charcoal/10 pb-3">
+                    <Target className="w-5 h-5 text-charcoal dark:text-cream" strokeWidth={2.5} />
+                    <h3 className="text-xs font-mono font-bold uppercase tracking-widest text-charcoal dark:text-cream">Core Tips</h3>
                 </div>
-                <ul className="space-y-2">
-                    {interview.report?.practiceRecommendations?.map((recommendation, index) => (
-                        <li key={index} className="text-charcoal/80 dark:text-cream/80 flex items-start space-x-2 font-medium">
+                <ul className="space-y-3 font-body text-xs font-bold leading-relaxed text-charcoal/80 dark:text-cream/80">
+                    {interview.report?.practiceRecommendations?.map((rec, idx) => (
+                        <li key={idx} className="flex items-start space-x-2">
                             <CheckCircle className="w-4 h-4 text-charcoal dark:text-cream mt-0.5 flex-shrink-0" />
-                            <span>{recommendation}</span>
+                            <span>{rec}</span>
                         </li>
-                    )) || [
-                        <li key="default" className="text-charcoal/80 dark:text-cream/80 flex items-start space-x-2 font-medium">
+                    )) || (
+                        <li className="flex items-start space-x-2">
                             <CheckCircle className="w-4 h-4 text-charcoal dark:text-cream mt-0.5 flex-shrink-0" />
-                            <span>Practice technical questions in your focus areas</span>
+                            <span>Align communication formats with standard STAR responses.</span>
                         </li>
-                    ]}
+                    )}
                 </ul>
             </div>
         </div>
     );
 };
 
-const ScoreCard = ({ title, score, icon: Icon, color }) => {
+const ScoreCard = ({ title, score, icon: Icon }) => {
     return (
-        <div className="card-editorial p-4 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-default">
+        <div className="card-editorial p-4 bg-white dark:bg-navy-light hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-default shadow-[2px_2px_0px_0px_var(--color-shadow)]">
             <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center text-charcoal dark:text-cream">
-                    <Icon className="w-5 h-5" />
+                <div className="w-9 h-9 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/20 rounded-sm flex items-center justify-center text-charcoal dark:text-cream shadow-[1px_1px_0px_0px_var(--color-shadow)]">
+                    <Icon className="w-4.5 h-4.5" />
                 </div>
-                <span className="text-2xl font-display font-bold text-charcoal dark:text-cream">{score}%</span>
+                <span className="text-xl font-display font-bold text-charcoal dark:text-cream">{score}%</span>
             </div>
-            <h3 className="text-sm font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80">{title}</h3>
-            <div className="mt-2 w-full bg-cream dark:bg-navy-input border-2 border-charcoal dark:border-cream/40 rounded-md h-3 p-[1px]">
+            <h3 className="text-[10px] font-mono font-bold uppercase tracking-wider text-charcoal/60 dark:text-cream/60">{title}</h3>
+            <div className="mt-2.5 w-full bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-sm h-3 p-[1px]">
                 <div 
-                    className="h-full rounded-sm transition-all duration-1000 bg-charcoal dark:bg-cream"
+                    className="h-full rounded-none bg-charcoal dark:bg-cream"
                     style={{ width: `${score}%` }}
                 ></div>
             </div>

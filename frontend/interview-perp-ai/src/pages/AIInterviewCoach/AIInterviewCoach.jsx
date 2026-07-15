@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Video, Mic, MicOff, VideoOff, Settings, Play, Clock, Users, Award, ArrowLeft, BarChart3 } from 'lucide-react';
+import { Video, Clock, Users, Award, ArrowLeft, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axiosInstance from '../../utils/axiosInstance';
 import AIInterviewAnalytics from '../../components/Analytics/AIInterviewAnalytics';
@@ -38,7 +38,6 @@ const AIInterviewCoach = () => {
             }
         } catch (error) {
             console.error('Error fetching interview history:', error);
-            // Don't show error toast for initial load if no interviews exist
         }
     };
 
@@ -60,34 +59,17 @@ const AIInterviewCoach = () => {
             console.log('Creating interview session with config:', selectedConfig);
             const response = await axiosInstance.post('/api/ai-interview-coach/create', selectedConfig);
             
-            console.log('Create interview response:', response.data);
-            
             if (response.data.success) {
                 toast.success('Interview session created!');
                 navigate(`/ai-interview/${response.data.interview.sessionId}`);
             }
         } catch (error) {
             console.error('Error creating interview session:', error);
-            console.error('Create interview error details:', error.response?.data);
             toast.error('Failed to create interview session');
         } finally {
             setIsCreating(false);
         }
     };
-
-    // // Test function to verify backend connection
-    // const testBackendConnection = async () => {
-    //     try {
-    //         console.log('Testing backend connection...');
-    //         const response = await axiosInstance.get('/api/test');
-    //         console.log('Backend test response:', response.data);
-    //         toast.success('Backend connection successful!');
-    //     } catch (error) {
-    //         console.error('Backend connection test failed:', error);
-    //         console.error('Test error details:', error.response?.data);
-    //         toast.error('Backend connection failed');
-    //     }
-    // };
 
     const interviewTypes = [
         { id: 'technical', name: 'Technical Interview', icon: '💻', description: 'Coding and system design questions' },
@@ -112,286 +94,264 @@ const AIInterviewCoach = () => {
     ];
 
     const difficulties = [
-        { id: 'junior', name: 'Junior (0-2 years)', color: 'text-slate-600' },
-        { id: 'mid-level', name: 'Mid-Level (3-5 years)', color: 'text-slate-700' },
-        { id: 'senior', name: 'Senior (5+ years)', color: 'text-slate-800' },
-        { id: 'principal', name: 'Principal/Staff', color: 'text-slate-900' }
+        { id: 'junior', name: 'Junior (0-2 years)' },
+        { id: 'mid-level', name: 'Mid-Level (3-5 years)' },
+        { id: 'senior', name: 'Senior (5+ years)' },
+        { id: 'principal', name: 'Principal/Staff' }
     ];
 
     return (
-        <div className="min-h-screen bg-cream dark:bg-navy font-body p-4 transition-colors duration-300">
+        <div className="min-h-screen bg-cream dark:bg-navy font-body p-6 text-charcoal dark:text-cream transition-colors duration-300">
             <div className="max-w-7xl mx-auto">
                 {/* Header with Back Button */}
-                <div className="relative mb-8">
-                    {/* Back Button */}
+                <div className="relative mb-8 flex flex-col items-center">
                     <button
                         onClick={() => navigate('/dashboard')}
-                        className="absolute left-0 top-0 flex items-center space-x-2 text-charcoal dark:text-cream hover:text-charcoal/80 dark:hover:text-cream/80 transition-colors duration-200 group cursor-pointer hover:-translate-y-1"
+                        className="absolute left-0 top-0 w-10 h-10 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-sm flex items-center justify-center shadow-[2px_2px_0px_0px_var(--color-shadow)] hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
+                        title="Back to Dashboard"
                     >
-                        <div className="p-2 rounded-md hover:bg-charcoal/5 dark:hover:bg-cream/10 transition-colors duration-200">
-                            <ArrowLeft className="w-5 h-5 group-hover:transform group-hover:-translate-x-1 transition-transform duration-200" />
-                        </div>
-                        <span className="font-bold uppercase tracking-wider text-sm">Back to Dashboard</span>
+                        <ArrowLeft className="w-5 h-5" strokeWidth={3} />
                     </button>
                     
-                    {/* Centered Header Content */}
-                    <div className="text-center">
-                        <div className="inline-flex items-center justify-center w-16 h-16 bg-charcoal dark:bg-navy-light border-2 border-transparent dark:border-cream/40 rounded-md mb-4 shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)]">
-                            <Video className="w-8 h-8 text-white dark:text-cream" />
+                    <div className="text-center mt-12 sm:mt-0">
+                        <div className="inline-flex items-center justify-center w-14 h-14 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm mb-4 shadow-[4px_4px_0px_0px_var(--color-shadow)]">
+                            <Video className="w-7 h-7 text-charcoal dark:text-cream" strokeWidth={2.5} />
                         </div>
-                        <h1 className="text-4xl font-display font-bold text-charcoal dark:text-cream mb-2 transition-colors duration-300">
+                        <h1 className="text-4xl font-display font-bold text-charcoal dark:text-cream uppercase tracking-wider">
                             AI Interview Coach
                         </h1>
-                        <p className="text-charcoal/80 dark:text-cream/80 text-lg max-w-2xl mx-auto transition-colors duration-300">
-                            Practice with our AI interviewer that analyzes your performance in real-time. 
-                            Get feedback on eye contact, voice clarity, confidence, and technical responses.
+                        <p className="text-charcoal/70 dark:text-cream/70 text-sm max-w-2xl mx-auto leading-relaxed mt-2">
+                            Practice with our intelligent interviewer that assesses eye contact, speech clarity, structure, and pacing in real-time.
                         </p>
                         
-                        {/* Analytics Toggle */}
-                        <div className="mt-6 flex justify-center">
-                            <div className="flex bg-white dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md p-1 shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)]">
+                        {/* Tab Switcher */}
+                        <div className="mt-8 flex justify-center">
+                            <div className="flex bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm p-1 shadow-[3px_3px_0px_0px_var(--color-shadow)]">
                                 <button
                                     onClick={() => setShowAnalytics(false)}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-md font-bold uppercase tracking-wider text-sm transition-all duration-200 cursor-pointer ${
+                                    className={`flex items-center gap-2 px-4 py-2 border border-transparent rounded-sm font-mono font-bold uppercase tracking-wider text-xs transition-all duration-200 cursor-pointer ${
                                         !showAnalytics
-                                            ? 'bg-charcoal dark:bg-cream text-white dark:text-navy'
-                                            : 'text-charcoal dark:text-cream hover:bg-charcoal/10 dark:hover:bg-cream/10'
+                                            ? 'bg-charcoal text-white dark:bg-cream dark:text-navy'
+                                            : 'text-charcoal dark:text-cream hover:bg-charcoal/5 dark:hover:bg-navy-input'
                                     }`}
                                 >
                                     <Video className="w-4 h-4" />
-                                    Interview Setup
+                                    <span>Setup Coach</span>
                                 </button>
                                 <button
                                     onClick={() => setShowAnalytics(true)}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-md font-bold uppercase tracking-wider text-sm transition-all duration-200 cursor-pointer ${
+                                    className={`flex items-center gap-2 px-4 py-2 border border-transparent rounded-sm font-mono font-bold uppercase tracking-wider text-xs transition-all duration-200 cursor-pointer ${
                                         showAnalytics
-                                            ? 'bg-charcoal dark:bg-cream text-white dark:text-navy'
-                                            : 'text-charcoal dark:text-cream hover:bg-charcoal/10 dark:hover:bg-cream/10'
+                                            ? 'bg-charcoal text-white dark:bg-cream dark:text-navy'
+                                            : 'text-charcoal dark:text-cream hover:bg-charcoal/5 dark:hover:bg-navy-input'
                                     }`}
                                 >
                                     <BarChart3 className="w-4 h-4" />
-                                    Advanced Analytics
+                                    <span>Lobby Analytics</span>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Conditional Content */}
+                {/* Main Content */}
                 {!showAnalytics ? (
                     <>
-                        {/* Stats Cards */}
+                        {/* Stats Panel */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="card-editorial p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80 transition-colors duration-300">Total Interviews</p>
-                                <p className="text-2xl font-display font-bold text-charcoal dark:text-cream transition-colors duration-300">{stats.totalInterviews}</p>
-                            </div>
-                            <div className="w-12 h-12 bg-cream dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center shadow-[2px_2px_0px_0px_#1A1A1A] dark:shadow-[2px_2px_0px_0px_var(--color-shadow)]">
-                                <Users className="w-6 h-6 text-charcoal dark:text-cream" />
-                            </div>
+                            {[
+                                { label: 'Total Sessions', value: stats.totalInterviews, icon: Users },
+                                { label: 'Average Score', value: `${stats.averageScore}%`, icon: Award },
+                                { label: 'Improvement', value: `${stats.improvementTrend >= 0 ? '+' : ''}${stats.improvementTrend}%`, icon: Clock }
+                            ].map((stat, idx) => {
+                                const IconComp = stat.icon;
+                                return (
+                                    <div key={idx} className="card-editorial p-6 bg-white dark:bg-navy-light">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-charcoal/50 dark:text-cream/50">{stat.label}</p>
+                                                <p className="text-2xl font-display font-bold text-charcoal dark:text-cream mt-1">{stat.value}</p>
+                                            </div>
+                                            <div className="w-10 h-10 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/20 rounded-sm flex items-center justify-center shadow-[2px_2px_0px_0px_var(--color-shadow)]">
+                                                <IconComp className="w-5 h-5 text-charcoal/60 dark:text-cream/60" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
-                    </div>
 
-                    <div className="card-editorial p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80 transition-colors duration-300">Average Score</p>
-                                <p className="text-2xl font-display font-bold text-charcoal dark:text-cream transition-colors duration-300">{stats.averageScore}%</p>
-                            </div>
-                            <div className="w-12 h-12 bg-cream dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center shadow-[2px_2px_0px_0px_#1A1A1A] dark:shadow-[2px_2px_0px_0px_var(--color-shadow)]">
-                                <Award className="w-6 h-6 text-charcoal dark:text-cream" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="card-editorial p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80 transition-colors duration-300">Improvement</p>
-                                <p className={`text-2xl font-display font-bold text-charcoal dark:text-cream transition-colors duration-300`}>
-                                    {stats.improvementTrend >= 0 ? '+' : ''}{stats.improvementTrend}%
-                                </p>
-                            </div>
-                            <div className="w-12 h-12 bg-cream dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center shadow-[2px_2px_0px_0px_#1A1A1A] dark:shadow-[2px_2px_0px_0px_var(--color-shadow)]">
-                                <Clock className="w-6 h-6 text-charcoal dark:text-cream" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Configuration Panel */}
-                    <div className="lg:col-span-2">
-                        <div className="card-editorial p-6">
-                            <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-6">Configure Your Interview</h2>
-                            
-                            {/* Interview Type */}
-                            <div className="mb-6">
-                                <h3 className="text-lg font-display font-semibold text-charcoal dark:text-cream mb-3">Interview Type</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    {interviewTypes.map((type) => (
-                                        <div
-                                            key={type.id}
-                                            onClick={() => setSelectedConfig({...selectedConfig, interviewType: type.id})}
-                                            className={`p-4 rounded-md border-2 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
-                                                selectedConfig.interviewType === type.id
-                                                    ? 'border-charcoal dark:border-cream bg-charcoal/5 dark:bg-navy-input shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] translate-y-[-4px]'
-                                                    : 'border-charcoal/20 dark:border-cream/20 bg-white dark:bg-navy-light hover:border-charcoal dark:hover:border-cream/40'
-                                            }`}
-                                        >
-                                            <div className="flex items-center space-x-3">
-                                                <span className="text-2xl">{type.icon}</span>
-                                                <div>
-                                                    <h4 className="font-display font-semibold text-charcoal dark:text-cream">{type.name}</h4>
-                                                    <p className="text-sm text-charcoal/80 dark:text-cream/80">{type.description}</p>
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            {/* Configurations */}
+                            <div className="lg:col-span-2">
+                                <div className="card-editorial p-6 bg-white dark:bg-navy-light">
+                                    <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream uppercase tracking-wide mb-6 border-b border-dashed border-charcoal/10 dark:border-cream/10 pb-4">
+                                        Configure Session Parameters
+                                    </h2>
+                                    
+                                    {/* Interview Type */}
+                                    <div className="mb-6">
+                                        <h3 className="text-xs font-mono font-bold text-charcoal/60 dark:text-cream/60 uppercase tracking-widest mb-3">1. Select Interview Type</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            {interviewTypes.map((type) => (
+                                                <div
+                                                    key={type.id}
+                                                    onClick={() => setSelectedConfig({...selectedConfig, interviewType: type.id})}
+                                                    className={`p-4 rounded-sm border-2 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none ${
+                                                        selectedConfig.interviewType === type.id
+                                                            ? 'border-charcoal dark:border-cream bg-cream dark:bg-navy shadow-[3px_3px_0px_0px_var(--color-shadow)]'
+                                                            : 'border-charcoal/20 dark:border-cream/20 bg-white dark:bg-navy-light hover:border-charcoal/50'
+                                                    }`}
+                                                >
+                                                    <div className="flex items-start space-x-3">
+                                                        <span className="text-xl flex-shrink-0">{type.icon}</span>
+                                                        <div className="min-w-0">
+                                                            <h4 className="font-mono font-bold text-xs text-charcoal dark:text-cream uppercase tracking-wider">{type.name}</h4>
+                                                            <p className="text-[10px] font-medium text-charcoal/60 dark:text-cream/60 mt-1 leading-relaxed">{type.description}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
+                                    </div>
 
-                            {/* Industry Focus */}
-                            <div className="mb-6">
-                                <h3 className="text-lg font-display font-semibold text-charcoal dark:text-cream mb-3">Industry Focus</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    {industryFocus.map((industry) => (
-                                        <div
-                                            key={industry.id}
-                                            onClick={() => setSelectedConfig({...selectedConfig, industryFocus: industry.id})}
-                                            className={`p-4 rounded-md border-2 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
-                                                selectedConfig.industryFocus === industry.id
-                                                    ? 'border-charcoal dark:border-cream bg-charcoal/5 dark:bg-navy-input shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] translate-y-[-4px]'
-                                                    : 'border-charcoal/20 dark:border-cream/20 bg-white dark:bg-navy-light hover:border-charcoal dark:hover:border-cream/40'
-                                            }`}
-                                        >
-                                            <div className="flex items-center space-x-3">
-                                                <span className="text-2xl">{industry.icon}</span>
-                                                <div>
-                                                    <h4 className="font-display font-semibold text-charcoal dark:text-cream">{industry.name}</h4>
-                                                    <p className="text-sm text-charcoal/80 dark:text-cream/80">{industry.description}</p>
+                                    {/* Industry focus */}
+                                    <div className="mb-6">
+                                        <h3 className="text-xs font-mono font-bold text-charcoal/60 dark:text-cream/60 uppercase tracking-widest mb-3">2. Select Target Focus</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            {industryFocus.map((industry) => (
+                                                <div
+                                                    key={industry.id}
+                                                    onClick={() => setSelectedConfig({...selectedConfig, industryFocus: industry.id})}
+                                                    className={`p-4 rounded-sm border-2 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none ${
+                                                        selectedConfig.industryFocus === industry.id
+                                                            ? 'border-charcoal dark:border-cream bg-cream dark:bg-navy shadow-[3px_3px_0px_0px_var(--color-shadow)]'
+                                                            : 'border-charcoal/20 dark:border-cream/20 bg-white dark:bg-navy-light hover:border-charcoal/50'
+                                                    }`}
+                                                >
+                                                    <div className="flex items-start space-x-3">
+                                                        <span className="text-xl flex-shrink-0">{industry.icon}</span>
+                                                        <div className="min-w-0">
+                                                            <h4 className="font-mono font-bold text-xs text-charcoal dark:text-cream uppercase tracking-wider">{industry.name}</h4>
+                                                            <p className="text-[10px] font-medium text-charcoal/60 dark:text-cream/60 mt-1 leading-relaxed">{industry.description}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
+                                    </div>
 
-                            {/* Role & Difficulty */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                <div>
-                                    <h3 className="text-lg font-display font-semibold text-charcoal dark:text-cream mb-3">Role</h3>
-                                    <select
-                                        value={selectedConfig.role}
-                                        onChange={(e) => setSelectedConfig({...selectedConfig, role: e.target.value})}
-                                        className="w-full p-3 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-input text-charcoal dark:text-cream rounded-md focus:ring-2 focus:ring-charcoal dark:focus:ring-cream/40 focus:border-transparent outline-none cursor-pointer hover:shadow-[2px_2px_0px_0px_#1A1A1A] dark:hover:shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-shadow"
-                                    >
-                                        {roles.map((role) => (
-                                            <option key={role.id} value={role.id}>{role.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <h3 className="text-lg font-display font-semibold text-charcoal dark:text-cream mb-3">Difficulty Level</h3>
-                                    <select
-                                        value={selectedConfig.difficulty}
-                                        onChange={(e) => setSelectedConfig({...selectedConfig, difficulty: e.target.value})}
-                                        className="w-full p-3 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-input text-charcoal dark:text-cream rounded-md focus:ring-2 focus:ring-charcoal dark:focus:ring-cream/40 focus:border-transparent outline-none cursor-pointer hover:shadow-[2px_2px_0px_0px_#1A1A1A] dark:hover:shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-shadow"
-                                    >
-                                        {difficulties.map((diff) => (
-                                            <option key={diff.id} value={diff.id}>{diff.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* Duration */}
-                            <div className="mb-6">
-                                <h3 className="text-lg font-display font-semibold text-charcoal dark:text-cream mb-3">Duration</h3>
-                                <div className="flex space-x-3">
-                                    {[15, 30, 45, 60].map((duration) => (
-                                        <button
-                                            key={duration}
-                                            onClick={() => setSelectedConfig({...selectedConfig, duration})}
-                                            className={`px-4 py-2 rounded-md font-bold uppercase tracking-wider text-sm transition-all duration-200 cursor-pointer hover:-translate-y-1 ${
-                                                selectedConfig.duration === duration
-                                                    ? 'bg-charcoal dark:bg-cream text-white dark:text-navy border-2 border-charcoal dark:border-cream shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)]'
-                                                    : 'bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 text-charcoal dark:text-cream hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]'
-                                            }`}
-                                        >
-                                            {duration} min
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Start Button */}
-                            <button
-                                onClick={createInterviewSession}
-                                disabled={isCreating}
-                                className="w-full border-2 border-charcoal dark:border-cream bg-charcoal dark:bg-cream text-white dark:text-navy py-4 px-6 rounded-md font-display font-bold uppercase tracking-wider text-lg hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#1A1A1A] dark:hover:shadow-[6px_6px_0px_0px_var(--color-shadow)] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none flex items-center justify-center space-x-2 cursor-pointer"
-                            >
-                                {isCreating ? (
-                                    <>
-                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white dark:border-navy"></div>
-                                        <span>Creating Session...</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Play className="w-5 h-5" />
-                                        <span>Start AI Interview</span>
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Recent Interviews */}
-                    <div className="lg:col-span-1">
-                        <div className="card-editorial p-6">
-                            <h2 className="text-xl font-display font-bold text-charcoal dark:text-cream mb-4">Recent Interviews</h2>
-                            
-                            {recentInterviews.length === 0 ? (
-                                <div className="text-center py-8">
-                                    <Video className="w-12 h-12 text-charcoal/40 dark:text-cream/40 mx-auto mb-3" />
-                                    <p className="text-charcoal/80 dark:text-cream/80 font-medium">No interviews yet</p>
-                                    <p className="text-sm text-charcoal/60 dark:text-cream/60">Start your first AI interview above</p>
-                                </div>
-                            ) : (
-                                <div className="space-y-3">
-                                    {recentInterviews.map((interview) => (
-                                        <div
-                                            key={interview.sessionId}
-                                            onClick={() => navigate(`/ai-interview/${interview.sessionId}/report`)}
-                                            className="p-4 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] cursor-pointer transition-all duration-200"
-                                        >
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className="font-display font-bold text-charcoal dark:text-cream capitalize">
-                                                    {interview.interviewType.replace('-', ' ')}
-                                                </span>
-                                                <span className="px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider border-2 border-charcoal dark:border-cream/40 bg-cream dark:bg-navy text-charcoal dark:text-cream">
-                                                    {interview.status}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center justify-between text-sm text-charcoal/80 dark:text-cream/80">
-                                                <span className="capitalize font-medium">{interview.industryFocus}</span>
-                                                {interview.scores?.overall && (
-                                                    <span className="font-bold">{interview.scores.overall}%</span>
-                                                )}
-                                            </div>
-                                            <div className="text-xs font-medium text-charcoal/60 dark:text-cream/60 mt-2">
-                                                {new Date(interview.createdAt).toLocaleDateString()}
-                                            </div>
+                                    {/* Role & Level */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                        <div>
+                                            <h3 className="text-xs font-mono font-bold text-charcoal/60 dark:text-cream/60 uppercase tracking-widest mb-2">3. Role Target</h3>
+                                            <select
+                                                value={selectedConfig.role}
+                                                onChange={(e) => setSelectedConfig({...selectedConfig, role: e.target.value})}
+                                                className="w-full px-3 py-2.5 border-2 border-charcoal dark:border-cream/40 bg-cream dark:bg-navy text-charcoal dark:text-cream font-mono font-bold text-xs rounded-sm outline-none cursor-pointer focus:shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-all"
+                                            >
+                                                {roles.map((role) => (
+                                                    <option key={role.id} value={role.id}>{role.name}</option>
+                                                ))}
+                                            </select>
                                         </div>
-                                    ))}
+
+                                        <div>
+                                            <h3 className="text-xs font-mono font-bold text-charcoal/60 dark:text-cream/60 uppercase tracking-widest mb-2">4. Experience Tier</h3>
+                                            <select
+                                                value={selectedConfig.difficulty}
+                                                onChange={(e) => setSelectedConfig({...selectedConfig, difficulty: e.target.value})}
+                                                className="w-full px-3 py-2.5 border-2 border-charcoal dark:border-cream/40 bg-cream dark:bg-navy text-charcoal dark:text-cream font-mono font-bold text-xs rounded-sm outline-none cursor-pointer focus:shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-all"
+                                            >
+                                                {difficulties.map((diff) => (
+                                                    <option key={diff.id} value={diff.id}>{diff.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    {/* Duration selector */}
+                                    <div className="mb-8 border-t border-dashed border-charcoal/10 dark:border-cream/10 pt-4">
+                                        <h3 className="text-xs font-mono font-bold text-charcoal/60 dark:text-cream/60 uppercase tracking-widest mb-3">5. Select Duration</h3>
+                                        <div className="flex flex-wrap gap-2.5">
+                                            {[15, 30, 45, 60].map((duration) => (
+                                                <button
+                                                    key={duration}
+                                                    onClick={() => setSelectedConfig({...selectedConfig, duration})}
+                                                    className={`px-4 py-2 border-2 rounded-sm font-mono font-bold uppercase tracking-wider text-xs transition-all duration-200 cursor-pointer shadow-[2.5px_2.5px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none ${
+                                                        selectedConfig.duration === duration
+                                                            ? 'bg-charcoal text-white border-charcoal dark:bg-cream dark:text-navy dark:border-cream/80'
+                                                            : 'bg-white dark:bg-navy-light text-charcoal dark:text-cream border-charcoal dark:border-cream/40 hover:-translate-y-0.5'
+                                                    }`}
+                                                >
+                                                    {duration} min
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Trigger button */}
+                                    <button
+                                        onClick={createInterviewSession}
+                                        disabled={isCreating}
+                                        className="w-full bg-charcoal text-white dark:bg-cream dark:text-navy border-3 border-charcoal dark:border-cream py-3.5 rounded-sm font-mono font-bold uppercase tracking-widest text-xs hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none transition-all duration-200 disabled:opacity-50 cursor-pointer shadow-[3px_3px_0px_0px_var(--color-shadow)] flex items-center justify-center gap-2"
+                                    >
+                                        {isCreating ? (
+                                            <>
+                                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white dark:border-navy"></div>
+                                                <span>Initializing Coach...</span>
+                                            </>
+                                        ) : (
+                                            <span>Initialize AI Interview Session</span>
+                                        )}
+                                    </button>
                                 </div>
-                            )}
+                            </div>
+
+                            {/* Recent Interviews list */}
+                            <div className="lg:col-span-1">
+                                <div className="card-editorial p-6 bg-white dark:bg-navy-light">
+                                    <h2 className="text-lg font-display font-bold text-charcoal dark:text-cream uppercase tracking-wide mb-4 border-b border-dashed border-charcoal/10 dark:border-cream/10 pb-3">
+                                        Session Log
+                                    </h2>
+                                    
+                                    {recentInterviews.length === 0 ? (
+                                        <div className="text-center py-10 font-mono text-charcoal/50 dark:text-cream/50">
+                                            <p className="text-xs font-bold uppercase tracking-wider">Log Empty</p>
+                                            <p className="text-[9px] mt-1">Configure and initialize a coach session to build history logs.</p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            {recentInterviews.map((interview) => (
+                                                <div
+                                                    key={interview.sessionId}
+                                                    onClick={() => navigate(`/ai-interview/${interview.sessionId}/report`)}
+                                                    className="p-4 bg-cream dark:bg-navy border-2 border-charcoal/15 dark:border-cream/20 rounded-sm hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none cursor-pointer transition-all duration-200 shadow-[2px_2px_0px_0px_var(--color-shadow)]"
+                                                >
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <span className="font-mono font-bold text-xs text-charcoal dark:text-cream capitalize truncate pr-2">
+                                                            {interview.interviewType.replace('-', ' ')}
+                                                        </span>
+                                                        <span className="px-2 py-0.5 rounded-sm border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-[9px] font-mono font-bold uppercase tracking-wider shadow-[1px_1px_0px_0px_var(--color-shadow)]">
+                                                            {interview.status}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center justify-between text-[10px] font-mono font-bold text-charcoal/60 dark:text-cream/60">
+                                                        <span className="capitalize">{interview.industryFocus} Focus</span>
+                                                        {interview.scores?.overall && (
+                                                            <span className="text-charcoal dark:text-cream">{interview.scores.overall}% Score</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="text-[9px] font-mono font-bold text-charcoal/40 dark:text-cream/40 uppercase tracking-widest mt-2">
+                                                        {new Date(interview.createdAt).toLocaleDateString()}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
                     </>
                 ) : (
                     <AIInterviewAnalytics />

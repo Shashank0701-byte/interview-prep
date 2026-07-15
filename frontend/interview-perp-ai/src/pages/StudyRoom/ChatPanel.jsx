@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Send, Smile, Paperclip, MoreVertical } from 'lucide-react';
+import { Send, Smile, Paperclip } from 'lucide-react';
 
 const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, currentUser }) => {
   const messagesEndRef = useRef(null);
@@ -28,11 +28,11 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
   const getMessageTypeStyle = (type) => {
     switch (type) {
       case 'system':
-        return 'bg-blue-50 text-blue-700 text-center italic';
+        return 'bg-cream dark:bg-navy border-2 border-dashed border-charcoal/20 dark:border-cream/20 text-charcoal/70 dark:text-cream/70 text-center font-mono text-[10px] uppercase font-bold py-2 px-3 rounded-sm my-1';
       case 'code_share':
-        return 'bg-green-50 text-green-700';
+        return 'border-l-4 border-emerald-500 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 font-mono text-xs p-2 rounded-sm my-1';
       case 'question_change':
-        return 'bg-purple-50 text-purple-700';
+        return 'border-l-4 border-purple-500 bg-purple-500/10 text-purple-800 dark:text-purple-300 font-mono text-xs p-2 rounded-sm my-1';
       default:
         return '';
     }
@@ -46,55 +46,52 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
   };
 
   return (
-    <div className="card-editorial flex flex-col h-96 bg-white dark:bg-navy-light">
+    <div className="card-editorial flex flex-col h-96 bg-white dark:bg-navy-light relative z-10 flex-1 min-h-0">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b-2 border-charcoal/10 dark:border-cream/10">
-        <h3 className="text-lg font-display font-bold text-charcoal dark:text-cream flex items-center gap-2 uppercase tracking-wider">
-          💬 Chat
+      <div className="flex items-center justify-between p-4 border-b-2 border-charcoal/10 dark:border-cream/10 bg-cream dark:bg-navy">
+        <h3 className="text-xs font-mono font-bold text-charcoal dark:text-cream flex items-center gap-1.5 uppercase tracking-widest">
+          💬 Chat Room
         </h3>
-        <button className="p-1 text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream rounded">
-          <MoreVertical className="w-4 h-4" />
-        </button>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3.5">
         {messages.length === 0 ? (
-          <div className="text-center text-charcoal/60 dark:text-cream/60 py-8">
-            <p className="text-sm font-medium">No messages yet</p>
-            <p className="text-xs mt-1 font-medium">Start the conversation!</p>
+          <div className="text-center text-charcoal/50 dark:text-cream/50 py-12">
+            <p className="text-xs font-mono font-bold uppercase tracking-wider">Lobby Quiet</p>
+            <p className="text-[10px] font-mono mt-1">Send a message to start collaboration!</p>
           </div>
         ) : (
           messages.map((message, index) => (
             <div key={index} className={`${getMessageTypeStyle(message.type)}`}>
               {message.type === 'system' ? (
-                <div className="py-2 px-3 rounded-lg text-xs">
+                <div>
                   {message.message}
                 </div>
               ) : (
                 <div className={`flex ${message.userId === currentUser?._id ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-xs lg:max-w-md border-2 border-charcoal dark:border-cream/40 font-medium ${
+                  <div className={`max-w-[85%] border-2 border-charcoal dark:border-cream/40 font-body ${
                     message.userId === currentUser?._id
-                      ? 'bg-charcoal text-white'
-                      : 'bg-cream dark:bg-navy text-charcoal dark:text-cream'
-                  } rounded-md px-3 py-2`}>
-                    {/* Username for others' messages */}
+                      ? 'bg-charcoal text-white border-charcoal shadow-[2px_2px_0px_0px_var(--color-shadow)]'
+                      : 'bg-cream dark:bg-navy text-charcoal dark:text-cream shadow-[2px_2px_0px_0px_var(--color-shadow)]'
+                  } rounded-sm px-3 py-2`}>
+                    {/* Username */}
                     {message.userId !== currentUser?._id && (
-                      <div className="text-xs font-bold text-charcoal/80 dark:text-cream/80 mb-1">
+                      <div className="text-[10px] font-mono font-bold text-charcoal/80 dark:text-cream/80 uppercase tracking-wider mb-1">
                         {message.username}
                       </div>
                     )}
                     
-                    {/* Message content */}
-                    <div className="text-sm whitespace-pre-wrap break-words">
+                    {/* Content */}
+                    <div className="text-xs font-bold leading-relaxed whitespace-pre-wrap break-words">
                       {message.message}
                     </div>
                     
                     {/* Timestamp */}
-                    <div className={`text-xs mt-1 font-bold ${
+                    <div className={`text-[9px] font-mono font-bold mt-1 text-right ${
                       message.userId === currentUser?._id
                         ? 'text-white/60'
-                        : 'text-charcoal/60 dark:text-cream/60'
+                        : 'text-charcoal/50 dark:text-cream/50'
                     }`}>
                       {formatTime(message.timestamp)}
                     </div>
@@ -107,39 +104,38 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
-      <div className="p-4 border-t-2 border-charcoal/10 dark:border-cream/10">
+      {/* Input Form */}
+      <div className="p-4 border-t-2 border-charcoal/10 dark:border-cream/10 bg-cream/30 dark:bg-navy/30">
         <div className="flex items-end gap-2">
           <div className="flex-1 relative">
             <textarea
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Type a message..."
-              className="w-full px-3 py-2 pr-20 border-2 border-charcoal dark:border-cream/40 rounded-md resize-none focus:outline-none bg-cream dark:bg-navy text-charcoal dark:text-cream font-medium"
+              placeholder="Message class..."
+              className="w-full px-3 py-2 pr-16 border-2 border-charcoal dark:border-cream/40 rounded-sm resize-none outline-none bg-white dark:bg-navy text-charcoal dark:text-cream font-bold text-xs focus:shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-all leading-normal"
               rows="1"
-              style={{ minHeight: '40px', maxHeight: '120px' }}
+              style={{ minHeight: '38px', maxHeight: '100px' }}
             />
             
-            {/* Emoji and attachment buttons */}
-            <div className="absolute right-2 bottom-2 flex items-center gap-1">
+            {/* Emoji and Attachment picker */}
+            <div className="absolute right-2 bottom-2 flex items-center gap-1.5">
               <div className="relative">
                 <button
                   onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                  className="p-1 text-gray-400 hover:text-gray-600 dark:text-cream/40 dark:hover:text-cream/70 rounded"
+                  className="p-1 text-charcoal/40 hover:text-charcoal dark:text-cream/40 dark:hover:text-cream rounded-sm cursor-pointer"
                   title="Add emoji"
                 >
                   <Smile className="w-4 h-4" />
                 </button>
                 
-                {/* Emoji picker */}
                 {showEmojiPicker && (
-                  <div className="absolute bottom-8 right-0 bg-white dark:bg-navy-light rounded-lg shadow-lg border dark:border-cream/20 p-2 grid grid-cols-6 gap-1 z-10">
+                  <div className="absolute bottom-8 right-0 bg-white dark:bg-navy-light rounded-sm shadow-[4px_4px_0px_0px_var(--color-shadow)] border-3 border-charcoal dark:border-cream/40 p-2.5 grid grid-cols-6 gap-1 z-20 min-w-[150px]">
                     {emojis.map((emoji, index) => (
                       <button
                         key={index}
                         onClick={() => addEmoji(emoji)}
-                        className="p-1 hover:bg-gray-100 dark:hover:bg-navy rounded text-lg"
+                        className="p-1.5 hover:bg-cream dark:hover:bg-navy rounded-sm text-sm cursor-pointer"
                       >
                         {emoji}
                       </button>
@@ -149,7 +145,7 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
               </div>
               
               <button
-                className="p-1 text-gray-400 hover:text-gray-600 dark:text-cream/40 dark:hover:text-cream/70 rounded"
+                className="p-1 text-charcoal/40 hover:text-charcoal dark:text-cream/40 dark:hover:text-cream rounded-sm cursor-pointer"
                 title="Attach file"
               >
                 <Paperclip className="w-4 h-4" />
@@ -160,22 +156,14 @@ const ChatPanel = ({ messages, newMessage, setNewMessage, onSendMessage, current
           <button
             onClick={onSendMessage}
             disabled={!newMessage.trim()}
-            className="bg-charcoal text-white p-2 border-2 border-charcoal rounded-md hover:-translate-y-1 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 transition-all duration-200"
-            onMouseEnter={(e) => e.currentTarget.style.boxShadow = '4px 4px 0px 0px var(--color-shadow)'}
-            onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
-            title="Send message"
+            className="bg-charcoal text-white dark:bg-cream dark:text-navy p-2.5 border-2 border-charcoal dark:border-cream rounded-sm hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] active:translate-y-0.5 active:shadow-none cursor-pointer transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none shadow-[2px_2px_0px_0px_var(--color-shadow)]"
+            title="Send"
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-4 h-4" strokeWidth={2.5} />
           </button>
-        </div>
-        
-        {/* Typing indicator */}
-        <div className="mt-2 text-xs text-gray-500 dark:text-cream/40 h-4">
-          {/* You can add typing indicators here */}
         </div>
       </div>
 
-      {/* Click outside to close emoji picker */}
       {showEmojiPicker && (
         <div
           className="fixed inset-0 z-5"

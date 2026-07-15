@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Assuming import path
 import Input from '../../components/Inputs/Input';
 import SpinnerLoader from '../../components/Loader/SpinnerLoader.jsx';
-import CompanySelector from '../../components/CompanySelector';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 
@@ -13,7 +12,7 @@ const CreateSessionForm = () => {
     topicsToFocus: "",
     description: "",
   });
-  const [selectedCompany, setSelectedCompany] = useState(null);
+
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -43,24 +42,12 @@ const CreateSessionForm = () => {
         // Call AI API to generate questions
         let aiResponse;
         
-        if (selectedCompany) {
-            // Generate company-specific questions
-            aiResponse = await axiosInstance.post(API_PATHS.AI.COMPANY_QUESTIONS, {
-                companyName: selectedCompany.name,
-                role,
-                experience,
-                topicsToFocus,
-                numberOfQuestions: 10,
-            });
-        } else {
-            // Generate general questions
-            aiResponse = await axiosInstance.post(API_PATHS.AI.GENERATE_QUESTIONS, {
-                role,
-                experience,
-                topicsToFocus,
-                numberOfQuestions: 10,
-            });
-        }
+        aiResponse = await axiosInstance.post(API_PATHS.AI.GENERATE_QUESTIONS, {
+            role,
+            experience,
+            topicsToFocus,
+            numberOfQuestions: 10,
+        });
         // Should be array like [(question, answer), ...]
         const generatedQuestions = aiResponse.data;
         const response = await axiosInstance.post(API_PATHS.SESSIONS.CREATE, {
@@ -116,10 +103,7 @@ const CreateSessionForm = () => {
         type="text"
       />
 
-      <CompanySelector 
-        onCompanySelect={setSelectedCompany}
-        selectedCompany={selectedCompany}
-      />
+
 
         <Input  
         value={formData.description}

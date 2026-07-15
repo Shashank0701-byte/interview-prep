@@ -43,10 +43,10 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
     return (
         <div className="relative">
             {/* Enhanced Filter Header */}
-            <div className="flex items-center justify-between gap-4 flex-wrap">
-                <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3 w-full sm:w-auto flex-1 min-w-0">
                     {/* Search Input */}
-                    <div className="relative flex-1 max-w-md">
+                    <div className="relative flex-1">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <LuSearch className="h-4 w-4 text-charcoal dark:text-cream/60" strokeWidth={3} />
                         </div>
@@ -62,7 +62,7 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                     {/* Filter Toggle Button */}
                     <button
                         onClick={() => setIsOpen(!isOpen)}
-                        className="flex items-center gap-2 px-5 py-3 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all duration-200 cursor-pointer"
+                        className="flex items-center gap-2 px-5 py-3 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all duration-200 cursor-pointer flex-shrink-0"
                     >
                         <LuFilter className="w-4 h-4 text-charcoal dark:text-cream" strokeWidth={3} />
                         <span className="text-xs font-bold uppercase tracking-widest text-charcoal dark:text-cream">Filters</span>
@@ -75,7 +75,7 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                 </div>
                 
                 {/* Sort and Clear Options */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
                     <select
                         value={`${filters.sortBy}-${filters.sortOrder}`}
                         onChange={(e) => {
@@ -83,7 +83,7 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                             handleFilterChange('sortBy', sortBy);
                             handleFilterChange('sortOrder', sortOrder);
                         }}
-                        className="px-4 py-3 border-3 border-charcoal dark:border-cream/40 rounded-sm focus:outline-none bg-white dark:bg-navy-light text-sm font-bold text-charcoal dark:text-cream transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] appearance-none"
+                        className="flex-1 sm:flex-none px-4 py-3 border-3 border-charcoal dark:border-cream/40 rounded-sm focus:outline-none bg-white dark:bg-navy-light text-sm font-bold text-charcoal dark:text-cream transition-all duration-200 cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] appearance-none"
                     >
                         <option value="lastUpdated-desc">Latest Updated</option>
                         <option value="lastUpdated-asc">Oldest Updated</option>
@@ -104,7 +104,7 @@ const SessionFilter = ({ onFilterChange, activeFilters = {} }) => {
                     {getActiveFilterCount() > 0 && (
                         <button
                             onClick={clearFilters}
-                            className="flex items-center gap-2 px-4 py-3 text-xs font-bold uppercase tracking-widest text-crimson border-2 border-crimson rounded-sm hover:bg-crimson hover:text-white transition-all duration-200 cursor-pointer"
+                            className="flex items-center gap-2 px-4 py-3 text-xs font-bold uppercase tracking-widest text-crimson border-2 border-crimson rounded-sm hover:bg-crimson hover:text-white transition-all duration-200 cursor-pointer flex-shrink-0"
                         >
                             <LuX className="w-4 h-4" strokeWidth={3} />
                             Clear

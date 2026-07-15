@@ -6,7 +6,6 @@ const CreateInterviewModal = ({ isOpen, onClose, onCreateSession }) => {
         targetRole: '',
         experience: '',
         topics: '',
-        targetCompany: '',
         description: ''
     });
 
@@ -28,9 +27,7 @@ const CreateInterviewModal = ({ isOpen, onClose, onCreateSession }) => {
         'Product Manager'
     ];
 
-    const popularCompanies = [
-        'Google', 'Meta', 'Amazon', 'Apple', 'Microsoft'
-    ];
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -46,7 +43,6 @@ const CreateInterviewModal = ({ isOpen, onClose, onCreateSession }) => {
                 targetRole: '',
                 experience: '',
                 topics: '',
-                targetCompany: '',
                 description: ''
             });
         } catch (error) {
@@ -159,36 +155,7 @@ const CreateInterviewModal = ({ isOpen, onClose, onCreateSession }) => {
                             />
                         </div>
 
-                        {/* Target Company */}
-                        <div>
-                            <label className="flex items-center gap-2 text-xs font-bold text-charcoal uppercase tracking-widest mb-3">
-                                <div className="w-2 h-2 bg-charcoal"></div>
-                                Target Corporation (Optional)
-                            </label>
-                            <input
-                                type="text"
-                                value={formData.targetCompany}
-                                onChange={(e) => handleInputChange('targetCompany', e.target.value)}
-                                placeholder="Search companies..."
-                                className="w-full p-3 border-4 border-charcoal bg-cream text-charcoal text-sm font-bold placeholder:text-charcoal/30 focus:bg-white focus:outline-none focus:shadow-[4px_4px_0px_0px_#1A1A1A] transition-all rounded-sm mb-3"
-                            />
-                            <div className="flex flex-wrap gap-2">
-                                {popularCompanies.map((company) => (
-                                    <button
-                                        key={company}
-                                        type="button"
-                                        onClick={() => handleInputChange('targetCompany', company)}
-                                        className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 border-2 border-charcoal rounded-sm transition-all ${
-                                            formData.targetCompany === company 
-                                            ? 'bg-charcoal text-cream' 
-                                            : 'bg-white text-charcoal hover:bg-cream'
-                                        }`}
-                                    >
-                                        {company}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+
 
                         {/* Description */}
                         <div>

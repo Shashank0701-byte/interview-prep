@@ -79,7 +79,9 @@ const Navbar = () => {
                     
                     <div className="flex items-center gap-4">
                         <DarkModeToggle size="small" />
-                        <ProfileInfoCard />
+                        <div className="hidden md:block">
+                            <ProfileInfoCard />
+                        </div>
                         
                         {/* Mobile menu button */}
                         <button
@@ -122,6 +124,11 @@ const Navbar = () => {
                                 {link.label}
                             </NavLink>
                         ))}
+                        
+                        {/* Profile Info inside mobile menu drawer */}
+                        <div className="border-t-2 border-charcoal/10 dark:border-cream/10 pt-4 mt-4 px-3">
+                            <ProfileInfoCard />
+                        </div>
                     </div>
                 </div>
             )}

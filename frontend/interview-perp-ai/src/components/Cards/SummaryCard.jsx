@@ -12,11 +12,9 @@ const SummaryCard = ({
     lastUpdated,
     onSelect,
     onDelete,
-    userRating = { overall: 3, difficulty: 3, usefulness: 3 },
     status = 'Active',
     completionPercentage = 0,
     masteredQuestions = 0,
-    onRateClick,
     sessionId
 }) => {
     const getStatusColor = (status) => {
@@ -28,7 +26,7 @@ const SummaryCard = ({
         }
     };
     
-    const avgRating = (userRating.overall + userRating.difficulty + userRating.usefulness) / 3;
+
     
     return (
         <div 
@@ -61,16 +59,7 @@ const SummaryCard = ({
 
                     {/* Action Buttons — thick-bordered square buttons, always visible for better accessibility */}
                     <div className="flex items-center gap-2 ml-4">
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onRateClick();
-                            }}
-                            className="p-2 border-2 border-charcoal dark:border-cream/40 bg-cream dark:bg-navy text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream hover:bg-white dark:hover:bg-navy-light hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none rounded-sm transition-all duration-200 cursor-pointer"
-                            title="Rate session"
-                        >
-                            <LuStar className="w-4 h-4" />
-                        </button>
+
                         <button
                             onClick={(e) =>{
                                 e.stopPropagation();
@@ -93,17 +82,7 @@ const SummaryCard = ({
                             <span className='font-bold text-charcoal dark:text-cream font-mono'>{masteredQuestions}</span>
                             <span className='font-mono'> / {questions}</span> completed
                         </div>
-                        <div className='flex items-center gap-0.5'>
-                            {[1, 2, 3, 4, 5].map((star) => (
-                                <LuStar
-                                    key={star}
-                                    className={`w-3.5 h-3.5 ${
-                                        star <= Math.round(avgRating) ? 'text-charcoal dark:text-cream fill-current' : 'text-charcoal/20 dark:text-cream/20'
-                                    }`}
-                                />
-                            ))}
-                            <span className="text-xs font-mono text-charcoal/40 dark:text-cream/40 ml-1">({avgRating.toFixed(1)})</span>
-                        </div>
+
                     </div>
                     <div className='flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-charcoal dark:text-cream bg-cream dark:bg-navy border-2 border-charcoal/20 dark:border-cream/20 px-3 py-1 rounded-sm'>
                         <span className='w-2 h-2 bg-charcoal dark:bg-cream rounded-sm inline-block'></span>
