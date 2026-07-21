@@ -6,6 +6,9 @@ on:
       - dev
       - main
 
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
 jobs:
   # ============================================================
   # Frontend: Lint + Build
@@ -135,8 +138,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip"
-          cache-dependency-path: ai-training/requirements.txt
 
       - name: Install dependencies
         run: pip install --no-cache-dir -r requirements.txt
