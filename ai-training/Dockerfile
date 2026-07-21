@@ -23,11 +23,18 @@ RUN pip install --no-cache-dir -r requirements.txt && \
 # Copy the rest of the application
 COPY . .
 
+# Create a non-root user and grant ownership of application files
+RUN useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /app
+
 # The service starts on port 8001 (see start_rag_service.py)
 EXPOSE 8001
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD curl --fail http://localhost:8001/health || exit 1
+
+# Switch to non-root user
+USER appuser
 
 CMD ["python", "start_rag_service.py"]

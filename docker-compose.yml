@@ -38,14 +38,14 @@ services:
       context: ./frontend/interview-perp-ai
     container_name: interview-frontend
     ports:
-      - "80:80"
+      - "80:8080"
     networks:
       - app-network
     depends_on:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:80/ > /dev/null 2>&1 || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/ > /dev/null 2>&1 || exit 1"]
       interval: 30s
       timeout: 5s
       start_period: 10s
