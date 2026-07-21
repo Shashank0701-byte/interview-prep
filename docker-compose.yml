@@ -1,0 +1,88 @@
+version: "3.9"
+
+name: interview-prep-ai
+
+services:
+
+  # ============================================================
+  # Backend — Node.js Express API server
+  # ============================================================
+  backend:
+    build:
+      context: ./backend
+    container_name: interview-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      # Persist uploaded files across restarts
+      - ./backend/uploads:/app/uploads
+    networks:
+      app-network:
+        aliases:
+          - backend
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:8000/api/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    restart: unless-stopped
+
+  # ============================================================
+  # Frontend — Nginx serving Vite-built React SPA
+  # ============================================================
+  frontend:
+    build:
+      context: ./frontend/interview-perp-ai
+    container_name: interview-frontend
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:80/ > /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # ============================================================
+  # AI / RAG Service — Python FastAPI RAG pipeline
+  # ============================================================
+  ai:
+    build:
+      context: ./ai-training
+    container_name: interview-ai
+    ports:
+      - "8001:8001"
+    env_file:
+      - ./ai-training/.env
+    volumes:
+      # Persist ChromaDB vector store and logs
+      - ./ai-training/chroma_db:/app/chroma_db
+      - ./ai-training/logs:/app/logs
+    networks:
+      app-network:
+        aliases:
+          - ai
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 45s  # RAG pipeline + model loading takes time
+      retries: 5
+    restart: unless-stopped
+
+# ============================================================
+# Shared network for inter-service communication
+# ============================================================
+networks:
+  app-network:
+    driver: bridge
+
