@@ -22,6 +22,8 @@ import toast from "react-hot-toast";
 import DashboardLayout from '../../components/layouts/DashboardLayout';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
+import { useTheme } from '../../context/ThemeContext';
+import { useMemo } from 'react';
 
 // Enhanced Progress Components
 import ProgressRing from '../../components/Progress/ProgressRing';
@@ -40,11 +42,13 @@ const AnalyticsDashboard = () => {
     // Auto scroll to top when navigating to this page
     useScrollToTop();
     
-    // --- State for all charts ---
-    const [progressData, setProgressData] = useState({ labels: [], datasets: [] });
-    const [performanceData, setPerformanceData] = useState({ labels: [], datasets: [] });
-    const [dailyActivityData, setDailyActivityData] = useState({ labels: [], datasets: [] });
-    const [masteryRatioData, setMasteryRatioData] = useState({ labels: [], datasets: [] });
+    const { isDarkMode } = useTheme();
+
+    // --- State for raw chart values ---
+    const [progressRawData, setProgressRawData] = useState({ labels: [], values: [] });
+    const [performanceRawData, setPerformanceRawData] = useState({ labels: [], values: [] });
+    const [dailyActivityRawData, setDailyActivityRawData] = useState({ labels: [], values: [] });
+    const [masteryRawData, setMasteryRawData] = useState({ mastered: 0, unmastered: 0 });
     
     const [isLoading, setIsLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'performance', 'activity', or 'insights'
@@ -77,10 +81,7 @@ const AnalyticsDashboard = () => {
             if (progressRes.data?.data && progressRes.data.data.length > 0) {
                 const labels = progressRes.data.data.map(d => `Week ${d.week.split('-')[1]}`);
                 const data = progressRes.data.data.map(d => d.accuracy);
-                setProgressData({
-                    labels,
-                    datasets: [{ label: 'Content Accuracy', data, borderColor: '#1A1A1A', backgroundColor: 'rgba(26, 26, 26, 0.1)', fill: true, tension: 0.4 }],
-                });
+                setProgressRawData({ labels, values: data });
                 
                 // Calculate overall progress stats
                 const latestAccuracy = data[data.length - 1] || 0;
@@ -93,22 +94,19 @@ const AnalyticsDashboard = () => {
                     weeklyProgress: weeklyImprovement
                 }));
             } else {
-                setProgressData({
+                setProgressRawData({
                     labels: ['This Week'],
-                    datasets: [{ label: 'Content Accuracy', data: [0], borderColor: '#1A1A1A', backgroundColor: 'rgba(26, 26, 26, 0.1)', fill: true, tension: 0.4 }],
+                    values: [0]
                 });
             }
             if (performanceRes.data?.data && performanceRes.data.data.length > 0) {
                 const labels = performanceRes.data.data.map(d => d.topic);
                 const data = performanceRes.data.data.map(d => d.performance);
-                setPerformanceData({
-                    labels,
-                    datasets: [{ label: 'Performance', data, backgroundColor: '#1A1A1A', borderColor: '#1A1A1A', borderWidth: 1 }],
-                });
+                setPerformanceRawData({ labels, values: data });
             } else {
-                setPerformanceData({
+                setPerformanceRawData({
                     labels: ['No Data Yet'],
-                    datasets: [{ label: 'Performance', data: [0], backgroundColor: '#1A1A1A', borderColor: '#1A1A1A', borderWidth: 1 }],
+                    values: [0]
                 });
             }
 
@@ -116,16 +114,13 @@ const AnalyticsDashboard = () => {
             if (activityRes.data?.data && activityRes.data.data.length > 0) {
                 const labels = activityRes.data.data.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
                 const data = activityRes.data.data.map(d => d.count);
-                setDailyActivityData({
-                    labels,
-                    datasets: [{ label: 'Cards Reviewed', data, backgroundColor: '#1A1A1A', borderColor: '#1A1A1A', borderWidth: 1 }],
-                });
+                setDailyActivityRawData({ labels, values: data });
             } else {
                 // If no data, show empty chart with today's date
                 const today = new Date();
-                setDailyActivityData({
+                setDailyActivityRawData({
                     labels: [today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })],
-                    datasets: [{ label: 'Cards Reviewed', data: [0], backgroundColor: '#1A1A1A', borderColor: '#1A1A1A', borderWidth: 1 }],
+                    values: [0]
                 });
             }
             if (masteryRes.data?.data) {
@@ -133,14 +128,7 @@ const AnalyticsDashboard = () => {
                 const unmastered = masteryRes.data.data.unmastered || 0;
                 const total = mastered + unmastered;
                 
-                setMasteryRatioData({
-                    labels: ['Mastered', 'Unmastered'],
-                    datasets: [{
-                        data: [mastered, unmastered],
-                        backgroundColor: ['#1A1A1A', '#DC2626'],
-                        hoverOffset: 4,
-                    }],
-                });
+                setMasteryRawData({ mastered, unmastered });
                 
                 // Real progress stats from backend
                 if (progressStatsRes.data?.data) {
@@ -160,14 +148,7 @@ const AnalyticsDashboard = () => {
                     }));
                 }
             } else {
-                setMasteryRatioData({
-                    labels: ['Mastered', 'Unmastered'],
-                    datasets: [{
-                        data: [0, 0],
-                        backgroundColor: ['#1A1A1A', '#DC2626'],
-                        hoverOffset: 4,
-                    }],
-                });
+                setMasteryRawData({ mastered: 0, unmastered: 0 });
                 
                 // Set empty progress stats if no data
                 if (!progressStatsRes.data?.data) {
@@ -218,11 +199,143 @@ const AnalyticsDashboard = () => {
         };
     }, []);
 
+    // --- Dynamic Theme Colors for Charts ---
+    const chartColors = useMemo(() => {
+        const text = isDarkMode ? '#F5F0E8' : '#1A1A1A';
+        const primary = isDarkMode ? '#F5F0E8' : '#1A1A1A';
+        const primaryAlpha = isDarkMode ? 'rgba(245, 240, 232, 0.15)' : 'rgba(26, 26, 26, 0.15)';
+        const red = '#DC2626';
+        const gridLine = isDarkMode ? 'rgba(245, 240, 232, 0.1)' : 'rgba(26, 26, 26, 0.1)';
+        return { text, primary, primaryAlpha, red, gridLine };
+    }, [isDarkMode]);
+
+    const progressData = useMemo(() => ({
+        labels: progressRawData.labels,
+        datasets: [{ 
+            label: 'Content Accuracy', 
+            data: progressRawData.values, 
+            borderColor: chartColors.primary, 
+            backgroundColor: chartColors.primaryAlpha, 
+            fill: true, 
+            tension: 0.4 
+        }],
+    }), [progressRawData, chartColors]);
+
+    const performanceData = useMemo(() => ({
+        labels: performanceRawData.labels,
+        datasets: [{ 
+            label: 'Performance', 
+            data: performanceRawData.values, 
+            backgroundColor: chartColors.primary, 
+            borderColor: chartColors.primary, 
+            borderWidth: 1 
+        }],
+    }), [performanceRawData, chartColors]);
+
+    const dailyActivityData = useMemo(() => ({
+        labels: dailyActivityRawData.labels,
+        datasets: [{ 
+            label: 'Cards Reviewed', 
+            data: dailyActivityRawData.values, 
+            backgroundColor: chartColors.primary, 
+            borderColor: chartColors.primary, 
+            borderWidth: 1 
+        }],
+    }), [dailyActivityRawData, chartColors]);
+
+    const masteryRatioData = useMemo(() => ({
+        labels: ['Mastered', 'Unmastered'],
+        datasets: [{
+            data: [masteryRawData.mastered, masteryRawData.unmastered],
+            backgroundColor: [chartColors.primary, chartColors.red],
+            hoverOffset: 4,
+        }],
+    }), [masteryRawData, chartColors]);
+
     // --- Chart Options ---
-    const lineChartOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true, ticks: { callback: (value) => `${value}%` } } } };
-    const barChartOptions = { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { callback: (value) => `${value}%` } } } };
-    const activityBarOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } };
-    const masteryPieOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } };
+    const lineChartOptions = useMemo(() => ({ 
+        responsive: true, 
+        maintainAspectRatio: false, 
+        plugins: { 
+            legend: { 
+                position: 'top',
+                labels: { color: chartColors.text, font: { family: 'monospace', weight: 'bold' } }
+            } 
+        }, 
+        scales: { 
+            x: {
+                grid: { color: chartColors.gridLine },
+                ticks: { color: chartColors.text, font: { family: 'monospace' } }
+            },
+            y: { 
+                beginAtZero: true, 
+                grid: { color: chartColors.gridLine },
+                ticks: { 
+                    color: chartColors.text, 
+                    font: { family: 'monospace' },
+                    callback: (value) => `${value}%` 
+                } 
+            } 
+        } 
+    }), [chartColors]);
+
+    const barChartOptions = useMemo(() => ({ 
+        indexAxis: 'y', 
+        responsive: true, 
+        maintainAspectRatio: false, 
+        plugins: { 
+            legend: { display: false } 
+        }, 
+        scales: { 
+            x: { 
+                beginAtZero: true, 
+                grid: { color: chartColors.gridLine },
+                ticks: { 
+                    color: chartColors.text, 
+                    font: { family: 'monospace' },
+                    callback: (value) => `${value}%` 
+                } 
+            },
+            y: {
+                grid: { color: chartColors.gridLine },
+                ticks: { color: chartColors.text, font: { family: 'monospace' } }
+            }
+        } 
+    }), [chartColors]);
+
+    const activityBarOptions = useMemo(() => ({ 
+        responsive: true, 
+        maintainAspectRatio: false, 
+        plugins: { 
+            legend: { display: false } 
+        }, 
+        scales: { 
+            x: {
+                grid: { color: chartColors.gridLine },
+                ticks: { color: chartColors.text, font: { family: 'monospace' } }
+            },
+            y: { 
+                beginAtZero: true, 
+                grid: { color: chartColors.gridLine },
+                ticks: { 
+                    stepSize: 1,
+                    color: chartColors.text, 
+                    font: { family: 'monospace' }
+                } 
+            } 
+        } 
+    }), [chartColors]);
+
+    const masteryPieOptions = useMemo(() => ({ 
+        responsive: true, 
+        maintainAspectRatio: false, 
+        plugins: { 
+            legend: { 
+                position: 'bottom',
+                labels: { color: chartColors.text, font: { family: 'monospace', weight: 'bold' } }
+            } 
+        } 
+    }), [chartColors]);
 
     return (
         <DashboardLayout>
@@ -238,23 +351,23 @@ const AnalyticsDashboard = () => {
                                         </svg>
                                     </div>
                                     <div>
-                                        <h1 className="text-3xl sm:text-4xl font-display text-charcoal dark:text-cream">My Progress Dashboard</h1>
+                                        <h1 className="text-3xl sm:text-4xl font-display font-bold text-charcoal dark:text-cream">My Progress Dashboard</h1>
                                         <p className="text-charcoal/80 dark:text-cream/80 mt-2 text-base sm:text-lg leading-relaxed">Your learning journey, visualized with care and encouragement.</p>
                                     </div>
                                 </div>
                                 
                                 {/* Quick Stats */}
-                                <div className="flex items-center gap-6 text-sm">
-                                    <div className="flex items-center gap-3 bg-white dark:bg-navy-input px-4 py-2.5 rounded-md border-2 border-charcoal/20 dark:border-cream/20">
+                                <div className="flex flex-wrap items-center gap-4 text-sm">
+                                    <div className="flex items-center gap-3 bg-white dark:bg-navy-input px-4 py-2.5 rounded-sm border-3 border-charcoal dark:border-cream/40 shadow-[2px_2px_0px_0px_var(--color-shadow)]">
                                         <div className="w-3 h-3 bg-charcoal dark:bg-cream rounded-full animate-pulse"></div>
-                                        <span className="font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs">
+                                        <span className="font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs">
                                             {progressStats.masteredQuestions} questions mastered
                                         </span>
                                     </div>
                                     {progressStats.streakDays > 0 && (
-                                        <div className="flex items-center gap-2 bg-white dark:bg-navy-input px-4 py-2.5 rounded-md border-2 border-charcoal/20 dark:border-cream/20">
+                                        <div className="flex items-center gap-2 bg-white dark:bg-navy-input px-4 py-2.5 rounded-sm border-3 border-charcoal dark:border-cream/40 shadow-[2px_2px_0px_0px_var(--color-shadow)]">
                                             <span className="text-lg">🔥</span>
-                                            <span className="font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs">
+                                            <span className="font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs">
                                                 {progressStats.streakDays} day streak
                                             </span>
                                         </div>
@@ -268,7 +381,7 @@ const AnalyticsDashboard = () => {
                                 className="btn-small w-auto"
                             >
                                 <svg className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                 </svg>
                                 {isLoading ? 'Updating...' : 'Refresh'}
                             </button>

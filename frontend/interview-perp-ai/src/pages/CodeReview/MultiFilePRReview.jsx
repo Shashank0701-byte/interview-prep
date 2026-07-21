@@ -281,10 +281,10 @@ const MultiFilePRReview = () => {
                             {/* File Tree Sidebar */}
                             <div className="lg:col-span-1">
                                 <div className="card-editorial overflow-hidden sticky top-6">
-                                    <div className="bg-charcoal/5 dark:bg-cream/5 px-4 py-3 border-b-2 border-charcoal/10 dark:border-cream/10">
+                                    <div className="bg-charcoal/5 dark:bg-cream/5 px-4 py-3 border-b-3 border-charcoal/15 dark:border-cream/15">
                                         <div className="flex items-center justify-between">
-                                            <h3 className="font-bold text-charcoal dark:text-cream uppercase tracking-wider text-sm">Files Changed</h3>
-                                            <span className="text-xs bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream px-2 py-1 rounded-sm font-bold">
+                                            <h3 className="font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs">Files Changed</h3>
+                                            <span className="text-xs bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream px-2 py-1 rounded-sm font-mono font-bold">
                                                 {currentPR.files.length}
                                             </span>
                                         </div>
@@ -296,10 +296,10 @@ const MultiFilePRReview = () => {
                                                 <button
                                                     key={file.path}
                                                     onClick={() => setActiveFile(file)}
-                                                    className={`w-full flex items-center gap-3 p-3 rounded-md text-left transition-all ${
+                                                    className={`w-full flex items-center gap-3 p-3 rounded-sm text-left transition-all ${
                                                         activeFile?.path === file.path
-                                                            ? 'bg-charcoal/10 dark:bg-cream/10 border-2 border-charcoal/20 dark:border-cream/20'
-                                                            : 'hover:bg-charcoal/5 dark:hover:bg-cream/5 border-2 border-transparent'
+                                                            ? 'bg-charcoal/10 dark:bg-cream/10 border-3 border-charcoal/30 dark:border-cream/30 shadow-[1px_1px_0px_0px_var(--color-shadow)]'
+                                                            : 'hover:bg-charcoal/5 dark:hover:bg-cream/5 border-3 border-transparent'
                                                     }`}
                                                 >
                                                     <span className="text-lg">{getFileIcon(file.path)}</span>
@@ -308,16 +308,16 @@ const MultiFilePRReview = () => {
                                                             <span className={`text-xs ${status.color}`}>
                                                                 {status.icon}
                                                             </span>
-                                                            <span className="text-sm font-bold text-charcoal dark:text-cream truncate">
+                                                            <span className="text-xs font-mono font-bold text-charcoal dark:text-cream truncate uppercase tracking-wider">
                                                                 {file.path.split('/').pop()}
                                                             </span>
                                                         </div>
-                                                        <div className="text-xs text-charcoal/70 dark:text-cream/70 truncate">
+                                                        <div className="text-[10px] font-mono text-charcoal/70 dark:text-cream/70 truncate">
                                                             {file.path}
                                                         </div>
                                                         <div className="flex items-center gap-2 mt-1">
-                                                            <span className="text-xs text-emerald-600">+{file.additions}</span>
-                                                            <span className="text-xs text-red-600">-{file.deletions}</span>
+                                                            <span className="text-xs font-mono font-bold text-emerald-600">+{file.additions}</span>
+                                                            <span className="text-xs font-mono font-bold text-red-600">-{file.deletions}</span>
                                                         </div>
                                                     </div>
                                                 </button>
@@ -332,20 +332,20 @@ const MultiFilePRReview = () => {
                                 {activeFile && (
                                     <div className="card-editorial overflow-hidden">
                                         {/* File Header */}
-                                        <div className="bg-charcoal/5 dark:bg-cream/5 px-6 py-4 border-b-2 border-charcoal/10 dark:border-cream/10">
+                                        <div className="bg-charcoal/5 dark:bg-cream/5 px-6 py-4 border-b-3 border-charcoal/15 dark:border-cream/15">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <span className="text-lg">{getFileIcon(activeFile.path)}</span>
-                                                    <span className="font-bold text-charcoal dark:text-cream">{activeFile.path}</span>
-                                                    <span className={`px-2 py-1 rounded-sm text-xs font-bold uppercase tracking-wider ${
-                                                        activeFile.status === 'new' ? 'bg-emerald-100 text-emerald-700' :
-                                                        activeFile.status === 'modified' ? 'bg-orange-100 text-orange-700' :
-                                                        'bg-red-100 text-red-700'
+                                                    <span className="font-mono font-bold text-charcoal dark:text-cream text-sm">{activeFile.path}</span>
+                                                    <span className={`px-2 py-0.5 rounded-sm text-[10px] font-mono font-bold uppercase tracking-wider border-2 ${
+                                                        activeFile.status === 'new' ? 'bg-emerald-100 text-emerald-700 border-emerald-300' :
+                                                        activeFile.status === 'modified' ? 'bg-orange-100 text-orange-700 border-orange-300' :
+                                                        'bg-red-100 text-red-700 border-red-300'
                                                     }`}>
                                                         {activeFile.status}
                                                     </span>
                                                 </div>
-                                                <div className="flex items-center gap-2 text-sm font-bold">
+                                                <div className="flex items-center gap-2 text-xs font-mono font-bold">
                                                     <span className="text-emerald-600">+{activeFile.additions}</span>
                                                     <span className="text-red-600">-{activeFile.deletions}</span>
                                                 </div>
@@ -398,10 +398,10 @@ const MultiFilePRReview = () => {
 
                                         {/* Add Comment Form */}
                                         {selectedLine && selectedFile === activeFile.path && (
-                                            <div className="p-6 border-t-2 border-charcoal/10 dark:border-cream/10 bg-charcoal/5 dark:bg-cream/5">
+                                            <div className="p-6 border-t-3 border-charcoal/15 dark:border-cream/15 bg-charcoal/5 dark:bg-cream/5">
                                                 <div className="flex items-center gap-3 mb-4">
                                                     <LuMessageSquare className="w-5 h-5 text-charcoal dark:text-cream" />
-                                                    <span className="font-bold text-charcoal dark:text-cream">
+                                                    <span className="font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs">
                                                         Add comment for line {selectedLine} in {activeFile.path}
                                                     </span>
                                                 </div>
@@ -409,13 +409,13 @@ const MultiFilePRReview = () => {
                                                     value={newComment}
                                                     onChange={(e) => setNewComment(e.target.value)}
                                                     placeholder="What issues do you see in this file? Consider how it relates to other files..."
-                                                    className="w-full p-4 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md resize-none outline-none focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50"
+                                                    className="w-full p-4 border-3 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-sm resize-none outline-none focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50 text-xs font-mono font-bold uppercase tracking-wider"
                                                     rows={3}
                                                 />
                                                 <div className="flex gap-3 mt-4">
                                                     <button
                                                         onClick={() => addComment(selectedLine, activeFile.path)}
-                                                        className="btn-primary"
+                                                        className="btn-primary text-xs font-mono font-bold uppercase tracking-wider"
                                                     >
                                                         <LuSend className="w-4 h-4" />
                                                         Add Comment
@@ -425,7 +425,7 @@ const MultiFilePRReview = () => {
                                                             setSelectedLine(null);
                                                             setSelectedFile(null);
                                                         }}
-                                                        className="px-4 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream font-bold transition-colors"
+                                                        className="px-4 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream font-mono font-bold text-xs uppercase tracking-wider transition-colors"
                                                     >
                                                         Cancel
                                                     </button>
@@ -441,14 +441,14 @@ const MultiFilePRReview = () => {
                                         <LuInfo className="w-5 h-5 text-orange-600" />
                                         <h3 className="font-display font-bold text-charcoal dark:text-cream">Cross-File Analysis</h3>
                                     </div>
-                                    <p className="text-charcoal/80 dark:text-cream/80 text-sm font-bold mb-4">
+                                    <p className="text-charcoal/80 dark:text-cream/80 text-xs font-mono font-bold uppercase tracking-wide mb-4">
                                         Consider how these files work together. Look for architectural issues, data flow problems, 
                                         and inconsistencies between files.
                                     </p>
                                     
                                     <textarea
                                         placeholder="Describe any issues that span multiple files, architectural concerns, or integration problems you've identified..."
-                                        className="w-full p-4 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md resize-none outline-none focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50"
+                                        className="w-full p-4 border-3 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-sm resize-none outline-none focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50 text-xs font-mono font-bold uppercase tracking-wider"
                                         rows={4}
                                         onBlur={(e) => {
                                             if (e.target.value.trim()) {
@@ -461,11 +461,11 @@ const MultiFilePRReview = () => {
                                     {/* Cross-file comments display */}
                                     {crossFileComments.length > 0 && (
                                         <div className="mt-4 space-y-3">
-                                            <h4 className="font-bold text-charcoal dark:text-cream">Your Cross-File Comments:</h4>
+                                            <h4 className="font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wide text-xs">Your Cross-File Comments:</h4>
                                             {crossFileComments.map(comment => (
-                                                <div key={comment.id} className="p-3 bg-charcoal/5 dark:bg-cream/5 border-2 border-charcoal/10 dark:border-cream/10 rounded-md">
-                                                    <p className="text-charcoal/90 dark:text-cream/90 font-medium">{comment.text}</p>
-                                                    <span className="text-xs text-orange-600 mt-1 block font-bold">
+                                                <div key={comment.id} className="p-3 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm shadow-[2px_2px_0px_0px_var(--color-shadow)]">
+                                                    <p className="text-charcoal/90 dark:text-cream/90 font-medium text-sm">{comment.text}</p>
+                                                    <span className="text-[10px] font-mono text-orange-600 mt-1.5 block font-bold uppercase tracking-wider">
                                                         Architectural Comment • {comment.timestamp.toLocaleTimeString()}
                                                     </span>
                                                 </div>
@@ -479,7 +479,7 @@ const MultiFilePRReview = () => {
                                     <button
                                         onClick={submitReview}
                                         disabled={comments.length === 0 && crossFileComments.length === 0}
-                                        className="w-full py-4 btn-primary disabled:opacity-50 disabled:cursor-not-allowed text-center justify-center"
+                                        className="w-full py-4 btn-primary disabled:opacity-50 disabled:cursor-not-allowed text-center justify-center font-mono text-sm"
                                     >
                                         Submit Multi-File Review & Start Discussion
                                     </button>

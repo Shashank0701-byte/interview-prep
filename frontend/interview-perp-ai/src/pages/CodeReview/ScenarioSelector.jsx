@@ -196,47 +196,47 @@ const ScenarioSelector = () => {
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
                                 <button
                                     onClick={() => setSelectedDifficulty('beginner')}
-                                    className={`p-4 text-center cursor-pointer border-2 border-charcoal dark:border-cream/40 transition-all duration-200 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
-                                        selectedDifficulty === 'beginner' ? 'bg-charcoal dark:bg-cream text-white dark:text-navy shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] -translate-y-1' : 'bg-transparent text-charcoal dark:text-cream'
+                                    className={`p-4 text-center cursor-pointer border-3 border-charcoal dark:border-cream/40 transition-all duration-200 rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
+                                        selectedDifficulty === 'beginner' ? 'bg-charcoal dark:bg-cream text-white dark:text-navy shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] -translate-y-1' : 'bg-white dark:bg-navy-light text-charcoal dark:text-cream shadow-[3px_3px_0px_0px_var(--color-shadow)]'
                                     }`}
                                 >
-                                    <div className="text-2xl font-bold mb-1">
+                                    <div className="text-2xl font-mono font-bold mb-1">
                                         {CODE_REVIEW_SCENARIOS.beginner.length}
                                     </div>
-                                    <div className="text-sm uppercase tracking-wider font-bold text-inherit">Beginner</div>
+                                    <div className="text-xs font-mono uppercase tracking-wider font-bold text-inherit">Beginner</div>
                                 </button>
                                 <button
                                     onClick={() => setSelectedDifficulty('intermediate')}
-                                    className={`p-4 text-center cursor-pointer border-2 border-charcoal dark:border-cream/40 transition-all duration-200 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
-                                        selectedDifficulty === 'intermediate' ? 'bg-charcoal dark:bg-cream text-white dark:text-navy shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] -translate-y-1' : 'bg-transparent text-charcoal dark:text-cream'
+                                    className={`p-4 text-center cursor-pointer border-3 border-charcoal dark:border-cream/40 transition-all duration-200 rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
+                                        selectedDifficulty === 'intermediate' ? 'bg-charcoal dark:bg-cream text-white dark:text-navy shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] -translate-y-1' : 'bg-white dark:bg-navy-light text-charcoal dark:text-cream shadow-[3px_3px_0px_0px_var(--color-shadow)]'
                                     }`}
                                 >
-                                    <div className="text-2xl font-bold mb-1">
+                                    <div className="text-2xl font-mono font-bold mb-1">
                                         {CODE_REVIEW_SCENARIOS.intermediate.length}
                                     </div>
-                                    <div className="text-sm uppercase tracking-wider font-bold text-inherit">Intermediate</div>
+                                    <div className="text-xs font-mono uppercase tracking-wider font-bold text-inherit">Intermediate</div>
                                 </button>
                                 <button
                                     onClick={() => setSelectedDifficulty('advanced')}
-                                    className={`p-4 text-center cursor-pointer border-2 border-charcoal dark:border-cream/40 transition-all duration-200 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
-                                        selectedDifficulty === 'advanced' ? 'bg-charcoal dark:bg-cream text-white dark:text-navy shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] -translate-y-1' : 'bg-transparent text-charcoal dark:text-cream'
+                                    className={`p-4 text-center cursor-pointer border-3 border-charcoal dark:border-cream/40 transition-all duration-200 rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
+                                        selectedDifficulty === 'advanced' ? 'bg-charcoal dark:bg-cream text-white dark:text-navy shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] -translate-y-1' : 'bg-white dark:bg-navy-light text-charcoal dark:text-cream shadow-[3px_3px_0px_0px_var(--color-shadow)]'
                                     }`}
                                 >
-                                    <div className="text-2xl font-bold mb-1">
+                                    <div className="text-2xl font-mono font-bold mb-1">
                                         {CODE_REVIEW_SCENARIOS.advanced.length + getAllMultiFilePRs().length}
                                     </div>
-                                    <div className="text-sm uppercase tracking-wider font-bold text-inherit">Advanced</div>
+                                    <div className="text-xs font-mono uppercase tracking-wider font-bold text-inherit">Advanced</div>
                                 </button>
                                 <button
                                     onClick={() => setSelectedDifficulty('all')}
-                                    className={`p-4 text-center cursor-pointer border-2 border-charcoal dark:border-cream/40 transition-all duration-200 rounded-md hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
-                                        selectedDifficulty === 'all' ? 'bg-charcoal dark:bg-cream text-white dark:text-navy shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] -translate-y-1' : 'bg-transparent text-charcoal dark:text-cream'
+                                    className={`p-4 text-center cursor-pointer border-3 border-charcoal dark:border-cream/40 transition-all duration-200 rounded-sm hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] ${
+                                        selectedDifficulty === 'all' ? 'bg-charcoal dark:bg-cream text-white dark:text-navy shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)] -translate-y-1' : 'bg-white dark:bg-navy-light text-charcoal dark:text-cream shadow-[3px_3px_0px_0px_var(--color-shadow)]'
                                     }`}
                                 >
-                                    <div className="text-2xl font-bold mb-1">
+                                    <div className="text-2xl font-mono font-bold mb-1">
                                         {getAllScenarios().length}
                                     </div>
-                                    <div className="text-sm uppercase tracking-wider font-bold text-inherit">Total</div>
+                                    <div className="text-xs font-mono uppercase tracking-wider font-bold text-inherit">Total</div>
                                 </button>
                             </div>
                         </div>
@@ -251,19 +251,19 @@ const ScenarioSelector = () => {
                             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
                                 <div className="flex items-center gap-3">
                                     <LuFilter className="w-5 h-5 text-charcoal dark:text-cream" />
-                                    <h2 className="text-2xl font-display font-semibold text-charcoal dark:text-cream">Filters & Search</h2>
+                                    <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream">Filters & Search</h2>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <button
                                         onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
-                                        className="flex items-center gap-2 px-3 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream transition-colors"
+                                        className="flex items-center gap-2 px-3 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream transition-colors text-xs font-mono font-bold uppercase tracking-wider"
                                     >
                                         {viewMode === 'grid' ? <LuList className="w-4 h-4" /> : <LuGrid3X3 className="w-4 h-4" />}
                                         {viewMode === 'grid' ? 'List View' : 'Grid View'}
                                     </button>
                                     <button
                                         onClick={clearFilters}
-                                        className="flex items-center gap-2 px-3 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream transition-colors"
+                                        className="flex items-center gap-2 px-3 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream transition-colors text-xs font-mono font-bold uppercase tracking-wider"
                                     >
                                         <LuRotateCcw className="w-4 h-4" />
                                         Clear All
@@ -280,7 +280,7 @@ const ScenarioSelector = () => {
                                     placeholder="Search scenarios..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-3 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md outline-none focus:outline-none transition-colors font-bold placeholder-charcoal/50 dark:placeholder-cream/50"
+                                    className="w-full pl-10 pr-4 py-3 border-3 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-sm outline-none focus:outline-none transition-colors font-mono font-bold text-xs uppercase tracking-wider placeholder-charcoal/50 dark:placeholder-cream/50"
                                 />
                             </div>
 
@@ -289,7 +289,7 @@ const ScenarioSelector = () => {
                                 <select
                                     value={selectedDifficulty}
                                     onChange={(e) => setSelectedDifficulty(e.target.value)}
-                                    className="w-full px-4 py-3 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md outline-none focus:outline-none font-bold transition-all duration-200 appearance-none cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
+                                    className="w-full px-4 pr-10 py-3 border-3 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-sm outline-none focus:outline-none font-mono font-bold text-xs uppercase tracking-wider transition-all duration-200 appearance-none cursor-pointer hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] shadow-[2px_2px_0px_0px_var(--color-shadow)]"
                                 >
                                     <option value="all">All Difficulties</option>
                                     <option value="beginner">Beginner</option>
@@ -304,7 +304,7 @@ const ScenarioSelector = () => {
                                 <select
                                     value={selectedTag}
                                     onChange={(e) => setSelectedTag(e.target.value)}
-                                    className="w-full px-4 py-3 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md outline-none focus:outline-none font-bold transition-all duration-200 appearance-none cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
+                                    className="w-full px-4 pr-10 py-3 border-3 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-sm outline-none focus:outline-none font-mono font-bold text-xs uppercase tracking-wider transition-all duration-200 appearance-none cursor-pointer hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] shadow-[2px_2px_0px_0px_var(--color-shadow)]"
                                 >
                                     <option value="">All Tags</option>
                                     {getAllTags().map(tag => (
@@ -319,7 +319,7 @@ const ScenarioSelector = () => {
                                 <select
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value)}
-                                    className="w-full px-4 py-3 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md outline-none focus:outline-none font-bold transition-all duration-200 appearance-none cursor-pointer hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)]"
+                                    className="w-full px-4 pr-10 py-3 border-3 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-sm outline-none focus:outline-none font-mono font-bold text-xs uppercase tracking-wider transition-all duration-200 appearance-none cursor-pointer hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] shadow-[2px_2px_0px_0px_var(--color-shadow)]"
                                 >
                                     <option value="latest">Latest First</option>
                                     <option value="difficulty-easy">Easiest First</option>
@@ -331,7 +331,7 @@ const ScenarioSelector = () => {
                             </div>
 
                             {/* Results Count */}
-                            <div className="mt-4 text-sm text-charcoal/70 dark:text-cream/70">
+                            <div className="mt-4 text-xs font-mono font-bold uppercase tracking-wider text-charcoal/70 dark:text-cream/70">
                                 Showing {getAllScenarios().length} scenarios
                                 {searchTerm && ` matching "${searchTerm}"`}
                                 {selectedTag && ` tagged with "${selectedTag}"`}
@@ -354,7 +354,7 @@ const ScenarioSelector = () => {
                                 {/* Completion Badge */}
                                 {isCompleted && (
                                     <div className="absolute top-4 right-4 z-10">
-                                        <div className="flex items-center gap-1 bg-charcoal dark:bg-cream text-white dark:text-navy px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider">
+                                        <div className="flex items-center gap-1 bg-charcoal dark:bg-cream text-white dark:text-navy px-3 py-1 rounded-sm text-xs font-mono font-bold uppercase tracking-wider">
                                             <LuCheck className="w-3 h-3" />
                                             {score ? `${score.overall}%` : 'Completed'}
                                         </div>
@@ -362,24 +362,24 @@ const ScenarioSelector = () => {
                                 )}
 
                                 {/* Header */}
-                                <div className="bg-charcoal dark:bg-navy-input border-b-2 border-charcoal dark:border-cream/40 p-6 text-white dark:text-cream relative flex-shrink-0">
+                                <div className="bg-charcoal dark:bg-navy-input border-b-4 border-charcoal dark:border-cream/40 p-6 text-white dark:text-cream relative flex-shrink-0">
                                     <div className="flex items-center justify-between mb-3">
-                                        <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-xs">
+                                        <div className="flex items-center gap-2 font-mono font-bold uppercase tracking-wider text-xs">
                                             {difficultyIcons[scenario.difficulty]}
                                             <span>{scenario.difficulty}</span>
                                         </div>
-                                        <div className="flex items-center gap-1 text-sm font-bold tracking-wider">
+                                        <div className="flex items-center gap-1 text-xs font-mono font-bold tracking-wider uppercase">
                                             <LuClock className="w-4 h-4" />
                                             {scenario.estimatedTime}
                                         </div>
                                     </div>
-                                    <h3 className="text-2xl font-display mb-2">{scenario.title}</h3>
-                                    <p className="text-white/80 dark:text-cream/80 text-sm font-body">{scenario.description}</p>
+                                    <h3 className="text-2xl font-display font-bold mb-2">{scenario.title}</h3>
+                                    <p className="text-white/80 dark:text-cream/80 text-sm font-body font-medium leading-relaxed">{scenario.description}</p>
                                 </div>
 
                                 {/* Content */}
                                 <div className="p-6 flex-grow flex flex-col">
-                                    <div className="flex items-center gap-2 text-sm text-charcoal dark:text-cream font-bold uppercase tracking-wider mb-4">
+                                    <div className="flex items-center gap-2 text-xs text-charcoal dark:text-cream font-mono font-bold uppercase tracking-wider mb-4">
                                         <LuUser className="w-4 h-4" />
                                         <span>by {scenario.author}</span>
                                     </div>
@@ -390,10 +390,10 @@ const ScenarioSelector = () => {
                                             <button
                                                 key={tag}
                                                 onClick={() => setSelectedTag(selectedTag === tag ? '' : tag)}
-                                                className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider border-2 rounded-md transition-all ${
+                                                className={`px-3 py-1.5 text-[10px] font-mono font-bold uppercase tracking-wider border-3 rounded-sm transition-all ${
                                                     selectedTag === tag 
                                                         ? 'bg-charcoal dark:bg-cream text-white dark:text-navy border-charcoal dark:border-cream/40' 
-                                                        : 'bg-transparent text-charcoal dark:text-cream border-charcoal/20 dark:border-cream/20 hover:border-charcoal/50 dark:hover:border-cream/50'
+                                                        : 'bg-white dark:bg-navy-light text-charcoal dark:text-cream border-charcoal dark:border-cream/40 hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_var(--color-shadow)] shadow-[1px_1px_0px_0px_var(--color-shadow)]'
                                                 }`}
                                             >
                                                 {tag}
@@ -407,7 +407,7 @@ const ScenarioSelector = () => {
                                     <div className="flex-grow"></div>
 
                                     {/* Stats */}
-                                    <div className="flex items-center justify-between text-sm text-charcoal dark:text-cream font-bold uppercase tracking-wider mb-6 pt-4 border-t-2 border-charcoal/10 dark:border-cream/10">
+                                    <div className="flex items-center justify-between text-xs text-charcoal dark:text-cream font-mono font-bold uppercase tracking-wider mb-6 pt-4 border-t-3 border-charcoal/10 dark:border-cream/10">
                                         <div className="flex items-center gap-1">
                                             <LuTarget className="w-4 h-4" />
                                             <span>
@@ -427,12 +427,12 @@ const ScenarioSelector = () => {
 
                                     {/* Score Display */}
                                     {score && (
-                                        <div className="mb-4 p-3 bg-white dark:bg-navy-light border-2 border-charcoal/20 dark:border-cream/20 rounded-md">
+                                        <div className="mb-4 p-3 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm shadow-[2px_2px_0px_0px_var(--color-shadow)]">
                                             <div className="flex items-center justify-between text-sm">
-                                                <span className="text-charcoal dark:text-cream font-bold uppercase tracking-wider text-xs">Last Score:</span>
+                                                <span className="text-charcoal dark:text-cream font-mono font-bold uppercase tracking-wider text-xs">Last Score:</span>
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-charcoal dark:text-cream font-bold">{score.overall}%</span>
-                                                    <span className="text-charcoal/60 dark:text-cream/60 font-bold text-xs">({score.issuesFound}/{score.totalIssues} issues)</span>
+                                                    <span className="text-charcoal/60 dark:text-cream/60 font-mono font-bold text-xs">({score.issuesFound}/{score.totalIssues})</span>
                                                 </div>
                                             </div>
                                         </div>

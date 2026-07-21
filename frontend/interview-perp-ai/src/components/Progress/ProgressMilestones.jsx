@@ -46,24 +46,24 @@ const ProgressMilestones = ({
         switch (status) {
             case 'completed':
                 return {
-                    dot: 'bg-gradient-to-r from-emerald-500 to-green-500 scale-110 shadow-lg shadow-emerald-200',
-                    line: 'bg-gradient-to-r from-emerald-400 to-green-400',
-                    text: 'text-emerald-700 font-semibold',
-                    icon: 'scale-110 filter drop-shadow-sm'
+                    dot: 'bg-charcoal dark:bg-cream border-4 border-charcoal dark:border-cream/40 scale-110 shadow-[2px_2px_0px_0px_var(--color-shadow)]',
+                    line: 'bg-charcoal dark:bg-cream',
+                    text: 'text-charcoal dark:text-cream font-bold font-mono',
+                    icon: 'scale-110'
                 };
             case 'current':
                 return {
-                    dot: 'bg-gradient-to-r from-blue-500 to-indigo-500 scale-125 shadow-xl shadow-blue-200 animate-pulse',
-                    line: 'bg-gradient-to-r from-gray-200 to-gray-300',
-                    text: 'text-blue-700 font-bold',
-                    icon: 'scale-125 animate-bounce filter drop-shadow-md'
+                    dot: 'bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 scale-125 shadow-[4px_4px_0px_0px_var(--color-shadow)] animate-pulse',
+                    line: 'bg-charcoal/20 dark:bg-cream/20',
+                    text: 'text-charcoal dark:text-cream font-extrabold font-mono',
+                    icon: 'scale-125 animate-bounce'
                 };
             default:
                 return {
-                    dot: 'bg-gray-200 hover:bg-gray-300',
-                    line: 'bg-gray-200',
-                    text: 'text-gray-500',
-                    icon: 'opacity-50'
+                    dot: 'bg-white dark:bg-navy-light border-4 border-charcoal/20 dark:border-cream/20 scale-100',
+                    line: 'bg-charcoal/10 dark:bg-cream/10',
+                    text: 'text-charcoal/40 dark:text-cream/40 font-mono',
+                    icon: 'opacity-40'
                 };
         }
     };
@@ -72,29 +72,29 @@ const ProgressMilestones = ({
         <div className="w-full max-w-4xl mx-auto">
             {/* Current Milestone Message */}
             {showCurrentMessage && milestones[currentMilestone] && (
-                <div className="text-center mb-8 p-6 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-2xl border border-blue-100 shadow-sm">
+                <div className="text-center mb-8 p-6 bg-white dark:bg-navy-light border-4 border-charcoal dark:border-cream/40 rounded-sm shadow-[4px_4px_0px_0px_var(--color-shadow)]">
                     <div className="flex items-center justify-center gap-3 mb-3">
                         <span className="text-3xl animate-bounce">
                             {milestones[currentMilestone].icon}
                         </span>
-                        <h3 className="text-xl font-bold text-gray-800">
+                        <h3 className="text-xl font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wide">
                             {milestones[currentMilestone].label}
                         </h3>
                     </div>
-                    <p className="text-gray-600 font-medium leading-relaxed">
+                    <p className="text-sm font-mono font-bold uppercase tracking-wide text-charcoal/70 dark:text-cream/70 leading-relaxed">
                         {milestones[currentMilestone].message}
                     </p>
                 </div>
             )}
 
             {/* Milestone Timeline */}
-            <div className="relative">
+            <div className="relative mb-12">
                 {/* Progress Line Background */}
-                <div className="absolute top-8 left-0 right-0 h-1 bg-gray-200 rounded-full"></div>
+                <div className="absolute top-8 left-0 right-0 h-1.5 bg-charcoal/15 dark:bg-cream/15 rounded-sm"></div>
                 
                 {/* Animated Progress Line */}
                 <div 
-                    className="absolute top-8 left-0 h-1 bg-gradient-to-r from-emerald-400 to-green-400 rounded-full transition-all duration-1000 ease-out"
+                    className="absolute top-8 left-0 h-1.5 bg-charcoal dark:bg-cream rounded-sm transition-all duration-1000 ease-out"
                     style={{ width: `${animatedProgress}%` }}
                 ></div>
 
@@ -112,13 +112,13 @@ const ProgressMilestones = ({
                             >
                                 {/* Milestone Dot */}
                                 <div className={`
-                                    w-6 h-6 rounded-full border-4 border-white transition-all duration-500 z-10 relative
+                                    w-6 h-6 rounded-full border-4 border-white dark:border-navy transition-all duration-500 z-10 relative
                                     ${styles.dot}
                                     group-hover:scale-110
                                 `}>
                                     {/* Ripple effect for current milestone */}
                                     {status === 'current' && (
-                                        <div className="absolute inset-0 rounded-full bg-blue-400 animate-ping opacity-30"></div>
+                                        <div className="absolute inset-0 rounded-full bg-charcoal dark:bg-cream animate-ping opacity-30"></div>
                                     )}
                                 </div>
 
@@ -135,21 +135,12 @@ const ProgressMilestones = ({
                                 <div className={`
                                     text-center mt-2 transition-all duration-300
                                     ${styles.text}
-                                    group-hover:text-blue-600
                                 `}>
-                                    <div className="text-sm font-medium">
+                                    <div className="text-[10px] font-mono font-bold uppercase tracking-wider">
                                         {milestone.label}
                                     </div>
-                                    <div className="text-xs opacity-75 mt-1">
+                                    <div className="text-[9px] font-mono opacity-75 mt-0.5">
                                         {milestone.value}%
-                                    </div>
-                                </div>
-
-                                {/* Tooltip on Hover */}
-                                <div className="absolute top-full mt-4 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-20">
-                                    <div className="bg-gray-800 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
-                                        {milestone.message}
-                                        <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
                                     </div>
                                 </div>
                             </div>
@@ -160,41 +151,17 @@ const ProgressMilestones = ({
 
             {/* Progress Stats */}
             <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
-                    <div className="text-2xl font-bold text-emerald-600">
-                        {Math.round(animatedProgress)}%
+                {[
+                    { value: `${Math.round(animatedProgress)}%`, label: 'Complete' },
+                    { value: milestones.filter(m => animatedProgress >= m.value).length, label: 'Milestones' },
+                    { value: `${100 - Math.round(animatedProgress)}%`, label: 'Remaining' },
+                    { value: milestones[currentMilestone]?.icon || '🎯', label: 'Current Goal' }
+                ].map((stat, i) => (
+                    <div key={i} className="text-center p-4 bg-white dark:bg-navy-light rounded-sm border-3 border-charcoal dark:border-cream/40 shadow-[3px_3px_0px_0px_var(--color-shadow)] hover:-translate-y-0.5 transition-all">
+                        <div className="text-2xl font-mono font-bold text-charcoal dark:text-cream">{stat.value}</div>
+                        <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-charcoal/50 dark:text-cream/50 mt-1">{stat.label}</div>
                     </div>
-                    <div className="text-sm text-gray-600 font-medium">
-                        Complete
-                    </div>
-                </div>
-                
-                <div className="text-center p-4 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
-                    <div className="text-2xl font-bold text-blue-600">
-                        {milestones.filter(m => animatedProgress >= m.value).length}
-                    </div>
-                    <div className="text-sm text-gray-600 font-medium">
-                        Milestones
-                    </div>
-                </div>
-                
-                <div className="text-center p-4 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
-                    <div className="text-2xl font-bold text-purple-600">
-                        {100 - Math.round(animatedProgress)}%
-                    </div>
-                    <div className="text-sm text-gray-600 font-medium">
-                        Remaining
-                    </div>
-                </div>
-                
-                <div className="text-center p-4 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
-                    <div className="text-2xl font-bold text-amber-600">
-                        {milestones[currentMilestone]?.icon || '🎯'}
-                    </div>
-                    <div className="text-sm text-gray-600 font-medium">
-                        Current Goal
-                    </div>
-                </div>
+                ))}
             </div>
         </div>
     );

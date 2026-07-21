@@ -189,16 +189,16 @@ const ProgressInsights = ({
     };
 
     const colorSchemes = {
-        emerald: 'from-emerald-50 to-green-50 border-emerald-200 text-emerald-800',
-        blue: 'from-blue-50 to-indigo-50 border-blue-200 text-blue-800',
-        purple: 'from-purple-50 to-indigo-50 border-purple-200 text-purple-800',
-        amber: 'from-amber-50 to-yellow-50 border-amber-200 text-amber-800',
-        red: 'from-red-50 to-pink-50 border-red-200 text-red-800',
-        orange: 'from-orange-50 to-red-50 border-orange-200 text-orange-800',
-        yellow: 'from-yellow-50 to-amber-50 border-yellow-200 text-yellow-800',
-        teal: 'from-teal-50 to-cyan-50 border-teal-200 text-teal-800',
-        indigo: 'from-indigo-50 to-purple-50 border-indigo-200 text-indigo-800',
-        green: 'from-green-50 to-emerald-50 border-green-200 text-green-800'
+        emerald: 'bg-white dark:bg-navy-light border-charcoal dark:border-cream/40 text-charcoal dark:text-cream',
+        blue: 'bg-white dark:bg-navy-light border-charcoal dark:border-cream/40 text-charcoal dark:text-cream',
+        purple: 'bg-white dark:bg-navy-light border-charcoal dark:border-cream/40 text-charcoal dark:text-cream',
+        amber: 'bg-white dark:bg-navy-light border-charcoal dark:border-cream/40 text-charcoal dark:text-cream',
+        red: 'bg-white dark:bg-navy-light border-charcoal dark:border-cream/40 text-charcoal dark:text-cream',
+        orange: 'bg-white dark:bg-navy-light border-charcoal dark:border-cream/40 text-charcoal dark:text-cream',
+        yellow: 'bg-white dark:bg-navy-light border-charcoal dark:border-cream/40 text-charcoal dark:text-cream',
+        teal: 'bg-white dark:bg-navy-light border-charcoal dark:border-cream/40 text-charcoal dark:text-cream',
+        indigo: 'bg-white dark:bg-navy-light border-charcoal dark:border-cream/40 text-charcoal dark:text-cream',
+        green: 'bg-white dark:bg-navy-light border-charcoal dark:border-cream/40 text-charcoal dark:text-cream'
     };
 
     return (
@@ -206,7 +206,7 @@ const ProgressInsights = ({
             {/* Progress Insights */}
             {visibleInsights.length > 0 && (
                 <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <h3 className="text-sm font-mono font-bold uppercase tracking-wider text-charcoal dark:text-cream flex items-center gap-2">
                         <span className="text-xl">💡</span>
                         Your Progress Insights
                     </h3>
@@ -216,8 +216,8 @@ const ProgressInsights = ({
                             <div
                                 key={index}
                                 className={`
-                                    p-4 rounded-xl border-2 bg-gradient-to-br transition-all duration-500 hover:scale-105 hover:shadow-lg
-                                    ${colorSchemes[insight.color]}
+                                    p-4 rounded-sm border-4 transition-all duration-500 hover:-translate-y-1 shadow-[3px_3px_0px_0px_var(--color-shadow)]
+                                    ${colorSchemes[insight.color] || 'bg-white dark:bg-navy-light border-charcoal dark:border-cream/40 text-charcoal dark:text-cream'}
                                     ${animated ? 'animate-fade-in-up' : ''}
                                 `}
                                 style={{ animationDelay: `${index * 100}ms` }}
@@ -227,10 +227,10 @@ const ProgressInsights = ({
                                         {insight.icon}
                                     </span>
                                     <div>
-                                        <h4 className="font-semibold mb-1">
+                                        <h4 className="font-mono font-bold uppercase tracking-wide text-sm mb-1">
                                             {insight.title}
                                         </h4>
-                                        <p className="text-sm leading-relaxed opacity-90">
+                                        <p className="text-xs font-mono font-bold uppercase tracking-wide text-charcoal/70 dark:text-cream/70 opacity-90">
                                             {insight.message}
                                         </p>
                                     </div>
@@ -244,7 +244,7 @@ const ProgressInsights = ({
             {/* Helpful Tips */}
             {showTips && getTips().length > 0 && (
                 <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <h3 className="text-sm font-mono font-bold uppercase tracking-wider text-charcoal dark:text-cream flex items-center gap-2">
                         <span className="text-xl">🎯</span>
                         Personalized Tips
                     </h3>
@@ -253,17 +253,17 @@ const ProgressInsights = ({
                         {getTips().map((tip, index) => (
                             <div
                                 key={index}
-                                className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:border-blue-300"
+                                className="p-4 bg-white dark:bg-navy-light rounded-sm border-3 border-charcoal dark:border-cream/40 shadow-[3px_3px_0px_0px_var(--color-shadow)] hover:-translate-y-0.5 transition-all duration-300"
                             >
                                 <div className="flex items-start gap-3">
                                     <span className="text-xl flex-shrink-0">
                                         {tip.icon}
                                     </span>
                                     <div>
-                                        <h4 className="font-medium text-gray-800 mb-1">
+                                        <h4 className="font-mono font-bold uppercase tracking-wide text-sm text-charcoal dark:text-cream mb-1">
                                             {tip.title}
                                         </h4>
-                                        <p className="text-sm text-gray-600 leading-relaxed">
+                                        <p className="text-xs font-mono font-bold uppercase tracking-wide text-charcoal/70 dark:text-cream/70 leading-relaxed">
                                             {tip.message}
                                         </p>
                                     </div>
@@ -276,13 +276,13 @@ const ProgressInsights = ({
 
             {/* Encouraging Message */}
             {showEncouragement && (
-                <div className="p-6 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-2xl border border-blue-200">
+                <div className="p-6 bg-white dark:bg-navy-light rounded-sm border-4 border-charcoal dark:border-cream/40 shadow-[4px_4px_0px_0px_var(--color-shadow)]">
                     <div className="text-center space-y-3">
                         <div className="text-3xl">🌟</div>
-                        <h3 className="text-lg font-semibold text-gray-800">
+                        <h3 className="text-lg font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wider">
                             Remember: Progress, Not Perfection
                         </h3>
-                        <p className="text-gray-600 leading-relaxed max-w-md mx-auto">
+                        <p className="text-xs font-mono font-bold uppercase tracking-wide text-charcoal/70 dark:text-cream/70 leading-relaxed max-w-md mx-auto">
                             Every small step you take is building towards your success. 
                             Be patient with yourself and celebrate the journey.
                         </p>

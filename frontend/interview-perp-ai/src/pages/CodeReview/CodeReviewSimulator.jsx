@@ -388,44 +388,44 @@ module.exports = { loginUser, hashPassword };`,
                             {conversations.map(conversation => (
                                 <div key={conversation.id} className="card-editorial overflow-hidden">
                                     {/* Original Comment */}
-                                    <div className="bg-charcoal/5 dark:bg-cream/5 p-6 border-b-2 border-charcoal/10 dark:border-cream/10">
+                                    <div className="bg-charcoal/5 dark:bg-cream/5 p-6 border-b-3 border-charcoal/15 dark:border-cream/15">
                                         <div className="flex items-start gap-4">
-                                            <div className="w-10 h-10 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center text-white dark:text-navy font-bold">
+                                            <div className="w-10 h-10 bg-charcoal dark:bg-cream border-3 border-charcoal dark:border-cream/40 rounded-sm flex items-center justify-center text-white dark:text-navy font-bold shadow-[2px_2px_0px_0px_var(--color-shadow)]">
                                                 You
                                             </div>
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2 mb-2">
-                                                    <span className="font-bold text-charcoal dark:text-cream uppercase tracking-wider text-sm">Your Review Comment</span>
-                                                    <span className="text-xs bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream px-2 py-1 rounded font-bold">
+                                                    <span className="font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs">Your Review Comment</span>
+                                                    <span className="text-xs bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream px-2 py-1 rounded-sm font-mono font-bold">
                                                         Line {conversation.userComment.line}
                                                     </span>
                                                 </div>
-                                                <p className="text-charcoal/80 dark:text-cream/80">{conversation.userComment.text}</p>
+                                                <p className="text-charcoal/80 dark:text-cream/80 text-sm font-bold uppercase tracking-wide leading-relaxed">{conversation.userComment.text}</p>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Author Response */}
-                                    <div className="p-6 border-b-2 border-charcoal/10 dark:border-cream/10">
+                                    <div className="p-6 border-b-3 border-charcoal/15 dark:border-cream/15">
                                         <div className="flex items-start gap-4">
-                                            <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white text-lg font-bold">
+                                            <div className="w-10 h-10 bg-orange-500 border-3 border-charcoal dark:border-cream/40 rounded-sm flex items-center justify-center text-white text-lg font-bold shadow-[2px_2px_0px_0px_var(--color-shadow)]">
                                                 {conversation.authorResponse.avatar}
                                             </div>
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2 mb-2">
-                                                    <span className="font-bold text-charcoal dark:text-cream">{conversation.authorResponse.author}</span>
-                                                    <span className="text-xs bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream px-2 py-1 rounded-sm font-bold uppercase tracking-wider">
+                                                    <span className="font-display font-bold text-charcoal dark:text-cream">{conversation.authorResponse.author}</span>
+                                                    <span className="text-xs bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream px-2 py-1 rounded-sm font-mono font-bold uppercase tracking-wider">
                                                         {conversation.authorResponse.experience} experience
                                                     </span>
-                                                    <span className={`text-xs px-2 py-1 rounded ${
-                                                        conversation.authorResponse.style === 'defensive' ? 'bg-red-100 text-red-700' :
-                                                        conversation.authorResponse.style === 'questioning' ? 'bg-blue-100 text-blue-700' :
-                                                        'bg-yellow-100 text-yellow-700'
+                                                    <span className={`text-[10px] px-2 py-1 border-2 font-mono font-bold uppercase tracking-wider rounded-sm ${
+                                                        conversation.authorResponse.style === 'defensive' ? 'bg-red-100 text-red-700 border-red-300 dark:bg-red-950/20 dark:text-red-300' :
+                                                        conversation.authorResponse.style === 'questioning' ? 'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-950/20 dark:text-blue-300' :
+                                                        'bg-yellow-100 text-yellow-700 border-yellow-300 dark:bg-yellow-950/20 dark:text-yellow-300'
                                                     }`}>
                                                         {conversation.authorResponse.style}
                                                     </span>
                                                 </div>
-                                                <p className="text-charcoal/80 dark:text-cream/80 mb-4">{conversation.authorResponse.response}</p>
+                                                <p className="text-charcoal/80 dark:text-cream/80 font-medium mb-4">{conversation.authorResponse.response}</p>
                                                 
                                                 {/* Response Area */}
                                                 {!conversation.isResolved && (
@@ -436,21 +436,21 @@ module.exports = { loginUser, hashPassword };`,
                                                                     value={rebuttalResponse}
                                                                     onChange={(e) => setRebuttalResponse(e.target.value)}
                                                                     placeholder="How do you respond? Consider their perspective while defending your position..."
-                                                                    className="w-full p-4 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md resize-none outline-none focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50"
+                                                                    className="w-full p-4 border-3 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-sm resize-none outline-none focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50 text-xs font-mono font-bold uppercase tracking-wider"
                                                                     rows={4}
                                                                 />
                                                                 <div className="flex gap-3">
                                                                     <button
                                                                         onClick={() => submitRebuttal(conversation.id, rebuttalResponse)}
                                                                         disabled={!rebuttalResponse.trim()}
-                                                                        className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                                                                        className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed text-xs font-mono font-bold uppercase tracking-wider"
                                                                     >
                                                                         <LuSend className="w-4 h-4" />
                                                                         Send Response
                                                                     </button>
                                                                     <button
                                                                         onClick={() => setActiveConversation(null)}
-                                                                        className="px-4 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream font-bold transition-colors"
+                                                                        className="px-4 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream font-mono font-bold text-xs uppercase tracking-wider transition-colors"
                                                                     >
                                                                         Cancel
                                                                     </button>
@@ -459,7 +459,7 @@ module.exports = { loginUser, hashPassword };`,
                                                         ) : (
                                                             <button
                                                                 onClick={() => setActiveConversation(conversation.id)}
-                                                                className="flex items-center gap-2 px-4 py-2 bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream font-bold uppercase tracking-wider text-sm rounded-md transition-colors hover:bg-charcoal/20 dark:hover:bg-cream/20"
+                                                                className="btn-primary flex items-center gap-2 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider"
                                                             >
                                                                 <LuMessageSquare className="w-4 h-4" />
                                                                 Respond to {conversation.authorResponse.author}
@@ -470,14 +470,14 @@ module.exports = { loginUser, hashPassword };`,
 
                                                 {/* User's Rebuttal */}
                                                 {conversation.userRebuttal && (
-                                                    <div className="mt-4 p-4 bg-charcoal/5 dark:bg-cream/5 rounded-md border-2 border-charcoal/10 dark:border-cream/10">
-                                                        <div className="flex items-center gap-2 mb-2">
-                                                            <span className="font-bold text-charcoal dark:text-cream uppercase tracking-wider text-sm">Your Response</span>
-                                                            <span className="text-xs bg-charcoal dark:bg-cream text-white dark:text-navy px-2 py-1 rounded-sm font-bold uppercase tracking-wider">
-                                                                Communication Score: {conversation.userRebuttal.score.overall}%
+                                                    <div className="mt-4 p-4 bg-white dark:bg-navy-light rounded-sm border-3 border-charcoal dark:border-cream/40 shadow-[3px_3px_0px_0px_var(--color-shadow)]">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <span className="font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs">Your Response</span>
+                                                            <span className="text-xs bg-charcoal dark:bg-cream text-white dark:text-navy px-2 py-1 rounded-sm font-mono font-bold uppercase tracking-wider">
+                                                                Score: {conversation.userRebuttal.score.overall}%
                                                             </span>
                                                         </div>
-                                                        <p className="text-charcoal/80 dark:text-cream/80">{conversation.userRebuttal.text}</p>
+                                                        <p className="text-charcoal/80 dark:text-cream/80 text-sm font-medium">{conversation.userRebuttal.text}</p>
                                                     </div>
                                                 )}
                                             </div>
@@ -492,7 +492,7 @@ module.exports = { loginUser, hashPassword };`,
                             <div className="flex items-center justify-between">
                                 <div>
                                     <h3 className="font-display font-bold text-charcoal dark:text-cream">Conversation Progress</h3>
-                                    <p className="text-charcoal/80 dark:text-cream/80 text-sm font-bold">
+                                    <p className="text-charcoal/80 dark:text-cream/80 text-xs font-mono font-bold uppercase tracking-wider mt-1">
                                         {conversations.filter(c => c.isResolved).length} of {conversations.length} conversations completed
                                     </p>
                                 </div>
@@ -500,7 +500,7 @@ module.exports = { loginUser, hashPassword };`,
                                     {conversations.map(conv => (
                                         <div
                                             key={conv.id}
-                                            className={`w-3 h-3 rounded-full border-2 border-charcoal/20 dark:border-cream/20 ${
+                                            className={`w-3.5 h-3.5 border-2 border-charcoal dark:border-cream/40 rounded-sm ${
                                                 conv.isResolved ? 'bg-charcoal dark:bg-cream' : 'bg-transparent'
                                             }`}
                                         />
@@ -562,25 +562,25 @@ module.exports = { loginUser, hashPassword };`,
                                 <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-6">Communication Skills Breakdown</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-3">
-                                            <span className="text-white dark:text-navy font-bold text-lg">{communicationScore.empathy}%</span>
+                                        <div className="w-16 h-16 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm flex items-center justify-center mx-auto mb-3 shadow-[3px_3px_0px_0px_var(--color-shadow)]">
+                                            <span className="text-charcoal dark:text-cream font-mono font-bold text-lg">{communicationScore.empathy}%</span>
                                         </div>
-                                        <h3 className="font-bold text-charcoal dark:text-cream mb-2">Empathy</h3>
-                                        <p className="text-sm text-charcoal/70 dark:text-cream/70">Understanding and acknowledging others' perspectives</p>
+                                        <h3 className="font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs mb-2">Empathy</h3>
+                                        <p className="text-xs font-mono font-bold uppercase tracking-wide text-charcoal/70 dark:text-cream/70 leading-relaxed">Understanding and acknowledging others' perspectives</p>
                                     </div>
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-3">
-                                            <span className="text-white dark:text-navy font-bold text-lg">{communicationScore.technical}%</span>
+                                        <div className="w-16 h-16 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm flex items-center justify-center mx-auto mb-3 shadow-[3px_3px_0px_0px_var(--color-shadow)]">
+                                            <span className="text-charcoal dark:text-cream font-mono font-bold text-lg">{communicationScore.technical}%</span>
                                         </div>
-                                        <h3 className="font-bold text-charcoal dark:text-cream mb-2">Technical Reasoning</h3>
-                                        <p className="text-sm text-charcoal/70 dark:text-cream/70">Backing arguments with data and evidence</p>
+                                        <h3 className="font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs mb-2">Technical Reasoning</h3>
+                                        <p className="text-xs font-mono font-bold uppercase tracking-wide text-charcoal/70 dark:text-cream/70 leading-relaxed">Backing arguments with data and evidence</p>
                                     </div>
                                     <div className="text-center">
-                                        <div className="w-16 h-16 bg-charcoal dark:bg-cream rounded-full flex items-center justify-center mx-auto mb-3">
-                                            <span className="text-white dark:text-navy font-bold text-lg">{communicationScore.leadership}%</span>
+                                        <div className="w-16 h-16 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm flex items-center justify-center mx-auto mb-3 shadow-[3px_3px_0px_0px_var(--color-shadow)]">
+                                            <span className="text-charcoal dark:text-cream font-mono font-bold text-lg">{communicationScore.leadership}%</span>
                                         </div>
-                                        <h3 className="font-bold text-charcoal dark:text-cream mb-2">Leadership</h3>
-                                        <p className="text-sm text-charcoal/70 dark:text-cream/70">Providing clear direction and recommendations</p>
+                                        <h3 className="font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs mb-2">Leadership</h3>
+                                        <p className="text-xs font-mono font-bold uppercase tracking-wide text-charcoal/70 dark:text-cream/70 leading-relaxed">Providing clear direction and recommendations</p>
                                     </div>
                                 </div>
                             </div>
@@ -590,20 +590,20 @@ module.exports = { loginUser, hashPassword };`,
                         <div className="card-editorial p-8 mb-6">
                             <h2 className="text-2xl font-display font-bold text-charcoal dark:text-cream mb-4">Detailed Feedback</h2>
                             <div className="space-y-4">
-                                <div className="flex items-center justify-between p-4 bg-charcoal/5 dark:bg-cream/5 rounded-md border-2 border-charcoal/10 dark:border-cream/10">
-                                    <span className="text-charcoal dark:text-cream font-bold">Issues Found</span>
-                                    <span className="font-bold text-charcoal dark:text-cream">{reviewScore.issuesFound} / {reviewScore.totalIssues}</span>
+                                <div className="flex items-center justify-between p-4 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm shadow-[2px_2px_0px_0px_var(--color-shadow)]">
+                                    <span className="text-charcoal dark:text-cream font-mono font-bold uppercase tracking-wider text-xs">Issues Found</span>
+                                    <span className="font-mono font-bold text-charcoal dark:text-cream">{reviewScore.issuesFound} / {reviewScore.totalIssues}</span>
                                 </div>
-                                <div className="flex items-center justify-between p-4 bg-charcoal/5 dark:bg-cream/5 rounded-md border-2 border-charcoal/10 dark:border-cream/10">
-                                    <span className="text-charcoal dark:text-cream font-bold">Comments Added</span>
-                                    <span className="font-bold text-charcoal dark:text-cream">{comments.length}</span>
+                                <div className="flex items-center justify-between p-4 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm shadow-[2px_2px_0px_0px_var(--color-shadow)]">
+                                    <span className="text-charcoal dark:text-cream font-mono font-bold uppercase tracking-wider text-xs">Comments Added</span>
+                                    <span className="font-mono font-bold text-charcoal dark:text-cream">{comments.length}</span>
                                 </div>
-                                <div className="flex items-center justify-between p-4 bg-charcoal/5 dark:bg-cream/5 rounded-md border-2 border-charcoal/10 dark:border-cream/10">
-                                    <span className="text-charcoal dark:text-cream font-bold">Review Quality</span>
-                                    <span className={`px-3 py-1 rounded-sm text-xs font-bold uppercase tracking-wider ${
-                                        reviewScore.overall >= 80 ? 'bg-charcoal dark:bg-cream text-white dark:text-navy' :
-                                        reviewScore.overall >= 60 ? 'bg-charcoal/20 dark:bg-cream/20 text-charcoal dark:text-cream' :
-                                        'bg-red-500/20 text-red-700 dark:text-red-400'
+                                <div className="flex items-center justify-between p-4 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm shadow-[2px_2px_0px_0px_var(--color-shadow)]">
+                                    <span className="text-charcoal dark:text-cream font-mono font-bold uppercase tracking-wider text-xs">Review Quality</span>
+                                    <span className={`px-3 py-1 border-2 rounded-sm text-xs font-mono font-bold uppercase tracking-wider ${
+                                        reviewScore.overall >= 80 ? 'bg-charcoal dark:bg-cream text-white dark:text-navy border-charcoal dark:border-cream/40' :
+                                        reviewScore.overall >= 60 ? 'bg-charcoal/20 dark:bg-cream/20 text-charcoal dark:text-cream border-charcoal/20 dark:border-cream/20' :
+                                        'bg-red-500/20 text-red-700 dark:text-red-400 border-red-300 dark:border-red-800'
                                     }`}>
                                         {reviewScore.overall >= 80 ? 'Excellent' :
                                          reviewScore.overall >= 60 ? 'Good' : 'Needs Improvement'}
@@ -622,7 +622,7 @@ module.exports = { loginUser, hashPassword };`,
                             </button>
                             <button
                                 onClick={() => window.location.reload()}
-                                className="px-6 py-3 bg-white dark:bg-navy-light text-charcoal dark:text-cream font-bold uppercase tracking-wider text-sm rounded-md border-2 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all"
+                                className="px-6 py-3 bg-white dark:bg-navy-light text-charcoal dark:text-cream font-mono font-bold uppercase tracking-wider text-xs rounded-sm border-3 border-charcoal dark:border-cream/40 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] shadow-[3px_3px_0px_0px_var(--color-shadow)] transition-all"
                             >
                                 Try Another Review
                             </button>
@@ -681,23 +681,23 @@ module.exports = { loginUser, hashPassword };`,
                                     </div>
                                     
                                     {/* Hint Controls */}
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex flex-wrap items-center gap-3">
                                         <button
                                             onClick={() => setShowHints(!showHints)}
-                                            className={`px-3 py-1.5 rounded-sm text-sm font-bold uppercase tracking-wider transition-all border-2 border-transparent ${
+                                            className={`px-3 py-1.5 rounded-sm text-xs font-mono font-bold uppercase tracking-wider border-3 transition-all ${
                                                 showHints 
-                                                    ? 'bg-cream text-charcoal' 
-                                                    : 'bg-cream/10 text-cream/80 hover:bg-cream/20'
+                                                    ? 'bg-charcoal dark:bg-cream text-white dark:text-navy border-charcoal dark:border-cream/40 shadow-[2px_2px_0px_0px_var(--color-shadow)]' 
+                                                    : 'bg-white dark:bg-navy-light text-charcoal dark:text-cream border-charcoal/20 dark:border-cream/20 hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_var(--color-shadow)] shadow-[1px_1px_0px_0px_var(--color-shadow)]'
                                             }`}
                                         >
                                             {showHints ? '🔍 Hide Hints' : '💡 Show Hints'}
                                         </button>
                                         <button
                                             onClick={() => setHintsEnabled(!hintsEnabled)}
-                                            className={`px-3 py-1.5 rounded-sm text-sm font-bold uppercase tracking-wider transition-all border-2 border-transparent ${
+                                            className={`px-3 py-1.5 rounded-sm text-xs font-mono font-bold uppercase tracking-wider border-3 transition-all ${
                                                 hintsEnabled 
-                                                    ? 'bg-cream text-charcoal' 
-                                                    : 'bg-cream/10 text-cream/80 hover:bg-cream/20'
+                                                    ? 'bg-charcoal dark:bg-cream text-white dark:text-navy border-charcoal dark:border-cream/40 shadow-[2px_2px_0px_0px_var(--color-shadow)]' 
+                                                    : 'bg-white dark:bg-navy-light text-charcoal dark:text-cream border-charcoal/20 dark:border-cream/20 hover:-translate-y-0.5 hover:shadow-[2px_2px_0px_0px_var(--color-shadow)] shadow-[1px_1px_0px_0px_var(--color-shadow)]'
                                             }`}
                                         >
                                             {hintsEnabled ? '🤖 AI Hints: ON' : '🤖 AI Hints: OFF'}
@@ -797,26 +797,26 @@ module.exports = { loginUser, hashPassword };`,
                                     <div className="mt-6 card-editorial p-6">
                                         <div className="flex items-center gap-3 mb-4">
                                             <LuMessageSquare className="w-5 h-5 text-charcoal dark:text-cream" />
-                                            <span className="font-bold text-charcoal dark:text-cream">Add comment for line {selectedLine}</span>
+                                            <span className="font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wider text-xs">Add comment for line {selectedLine}</span>
                                         </div>
                                         <textarea
                                             value={newComment}
                                             onChange={(e) => setNewComment(e.target.value)}
                                             placeholder="What issues do you see? Suggest improvements..."
-                                            className="w-full p-4 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md resize-none outline-none focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50"
+                                            className="w-full p-4 border-3 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-sm resize-none outline-none focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50 text-xs font-mono font-bold uppercase tracking-wider"
                                             rows={4}
                                         />
                                         <div className="flex gap-3 mt-4">
                                             <button
                                                 onClick={() => addComment(selectedLine)}
-                                                className="btn-primary"
+                                                className="btn-primary text-xs font-mono font-bold uppercase tracking-wider"
                                             >
                                                 <LuSend className="w-4 h-4" />
                                                 Add Comment
                                             </button>
                                             <button
                                                 onClick={() => setSelectedLine(null)}
-                                                className="px-4 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream font-bold transition-colors"
+                                                className="px-4 py-2 text-charcoal/70 dark:text-cream/70 hover:text-charcoal dark:hover:text-cream font-mono font-bold text-xs uppercase tracking-wider transition-colors"
                                             >
                                                 Cancel
                                             </button>
@@ -854,22 +854,22 @@ module.exports = { loginUser, hashPassword };`,
                                 <div className="card-editorial p-6">
                                     <h3 className="font-display font-bold text-charcoal dark:text-cream mb-4">Your Comments ({comments.length})</h3>
                                     {comments.length === 0 ? (
-                                        <p className="text-charcoal/60 dark:text-cream/60 text-center py-8 font-bold">
+                                        <p className="text-charcoal/60 dark:text-cream/60 text-center py-8 font-mono font-bold uppercase tracking-wider text-xs">
                                             Click on any line of code to add a comment
                                         </p>
                                     ) : (
                                         <div className="space-y-4">
                                             {comments.map(comment => (
-                                                <div key={comment.id} className="border-2 border-charcoal/10 dark:border-cream/10 rounded-md p-4">
+                                                <div key={comment.id} className="border-3 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light rounded-sm p-4 shadow-[2px_2px_0px_0px_var(--color-shadow)]">
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <span className="text-xs bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
+                                                        <span className="text-xs bg-charcoal/10 dark:bg-cream/10 text-charcoal dark:text-cream font-mono font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
                                                             Line {comment.line}
                                                         </span>
-                                                        <span className="text-xs text-charcoal/60 dark:text-cream/60 font-bold">
+                                                        <span className="text-xs text-charcoal/60 dark:text-cream/60 font-mono font-bold">
                                                             {comment.timestamp.toLocaleTimeString()}
                                                         </span>
                                                     </div>
-                                                    <p className="text-charcoal/80 dark:text-cream/80">{comment.text}</p>
+                                                    <p className="text-charcoal/80 dark:text-cream/80 text-sm font-medium">{comment.text}</p>
                                                 </div>
                                             ))}
                                         </div>

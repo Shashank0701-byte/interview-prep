@@ -505,14 +505,14 @@ FORMATTING IMPROVEMENTS:
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center mb-8">
                         <h1 className="text-3xl font-display font-bold text-charcoal dark:text-cream mb-2">Resume ATS Analyzer</h1>
-                        <p className="text-charcoal/80 dark:text-cream/80 font-medium">Upload your PDF resume to get instant feedback and improve your ATS score</p>
+                        <p className="text-charcoal/80 dark:text-cream/80 font-mono font-bold uppercase tracking-wider text-xs">Upload your PDF resume to get instant feedback and improve your ATS score</p>
                     </div>
 
                     {!analysisComplete ? (
                         <div className="card-editorial p-8">
                             <div className="max-w-2xl mx-auto">
                                 <div className="text-center mb-8">
-                                    <div className="w-20 h-20 bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md flex items-center justify-center mx-auto mb-6">
+                                    <div className="w-20 h-20 bg-cream dark:bg-navy border-3 border-charcoal dark:border-cream/40 rounded-sm flex items-center justify-center mx-auto mb-6 shadow-[3px_3px_0px_0px_var(--color-shadow)]">
                                         {isAnalyzing ? (
                                             <LuRotateCcw className="w-10 h-10 text-charcoal dark:text-cream animate-spin" />
                                         ) : (
@@ -524,7 +524,7 @@ FORMATTING IMPROVEMENTS:
                                         {isAnalyzing ? 'Analyzing Your Resume...' : 'Upload Your Resume'}
                                     </h2>
                                     
-                                    <p className="text-charcoal/80 dark:text-cream/80 mb-6 font-medium">
+                                    <p className="text-sm font-mono font-bold uppercase tracking-wide text-charcoal/70 dark:text-cream/70 leading-relaxed mb-6">
                                         {isAnalyzing 
                                             ? 'We\'re extracting text from your PDF and analyzing it for ATS optimization.'
                                             : 'Upload your PDF resume to get instant ATS analysis and personalized feedback.'}
@@ -534,7 +534,7 @@ FORMATTING IMPROVEMENTS:
                                 {!isAnalyzing && !showTextInput && (
                                     <div className="space-y-6">
                                         <div className="text-center">
-                                            <label className="cursor-pointer inline-flex flex-col items-center px-8 py-6 bg-white dark:bg-navy-light border-2 border-dashed border-charcoal dark:border-cream/40 rounded-md hover:border-solid hover:bg-cream dark:hover:bg-cream/10 transition-colors duration-200">
+                                            <label className="cursor-pointer inline-flex flex-col items-center px-8 py-6 bg-white dark:bg-navy-light border-4 border-dashed border-charcoal dark:border-cream/40 rounded-sm hover:border-solid hover:bg-cream dark:hover:bg-cream/10 transition-all duration-200 shadow-[4px_4px_0px_0px_var(--color-shadow)] hover:-translate-y-0.5">
                                                 <input
                                                     ref={fileInputRef}
                                                     type="file"
@@ -544,20 +544,20 @@ FORMATTING IMPROVEMENTS:
                                                     disabled={isAnalyzing}
                                                 />
                                                 <LuUpload className="w-12 h-12 text-charcoal dark:text-cream mb-4" />
-                                                <span className="text-lg font-bold uppercase tracking-wider text-charcoal dark:text-cream mb-2">
+                                                <span className="text-lg font-mono font-bold uppercase tracking-wider text-charcoal dark:text-cream mb-2">
                                                     Choose PDF File
                                                 </span>
-                                                <span className="text-sm font-bold uppercase tracking-wider text-charcoal/60 dark:text-cream/60">
+                                                <span className="text-xs font-mono font-bold uppercase tracking-wider text-charcoal/60 dark:text-cream/60">
                                                     Upload your resume in PDF format for instant analysis
                                                 </span>
                                             </label>
                                         </div>
                                         
-                                        <div className="bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md p-4 shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)]">
+                                        <div className="bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm p-4 shadow-[3px_3px_0px_0px_var(--color-shadow)]">
                                             <div className="flex items-start">
                                                 <LuInfo className="w-5 h-5 text-charcoal dark:text-cream mt-0.5 mr-3 flex-shrink-0" />
-                                                <div className="text-sm font-medium text-charcoal/80 dark:text-cream/80">
-                                                    <p className="font-bold text-charcoal dark:text-cream mb-1">PDF Requirements:</p>
+                                                <div className="text-xs font-mono font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80">
+                                                    <p className="text-charcoal dark:text-cream mb-1">PDF Requirements:</p>
                                                     <ul className="list-disc list-inside space-y-1 text-charcoal/80 dark:text-cream/80">
                                                         <li>Text-based PDF (not scanned images)</li>
                                                         <li>Created from Word, Google Docs, or similar</li>
@@ -568,10 +568,10 @@ FORMATTING IMPROVEMENTS:
                                         </div>
                                         
                                         <div className="text-center">
-                                            <p className="text-sm font-bold uppercase tracking-wider text-charcoal/60 dark:text-cream/60 mb-2">Having trouble with PDF?</p>
+                                            <p className="text-xs font-mono font-bold uppercase tracking-wider text-charcoal/60 dark:text-cream/60 mb-2">Having trouble with PDF?</p>
                                             <button
                                                 onClick={() => setShowTextInput(true)}
-                                                className="text-charcoal dark:text-cream border-b-2 border-charcoal dark:border-cream hover:opacity-70 text-sm font-bold uppercase tracking-wider transition-opacity"
+                                                className="text-charcoal dark:text-cream border-b-3 border-charcoal dark:border-cream hover:opacity-70 text-xs font-mono font-bold uppercase tracking-wider transition-opacity"
                                             >
                                                 Paste resume text instead
                                             </button>
@@ -582,18 +582,18 @@ FORMATTING IMPROVEMENTS:
                                 {!isAnalyzing && showTextInput && (
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <label className="block text-sm font-bold uppercase tracking-wider text-charcoal dark:text-cream">
+                                            <label className="block text-xs font-mono font-bold uppercase tracking-wider text-charcoal dark:text-cream">
                                                 Resume Text
                                             </label>
                                             <button
                                                 onClick={() => setShowTextInput(false)}
-                                                className="text-charcoal dark:text-cream border-b-2 border-charcoal dark:border-cream hover:opacity-70 text-sm font-bold uppercase tracking-wider transition-opacity"
+                                                className="text-charcoal dark:text-cream border-b-3 border-charcoal dark:border-cream hover:opacity-70 text-xs font-mono font-bold uppercase tracking-wider transition-opacity"
                                             >
                                                 Upload PDF instead
                                             </button>
                                         </div>
                                         <textarea
-                                            className="w-full p-4 bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 text-charcoal dark:text-cream rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-charcoal dark:focus:ring-cream"
+                                            className="w-full p-4 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 text-charcoal dark:text-cream rounded-sm text-xs font-mono font-bold uppercase tracking-wider focus:outline-none placeholder-charcoal/50 dark:placeholder-cream/50"
                                             rows="12"
                                             placeholder="Paste your complete resume text here. Include all sections: contact info, summary, experience, education, skills, etc."
                                             value={resumeText}
@@ -604,7 +604,7 @@ FORMATTING IMPROVEMENTS:
                                             <button
                                                 onClick={() => analyzeTextContent(resumeText)}
                                                 disabled={!resumeText.trim()}
-                                                className="px-8 py-3 border-2 border-charcoal dark:border-cream bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none transition-all cursor-pointer"
+                                                className="btn-primary px-8 py-3 text-xs font-mono font-bold uppercase tracking-wider"
                                             >
                                                 Analyze Resume
                                             </button>
@@ -613,7 +613,7 @@ FORMATTING IMPROVEMENTS:
                                 )}
                                 
                                 {isAnalyzing && (
-                                    <div className="mt-6 w-full bg-cream dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md h-3 p-[1px]">
+                                    <div className="mt-6 w-full bg-cream dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm h-4 p-[1px] shadow-[2px_2px_0px_0px_var(--color-shadow)]">
                                         <div 
                                             className="h-full rounded-sm bg-charcoal dark:bg-cream animate-pulse"
                                             style={{ width: '70%' }}
@@ -622,8 +622,8 @@ FORMATTING IMPROVEMENTS:
                                 )}
 
                                 {error && (
-                                    <div className="mt-4 p-4 bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)]">
-                                        <p className="text-charcoal dark:text-cream font-bold">{error}</p>
+                                    <div className="mt-4 p-4 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm shadow-[3px_3px_0px_0px_var(--color-shadow)]">
+                                        <p className="text-xs font-mono font-bold uppercase tracking-wider text-charcoal dark:text-cream">{error}</p>
                                     </div>
                                 )}
                             </div>
@@ -636,17 +636,17 @@ FORMATTING IMPROVEMENTS:
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                         <div>
                                             <h2 className="text-xl font-display font-bold text-charcoal dark:text-cream">Your ATS Score</h2>
-                                            <p className="text-charcoal/80 dark:text-cream/80 font-medium">{getScoreFeedback(analysisResults?.atsScore || 0)}</p>
+                                            <p className="text-xs font-mono font-bold uppercase tracking-wider text-charcoal/80 dark:text-cream/80 mt-1">{getScoreFeedback(analysisResults?.atsScore || 0)}</p>
                                         </div>
-                                        <div className={`text-5xl font-display font-bold text-charcoal dark:text-cream`}>
+                                        <div className="text-5xl font-display font-bold text-charcoal dark:text-cream">
                                             {analysisResults?.atsScore || 0}
                                             <span className="text-2xl text-charcoal/60 dark:text-cream/60 font-body">/100</span>
                                         </div>
                                     </div>
                                     
-                                    <div className="mt-4 w-full bg-cream dark:bg-navy border-2 border-charcoal dark:border-cream/40 rounded-md h-4 p-[2px]">
+                                    <div className="mt-4 w-full bg-cream dark:bg-navy border-3 border-charcoal dark:border-cream/40 rounded-sm h-4 p-[2px] shadow-[2px_2px_0px_0px_var(--color-shadow)]">
                                         <div 
-                                            className={`h-full rounded-sm bg-charcoal dark:bg-cream`}
+                                            className="h-full rounded-sm bg-charcoal dark:bg-cream"
                                             style={{ width: `${analysisResults?.atsScore || 0}%` }}
                                         ></div>
                                     </div>
@@ -654,14 +654,14 @@ FORMATTING IMPROVEMENTS:
                                     <div className="mt-6 flex flex-wrap gap-3">
                                         <button 
                                             onClick={handleRetry}
-                                            className="flex items-center gap-2 px-4 py-2 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
+                                            className="flex items-center gap-2 px-4 py-2 border-3 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-sm text-xs font-mono font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
                                         >
                                             <LuRotateCcw className="w-4 h-4" />
                                             Analyze Another
                                         </button>
                                         <button 
                                             onClick={downloadReport}
-                                            className="flex items-center gap-2 px-4 py-2 border-2 border-charcoal dark:border-cream/40 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
+                                            className="flex items-center gap-2 px-4 py-2 border-3 border-charcoal dark:border-cream/40 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-sm text-xs font-mono font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[3px_3px_0px_0px_var(--color-shadow)] shadow-[2px_2px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
                                         >
                                             <LuDownload className="w-4 h-4" />
                                             Download Report
@@ -680,9 +680,9 @@ FORMATTING IMPROVEMENTS:
                                         </h2>
                                         <div className="space-y-4">
                                             {analysisResults.strengths.map((strength) => (
-                                                <div key={strength.id} className="p-4 bg-cream dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md">
-                                                    <h3 className="font-bold text-charcoal dark:text-cream">{strength.title}</h3>
-                                                    <p className="text-sm font-medium text-charcoal/80 dark:text-cream/80 mt-1">{strength.description}</p>
+                                                <div key={strength.id} className="p-4 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm shadow-[2px_2px_0px_0px_var(--color-shadow)]">
+                                                    <h3 className="font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wider text-sm">{strength.title}</h3>
+                                                    <p className="text-xs font-mono font-bold uppercase tracking-wide text-charcoal/70 dark:text-cream/70 mt-1 leading-relaxed">{strength.description}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -700,15 +700,15 @@ FORMATTING IMPROVEMENTS:
                                         </h2>
                                         <div className="space-y-4">
                                             {analysisResults.improvements.map((improvement) => (
-                                                <div key={improvement.id} className="p-4 bg-white dark:bg-navy-light border-2 border-charcoal dark:border-cream/40 rounded-md shadow-[4px_4px_0px_0px_#1A1A1A] dark:shadow-[4px_4px_0px_0px_var(--color-shadow)]">
-                                                    <div className="flex justify-between items-start">
+                                                <div key={improvement.id} className="p-4 bg-white dark:bg-navy-light border-3 border-charcoal dark:border-cream/40 rounded-sm shadow-[3px_3px_0px_0px_var(--color-shadow)] hover:-translate-y-0.5 transition-all duration-200">
+                                                    <div className="flex justify-between items-start gap-4">
                                                         <div>
-                                                            <h3 className="font-bold text-charcoal dark:text-cream">{improvement.title}</h3>
-                                                            <p className="text-sm font-medium text-charcoal/80 dark:text-cream/80 mt-1">{improvement.description}</p>
+                                                            <h3 className="font-mono font-bold text-charcoal dark:text-cream uppercase tracking-wider text-sm">{improvement.title}</h3>
+                                                            <p className="text-xs font-mono font-bold uppercase tracking-wide text-charcoal/70 dark:text-cream/70 mt-1.5 leading-relaxed">{improvement.description}</p>
                                                         </div>
                                                         {improvement.priority && (
-                                                            <span className={`px-2 py-1 text-xs font-bold uppercase tracking-wider rounded-sm border-2 border-charcoal dark:border-cream/40 bg-charcoal dark:bg-cream text-white dark:text-navy`}>
-                                                                {improvement.priority} Priority
+                                                            <span className="px-2 py-1 text-[10px] font-mono font-bold uppercase tracking-wider rounded-sm border-2 border-charcoal dark:border-cream/40 bg-charcoal dark:bg-cream text-white dark:text-navy">
+                                                                {improvement.priority}
                                                             </span>
                                                         )}
                                                     </div>
@@ -723,14 +723,14 @@ FORMATTING IMPROVEMENTS:
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <button 
                                     onClick={handleRetry}
-                                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border-2 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
+                                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border-3 border-charcoal dark:border-cream/40 bg-white dark:bg-navy-light text-charcoal dark:text-cream rounded-sm text-xs font-mono font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] shadow-[3px_3px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
                                 >
                                     <LuRotateCcw className="w-4 h-4" />
                                     Analyze Another Resume
                                 </button>
                                 <button 
                                     onClick={createOptimizedVersion}
-                                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border-2 border-charcoal dark:border-cream/40 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-md text-sm font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#1A1A1A] dark:hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
+                                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border-3 border-charcoal dark:border-cream/40 bg-charcoal dark:bg-cream text-white dark:text-navy rounded-sm text-xs font-mono font-bold uppercase tracking-wider hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_var(--color-shadow)] shadow-[3px_3px_0px_0px_var(--color-shadow)] transition-all cursor-pointer"
                                 >
                                     <LuPen className="w-4 h-4" />
                                     Create Optimized Version

@@ -38,6 +38,13 @@ const ProgressWave = ({
 
     // Color schemes
     const colorSchemes = {
+        charcoal: {
+            waveClass: 'fill-charcoal dark:fill-cream',
+            waveLightClass: 'fill-charcoal/40 dark:fill-cream/40',
+            bg: 'bg-white dark:bg-navy-light',
+            text: 'text-charcoal dark:text-cream',
+            border: 'border-charcoal dark:border-cream/40'
+        },
         blue: {
             wave: '#3B82F6',
             waveLight: '#93C5FD',
@@ -68,7 +75,7 @@ const ProgressWave = ({
         }
     };
 
-    const scheme = colorSchemes[color] || colorSchemes.blue;
+    const scheme = colorSchemes[color] || colorSchemes.charcoal;
     const waveHeight = (animatedProgress / 100) * height;
 
     // Generate wave path
@@ -88,8 +95,10 @@ const ProgressWave = ({
     return (
         <div className="flex flex-col items-center space-y-4">
             {/* Wave Container */}
-            <div className={`relative rounded-2xl border-2 ${scheme.border} overflow-hidden transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl`}
-                 style={{ width, height, backgroundColor: scheme.bg }}>
+            <div 
+                 style={{ width, height }}
+                 className={`relative rounded-sm border-4 ${scheme.border} ${scheme.bg} overflow-hidden transition-all duration-500 hover:scale-105 shadow-[4px_4px_0px_0px_var(--color-shadow)]`}
+            >
                 
                 {/* Animated Wave */}
                 <svg
@@ -101,29 +110,29 @@ const ProgressWave = ({
                     {/* Main wave */}
                     <path
                         d={generateWavePath(waveOffset, 6)}
-                        fill={scheme.wave}
+                        fill={scheme.wave || undefined}
+                        className={`${scheme.waveClass || ''} transition-all duration-1000 ease-out`}
                         opacity="0.8"
-                        className="transition-all duration-1000 ease-out"
                     />
                     
                     {/* Secondary wave for depth */}
                     <path
                         d={generateWavePath(waveOffset + 50, 4)}
-                        fill={scheme.waveLight}
+                        fill={scheme.waveLight || undefined}
+                        className={`${scheme.waveLightClass || ''} transition-all duration-1000 ease-out`}
                         opacity="0.6"
-                        className="transition-all duration-1000 ease-out"
                     />
                 </svg>
 
                 {/* Progress Text Overlay */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                     {showPercentage && (
-                        <div className={`text-2xl font-bold ${scheme.text} transition-all duration-300 drop-shadow-sm`}>
+                        <div className={`text-2xl font-mono font-bold ${scheme.text} transition-all duration-300 drop-shadow-sm`}>
                             {Math.round(animatedProgress)}%
                         </div>
                     )}
                     {label && (
-                        <div className="text-xs text-gray-600 font-medium text-center mt-1">
+                        <div className="text-[10px] text-charcoal/50 dark:text-cream/50 font-bold uppercase tracking-wider font-mono text-center mt-1">
                             {label}
                         </div>
                     )}
@@ -135,7 +144,7 @@ const ProgressWave = ({
                         {[...Array(3)].map((_, i) => (
                             <div
                                 key={i}
-                                className="absolute w-2 h-2 bg-white rounded-full opacity-60 animate-bounce"
+                                className="absolute w-2 h-2 bg-white/60 dark:bg-cream/40 rounded-sm animate-bounce"
                                 style={{
                                     left: `${20 + i * 30}%`,
                                     top: `${height - waveHeight - 20 + Math.sin(waveOffset * 0.1 + i) * 10}px`,
@@ -152,7 +161,7 @@ const ProgressWave = ({
             <div className="text-center max-w-xs">
                 <div className="flex items-center justify-center gap-2 mb-2">
                     <span className="text-lg">{encouragingIcon}</span>
-                    <span className={`text-sm font-medium ${scheme.text}`}>
+                    <span className={`text-xs font-mono font-bold uppercase tracking-wide ${scheme.text}`}>
                         {animatedProgress === 0 ? 'Ready to dive in?' : 
                          animatedProgress < 50 ? 'Making waves!' : 
                          animatedProgress < 100 ? 'Riding the wave!' : 

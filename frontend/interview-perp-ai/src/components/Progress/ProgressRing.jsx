@@ -32,6 +32,13 @@ const ProgressRing = ({
 
     // Color schemes for different moods
     const colorSchemes = {
+        charcoal: {
+            track: 'stroke-charcoal/10 dark:stroke-cream/10',
+            progress: 'stroke-charcoal dark:stroke-cream',
+            glow: '',
+            text: 'text-charcoal dark:text-cream',
+            bg: 'bg-white dark:bg-navy-light'
+        },
         emerald: {
             track: 'stroke-emerald-100',
             progress: 'stroke-emerald-500',
@@ -62,7 +69,7 @@ const ProgressRing = ({
         }
     };
 
-    const scheme = colorSchemes[color] || colorSchemes.emerald;
+    const scheme = colorSchemes[color] || colorSchemes.charcoal;
 
     // Encouraging messages based on progress
     const getEncouragingMessage = () => {
@@ -80,9 +87,9 @@ const ProgressRing = ({
         <div className="flex flex-col items-center space-y-4">
             {/* Progress Ring */}
             <div className="relative">
-                <div className={`rounded-full ${scheme.bg} p-4 transition-all duration-500 hover:scale-105`}>
+                <div className={`rounded-full ${scheme.bg} p-4 border-4 border-charcoal dark:border-cream/40 shadow-[3px_3px_0px_0px_var(--color-shadow)] transition-all duration-500 hover:scale-105`}>
                     <svg
-                        className={`transform -rotate-90 transition-all duration-1000 ${glowEffect ? scheme.glow : ''}`}
+                        className={`transform -rotate-90 transition-all duration-1000 ${glowEffect && scheme.glow ? scheme.glow : ''}`}
                         width={size}
                         height={size}
                     >
@@ -108,7 +115,7 @@ const ProgressRing = ({
                             cx={size / 2}
                             cy={size / 2}
                             style={{
-                                filter: glowEffect ? `drop-shadow(0 0 6px ${scheme.progress.replace('stroke-', 'rgb(')})` : 'none'
+                                filter: glowEffect && scheme.glow ? `drop-shadow(0 0 6px ${scheme.progress.replace('stroke-', 'rgb(')})` : 'none'
                             }}
                         />
                     </svg>
@@ -116,12 +123,12 @@ const ProgressRing = ({
                     {/* Center content */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                         {showPercentage && (
-                            <div className={`text-2xl font-bold ${scheme.text} transition-all duration-300`}>
+                            <div className={`text-2xl font-mono font-bold ${scheme.text} transition-all duration-300`}>
                                 {Math.round(animatedProgress)}%
                             </div>
                         )}
                         {label && (
-                            <div className="text-xs text-gray-500 font-medium text-center mt-1">
+                            <div className="text-[10px] text-charcoal/50 dark:text-cream/50 font-bold uppercase tracking-wider font-mono text-center mt-1">
                                 {label}
                             </div>
                         )}
@@ -131,7 +138,7 @@ const ProgressRing = ({
 
             {/* Encouraging Message */}
             <div className="text-center max-w-xs">
-                <p className="text-sm text-gray-600 font-medium leading-relaxed">
+                <p className="text-xs font-mono font-bold uppercase tracking-wide text-charcoal/70 dark:text-cream/70 leading-relaxed">
                     {getEncouragingMessage()}
                 </p>
             </div>
