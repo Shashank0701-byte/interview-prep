@@ -68,21 +68,21 @@ const EnvironmentAnalyzer = ({ videoRef, isActive, onAnalysisUpdate }) => {
     const analyzeEnvironment = async (imageData) => {
         return new Promise((resolve) => {
             setTimeout(() => {
-                const data = imageData.data;
-                const width = imageData.width;
-                const height = imageData.height;
+                const pixelData = imageData.data;
+                const imgWidth = imageData.width;
+                const imgHeight = imageData.height;
                 
                 // Analyze lighting conditions
-                const lighting = analyzeLighting(data);
+                const lighting = analyzeLighting(pixelData);
                 
                 // Analyze background
-                const background = analyzeBackground(data, width, height);
+                const background = analyzeBackground(pixelData, imgWidth, imgHeight);
                 
                 // Detect motion/interruptions
-                const motion = detectMotion(data, width, height);
+                const motion = detectMotion();
                 
                 // Check for distractions
-                const distractions = detectDistractions(data, width, height);
+                const distractions = detectDistractions();
                 
                 const analysis = {
                     timestamp: Date.now(),

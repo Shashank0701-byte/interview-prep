@@ -24,7 +24,7 @@ const DynamicQuestionGenerator = ({
     const [followUpQuestion, setFollowUpQuestion] = useState(null);
     const [generationHistory, setGenerationHistory] = useState([]);
     const [responseQuality, setResponseQuality] = useState(null);
-    const [showGenerator, setShowGenerator] = useState(false);
+    const [, setShowGenerator] = useState(false);
 
     // Analyze response quality when user provides a response
     useEffect(() => {
