@@ -176,9 +176,13 @@ const LandingPage = () => {
       {/* -------------------- HEADER -------------------- */}
       <header className='sticky top-0 z-50 bg-cream/90 backdrop-blur-md border-b-2 border-charcoal'>
         <div className='container mx-auto px-4 h-16 flex justify-between items-center'>
-          <div className='text-xl md:text-2xl font-display font-bold text-charcoal flex items-center gap-2'>
-            <div className="w-6 h-6 bg-charcoal rounded-sm flex items-center justify-center">
-              <span className="text-cream text-xs font-bold">IP</span>
+          <div className="text-xl md:text-2xl font-display font-bold text-charcoal flex items-center gap-2">
+            <div className="w-6 h-6">
+              <img
+                src="/favicon.png"
+                alt="Interview Prep AI"
+                className="w-full h-full object-contain"
+              />
             </div>
             Interview Prep AI
           </div>
@@ -848,8 +852,12 @@ const LandingPage = () => {
         <div className="container mx-auto px-4 max-w-6xl flex flex-col md:flex-row justify-between gap-12">
           <div className="md:w-1/3">
             <div className='text-xl font-display font-bold mb-4 flex items-center gap-2'>
-              <div className="w-6 h-6 bg-cream rounded-sm flex items-center justify-center">
-                <span className="text-charcoal text-xs font-bold">IP</span>
+              <div className="w-6 h-6">
+                <img
+                  src="/favicon.png"
+                  alt="Interview Prep AI"
+                  className="w-full h-full object-contain"
+                />
               </div>
               Interview Prep AI
             </div>
