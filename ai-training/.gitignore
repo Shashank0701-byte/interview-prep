@@ -34,17 +34,17 @@ ai-env/
 study-buddy-env/
 
 # Trained Models (Large Files)
-study-buddy/models/trained/*.pkl
-study-buddy/models/trained/*.joblib
-study-buddy/models/trained/*.h5
-study-buddy/models/trained/*.pt
-study-buddy/models/trained/*.pth
-study-buddy/models/evaluation/
+study_buddy/models/trained/*.pkl
+study_buddy/models/trained/*.joblib
+study_buddy/models/trained/*.h5
+study_buddy/models/trained/*.pt
+study_buddy/models/trained/*.pth
+study_buddy/models/evaluation/
 
 # Generated Data Files
-study-buddy/data/processed/
-study-buddy/data/synthetic/
-study-buddy/data/temp/
+study_buddy/data/processed/
+study_buddy/data/synthetic/
+study_buddy/data/temp/
 *.csv
 *.parquet
 
@@ -142,9 +142,9 @@ Thumbs.db
 *.temp
 
 # Large Dataset Files (Keep structure, ignore content)
-study-buddy/data/raw/*.json
-study-buddy/data/raw/*.csv
-study-buddy/data/raw/*.txt
+study_buddy/data/raw/*.json
+study_buddy/data/raw/*.csv
+study_buddy/data/raw/*.txt
 
 # API Keys and Secrets
 secrets.json

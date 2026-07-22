@@ -1,0 +1,212 @@
+SYSTEM DESIGN DEEP DIVE - ADVANCED INTERVIEW PREPARATION
+======================================================
+
+ARCHITECTURAL PATTERNS FOR DISTRIBUTED SYSTEMS
+-----------------------------------------------
+
+1. MICROSERVICES ARCHITECTURE
+- Service decomposition strategies (by business capability, subdomain, or bounded context)
+- Inter-service communication: synchronous (REST, gRPC) vs asynchronous (Kafka, RabbitMQ, SQS)
+- API Gateway pattern: request routing, authentication, rate limiting, aggregation
+- Service mesh (Istio, Linkerd): sidecar proxies for traffic management, observability, security
+- Saga pattern for distributed transactions: choreography vs orchestration approaches
+- CQRS (Command Query Responsibility Segregation): separate read and write models
+- Event sourcing: store events as primary source of truth, rebuild state from event log
+
+2. EVENT-DRIVEN ARCHITECTURE
+- Event bus / message broker patterns: publish-subscribe, point-to-point, event streaming
+- Event schemas and evolution: Avro, Protocol Buffers, JSON Schema with registry
+- Exactly-once vs at-least-once delivery semantics and idempotency handling
+- Dead letter queues (DLQ) for failed message processing
+- Event sourcing vs event notification vs event-carried state transfer
+- Apache Kafka internals: partitions, consumer groups, replication, ISR, compaction
+
+3. CACHING STRATEGIES AT SCALE
+- CDN (Content Delivery Network): edge caching for static and dynamic content
+- Cache-aside (lazy loading): application checks cache first, loads on miss
+- Write-through cache: write to cache and database simultaneously
+- Write-behind (write-back) cache: defer database writes for batch processing
+- Cache eviction policies: LRU, LFU, FIFO, TTL-based, random, clock algorithm
+- Distributed caching: Redis Cluster, Memcached, consistent hashing for sharding
+- Cache invalidation strategies: explicit invalidation, time-based TTL, version-based
+
+4. DATABASE SCALING PATTERNS
+- Read replicas: horizontal scaling of read operations, eventual consistency
+- Sharding (horizontal partitioning): shard key selection, range vs hash vs consistent hashing
+- Database federation: separate databases by domain/context
+- Multi-tenant database designs: shared DB vs separate schema vs separate database
+- Connection pooling: HikariCP, PgBouncer, ProxySQL for managing connections
+- Polyglot persistence: using different databases for different use cases
+
+5. LOAD BALANCING AND SCALING
+- Load balancer algorithms: round-robin, least connections, IP hash, weighted, geographic
+- Horizontal vs vertical scaling: trade-offs and when to use each
+- Auto-scaling strategies: reactive vs predictive scaling, target utilization
+- Blue-green deployment: two identical environments for zero-downtime deployments
+- Canary releases: gradually roll out changes to a subset of users
+- Circuit breaker pattern: fail fast and degrade gracefully during failures
+
+CONCURRENCY AND CONSISTENCY MODELS
+------------------------------------
+
+1. CONSENSUS ALGORITHMS
+- Paxos: Basic Paxos, Multi-Paxos, understanding the protocol flow
+- Raft: leader election, log replication, safety guarantees
+- Zab (ZooKeeper Atomic Broadcast): used in Apache ZooKeeper
+- Practical Byzantine Fault Tolerance (PBFT): handling malicious nodes
+- Proof of Work / Proof of Stake: consensus in blockchain systems
+
+2. DISTRIBUTED CONSISTENCY
+- CAP theorem: choosing between Consistency, Availability, Partition tolerance
+- PACELC trade-off: if partitioned (P), choose A or C; else (E), choose L or C
+- Strong consistency vs eventual consistency vs causal consistency
+- Vector clocks and version vectors for conflict detection
+- Conflict-free Replicated Data Types (CRDTs): mergeable state without coordination
+- Read-your-writes consistency: session guarantees in distributed databases
+
+3. DISTRIBUTED TRANSACTIONS
+- XA transactions (two-phase commit) - 2PC: prepare and commit phases
+- Three-phase commit (3PC): non-blocking commit protocol
+- Basic patterns: TCC (Try-Confirm/Cancel), SAGA, Outbox pattern
+- Idempotency keys for safe retries in distributed systems
+- Transactional outbox: reliable message publishing with database transactions
+- Change Data Capture (CDC) with Debezium, Maxwell, or Kafka Connect
+
+CAPACITY PLANNING AND ESTIMATION
+---------------------------------
+
+1. QPS (QUERIES PER SECOND) ESTIMATION
+- Traffic estimation: DAU (Daily Active Users), sessions per user, requests per session
+- Peak load calculation: daily peak factor (typically 2-8x average)
+- Read-to-write ratio estimation for database workloads
+- Cache hit ratio estimation based on access patterns
+- Storage growth projections: data retention policies and archival strategies
+
+2. NETWORK AND COMPUTE ESTIMATION
+- Bandwidth requirements: data per request x QPS x peak factor
+- CPU/memory per request: profiling and instrumentation
+- Connection management: long-polling vs WebSockets vs SSE vs gRPC streams
+- Network latency budget: setting SLOs for different service tiers
+- Rate limiting math: token bucket vs leaky bucket vs sliding window algorithms
+
+3. STORAGE ESTIMATION
+- Object storage (S3, Blob Storage) for unstructured data
+- Relational database sizing: row size estimation, index overhead, connection limits
+- NoSQL sizing: document size, shard count, replication factor
+- Time-series data retention: rollups, downsampling, hot/warm/cold tiers
+- Data compression ratios: columnar storage, dictionary encoding, run-length encoding
+
+REAL-WORLD SYSTEM DESIGNS
+--------------------------
+
+1. DESIGN A REAL-TIME CHAT SYSTEM (WhatsApp, Messenger)
+- Requirements: 1B+ users, real-time delivery, message history, media sharing
+- WebSocket management: connection pooling, sticky sessions, horizontal scaling
+- Message model: conversation graph, threading, reactions, read receipts
+- End-to-end encryption: Signal protocol, key exchange, perfect forward secrecy
+- Offline delivery: push notifications, store-and-forward, delivery guarantees
+- Media handling: upload/download optimization, CDN integration, thumbnail generation
+- Database design: chat tables schema, indexing strategies, hot partition handling
+
+2. DESIGN A VIDEO STREAMING PLATFORM (YouTube, Netflix, TikTok)
+- Video upload pipeline: transcoding, format detection, quality levels (360p to 4K)
+- Adaptive bitrate streaming (ABR): HLS vs DASH, segment size optimization
+- CDN strategy: edge caching popular content, regional caching for long-tail content
+- Recommendation system: collaborative filtering, content-based filtering, hybrid approaches
+- Search indexing: metadata extraction, thumbnail generation, content moderation
+- Live streaming: RTMP ingest, HLS packaging, latency vs quality trade-offs
+- Content Delivery: peer-assisted delivery (WebRTC, P2P), edge compute for transcoding
+
+3. DESIGN A SOCIAL MEDIA FEED (Twitter, Instagram, Facebook)
+- Feed generation: fan-out-on-write (push) vs fan-out-on-read (pull) vs hybrid
+- Ranking and relevance: ML-based ranking model, engagement signals, recency weighting
+- Timeline architecture: early fusion vs late fusion of content from followed users
+- Content moderation pipeline: automated detection, human review, appeal process
+- Graph management: social graph storage (Cassandra, Neo4j), Friend/Follow relationship
+- Real-time updates: streaming ingestion, event processing, materialized views
+
+4. DESIGN A PAYMENT SYSTEM (Stripe, PayPal, Adyen)
+- Payment flow: checkout, authorization, capture, settlement, reconciliation
+- PCI DSS compliance: tokenization, vault services, scope reduction
+- Fraud detection: rule-based scoring, ML anomaly detection, velocity checks
+- Ledger system: double-entry accounting, transaction isolation, audit trail
+- Payment retry: exponential backoff, dead letter handling, notification system
+- Multi-currency support: FX rates, currency conversion, rounding rules
+- Subscription management: billing cycles, metered billing, proration, dunning
+
+5. DESIGN A RIDE-SHARING SERVICE (Uber, Lyft, Didi)
+- Real-time driver matching: geospatial indexing, quadtree, geohash, S2 geometry
+- ETA prediction: route optimization, traffic data, historical patterns
+- Surge pricing: supply-demand balancing, dynamic pricing algorithm
+- Trip matching: bipartite graph matching, nearest driver, auction-based
+- GPS tracking: location ingestion pipeline, map-matching, route prediction
+- Marketplace dynamics: driver incentives, rider promotions, fleet utilization
+
+6. DESIGN A CLOUD STORAGE SERVICE (Google Drive, Dropbox, iCloud)
+- File upload/chunking: resumable uploads, chunked transfer, checksum verification
+- Conflict resolution: version vectors, CRDTs, operational transformation
+- Deduplication: client-side vs server-side de-duplication, content-addressed storage
+- File synchronization: delta sync, binary diff (bsdiff), rsync algorithm
+- Sharing and permissions: ACL-based vs capability-based access control
+- Thumbnail generation: async processing pipeline, image transformation
+
+PERFORMANCE OPTIMIZATION TECHNIQUES
+------------------------------------
+
+1. DATABASE OPTIMIZATION
+- Indexing strategies: B-tree, hash, bitmap, GiST, partial, covering indexes
+- Query optimization: EXPLAIN plans, join optimization, subquery vs CTE
+- Denormalization: when to break normal forms for read performance
+- Materialized views: pre-computed query results, refresh strategies
+- Partitioning: range, list, hash, composite partitioning for large tables
+
+2. API OPTIMIZATION
+- Pagination strategies: cursor-based vs offset-based, keyset pagination
+- Batch operations: bulk endpoints for reducing network calls
+- Asynchronous processing: webhooks, polling, SSE for long-running operations
+- GraphQL vs REST vs gRPC: data fetching efficiency, type safety, streaming
+- Response compression: gzip, brotli, zstd at proxy and application layers
+
+3. FRONTEND AND CLIENT OPTIMIZATION
+- Lazy loading: intersection observer, route-based code splitting
+- Static site generation (SSG) vs server-side rendering (SSR) vs incremental SSG
+- Progressive Web Apps (PWA): service workers, cache-first strategies, offline mode
+- Image optimization: WebP/AVIF, responsive images, lazy loading, srcset
+- Bundle optimization: tree shaking, code splitting, module federation
+
+OPERATIONS AND RELIABILITY
+---------------------------
+
+1. MONITORING AND OBSERVABILITY
+- Three pillars: metrics (Prometheus), logs (ELK/Loki), traces (Jaeger/Zipkin)
+- Distributed tracing: OpenTelemetry, context propagation, sampling strategies
+- SLIs, SLOs, SLAs: defining and measuring service level objectives
+- Alerting: alert fatigue reduction, on-call rotations, runbooks
+- Dashboards: RED method (Rate, Errors, Duration), USE method (Utilization, Saturation, Errors)
+
+2. DISASTER RECOVERY
+- Backup strategies: full, incremental, differential, snapshot-based
+- Replication: synchronous vs asynchronous, cross-region failover
+- Multi-region architectures: active-active, active-passive, active-standby
+- Backup verification: restore testing, data integrity checks, disaster recovery drills
+- Business continuity planning (BCP): RTO (Recovery Time Objective), RPO (Recovery Point Objective)
+
+3. SECURITY BEST PRACTICES
+- Authentication: OAuth 2.0, OpenID Connect, SAML, JWT best practices
+- Authorization: RBAC, ABAC, ACL patterns at scale
+- Secrets management: Vault, AWS Secrets Manager, encryption in transit and at rest
+- DDoS protection: Cloudflare, AWS Shield, rate limiting, WAF
+- API security: API keys, HMAC signatures, OAuth scopes, rate limiting, input validation
+
+INTERVIEW TIPS FOR SYSTEM DESIGN
+---------------------------------
+1. Start with functional and non-functional requirements clarification
+2. Estimate scale (DAU, QPS, storage, bandwidth) before designing
+3. Outline high-level design first, then deep-dive into specific components
+4. Discuss trade-offs explicitly: consistency vs availability, cost vs performance
+5. Consider fault tolerance, monitoring, and operational aspects
+6. Be prepared to iterate on design based on interviewer constraints
+7. Draw clear diagrams showing data flow between components
+8. Mention real-world technologies but focus on concepts, not memorization
+9. Handle edge cases: what happens when a component fails, traffic spikes, or data gets corrupted
+10. End with discussion on future improvements and scaling plans

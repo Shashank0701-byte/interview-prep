@@ -1,0 +1,117 @@
+================================================================================
+FRONTEND INTERVIEW MASTERY — Comprehensive Question Bank
+================================================================================
+
+================================================================================
+SECTION 1: JavaScript Core Concepts
+================================================================================
+
+1.1 Event Loop and Concurrency
+-------------------------------
+Q: Explain the JavaScript event loop. How do microtasks and macrotasks differ?
+A: The event loop continuously checks the call stack and message queue.
+   Macrotasks: setTimeout, setInterval, I/O, UI rendering events
+   Microtasks: Promise.then/catch/finally, queueMicrotask, MutationObserver
+   Each event loop iteration: 1 macrotask → all microtasks → the browser may render
+   
+   Example: 
+   console.log('1');                    // sync → prints 1
+   setTimeout(() => console.log('2'),0); // macrotask
+   Promise.resolve().then(() =>          // microtask
+     console.log('3')
+   );
+   console.log('4');                    // sync → prints 4
+   // Output: 1, 4, 3, 2
+
+Q: What is the difference between deep copy and shallow copy? Implement deep clone.
+A: Shallow copy copies references; deep copy creates independent duplicates.
+   Deep clone implementations:
+   1. JSON.parse(JSON.stringify(obj)) — limited (no functions, undefined, Date)
+   2. structuredClone(obj) — modern browsers, handles most types
+   3. Recursive implementation:
+      function deepClone(obj, hash = new WeakMap()) {
+        if (obj === null || typeof obj !== 'object') return obj;
+        if (hash.has(obj)) return hash.get(obj);
+        if (obj instanceof Date) return new Date(obj);
+        if (obj instanceof RegExp) return new RegExp(obj);
+        const clone = Array.isArray(obj) ? [] : {};
+        hash.set(obj, clone);
+        for (let key of Reflect.ownKeys(obj)) {
+          clone[key] = deepClone(obj[key], hash);
+        }
+        return clone;
+      }
+
+1.2 Closures, Scope, and Hoisting
+-------------------------------
+Q: What is a closure? Give practical use cases.
+A: A closure is a function that retains access to its outer (enclosing) scope 
+   even after the outer function has returned.
+   
+   Use cases:
+   1. Data privacy / encapsulation
+   2. Partial application / currying
+   3. Memoization
+   4. Module pattern (IIFE + closure)
+   
+   Example:
+   function createCounter() {
+     let count = 0;
+     return { increment: () => ++count, getCount: () => count };
+   }
+   const counter = createCounter();
+   // count is not accessible from outside
+
+1.3 Promises and Async/Await
+-------------------------------
+Q: Implement Promise.all with error handling.
+A: function promiseAll(promises) {
+     return new Promise((resolve, reject) => {
+       if (!promises.length) return resolve([]);
+       const results = new Array(promises.length);
+       let completed = 0;
+       promises.forEach((p, i) => {
+         Promise.resolve(p)
+           .then(val => { results[i] = val; completed++; if (completed === promises.length) resolve(results); })
+           .catch(reject);
+       });
+     });
+   }
+
+Q: How does async/await differ from raw promises?
+A: async/await is syntactic sugar over promises. Key differences:
+   - Sequential code reads synchronously (easier to debug)
+   - Try/catch for error handling vs .catch()
+   - await blocks within the async function (not the event loop)
+   - Each await is a microtask boundary
+   - Performance: slight overhead vs raw promises (~50ns per async fn)
+
+1.4 this Keyword and Binding
+-------------------------------
+Q: Explain how 'this' works in different contexts.
+A: 1. Global context: window (browser) / global (Node)
+   2. Function: depends on strict mode (undefined in strict, global otherwise)
+   3. Method: the object the method is called on
+   4. Arrow function: lexical scope (inherits from enclosing context)
+   5. Event handler: the element that fired the event
+   6. Constructor: the new instance being created
+   
+   Priority: new binding > explicit (call/apply/bind) > implicit > default
+
+================================================================================
+SECTION 2: React Deep Dive
+================================================================================
+
+2.1 Reconciliation and Fiber Architecture
+-------------------------------
+Q: Explain React's reconciliation algorithm.
+A: React compares virtual DOM trees using a diffing algorithm:
+   - Different element types → tear down and rebuild
+   - Same type → update props, recurse on children
+   - Keys → efficient reordering, not index-based
+   
+   Fiber architecture (React 16+):
+   - Each component is a "fiber" node in a linked list
+   - Work is split into units and can be paused/prioritized
+   - Two phases: render (can be interrupted) → commit (synchronous)
+   - Priority levels: Immediate > UserBlocking > Normal > Low >
