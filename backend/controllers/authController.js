@@ -74,7 +74,24 @@ const loginUser = async (req, res) => {
     user.otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
     await user.save();
 
-    await sendOTP(user.email, otp);
+    // Attempt to send OTP — if email fails, fall back to direct JWT login
+    const otpSent = await sendOTP(user.email, otp);
+    if (!otpSent) {
+      // Email service unavailable — skip OTP, return token directly
+      console.warn(`⚠️ OTP email failed for ${user.email} — falling back to direct login`);
+      user.otp = null;
+      user.otpExpires = null;
+      await user.save();
+
+      return res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        profileImageUrl: user.profileImageUrl,
+        token: generateToken(user._id),
+        otpFallback: true, // client can optionally show a notice
+      });
+    }
 
     res.json({
       message: "OTP sent to your email",
