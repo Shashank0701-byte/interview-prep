@@ -1,0 +1,35 @@
+# Root .gitignore for interview-prep-ai
+
+# Generated trained model artifacts (pickle files) at project root only
+/models/
+chroma_db/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+nul
+
+# Logs
+*.log

@@ -1,0 +1,420 @@
+MOCK INTERVIEW SCRIPTS - FULL INTERVIEW ROLEPLAY SCENARIOS
+==========================================================
+
+SCENARIO 1: BEHAVIORAL INTERVIEW - TECHNICAL LEAD ROLE
+--------------------------------------------------------
+
+INTERVIEWER: "Welcome! Let's start with a warm-up. Tell me about yourself and why you're interested in this role."
+
+CANDIDATE: "I'm a senior software engineer with 7 years of experience building scalable backend systems and leading engineering teams. Most recently at CompanyX, I led the migration of our monolithic architecture to microservices, which improved deployment frequency by 5x and reduced infrastructure costs by 30%. I'm excited about this role because it combines my passion for technical architecture with team leadership, and I believe my experience building and scaling platform systems aligns perfectly with what you're looking for here."
+
+INTERVIEWER: "Excellent, thanks. Tell me about a time you had to make a difficult technical decision with significant trade-offs."
+
+CANDIDATE: "Sure. At CompanyX, we needed to choose between continuing with our SQL-based data warehouse or migrating to a NoSQL solution for our real-time analytics pipeline. We had 500GB of daily data and sub-second query requirements.
+
+Here's how I approached it:
+
+SITUATION: Our PostgreSQL-based analytics were hitting performance bottlenecks. Queries were timing out at 30 seconds, and the business wanted real-time dashboards.
+
+TASK: I needed to decide on the data architecture that would support real-time analytics while maintaining data consistency and staying within budget.
+
+ACTION: I ran a 2-week proof of concept comparing TimescaleDB (columnar PostgreSQL extension), ClickHouse, and Elasticsearch. I created a decision matrix with weighted criteria: query performance (35%), operational complexity (20%), cost (15%), team skill match (15%), and ecosystem maturity (15%). TimescaleDB won because it provided a 40x query improvement, seamless migration from PostgreSQL, and our team already knew SQL.
+
+RESULT: We migrated in 6 weeks with zero downtime. Query latency dropped from 30s to under 200ms. The business got their real-time dashboards, and we saved $50K/year in infrastructure costs compared to alternatives."
+
+INTERVIEWER: "Great approach. How did you get buy-in from stakeholders?"
+
+CANDIDATE: "Three key strategies: First, I presented data from the POC — concrete numbers they could understand (40x faster, 40% cost reduction). Second, I created a risk matrix addressing migration concerns — data loss, downtime, team productivity during transition. Third, I proposed a phased migration: start with one non-critical dashboard, validate for 2 weeks, then roll out gradually. This gave stakeholders confidence and allowed us to adjust course if needed."
+
+INTERVIEWER: "Now let's talk about people. How do you handle a situation where a team member consistently misses deadlines?"
+
+CANDIDATE: "My approach is to diagnose rather than blame. First, I'd have a private 1-on-1 conversation exploring potential causes:
+
+1. Is it a capacity issue? They might have too much on their plate.
+2. Is it a skill issue? They might not have the technical skills to estimate or execute.
+3. Is it a motivation issue? They might be disengaged or facing burnout.
+4. Is it a process issue? Our sprint planning or requirements might be unclear.
+
+In a recent case, an engineer was missing sprints consistently. Through our conversation, I discovered they were spending 3 hours daily on a legacy system integration that wasn't visible to the rest of the team. We reprioritized work, paired them with a senior engineer on the legacy integration, and within 2 sprints they were back on track. The key was addressing the root cause rather than just managing the symptoms."
+
+INTERVIEWER: "How would you handle it if the issue was motivation rather than capacity?"
+
+CANDIDATE: "Motivation issues are trickier. I'd start by understanding what's changed — is it personal circumstances, lack of challenging work, feeling undervalued, or misalignment with team goals? I'd use the 'Stay Interview' framework: What keeps you here? What would make you leave? What could we do differently?
+
+If the root cause is lack of challenge, I'd look for stretch assignments, maybe leading a small initiative or mentoring a junior engineer. If it's recognition, I'd ensure their wins are visible in team meetings and leadership updates. If it's growth, I'd work on a development plan aligned with their career goals.
+
+The most important thing is to be genuine and show you care about their success, not just their output. People can tell the difference."
+
+INTERVIEWER: "Last question. How do you stay technically current while managing a team?"
+
+CANDIDATE: "It's a challenge, and I'm honest about that. I use three strategies:
+
+1. STRUCTURED LEARNING: I block 2 hours every Friday afternoon for technical reading, building small prototypes, or contributing to open source.
+
+2. DELEGATED EXPLORATION: I rotate a 'tech scout' role on my team — each sprint, one person explores a new technology relevant to our stack and presents findings. This keeps the whole team learning.
+
+3. HANDS-ON CODER: I still commit code, though less frequently. I focus on code review, architectural decisions, and picking up bugs in areas I want to learn about. Currently, I'm pairing with a team member on our Kubernetes migration to deepen my container orchestration knowledge.
+
+I'm transparent with my team about my gaps and rely on their expertise too. Learning is a two-way street."
+
+SCENARIO 2: TECHNICAL INTERVIEW - BACKEND ENGINEER
+---------------------------------------------------
+
+INTERVIEWER: "Let's start with a coding problem. Design a URL shortening service like TinyURL."
+
+CANDIDATE: "Let me start by clarifying requirements.
+
+FUNCTIONAL:
+- Generate a short, unique URL for any long URL
+- Redirect short URLs to original URLs
+- Optional: custom aliases, analytics (click tracking), expiration
+
+NON-FUNCTIONAL:
+- 100M new URLs per month
+- 10K reads per second peak
+- High availability (99.99% uptime)
+- Low latency (<10ms for redirects)
+
+Let me estimate scale:
+- 100M new URLs/month = ~38 new URLs per second
+- 1 year storage: 1.2B URLs
+- 10K reads/sec, so read-to-write ratio ~ 260:1
+
+For the encoding scheme:
+- Base62 encoding (a-z, A-Z, 0-9) = 62 characters
+- With 7 characters: 62^7 = 3.5 trillion unique URLs — more than enough
+- Alternatively, we can start with 6 chars and increase as needed
+
+For storage:
+- Each row: 500 bytes (short key + long URL + metadata)
+- Yearly: 1.2B × 500 bytes ≈ 600GB
+- Cache: Redis for hot URLs, 80% cache hit ratio would serve 8K req/s from cache
+
+High-level design:
+1. Client sends POST /shorten with long URL
+2. Server generates unique base62 ID
+3. Store in database (key: short_url, value: long_url + metadata)
+4. Return short URL to client
+5. For redirect: GET /{short_url} → look up in cache/db → 301 redirect to long URL
+
+Key components:
+- Web server layer (auto-scaled)
+- Redis cache cluster
+- Database (distributed SQL like CockroachDB or NoSQL like Cassandra)
+- Analytics pipeline (Kafka + streaming processor)
+
+INTERVIEWER: "How would you handle URL collision in a distributed environment?"
+
+CANDIDATE: "Several approaches:
+
+1. DISTRIBUTED COUNTER: Use ZooKeeper or etcd for counter service. Assign each request an incrementing ID, then encode to base62.
+
+2. ZOOKEEPER SEQUENCE: Each server gets a unique range of IDs from a centralized coordinator.
+
+3. SNOWFLAKE ID: Generate unique IDs based on timestamp + datacenter ID + server ID + sequence.
+
+4. RETRY ON COLLISION: Generate random keys and check for collision. With 62^7 keys, probability is extremely low, but we handle it with a retry mechanism.
+
+I'd go with Snowflake IDs: unique, decentralized, and no single point of failure. We'd encode the numeric ID to base62 for the short URL."
+
+INTERVIEWER: "Now implement a function to encode a numeric ID to base62."
+
+CANDIDATE: [Writing code]
+"Here's the Python implementation:
+
+def encode_base62(num):
+    characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    if num == 0:
+        return characters[0]
+    
+    result = []
+    base = len(characters)
+    while num > 0:
+        rem = num % base
+        result.append(characters[rem])
+        num //= base
+    
+    return ''.join(reversed(result))
+
+# Example: encode_base62(1223456789) -> 'aBc3xY'
+
+And the decode function:
+def decode_base62(short_url):
+    characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    base = len(characters)
+    char_map = {c: i for i, c in enumerate(characters)}
+    
+    result = 0
+    for char in short_url:
+        result = result * base + char_map[char]
+    
+    return result
+
+Time complexity: O(n) where n is the length of the short URL, which is O(log_base62(num)) for the ID."
+
+SCENARIO 3: SYSTEM DESIGN INTERVIEW - REAL-TIME COLLABORATION
+--------------------------------------------------------------
+
+INTERVIEWER: "Design a real-time collaborative document editing system like Google Docs."
+
+CANDIDATE: "Let me break this down.
+
+REQUIREMENTS:
+- Multiple users edit simultaneously
+- Changes reflected in real-time (<500ms latency)
+- Conflict resolution when users edit the same text
+- History/versioning
+- Offline support
+
+KEY CHALLENGES:
+- Consistency: How to merge concurrent edits
+- Latency: Real-time updates across geographies
+- Scalability: Millions of documents, thousands of concurrent editors per document
+
+For conflict resolution, the two main approaches are:
+
+1. OPERATIONAL TRANSFORMATION (OT):
+- Used by Google Docs
+- Each operation is transformed against concurrent operations
+- Requires understanding of document state and operation semantics
+- More complex but more expressive
+
+2. CRDTs (CONFLICT-FREE REPLICATED DATA TYPES):
+- Used by Figma, Notion, Apple Notes
+- Data types designed to merge automatically
+- Simpler to implement but higher storage overhead
+- No central server needed for convergence
+
+I'll go with OT as it's more battle-tested for text editing.
+
+COMPONENTS:
+1. Client (Browser): Rich text editor (Quill, ProseMirror, Slate) + OT client
+2. WebSocket Server: Bidirectional real-time communication
+3. Document Service: OT transformation engine + document state
+4. Storage Layer: Document snapshots + operation logs (history)
+5. User Service: Authentication, permissions, cursor presence
+6. Version Database: MongoDB/Cassandra for document state + operation log
+
+DATA FLOW:
+1. User types → apply operation locally (optimistic)
+2. Send operation via WebSocket to server
+3. Server transforms operation against concurrent operations
+4. Broadcast transformed operation to all clients
+5. Each client applies the transformed operation
+
+CONSISTENCY GUARANTEES:
+- Eventually consistent across all clients
+- All clients see the same final document state
+- No user loses their changes
+
+SCALING:
+- WebSocket servers: horizontal scaling with sticky sessions
+- Document partitioned by shard key (document_id)
+- Redis pub/sub for broadcasting within document rooms
+- Read replicas for document viewing (no write access)
+
+FAILURE HANDLING:
+- Client disconnects: buffer operations, replay on reconnection
+- Server fails: migrate document room to another server
+- Network partition: local operations queue, merge on reconnect
+- Data corruption: version history for point-in-time recovery
+
+INTERVIEWER: "How would you detect and resolve conflicting edits?"
+
+CANDIDATE: "OT uses position-based transformation. Here's the key insight:
+
+When two users insert at the same position, the server needs to adjust one operation so both are applied correctly.
+
+Example:
+- User A inserts 'X' at position 3
+- User B inserts 'Y' at position 3 simultaneously
+
+The server:
+1. Receives both operations, sees they're concurrent
+2. Transforms A's operation: 'insert X at 3' 
+3. Transforms B's operation against A: 'insert Y at 4' (shifted by 1 because X was inserted)
+4. Applies transformed versions to the document
+5. Sends both users the final state
+
+Both users see 'ABXY' instead of one overwriting the other.
+
+The transformation functions (T functions) are the core of OT:
+- T(insert(p1, c1), insert(p2, c2)) → if p1 < p2: return insert(p1, c1); else: return insert(p1 + 1, c1)
+- For deletions: T(delete(p1, len1), insert(p2, c2)) → if p1 < p2: return delete(p1, len1); else: return delete(p1 + 1, len1)
+
+This ensures all clients reach the same final state regardless of operation order."
+
+SCENARIO 4: MACHINE LEARNING INTERVIEW - RECOMMENDATION SYSTEM
+--------------------------------------------------------------
+
+INTERVIEWER: "Design a recommendation system for a video streaming platform."
+
+CANDIDATE: "Let me approach this systematically.
+
+REQUIREMENTS:
+- Personalized video recommendations for 100M+ users
+- Real-time updates when users watch/interact
+- Balance between relevance, diversity, and freshness
+- Cold start for new users and new content
+
+TWO-STAGE APPROACH:
+1. CANDIDATE GENERATION: Retrieve hundreds of candidates from multiple sources
+2. RANKING: Score and rank candidates using ML model
+
+STAGE 1: CANDIDATE GENERATION
+
+Source 1 - Collaborative Filtering:
+- Matrix factorization (SVD, ALS) on user-item interaction matrix
+- Items with similar interaction patterns to what user has watched
+- Handles implicit feedback (watched, liked, shared, completed)
+
+Source 2 - Content-based Filtering:
+- Item embeddings from video metadata (title, description, categories, tags)
+- Text embeddings from transcripts using sentence transformers
+- Visual embeddings from thumbnails using CNN
+
+Source 3 - Popularity:
+- Trending content in user's region/demographic
+- New releases with initial momentum
+- Viral content
+
+Source 4 - Social/Contextual:
+- Friends watched, similar users watched (if social features exist)
+- Time-aware: seasonal, time-of-day appropriate content
+
+STAGE 2: RANKING MODEL
+
+Architecture: Two-tower DNN model
+- User tower: user history embeddings, demographic features, session context
+- Item tower: content embeddings, popularity features, freshness signals
+
+Features:
+- User features: watch history (last 50 videos), genre preferences, session time, device, region
+- Item features: content embedding, age (days since upload), completion rate, average rating
+- Cross features: user-item interaction count, time since last watch of similar content, category match
+
+Training approach:
+- Implicit feedback (watched=positive, scrolled past=negative, completed=strong positive)
+- Weighted logistic regression for probability of watch
+- Top-k ranking loss to optimize for list quality
+
+Evaluation:
+- Offline: NDCG@k, Recall@k, Mean Average Precision
+- Online: A/B testing with CTR, watch time, user retention, diversity metrics
+
+INFRASTRUCTURE:
+- Offline training pipeline: Spark for feature computation, TensorFlow for model training
+- Online serving: TensorFlow Serving or TorchServe with <100ms latency
+- Feature store (Feast/Redis): real-time features and precomputed embeddings
+- Candidate retrieval: approximate nearest neighbor (Annoy, FAISS, HNSW)
+
+CHALLENGES AND MITIGATIONS:
+
+Cold Start (New Users):
+- Ask preferences during onboarding (genres, languages)
+- Use demographic-based recommendations initially
+- Use exploration (epsilon-greedy, Thompson sampling)
+
+Cold Start (New Content):
+- Content-based recommendation using metadata similarity
+- Temporary popularity boost for new items
+- Random exploration for unseen content
+
+Filter Bubbles:
+- Inject diversity requirements in re-ranking stage
+- Include serendipity exploration
+- Balance personalized vs general recommendations
+
+Scalability:
+- Precompute candidates offline for active users
+- Real-time inference only for ranking stage
+- CDN cache for popular user segments
+
+This two-stage architecture balances quality and latency, handling 100M+ users while keeping inference under 50ms."
+
+SCENARIO 5: PRODUCT INTERVIEW - METRICS AND ANALYTICS
+------------------------------------------------------
+
+INTERVIEWER: "We've launched a new feature - collaborative playlists on our music streaming platform. How would you measure its success?"
+
+CANDIDATE: "I'd structure this around three levels: adoption, engagement, and business impact.
+
+LEVEL 1: ADOPTION METRICS (Did users find it?)
+- Feature discovery rate: % of users who see the feature (impressions)
+- Activation rate: % of users who create or join a collaborative playlist
+- Time to first action: days between launch and first collaborative activity
+- Adoption by segment: power users vs casual users, different age groups
+
+LEVEL 2: ENGAGEMENT METRICS (Are users getting value?)
+
+Primary:
+- Collaborative playlist creation rate (weekly per user)
+- Number of collaborators per playlist
+- Songs added per collaborator
+- Playlist completion rate (% of days playlist is played)
+
+Quality signals:
+- Song retention rate (tracks removed vs added)
+- Collaboration recurrence (do they create more collab playlists?)
+- User satisfaction survey (NPS for the feature)
+
+LEVEL 3: BUSINESS IMPACT (Does this help the business?)
+
+- Overall streaming minutes (do users stream more?)
+- User retention (do users who use this stick around longer?)
+- Social spread (invitations, shares, new user acquisition)
+- Premium conversion (does this drive paid subscriptions?)
+
+EXPERIMENTATION DESIGN:
+- Randomize users into control (no feature) and treatment (feature available)
+- Primary metric: weekly active users creating collaborative playlists
+- Secondary metrics: total streaming minutes, social invites
+- Guardrail metrics: playlist abandonment rate, app crash rate, latency
+
+COHORT ANALYSIS:
+Users who created ≥1 collaborative playlist vs those who didn't
+- 7-day retention: 65% for collab users vs 40% for non-collab
+- 30-day retention: 50% vs 25%
+- Average session length: 45 min vs 30 min
+
+SAMPLE SIZE CALCULATION:
+- Minimum detectable effect: 5% improvement in weekly active use
+- Statistical power: 80%
+- Significance level: 5%
+- Required sample: ~100,000 users per variant
+- Duration: 2 weeks to capture weekly usage patterns
+
+RISKS AND MITIGATION:
+- Spam/inappropriate content: report and moderation system
+- Privacy concerns: clear permissions for shared playlists
+- Technical: latency for real-time sync across users
+- Network effects: feature value increases with more users, so we need critical mass
+
+I'd track these metrics weekly with a dashboard and make data-driven decisions on feature improvements: whether to invest more in discovery, engagement loops, or social sharing."
+
+INTERVIEW QUESTION BANK - QUICK REFERENCE
+==========================================
+
+CODING INTERVIEW QUESTIONS (COMMON PATTERNS)
+---------------------------------------------
+1. Two Pointer: pair sum, palindrome, 3-sum, container with most water
+2. Sliding Window: max subarray, longest substring without repeating, min window
+3. Binary Search: rotated array, find peak, search in matrix, kth smallest
+4. DFS/BFS: connected components, islands, word ladder, topological sort
+5. Dynamic Programming: knapasack, LCS, LIS, edit distance, coin change
+6. Graph: Dijkstra, Bellman-Ford, Floyd-Warshall, Prims, Kruskals
+7. Tree: lowest common ancestor, serialize, diameter, level-order traversal
+8. Heap: merge k Sorted, top k frequent, median in stream
+9. Backtracking: permutations, subsets, n-queens, sudoku solver
+10. Trie: autocomplete, word search II, prefix matching
+
+DATA SCIENCE TAKE-HOME CHALLENGES
+-----------------------------------
+1. Customer churn prediction with classification
+2. Time series forecasting for demand prediction
+3. Anomaly detection in user behavior
+4. Customer segmentation using clustering
+5. A/B test analysis and recommendations
+6. Recommendation system from user interaction logs
+7. NLP text classification for support tickets
+8. Price optimization and elasticity modeling

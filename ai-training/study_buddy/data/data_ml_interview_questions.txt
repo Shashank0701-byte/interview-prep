@@ -1,0 +1,233 @@
+DATA SCIENCE, ML ENGINEERING, AND ANALYTICS INTERVIEW PREPARATION
+=================================================================
+
+MACHINE LEARNING FUNDAMENTALS
+-------------------------------
+
+1. SUPERVISED LEARNING ALGORITHMS
+- Linear Regression: OLS, gradient descent, feature scaling, regularization (L1/L2/L1+L2)
+- Logistic Regression: sigmoid function, decision boundary, cross-entropy loss, AUC-ROC
+- Decision Trees (CART, ID3, C4.5): splitting criteria (Gini impurity, entropy, variance reduction)
+- Random Forest: bagging, feature randomness, out-of-bag error estimation, feature importance
+- Gradient Boosting Machines (GBM): AdaBoost, XGBoost, LightGBM, CatBoost differences
+- Support Vector Machines (SVM): kernel trick (RBF, polynomial, linear), margin, support vectors, soft margin
+- K-Nearest Neighbors (KNN): distance metrics (Euclidean, Manhattan, cosine), k selection, curse of dimensionality
+- Naive Bayes: Gaussian, Multinomial, Bernoulli; independence assumption implications
+
+2. UNSUPERVISED LEARNING
+- K-Means Clustering: initialization, elbow method, silhouette score, k-means++ initialization
+- Hierarchical Clustering: agglomerative vs divisive, dendrograms, linkage criteria
+- DBSCAN: density-based clustering, eps and minPts selection, handling noise
+- Gaussian Mixture Models (GMM): expectation-maximization, soft clustering, covariance types
+- Principal Component Analysis (PCA): eigenvalue decomposition, explained variance ratio, feature interpretation
+- t-SNE vs UMAP: visualization techniques, perplexity, learning rate, stochastic neighbor embedding
+- Association Rule Mining: Apriori algorithm, support, confidence, lift, conviction
+
+3. DEEP LEARNING
+- Neural Network Basics: perceptrons, activation functions (ReLU, sigmoid, tanh, softmax), backpropagation
+- Convolutional Neural Networks (CNN): conv layers, pooling, stride, padding, architecture patterns
+- Recurrent Neural Networks (RNN): LSTM, GRU, bidirectional, vanishing/exploding gradients
+- Transformer Architecture: self-attention, multi-head attention, positional encoding, layer norm
+- Autoencoders: undercomplete, variational (VAE), denoising, sparse autoencoders
+- Generative Adversarial Networks (GAN): generator/discriminator loss, training stability, mode collapse
+- Transfer Learning: fine-tuning, feature extraction, domain adaptation, pre-trained models
+- Regularization: dropout, batch normalization, layer normalization, weight decay, data augmentation
+
+4. FEATURE ENGINEERING AND SELECTION
+- Numeric features: scaling (MinMax, Standardization, Robust), binning, polynomial features
+- Categorical features: one-hot encoding, label encoding, target encoding, ordinal encoding
+- Text features: TF-IDF, word2vec, GloVe, BERT embeddings, bag-of-words, n-grams
+- Date/time features: cyclical encoding (sin/cos), lag features, rolling window aggregates
+- Feature selection: filter (correlation, chi-squared), wrapper (forward/backward, recursive), embedded (LASSO, tree importance)
+- Dimensionality reduction: PCA, t-SNE, UMAP, autoencoders, feature hashing
+
+5. MODEL EVALUATION AND METRICS
+- Classification metrics: accuracy, precision, recall, F1-score, F-beta score, Matthews correlation coefficient
+- Probabilistic metrics: log loss, Brier score, AUC-ROC, AUC-PR, expected calibration error
+- Regression metrics: MSE, RMSE, MAE, MAPE, R-squared, adjusted R-squared, RMSLE
+- Ranking metrics: Mean Average Precision (MAP), NDCG, Mean Reciprocal Rank (MRR)
+- Bias-variance tradeoff: underfitting vs overfitting, learning curves, validation curves
+- Cross-validation strategies: k-fold, stratified k-fold, group k-fold, time series split, leave-one-out
+
+STATISTICS AND PROBABILITY
+---------------------------
+
+1. PROBABILITY DISTRIBUTIONS
+- Discrete: Bernoulli, Binomial, Poisson, Geometric, Negative Binomial, Multinomial
+- Continuous: Normal (Gaussian), Exponential, Uniform, Beta, Gamma, Chi-squared, Student's t, F-distribution
+- Sampling distributions: Central Limit Theorem, standard error, sampling distribution of the mean
+- Maximum Likelihood Estimation (MLE): likelihood function, log-likelihood, properties (consistency, efficiency, invariance)
+- Maximum A Posteriori (MAP): combining likelihood with prior, conjugate priors
+
+2. HYPOTHESIS TESTING
+- Null and alternative hypotheses, Type I and Type II errors, power analysis
+- Z-test, t-test (one-sample, two-sample, paired), ANOVA (one-way, two-way, repeated measures)
+- Chi-squared test: goodness-of-fit, test of independence, homogeneity test
+- Non-parametric tests: Mann-Whitney U, Wilcoxon signed-rank, Kruskal-Wallis, Friedman test
+- Multiple testing correction: Bonferroni, Holm-Bonferroni, Benjamini-Hochberg (FDR)
+- Confidence intervals: bootstrapping, analytical methods, interpretation
+
+3. BAYESIAN STATISTICS
+- Bayes Theorem: prior, likelihood, posterior, evidence
+- Bayesian inference: posterior distribution, credible intervals, Bayes factors
+- Markov Chain Monte Carlo (MCMC): Metropolis-Hastings, Gibbs sampling, Hamiltonian Monte Carlo
+- Bayesian A/B testing: beta-binomial model, posterior sampling, expected loss
+- Hierarchical Bayesian models: partial pooling, exchangeability, shrinkage
+- Probabilistic programming: PyMC, Stan, TensorFlow Probability
+
+SQL AND DATA MANIPULATION
+--------------------------
+
+1. SQL FUNDAMENTALS
+- Joins: INNER, LEFT, RIGHT, FULL OUTER, CROSS JOIN, self-join, semi-join, anti-join
+- Aggregation: GROUP BY, HAVING, aggregate functions (COUNT, SUM, AVG, MIN, MAX, VARIANCE, STDDEV)
+- Window functions: ROW_NUMBER, RANK, DENSE_RANK, NTILE, LEAD/LAG, FIRST_VALUE/LAST_VALUE
+- Common Table Expressions (CTEs): recursive CTEs, chained CTEs, query organization
+- Subqueries: correlated subqueries, scalar subqueries, EXISTS vs IN, lateral joins
+- Optimization: EXPLAIN plans, index utilization, query rewriting, materialized views
+- Data types: type casting, date/time functions, string manipulation, JSON/JSONB operations
+
+2. ADVANCED SQL PATTERNS
+- Pivot/unpivot: CROSSTAB / CASE-based pivoting
+- Rolling calculations: moving averages, cumulative sums, running totals
+- Gap analysis: identifying missing dates, sessionization, time intervals
+- Cohort analysis: user cohorts, retention queries, churn analysis
+- Funnel analysis: conversion funnel queries, step-by-step aggregation
+- Hierarchical data: recursive CTEs for tree structures, adjacency list queries
+- Performance: index types (B-tree, hash, GIST, GIN, BRIN), query plan analysis
+
+3. DATA PIPELINES AND ETL
+- ETL vs ELT: when to use each approach, modern data stack
+- Data quality: validation rules, schema enforcement, anomaly detection
+- Data warehousing: star schema, snowflake schema, dimensional modeling (Kimball, Inmon)
+- Data lake vs data warehouse vs data lakehouse: trade-offs and architecture
+- Orchestration: Airflow, Prefect, Dagster workflow management
+- Streaming data: Kafka Streams, Flink, Spark Structured Streaming
+
+A/B TESTING AND EXPERIMENTATION
+---------------------------------
+
+1. EXPERIMENT DESIGN
+- Randomization: simple, stratified, cluster, and adaptive randomization
+- Sample size calculation: minimum detectable effect (MDE), significance level, power
+- Metric selection: primary, secondary, guardrail metrics, OEC (Overall Evaluation Criteria)
+- Experiment variants: control-tmt, multivariate, factorial designs, A/A tests
+- Duration: statistical vs practical significance, novelty effect, primacy effect
+- Segmentation: pre-registered subgroups, heterogeneity analysis, CATE estimation
+
+2. ANALYSIS AND VALIDATION
+- Frequentist analysis: t-test, z-test, chi-squared test, ANOVA
+- Bayesian analysis: posterior distributions, credible intervals, probability of being best
+- Multiple testing corrections: Bonferroni, Holm, Benjamini-Hochberg
+- Interference and network effects: SUTVA violation, cluster randomization, exposure mapping
+- Novelty and change aversion: controlling for time effects, ramp-up methodology
+- Peeking: sequential testing, always valid inference, group sequential designs
+
+3. COMMON PITFALLS
+- Selection bias, survivorship bias, Simpson's paradox, confounders
+- Data snooping, p-hacking, data dredging
+- Carryover effects in within-subject designs
+- Sample ratio mismatch (SRM) detection and diagnosis
+- Metric sensitivity vs reliability tradeoff
+- Short-term vs long-term effects divergence
+
+ML ENGINEERING AND MLOPS
+--------------------------
+
+1. MODEL DEPLOYMENT
+- Batch inference vs real-time inference: latency, throughput, cost considerations
+- Model serving architectures: REST API, gRPC, streaming, on-device, edge deployment
+- Model serialization: ONNX, PMML, PFA, TensorFlow SavedModel, PyTorch TorchScript
+- Infrastructure: Docker, Kubernetes, serverless (AWS Lambda, GCP Cloud Functions)
+- A/B serving: canary deployments, shadow mode, blue-green deployment
+- Feature serving: feature stores (Feast, Tecton, Vertex AI Feature Store)
+- Model versioning and reproducibility: MLflow, DVC, Weights & Biases, data version control
+
+2. MODEL MONITORING AND MAINTENANCE
+- Data drift: distribution shifts in features (covariate shift, prior probability shift)
+- Concept drift: changing relationships between features and target
+- Model degradation tracking: accuracy over time, prediction distribution shifts
+- Monitoring infrastructure: Prometheus, Grafana, ELK stack, custom dashboards
+- Alerting: drift detection thresholds, anomaly detection, performance degradation
+- Automated retraining: time-based, drift-based, performance-based triggers
+- Rollback strategies: model version rollback, feature flag-based rollback
+
+3. DATA ENGINEERING
+- Data modeling: dimensional modeling, Data Vault, One Big Table (OBT)
+- Data pipeline design: batch, micro-batch, streaming architectures
+- Data quality monitoring: Great Expectations, dbt tests, custom validation
+- Data catalog: metadata management, data lineage, discovery
+- Data access patterns: data mesh, data as a product, domain-driven data ownership
+- Cost optimization: storage tiering, query optimization, partition pruning, compression
+
+CASE STUDY APPROACH
+--------------------
+
+1. METRICS AND DEFINITION CASE STUDIES
+Case: "Design metrics for a news recommendation system"
+- User engagement: CTR, session duration, DAU/MAU, read completion rate
+- Content quality: user ratings, shares, time-on-article, bounce rate
+- System health: coverage, diversity, freshness, serendipity
+- Business: ad revenue, subscription conversion, retention
+- Counter metrics: echo chamber measure, clickbait detection, misinformation spread
+
+Case: "How would you measure the impact of a new checkout flow?"
+- Primary: conversion rate, average order value, revenue per user
+- Success metrics: checkout completion rate, payment success rate, time to checkout
+- Counter metrics: returns rate, customer support contacts, fraud rate
+- Guardrails: page load time, error rate, user satisfaction (CSAT/NPS)
+
+2. ML SYSTEM DESIGN CASE STUDIES
+Case: "Design a recommendation system for an e-commerce platform"
+- Candidates generation: collaborative filtering (user-item matrix), content-based filtering, popularity
+- Ranking: gradient boosted trees, two-tower DNN models, wide-and-deep model
+- Re-ranking: diversity, freshness, business rules, real-time signals
+- Infrastructure: batch computation for candidate generation, real-time ranking service
+- Cold start: new user (popular items, demographic), new item (metadata similarity)
+- Evaluation: offline (NDCG, MAP, recall), online (CTR, revenue A/B test)
+
+Case: "Design a fraud detection system for a payment platform"
+- Feature engineering: transaction features (amount, location, time, device), user features (history, velocity), network features
+- Model approach: ensemble of gradient boosting, neural networks for sequence patterns
+- Real-time detection: streaming pipeline, low-latency inference (<100ms)
+- Rule-based pre-filter: hard rules for known fraud patterns
+- Explainability: SHAP values, feature importance, reason codes for declined transactions
+- System architecture: Kafka for event streaming, feature store for real-time features, model serving, alert system
+- Evaluation: precision/recall tradeoff (cost of false positives vs false negatives)
+
+Case: "Design a search ranking system"
+- Query understanding: query classification, entity recognition, spelling correction, query expansion
+- Recall stage: inverted index, approximate nearest neighbor (ANN), semantic search with embeddings
+- Ranking stage: LTR (Learning to Rank) - pointwise, pairwise, listwise approaches
+- Features: text match features (BM25, TF-IDF), document quality, user engagement
+- Personalization: user history embedding, session context, demographic features
+- Freshness vs relevance: recency-weighted ranking, breaking news boost
+- Infrastructure: indexing pipeline, serving infrastructure, A/B testing platform
+
+3. ANALYTICS CASE STUDIES
+Case: "Analyze the user drop-off in a freemium product conversion funnel"
+- Funnel stages: signup -> activation -> engagement -> conversion -> retention -> expansion
+- Data collection: event tracking, session tracking, funnel instrumentation
+- Analysis approach: cohort analysis for conversion, step-level funnel analysis, segmentation
+- Root cause: onboarding complexity, feature discovery, pricing, competitor comparison
+- Recommendations: simplified onboarding, feature education, targeted offers, pricing experiments
+
+Case: "Investigate a sudden drop in user retention"
+- Data collection: time series (daily retention), cohort data, user segmentation
+- Analysis: break by platform, region, user segment, acquisition channel, version
+- Potential causes: product change (feature removal, bugs), competitive action, seasonality, external events
+- Deep dive: user surveys, session recordings, support tickets analysis
+- Impact quantification: revenue impact, LTV impact, recovery timeline
+
+GENERAL DATA SCIENCE TIPS
+---------------------------
+1. Always start by understanding the business problem and context
+2. Ask clarifying questions about data quality, availability, and assumptions
+3. Be explicit about assumptions and limitations of your approach
+4. For ML design problems, cover data collection, feature engineering, model selection, evaluation, deployment, and monitoring
+5. Discuss trade-offs explicitly: model complexity vs interpretability, latency vs accuracy, offline metrics vs online metrics
+6. Mention specific libraries and tools but focus on concepts and reasoning
+7. For SQL, write clean, readable, and performant code
+8. For statistics questions, show understanding of both frequentist and Bayesian perspectives
+9. Always consider ethical implications: bias, fairness, privacy, transparency
+10. End with discussion of future improvements and additional analysis
