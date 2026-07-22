@@ -74,7 +74,20 @@ const loginUser = async (req, res) => {
     user.otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
     await user.save();
 
-    await sendOTP(user.email, otp);
+    // Attempt to send OTP — if email fails, return retryable error
+    const otpSent = await sendOTP(user.email, otp);
+    if (!otpSent) {
+      // Email service unavailable — clear pending OTP state and fail closed
+      console.warn(`⚠️ OTP email delivery failed — email service unavailable`);
+      user.otp = null;
+      user.otpExpires = null;
+      await user.save();
+
+      return res.status(503).json({
+        message: "Unable to deliver security token. Email service temporarily unavailable. Please retry.",
+        retryable: true
+      });
+    }
 
     res.json({
       message: "OTP sent to your email",

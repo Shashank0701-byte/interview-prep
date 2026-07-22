@@ -45,7 +45,7 @@ const Login = () => {
       const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
         email,
         password,
-        captchaToken
+captchaToken
       });
 
       if (response.data.requiresOTP) {
