@@ -18,9 +18,14 @@ const Navbar = () => {
                 <div className="container mx-auto flex items-center justify-between gap-5">
                     <div className="flex items-center gap-8">
                         <Link to="/dashboard" className="group flex items-center gap-2.5">
-                            <div className="w-6 h-6 bg-charcoal dark:bg-cream rounded-sm flex items-center justify-center">
-                                <span className="text-cream dark:text-navy text-[9px] font-bold tracking-tight leading-none">IP</span>
+                            <div className="w-6 h-6 flex items-center justify-center">
+                                <img
+                                    src="/favicon.png"
+                                    alt="Interview Prep AI"
+                                    className="w-full h-full object-contain"
+                                />
                             </div>
+
                             <h2 className="text-xl md:text-2xl font-display font-bold leading-5 text-charcoal dark:text-cream transition-colors duration-300">
                                 Interview Prep AI
                             </h2>

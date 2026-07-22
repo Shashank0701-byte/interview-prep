@@ -10,9 +10,14 @@ const AuthLayout = ({ children }) => {
         
         {/* Brand */}
         <div className="flex items-center gap-3 mb-16 text-charcoal font-display text-2xl font-bold">
-          <div className="w-8 h-8 bg-charcoal rounded-sm flex items-center justify-center">
-            <span className="text-cream text-sm font-bold">IP</span>
+          <div className="w-8 h-8">
+            <img
+              src="/favicon.png"
+              alt="Interview Prep AI"
+              className="w-full h-full object-contain"
+            />
           </div>
+
           <span>Interview Prep AI</span>
         </div>
 

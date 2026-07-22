@@ -123,6 +123,36 @@ app.use((req, res) => {
 });
 
 /* -------------------------
+   GLOBAL ERROR HANDLER (MUST BE LAST)
+-------------------------- */
+app.use((err, req, res, _next) => {
+  console.error("🔥 Unhandled error:", err?.message || err);
+  if (err?.stack) console.error(err.stack);
+
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+  }
+
+  res.status(err?.status || 500).json({
+    message: err?.message || "Internal server error",
+    error: process.env.NODE_ENV === "development" ? err?.stack : undefined,
+  });
+});
+
+/* -------------------------
+   PROCESS CRASH PREVENTION
+-------------------------- */
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("🚨 Unhandled Rejection at:", promise, "reason:", reason);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("💥 Uncaught Exception:", error?.message, error?.stack);
+});
+
+/* -------------------------
    START SERVER
 -------------------------- */
 const PORT = process.env.PORT || 8000;
