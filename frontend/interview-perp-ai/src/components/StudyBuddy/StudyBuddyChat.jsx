@@ -236,13 +236,12 @@ const StudyBuddyChat = ({ userId }) => {
 
                 <div className="message-content">
                   <div className="message-text">
-                    {msg.sender === "buddy" ? (
-                      <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
-                        className="markdown-content"
-                      >
-                        {msg.message}
-                      </ReactMarkdown>
+{msg.sender === "buddy" ? (
+                      <div className="markdown-content">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {msg.message}
+                        </ReactMarkdown>
+                      </div>
                     ) : (
                       msg.message
                     )}
