@@ -74,22 +74,18 @@ const loginUser = async (req, res) => {
     user.otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
     await user.save();
 
-    // Attempt to send OTP — if email fails, fall back to direct JWT login
+    // Attempt to send OTP — if email fails, return retryable error
     const otpSent = await sendOTP(user.email, otp);
     if (!otpSent) {
-      // Email service unavailable — skip OTP, return token directly
-      console.warn(`⚠️ OTP email failed for ${user.email} — falling back to direct login`);
+      // Email service unavailable — clear pending OTP state and fail closed
+      console.warn(`⚠️ OTP email delivery failed — email service unavailable`);
       user.otp = null;
       user.otpExpires = null;
       await user.save();
 
-      return res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        profileImageUrl: user.profileImageUrl,
-        token: generateToken(user._id),
-        otpFallback: true, // client can optionally show a notice
+      return res.status(503).json({
+        message: "Unable to deliver security token. Email service temporarily unavailable. Please retry.",
+        retryable: true
       });
     }
 

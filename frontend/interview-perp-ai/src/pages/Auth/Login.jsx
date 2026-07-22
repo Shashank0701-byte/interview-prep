@@ -51,16 +51,6 @@ captchaToken
       if (response.data.requiresOTP) {
         setRequiresOTP(true);
         setIsLoading(false);
-      } else if (response.data.otpFallback) {
-        // OTP email failed — logged in directly with token
-        const { token } = response.data;
-        if (token) {
-          localStorage.setItem("token", token);
-          updateUser(response.data);
-          setTimeout(() => {
-            navigate("/dashboard");
-          }, 1000);
-        }
       } else {
         const { token } = response.data;
         if (token) {
