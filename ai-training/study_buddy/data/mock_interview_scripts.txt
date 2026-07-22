@@ -401,7 +401,7 @@ CODING INTERVIEW QUESTIONS (COMMON PATTERNS)
 2. Sliding Window: max subarray, longest substring without repeating, min window
 3. Binary Search: rotated array, find peak, search in matrix, kth smallest
 4. DFS/BFS: connected components, islands, word ladder, topological sort
-5. Dynamic Programming: knapasack, LCS, LIS, edit distance, coin change
+5. Dynamic Programming: knapsack, LCS, LIS, edit distance, coin change
 6. Graph: Dijkstra, Bellman-Ford, Floyd-Warshall, Prims, Kruskals
 7. Tree: lowest common ancestor, serialize, diameter, level-order traversal
 8. Heap: merge k Sorted, top k frequent, median in stream

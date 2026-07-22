@@ -111,7 +111,7 @@ A/B TESTING AND EXPERIMENTATION
 - Randomization: simple, stratified, cluster, and adaptive randomization
 - Sample size calculation: minimum detectable effect (MDE), significance level, power
 - Metric selection: primary, secondary, guardrail metrics, OEC (Overall Evaluation Criteria)
-- Experiment variants: control-tmt, multivariate, factorial designs, A/A tests
+- Experiment variants: control-treatment, multivariate, factorial designs, A/A tests
 - Duration: statistical vs practical significance, novelty effect, primacy effect
 - Segmentation: pre-registered subgroups, heterogeneity analysis, CATE estimation
 

@@ -2,6 +2,9 @@
 
 # Generated trained model artifacts (pickle files) at project root only
 /models/
+ai-training/study_buddy/models/trained/*.pkl
+ai-training/study_buddy/models/trained/*.joblib
+ai-training/study_buddy/data/processed/training_results_*.json
 chroma_db/
 
 # Environment files

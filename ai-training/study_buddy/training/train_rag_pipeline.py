@@ -9,6 +9,7 @@ import json
 import sys
 import os
 import logging
+import hashlib
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 from datetime import datetime
@@ -88,11 +89,13 @@ class RAGPipelineTrainer:
                 if isinstance(data, list):
                     for item in data:
                         if "id" not in item:
-                            item["id"] = f"{jf.stem}_{hash(str(item))}"
+                            item_str = json.dumps(item, sort_keys=True)
+                            item_hash = hashlib.md5(item_str.encode('utf-8')).hexdigest()[:16]
+                            item["id"] = f"{jf_path.stem}_{item_hash}"
                         documents.append(item)
                 elif isinstance(data, dict):
                     documents.append({
-                        "id": jf.stem,
+                        "id": jf_path.stem,
                         "content": json.dumps(data, indent=2),
                         "metadata": {"type": "json_document", "source": jf}
                     })
@@ -275,14 +278,15 @@ class RAGPipelineTrainer:
         success_rate = sum(1 for r in results if r.get("has_response") and not r.get("error"))
         total = len(results)
 
+        context_docs_list = [r["context_docs"] for r in results if "context_docs" in r]
+        avg_context_docs = round(np.mean(context_docs_list), 1) if context_docs_list else 0
+
         report = {
             "status": "completed",
             "total_queries": total,
             "successful_queries": success_rate,
             "success_rate": round(success_rate / total * 100, 1) if total else 0,
-            "avg_context_docs": round(
-                np.mean([r["context_docs"] for r in results if "context_docs" in r]), 1
-            ),
+            "avg_context_docs": avg_context_docs,
             "details": results,
         }
 

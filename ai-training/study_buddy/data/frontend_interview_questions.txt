@@ -9,10 +9,10 @@ SECTION 1: JavaScript Core Concepts
 1.1 Event Loop and Concurrency
 -------------------------------
 Q: Explain the JavaScript event loop. How do microtasks and macrotasks differ?
-A: The event loop continuously checks the call stack and message queue. 
+A: The event loop continuously checks the call stack and message queue.
    Macrotasks: setTimeout, setInterval, I/O, UI rendering events
    Microtasks: Promise.then/catch/finally, queueMicrotask, MutationObserver
-   Each event loop iteration: 1 macrotask → all microtasks → UI render
+   Each event loop iteration: 1 macrotask → all microtasks → the browser may render
    
    Example: 
    console.log('1');                    // sync → prints 1

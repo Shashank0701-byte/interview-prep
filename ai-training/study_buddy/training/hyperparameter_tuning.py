@@ -51,22 +51,64 @@ class HyperparameterTuner:
     def _get_data(self, num_samples: int = 2000):
         """Generate or load training data and prepare feature/label sets."""
         df = self.trainer.generate_synthetic_training_data(num_samples)
-        X, feature_info = self.trainer.prepare_features(df)
         targets = {
             "optimal_time": (df["optimal_time_category"], "classifier"),
             "performance": (df["performance_score"], "regressor"),
             "motivation": (df["motivation_level"], "classifier"),
         }
-        return X, targets, feature_info
+        return df, targets
+
+    def _prepare_features_safe(self, df, train_idx, val_idx):
+        """Prepare features with user-level aggregates computed only on training fold."""
+        import pandas as pd
+
+        df_train = df.iloc[train_idx].copy()
+        df_val = df.iloc[val_idx].copy()
+
+        # Compute user aggregates only on training data
+        user_stats_train = df_train.groupby('user_id').agg({
+            'accuracy': ['mean', 'std'],
+            'duration_minutes': 'mean',
+            'questions_per_hour': 'mean'
+        }).round(3)
+        user_stats_train.columns = ['user_avg_accuracy', 'user_accuracy_std',
+                                     'user_avg_duration', 'user_avg_qph']
+        user_stats_train = user_stats_train.fillna(0)
+
+        # Apply to both train and val using training-derived stats
+        df_train = df_train.merge(user_stats_train, left_on='user_id', right_index=True, how='left')
+        df_val = df_val.merge(user_stats_train, left_on='user_id', right_index=True, how='left')
+        df_val = df_val.fillna(0)  # For users not in train fold
+
+        # Prepare other features (non-user-level)
+        for d in [df_train, df_val]:
+            d['hour_sin'] = np.sin(2 * np.pi * d['session_hour'] / 24)
+            d['hour_cos'] = np.cos(2 * np.pi * d['session_hour'] / 24)
+            d['day_sin'] = np.sin(2 * np.pi * d['day_of_week'] / 7)
+            d['day_cos'] = np.cos(2 * np.pi * d['day_of_week'] / 7)
+            d['accuracy_completion_ratio'] = d['accuracy'] / (d['completion_rate'] + 0.01)
+            d['session_efficiency'] = d['questions_attempted'] / d['duration_minutes']
+            d['streak_momentum'] = d['streak_days'] / (d['days_since_last_session'] + 1)
+
+        feature_columns = [
+            'session_hour', 'hour_sin', 'hour_cos', 'day_sin', 'day_cos',
+            'accuracy', 'duration_minutes', 'questions_attempted', 'completion_rate',
+            'streak_days', 'days_since_last_session', 'questions_per_hour',
+            'session_number', 'accuracy_completion_ratio', 'session_efficiency',
+            'streak_momentum', 'user_avg_accuracy', 'user_accuracy_std',
+            'user_avg_duration', 'user_avg_qph'
+        ]
+
+        return df_train[feature_columns].values, df_val[feature_columns].values
 
     # ----------------------------------------------------------------
     # RANDOM FOREST GRID SEARCH
     # ----------------------------------------------------------------
     def _rf_grid(
-        self, X, y, task_type: str, param_grid: Dict[str, list]
+        self, df, y, task_type: str, param_grid: Dict[str, list]
     ) -> Dict[str, Any]:
-        """Simple grid search for Random Forest."""
-        from sklearn.model_selection import cross_val_score
+        """Simple grid search for Random Forest using GroupKFold to prevent user leakage."""
+        from sklearn.model_selection import GroupKFold
         from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
         from sklearn.preprocessing import LabelEncoder
 
@@ -80,7 +122,11 @@ class HyperparameterTuner:
             le = LabelEncoder()
             y_enc = le.fit_transform(y)
         else:
-            y_enc = y
+            y_enc = np.array(y)
+
+        # Use GroupKFold to ensure same user doesn't appear in both train and val
+        groups = df['user_id'].values
+        group_kfold = GroupKFold(n_splits=3)
 
         for n_est in param_grid.get("n_estimators", [100]):
             for depth in param_grid.get("max_depth", [10]):
@@ -95,7 +141,6 @@ class HyperparameterTuner:
                                 random_state=42,
                                 n_jobs=-1,
                             )
-                            scoring = "accuracy"
                         else:
                             model = RandomForestRegressor(
                                 n_estimators=n_est,
@@ -105,10 +150,23 @@ class HyperparameterTuner:
                                 random_state=42,
                                 n_jobs=-1,
                             )
-                            scoring = "r2"
 
-                        scores = cross_val_score(model, X, y_enc, cv=3, scoring=scoring)
-                        mean_score = scores.mean()
+                        # Manual CV with leak-free feature preparation
+                        fold_scores = []
+                        for train_idx, val_idx in group_kfold.split(df, y_enc, groups):
+                            X_train, X_val = self._prepare_features_safe(df, train_idx, val_idx)
+                            y_train, y_val = y_enc[train_idx], y_enc[val_idx]
+
+                            model.fit(X_train, y_train)
+                            if task_type == "classifier":
+                                score = model.score(X_val, y_val)
+                            else:
+                                from sklearn.metrics import r2_score
+                                preds = model.predict(X_val)
+                                score = r2_score(y_val, preds)
+                            fold_scores.append(score)
+
+                        mean_score = np.mean(fold_scores)
                         results.append({
                             "n_estimators": n_est,
                             "max_depth": depth,
@@ -136,15 +194,15 @@ class HyperparameterTuner:
     # ----------------------------------------------------------------
     # XGBOOST
     # ----------------------------------------------------------------
-    def _train_xgboost(self, X, y, task_type: str) -> Dict[str, Any]:
-        """Train and evaluate XGBoost model."""
+    def _train_xgboost(self, df, y, task_type: str) -> Dict[str, Any]:
+        """Train and evaluate XGBoost model with group-aware splits."""
         try:
             import xgboost as xgb
         except ImportError:
             logger.warning("xgboost not installed — skipping")
             return {"status": "skipped", "error": "xgboost not available"}
 
-        from sklearn.model_selection import cross_val_score, train_test_split
+        from sklearn.model_selection import GroupKFold
         from sklearn.preprocessing import LabelEncoder
         from sklearn.metrics import accuracy_score, r2_score
 
@@ -157,90 +215,98 @@ class HyperparameterTuner:
                 subsample=0.8, colsample_bytree=0.8, random_state=42,
                 eval_metric="mlogloss", use_label_encoder=False,
             )
-            scoring = "accuracy"
         else:
-            y_enc = y
+            y_enc = np.array(y)
             model = xgb.XGBRegressor(
                 n_estimators=200, max_depth=6, learning_rate=0.1,
                 subsample=0.8, colsample_bytree=0.8, random_state=42,
             )
-            scoring = "r2"
 
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y_enc, test_size=0.2, random_state=42,
-        )
-        model.fit(X_train, y_train)
-        preds = model.predict(X_test)
+        groups = df['user_id'].values
+        group_kfold = GroupKFold(n_splits=3)
 
-        if task_type == "classifier":
-            metric = accuracy_score(y_test, preds)
-        else:
-            metric = r2_score(y_test, preds)
+        cv_scores = []
+        for train_idx, val_idx in group_kfold.split(df, y_enc, groups):
+            X_train, X_val = self._prepare_features_safe(df, train_idx, val_idx)
+            y_train, y_val = y_enc[train_idx], y_enc[val_idx]
 
-        cv_scores = cross_val_score(model, X, y_enc, cv=3, scoring=scoring)
+            model.fit(X_train, y_train)
+            preds = model.predict(X_val)
+
+            if task_type == "classifier":
+                score = accuracy_score(y_val, preds)
+            else:
+                score = r2_score(y_val, preds)
+            cv_scores.append(score)
 
         return {
             "status": "success",
             "model": "xgboost",
-            "test_score": round(metric, 4),
-            "cv_mean": round(cv_scores.mean(), 4),
-            "cv_std": round(cv_scores.std(), 4),
+            "test_score": round(cv_scores[-1], 4),  # Last fold score
+            "cv_mean": round(np.mean(cv_scores), 4),
+            "cv_std": round(np.std(cv_scores), 4),
             "task_type": task_type,
         }
 
     # ----------------------------------------------------------------
     # NEURAL NETWORK (MLP)
     # ----------------------------------------------------------------
-    def _train_mlp(self, X, y, task_type: str) -> Dict[str, Any]:
-        """Train and evaluate a simple Multi-Layer Perceptron."""
+    def _train_mlp(self, df, y, task_type: str) -> Dict[str, Any]:
+        """Train and evaluate a simple Multi-Layer Perceptron using Pipeline to prevent scaler leakage."""
         from sklearn.neural_network import MLPClassifier, MLPRegressor
-        from sklearn.model_selection import cross_val_score, train_test_split
+        from sklearn.model_selection import GroupKFold
         from sklearn.preprocessing import LabelEncoder, StandardScaler
         from sklearn.metrics import accuracy_score, r2_score
-
-        # Scale features
-        scaler = StandardScaler()
-        X_scaled = scaler.fit_transform(X)
+        from sklearn.pipeline import Pipeline
 
         le = None
         if task_type == "classifier":
             le = LabelEncoder()
             y_enc = le.fit_transform(y)
-            model = MLPClassifier(
+            base_model = MLPClassifier(
                 hidden_layer_sizes=(128, 64, 32),
                 activation="relu", alpha=0.001, max_iter=300,
                 learning_rate_init=0.001, random_state=42, early_stopping=True,
             )
-            scoring = "accuracy"
         else:
-            y_enc = y
-            model = MLPRegressor(
+            y_enc = np.array(y)
+            base_model = MLPRegressor(
                 hidden_layer_sizes=(128, 64, 32),
                 activation="relu", alpha=0.001, max_iter=300,
                 learning_rate_init=0.001, random_state=42, early_stopping=True,
             )
-            scoring = "r2"
 
-        X_train, X_test, y_train, y_test = train_test_split(
-            X_scaled, y_enc, test_size=0.2, random_state=42,
-        )
-        model.fit(X_train, y_train)
-        preds = model.predict(X_test)
+        # Create pipeline to ensure scaler is fit within each fold
+        pipeline = Pipeline([
+            ('scaler', StandardScaler()),
+            ('mlp', base_model)
+        ])
 
-        if task_type == "classifier":
-            metric = accuracy_score(y_test, preds)
-        else:
-            metric = r2_score(y_test, preds)
+        groups = df['user_id'].values
+        group_kfold = GroupKFold(n_splits=3)
 
-        cv_scores = cross_val_score(model, X_scaled, y_enc, cv=3, scoring=scoring)
+        cv_scores = []
+        for train_idx, val_idx in group_kfold.split(df, y_enc, groups):
+            X_train, X_val = self._prepare_features_safe(df, train_idx, val_idx)
+            y_train, y_val = y_enc[train_idx], y_enc[val_idx]
+
+            # Pipeline fits scaler on train and applies to both train and val
+            pipeline.fit(X_train, y_train)
+            preds = pipeline.predict(X_val)
+
+            if task_type == "classifier":
+                score = accuracy_score(y_val, preds)
+            else:
+                score = r2_score(y_val, preds)
+            cv_scores.append(score)
 
         return {
             "status": "success",
             "model": "mlp",
-            "hidden_layers": str(model.hidden_layer_sizes),
-            "test_score": round(metric, 4),
-            "cv_mean": round(cv_scores.mean(), 4),
-            "cv_std": round(cv_scores.std(), 4),
+            "hidden_layers": str(base_model.hidden_layer_sizes),
+            "test_score": round(cv_scores[-1], 4),  # Last fold score
+            "cv_mean": round(np.mean(cv_scores), 4),
+            "cv_std": round(np.std(cv_scores), 4),
             "task_type": task_type,
         }
 
@@ -250,8 +316,8 @@ class HyperparameterTuner:
     def run_grid_search(self) -> Dict[str, Any]:
         """Run complete hyperparameter exploration across all models."""
         logger.info("Generating training data...")
-        X, targets, feature_info = self._get_data(num_samples=2000)
-        logger.info(f"Feature matrix: {X.shape}")
+        df, targets = self._get_data(num_samples=2000)
+        logger.info(f"Data shape: {df.shape}")
 
         # RF parameter grid
         rf_grid = {
@@ -267,14 +333,14 @@ class HyperparameterTuner:
 
             # RF grid
             logger.info("  RF grid search...")
-            rf_result = self._rf_grid(X, y_series, task_type, rf_grid)
+            rf_result = self._rf_grid(df, y_series, task_type, rf_grid)
             results[f"{target_name}_rf"] = rf_result
             logger.info(f"    Best RF params : {rf_result['best_params']}")
             logger.info(f"    Best RF score  : {rf_result['best_cv_score']}")
 
             # XGBoost
             logger.info("  XGBoost...")
-            xgb_result = self._train_xgboost(X, y_series, task_type)
+            xgb_result = self._train_xgboost(df, y_series, task_type)
             results[f"{target_name}_xgboost"] = xgb_result
             if xgb_result.get("status") == "success":
                 logger.info(f"    Test score : {xgb_result['test_score']}")
@@ -282,7 +348,7 @@ class HyperparameterTuner:
 
             # MLP
             logger.info("  MLP...")
-            mlp_result = self._train_mlp(X, y_series, task_type)
+            mlp_result = self._train_mlp(df, y_series, task_type)
             results[f"{target_name}_mlp"] = mlp_result
             if mlp_result.get("status") == "success":
                 logger.info(f"    Test score : {mlp_result['test_score']}")
@@ -291,8 +357,8 @@ class HyperparameterTuner:
         # Save results
         report = {
             "results": results,
-            "feature_count": X.shape[1],
-            "sample_count": len(X),
+            "feature_count": 20,  # Known feature count from _prepare_features_safe
+            "sample_count": len(df),
             "completed_at": datetime.now().isoformat(),
         }
         report_path = self.data_dir / "hyperparameter_tuning_results.json"

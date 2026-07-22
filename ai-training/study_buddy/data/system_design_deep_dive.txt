@@ -27,7 +27,7 @@ ARCHITECTURAL PATTERNS FOR DISTRIBUTED SYSTEMS
 - Write-through cache: write to cache and database simultaneously
 - Write-behind (write-back) cache: defer database writes for batch processing
 - Cache eviction policies: LRU, LFU, FIFO, TTL-based, random, clock algorithm
-- Distributed caching: Redis Cluster, Memcached, consistency hashing for sharding
+- Distributed caching: Redis Cluster, Memcached, consistent hashing for sharding
 - Cache invalidation strategies: explicit invalidation, time-based TTL, version-based
 
 4. DATABASE SCALING PATTERNS
@@ -67,7 +67,7 @@ CONCURRENCY AND CONSISTENCY MODELS
 3. DISTRIBUTED TRANSACTIONS
 - XA transactions (two-phase commit) - 2PC: prepare and commit phases
 - Three-phase commit (3PC): non-blocking commit protocol
-- Baseic patterns: TCC (Try-Confirm/Cancel), SAGA, Outbox pattern
+- Basic patterns: TCC (Try-Confirm/Cancel), SAGA, Outbox pattern
 - Idempotency keys for safe retries in distributed systems
 - Transactional outbox: reliable message publishing with database transactions
 - Change Data Capture (CDC) with Debezium, Maxwell, or Kafka Connect
