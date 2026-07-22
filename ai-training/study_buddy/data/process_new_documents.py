@@ -29,6 +29,18 @@ class DocumentProcessor:
         # Define new document files
         # Dynamically find all .txt files in the directory
         new_doc_files = [f.name for f in self.new_docs_dir.glob("*.txt")]
+        # Also include new enhanced document files
+        additional_files = [
+            "frontend_interview_questions.txt",
+            "system_design_deep_dive.txt",
+            "leadership_mgmt_interviews.txt",
+            "data_ml_interview_questions.txt",
+            "mock_interview_scripts.txt",
+            "star_method_examples.txt",
+        ]
+        for fname in additional_files:
+            if fname not in new_doc_files:
+                new_doc_files.append(fname)
         
         for doc_file in new_doc_files:
             doc_path = self.new_docs_dir / doc_file
@@ -76,11 +88,17 @@ class DocumentProcessor:
         categories = {
             "advanced_algorithms": "technical_algorithms",
             "system_design_interviews": "system_design",
+            "system_design_deep_dive": "system_design",
             "behavioral_interview_mastery": "behavioral",
             "coding_interview_patterns": "coding_patterns",
             "company_specific_guides": "company_prep",
             "resume_optimization": "career_prep",
-            "negotiation_strategies": "career_advancement"
+            "negotiation_strategies": "career_advancement",
+            "frontend_interview_questions": "frontend",
+            "leadership_mgmt_interviews": "leadership",
+            "data_ml_interview_questions": "data_ml",
+            "mock_interview_scripts": "mock_interviews",
+            "star_method_examples": "behavioral",
         }
         return categories.get(filename.replace('.txt', ''), "general")
     
@@ -308,7 +326,13 @@ class DocumentProcessor:
                 "coding_interview_patterns.txt",
                 "company_specific_guides.txt",
                 "resume_optimization.txt",
-                "negotiation_strategies.txt"
+                "negotiation_strategies.txt",
+                "frontend_interview_questions.txt",
+                "system_design_deep_dive.txt",
+                "leadership_mgmt_interviews.txt",
+                "data_ml_interview_questions.txt",
+                "mock_interview_scripts.txt",
+                "star_method_examples.txt",
             ]
         }
         
