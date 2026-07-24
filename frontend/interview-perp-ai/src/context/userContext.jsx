@@ -46,6 +46,9 @@ const UserProvider = ({ children }) => {
   const clearUser = () => {
     setUser(null);
     localStorage.removeItem("token");
+    sessionStorage.removeItem("greeting_shown");
+    // Clear user-specific visit tracking so next login shows proper greeting
+    localStorage.removeItem("interview_prep_last_visit");
   };
 
   return (

@@ -1,0 +1,251 @@
+/* Greeting Popup Styles - Bottom-Right Chat Style */
+
+.greeting-popup-wrapper {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  z-index: 1001;
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 360px;
+  width: calc(100vw - 40px);
+}
+
+.greeting-popup-wrapper.closing {
+  animation: slideDown 0.3s ease-in forwards;
+}
+
+.greeting-popup-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  position: relative;
+}
+
+/* Header with gradient */
+.greeting-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px 20px 16px;
+  text-align: center;
+  position: relative;
+}
+
+.greeting-avatar {
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  animation: float 2s ease-in-out infinite;
+}
+
+.greeting-avatar svg {
+  color: white;
+  width: 28px;
+  height: 28px;
+}
+
+.greeting-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 6px;
+}
+
+.greeting-title {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.95;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Body */
+.greeting-body {
+  padding: 16px 20px 12px;
+}
+
+.greeting-message {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1a202c;
+  margin: 0;
+  text-align: center;
+  font-weight: 400;
+}
+
+/* Action area */
+.greeting-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 20px 16px;
+}
+
+.greeting-btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.greeting-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.greeting-btn-secondary {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.greeting-btn-secondary:hover {
+  background: #f8fafc;
+  color: #1a202c;
+  border-color: #cbd5e0;
+}
+
+/* Close button */
+.greeting-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  z-index: 2;
+}
+
+.greeting-close:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Animations */
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Dark mode */
+.dark .greeting-popup-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.dark .greeting-message {
+  color: #e2e8f0;
+}
+
+.dark .greeting-btn-secondary {
+  color: #94a3b8;
+  border-color: #334155;
+}
+
+.dark .greeting-btn-secondary:hover {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-color: #475569;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .greeting-popup-wrapper {
+    right: 10px;
+    bottom: 80px;
+    max-width: calc(100vw - 20px);
+  }
+
+  .greeting-header {
+    padding: 16px 16px 14px;
+  }
+
+  .greeting-body {
+    padding: 14px 16px 10px;
+  }
+
+  .greeting-actions {
+    padding: 0 16px 14px;
+  }
+
+  .greeting-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .greeting-avatar svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .greeting-title {
+    font-size: 13px;
+  }
+
+  .greeting-message {
+    font-size: 13px;
+  }
+}
+

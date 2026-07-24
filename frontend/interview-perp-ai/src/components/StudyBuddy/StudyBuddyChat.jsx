@@ -40,6 +40,13 @@ const StudyBuddyChat = ({ userId }) => {
     }
   }, [messages]);
 
+  // Listen for open-study-buddy event (from GreetingPopup)
+  useEffect(() => {
+    const handleOpenBuddy = () => setIsOpen(true);
+    window.addEventListener('open-study-buddy', handleOpenBuddy);
+    return () => window.removeEventListener('open-study-buddy', handleOpenBuddy);
+  }, []);
+
   // Health check on mount
   useEffect(() => {
     checkAIHealth().then((healthy) => {
