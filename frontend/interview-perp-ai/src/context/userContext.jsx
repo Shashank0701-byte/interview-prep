@@ -48,7 +48,12 @@ const UserProvider = ({ children }) => {
     localStorage.removeItem("token");
     sessionStorage.removeItem("greeting_shown");
     // Clear user-specific visit tracking so next login shows proper greeting
-    localStorage.removeItem("interview_prep_last_visit");
+    // Remove all keys with the interview_prep_last_visit_ prefix
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith("interview_prep_last_visit_")) {
+        localStorage.removeItem(key);
+      }
+    });
   };
 
   return (
