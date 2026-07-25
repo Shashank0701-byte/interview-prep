@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LuPlus } from "react-icons/lu";
 import toast from "react-hot-toast";
@@ -15,10 +15,13 @@ import moment from "moment";
 import { CARD_BG, getSessionCardColor } from "../../utils/data";
 import RatingModal from '../../components/RatingModal';
 import StudyBuddyChat from '../../components/StudyBuddy/StudyBuddyChat';
+import GreetingPopup from '../../components/StudyBuddy/GreetingPopup';
+import { UserContext } from '../../context/userContext';
 
 
 const Dashboard = () => {
     const navigate = useNavigate();
+    const { user } = useContext(UserContext);
     const [openCreateModal, setOpenCreateModal] = useState(false);
     const [sessions, setSessions] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -32,6 +35,26 @@ const Dashboard = () => {
         open: false,
         session: null
     });
+    
+    // Greeting popup state
+    const [showGreeting, setShowGreeting] = useState(() => {
+        // Only show if user is logged in and it's not been shown this session
+        const token = localStorage.getItem('token');
+        const alreadyShown = sessionStorage.getItem('greeting_shown');
+        return !!token && !alreadyShown;
+    });
+    
+    const studyBuddyRef = useRef(null);
+    
+    const handleStartChat = () => {
+        // This will be used to signal the StudyBuddyChat to open
+        window.dispatchEvent(new CustomEvent('open-study-buddy'));
+    };
+    
+    const handleCloseGreeting = () => {
+        sessionStorage.setItem('greeting_shown', 'true');
+        setShowGreeting(false);
+    };
     
     const { filters, filteredSessions, updateFilters, getFilterStats } = useSessionFilter(sessions);
 
@@ -444,7 +467,15 @@ const Dashboard = () => {
                 onSubmit={(ratings) => handleSessionRating(ratingModal.session?.id, ratings)}
             />
             
-            <StudyBuddyChat userId="current-user" />
+            {showGreeting && user && (
+                <GreetingPopup
+                    user={user}
+                    onClose={handleCloseGreeting}
+                    onStartChat={handleStartChat}
+                />
+            )}
+            
+            <StudyBuddyChat userId={user?._id || 'anonymous'} />
         </DashboardLayout>
     );
 };
