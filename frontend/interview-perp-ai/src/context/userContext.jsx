@@ -44,11 +44,13 @@ const UserProvider = ({ children }) => {
     setLoading(false);
   };
   const clearUser = () => {
+    // Remove user-specific visit tracking key before clearing user state
+    if (user?._id || user?.id) {
+      localStorage.removeItem(`interview_prep_last_visit_${user._id || user.id}`);
+    }
     setUser(null);
     localStorage.removeItem("token");
     sessionStorage.removeItem("greeting_shown");
-    // Clear user-specific visit tracking so next login shows proper greeting
-    localStorage.removeItem("interview_prep_last_visit");
   };
 
   return (

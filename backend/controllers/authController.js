@@ -39,6 +39,7 @@ const registerUser = async (req, res) => {
         name: user.name,
         email: user.email,
         profileImageUrl: user.profileImageUrl,
+        createdAt: user.createdAt,
         token: generateToken(user.id),
     });
     
@@ -88,6 +89,7 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         profileImageUrl: user.profileImageUrl,
+        createdAt: user.createdAt,
         token: generateToken(user._id),
         otpFallback: true, // client can optionally show a notice
       });
@@ -143,6 +145,7 @@ const verifyLoginOtp = async (req, res) => {
       name: user.name,
       email: user.email,
       profileImageUrl: user.profileImageUrl,
+      createdAt: user.createdAt,
       token: generateToken(user._id),
     });
   } catch (error) {
