@@ -467,9 +467,9 @@ const Dashboard = () => {
                 onSubmit={(ratings) => handleSessionRating(ratingModal.session?.id, ratings)}
             />
             
-            {showGreeting && (
-                <GreetingPopup 
-                    user={user} 
+            {showGreeting && user && (
+                <GreetingPopup
+                    user={user}
                     onClose={handleCloseGreeting}
                     onStartChat={handleStartChat}
                 />
