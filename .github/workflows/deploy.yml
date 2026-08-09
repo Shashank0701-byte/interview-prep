@@ -1,0 +1,28 @@
+name: CD — Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-backend:
+    name: Deploy Backend to Render
+    runs-on: ubuntu-latest
+    environment: production   # gates on the production GitHub Environment
+
+    steps:
+      - name: Trigger Render deploy hook
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}")
+          echo "Render response: $response"
+          if [ "$response" != "200" ] && [ "$response" != "201" ]; then
+            echo "Deploy hook failed with status $response"
+            exit 1
+          fi
+          echo "Render deploy triggered successfully"
+
+      - name: Report deploy URL
+        run: |
+          echo "Deploy triggered. Monitor at https://dashboard.render.com"
+          echo "Backend: ${{ vars.RENDER_SERVICE_URL }}"
