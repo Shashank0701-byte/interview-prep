@@ -1,0 +1,24 @@
+name: Keep-Alive — Ping Render Backend
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'   # every 10 minutes
+  workflow_dispatch:          # allow manual trigger from GitHub UI
+
+jobs:
+  ping:
+    name: Ping backend health
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping /api/health
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            --max-time 30 \
+            "${{ vars.RENDER_SERVICE_URL }}/api/health")
+          echo "Response: $response"
+          if [ "$response" = "200" ]; then
+            echo "Backend is up"
+          else
+            echo "Warning: backend returned $response — may be cold-starting"
+          fi
