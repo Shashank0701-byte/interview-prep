@@ -1,0 +1,66 @@
+name: Security — Audit & Secret Scan
+
+on:
+  push:
+    branches: [main, dev, feat/**]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  # ── npm audit ──────────────────────────────────────────────
+  audit:
+    name: npm audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Audit backend
+        working-directory: backend
+        run: |
+          npm install --ignore-scripts
+          npm audit --audit-level=high
+
+      - name: Audit frontend
+        working-directory: frontend/interview-perp-ai
+        run: |
+          npm install --ignore-scripts
+          npm audit --audit-level=high
+
+  # ── Secret / credential leak scan ─────────────────────────
+  secret-scan:
+    name: Secret scan (trufflehog)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history needed for diff scanning
+
+      - name: Run TruffleHog on git diff
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified
+
+  # ── Block accidental .env commits ─────────────────────────
+  env-file-check:
+    name: Check for committed .env files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fail if .env files are tracked
+        run: |
+          if git ls-files | grep -E '(^|/)\.env$'; then
+            echo "ERROR: .env file(s) are tracked by git. Remove them and add to .gitignore."
+            exit 1
+          fi
+          echo "No .env files tracked. Safe to proceed."
