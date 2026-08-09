@@ -46,7 +46,6 @@ const allowedOrigins = [
 app.use(
   cors({
     origin(origin, cb) {
-      if (!origin) return cb(null, true); // Postman / curl / SSR etc.
       if (allowedOrigins.includes(origin)) return cb(null, true);
       return cb(new Error("CORS policy: origin not allowed"), false);
     },

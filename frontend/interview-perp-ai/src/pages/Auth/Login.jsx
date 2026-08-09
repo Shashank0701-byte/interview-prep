@@ -55,7 +55,7 @@ captchaToken
         // OTP email failed — logged in directly with token
         const { token } = response.data;
         if (token) {
-          localStorage.setItem("token", token);
+          sessionStorage.setItem("token", token);
           updateUser(response.data);
           setTimeout(() => {
             navigate("/dashboard");
@@ -64,7 +64,7 @@ captchaToken
       } else {
         const { token } = response.data;
         if (token) {
-          localStorage.setItem("token", token);
+          sessionStorage.setItem("token", token);
           updateUser(response.data);
           setTimeout(() => {
             navigate("/dashboard");
@@ -99,7 +99,7 @@ captchaToken
 
       const { token } = response.data;
       if (token) {
-        localStorage.setItem("token", token);
+        sessionStorage.setItem("token", token);
         updateUser(response.data);
         setTimeout(() => {
           navigate("/dashboard");
