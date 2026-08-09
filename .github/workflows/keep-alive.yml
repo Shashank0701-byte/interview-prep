@@ -23,11 +23,11 @@ jobs:
             echo "Warning: backend returned $response — may be cold-starting"
           fi
 
-      - name: Ping chatbot /health
+      - name: Ping chatbot /ai/health
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" \
             --max-time 30 \
-            "${{ vars.RENDER_CHATBOT_URL }}/health")
+            "${{ vars.RENDER_CHATBOT_URL }}/ai/health")
           echo "Chatbot response: $response"
           if [ "$response" = "200" ]; then
             echo "Chatbot is up"
