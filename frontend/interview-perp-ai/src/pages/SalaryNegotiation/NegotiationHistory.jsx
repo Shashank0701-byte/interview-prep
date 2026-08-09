@@ -29,7 +29,7 @@ const NegotiationHistory = () => {
 
     const fetchHistory = async () => {
         try {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token') || localStorage.getItem('token');
             const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
             const response = await axios.get(
                 `${baseUrl}/api/salary-negotiation/history`,
