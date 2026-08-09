@@ -29,6 +29,9 @@ const feedbackRoutes = require("./routes/feedbackRoutes");
 const app = express();
 const server = http.createServer(app);
 
+// Health check — registered before CORS so monitors and cron pings are never blocked
+app.get("/api/health", (req, res) => res.status(200).json({ status: "ok" }));
+
 const FRONTEND_URL = process.env.FRONTEND_URL || null;
 console.log("FRONTEND_URL:", FRONTEND_URL);
 
