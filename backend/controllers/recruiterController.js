@@ -69,7 +69,11 @@ const getCandidateInsights = async (req, res) => {
 
         // Build query for candidate search
         let query = { company: recruiterProfile.company };
-        if (role) query.role = { $regex: role, $options: 'i' };
+        if (role) {
+          if (role.length > 100) return res.status(400).json({ message: 'Invalid input' });
+          const escapedRole = role.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          query.role = { $regex: escapedRole, $options: 'i' };
+        }
         if (experience) query.experience = experience;
         if (minScore) query.overallScore = { $gte: parseInt(minScore) };
 

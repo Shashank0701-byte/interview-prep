@@ -80,10 +80,8 @@ const verifyCaptcha = async (req, res, next) => {
     } catch (error) {
         console.error("❌ CAPTCHA verification error:", error.message);
 
-        // Don't block user if Google's service is down
         if (error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
-            console.warn("⚠️ CAPTCHA service unavailable, allowing request");
-            return next();
+            return res.status(503).json({ message: 'CAPTCHA verification unavailable, please try again.' });
         }
 
         return res.status(500).json({

@@ -24,30 +24,35 @@ const getTimeBasedIcon = () => {
 
 /**
  * Generates a greeting object based on user data and visit history.
+ * Priority: New user detection (by createdAt) ALWAYS takes precedence
+ * over visit history to prevent stale localStorage keys from
+ * showing returning-user greetings to brand-new accounts.
  */
 const generateGreeting = (user, lastVisitISO) => {
   const name = user?.name || "there";
   const firstName = name.split(" ")[0];
   const timeEmoji = getTimeBasedEmoji();
 
-  // If no lastVisit recorded at all — could be new user or first login
-  if (!lastVisitISO) {
-    // Check if user is newly created (within threshold)
-    if (user?.createdAt) {
-      const accountAge = Date.now() - new Date(user.createdAt).getTime();
-      const accountAgeDays = accountAge / (1000 * 60 * 60 * 24);
+  // ── PRIORITY 1: New user detection (account age < threshold) ──
+  // Always check this first, regardless of visit history.
+  // A stale visit key from a previous session should never override this.
+  if (user?.createdAt) {
+    const accountAge = Date.now() - new Date(user.createdAt).getTime();
+    const accountAgeDays = accountAge / (1000 * 60 * 60 * 24);
 
-      if (accountAgeDays < NEW_USER_THRESHOLD_DAYS) {
-        return {
-          title: `Welcome to Interview Prep, ${firstName}! 🎉`,
-          message:
-            "I'm your Study Buddy! Ready to create your first practice session and start your journey?",
-          badge: "🌟 New Explorer",
-          showChatPrompt: true,
-        };
-      }
+    if (accountAgeDays < NEW_USER_THRESHOLD_DAYS) {
+      return {
+        title: `Welcome to Interview Prep, ${firstName}! 🎉`,
+        message:
+          "I'm your Study Buddy! Ready to create your first practice session and start your journey?",
+        badge: "🌟 New Explorer",
+        showChatPrompt: true,
+      };
     }
+  }
 
+  // ── PRIORITY 2: First visit (no visit key in localStorage) ──
+  if (!lastVisitISO) {
     return {
       title: `Welcome back, ${firstName}! ${timeEmoji.emoji}`,
       message:
@@ -57,7 +62,7 @@ const generateGreeting = (user, lastVisitISO) => {
     };
   }
 
-  // Calculate time difference
+  // ── PRIORITY 3: Returning user — time-based greetings ──
   const lastVisit = new Date(lastVisitISO);
   const now = new Date();
   const diffMs = now - lastVisit;
@@ -138,6 +143,8 @@ const GreetingPopup = ({ user, onClose, onStartChat }) => {
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
+    if (!user || greeting) return;
+
     const visitKey = getVisitKey(user?._id || user?.id);
     const lastVisit = localStorage.getItem(visitKey);
     const generated = generateGreeting(user, lastVisit);
@@ -145,7 +152,7 @@ const GreetingPopup = ({ user, onClose, onStartChat }) => {
 
     // Update last visit timestamp (user-specific key)
     localStorage.setItem(visitKey, new Date().toISOString());
-  }, [user]);
+  }, [user, greeting]);
 
   const handleClose = () => {
     setIsClosing(true);

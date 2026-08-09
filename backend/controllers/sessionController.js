@@ -4,7 +4,11 @@ const Question = require("../models/Question");
 // Define all your controller functions as constants
 const createSession = async (req, res) => {
     try {
-        const { role, experience, topicsToFocus, description, questions, numberOfQuestions } = req.body;
+        const { role, experience, topicsToFocus, description, questions } = req.body;
+        const numberOfQuestions = parseInt(req.body.numberOfQuestions);
+        if (!isNaN(numberOfQuestions) && (numberOfQuestions < 1 || numberOfQuestions > 20)) {
+            return res.status(400).json({ message: 'numberOfQuestions must be between 1 and 20' });
+        }
         const userId = req.user._id;
 
         const session = await Session.create({

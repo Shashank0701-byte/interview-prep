@@ -56,7 +56,7 @@ const NegotiationSimulator = () => {
 
     const startNegotiation = async () => {
         try {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token') || localStorage.getItem('token');
             const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
             const apiUrl = `${baseUrl}/api/salary-negotiation/start`;
 
@@ -84,7 +84,7 @@ const NegotiationSimulator = () => {
 
         setSending(true);
         try {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token') || localStorage.getItem('token');
             const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
             const minDelay = new Promise(resolve => setTimeout(resolve, 2500));
@@ -146,7 +146,7 @@ const NegotiationSimulator = () => {
 
     const finalizeNegotiation = async (action, finalOffer) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token') || localStorage.getItem('token');
             const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
             const response = await axios.post(
                 `${baseUrl}/api/salary-negotiation/${negotiation.id}/finalize`,
