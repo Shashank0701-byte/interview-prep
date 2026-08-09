@@ -46,14 +46,14 @@ import NegotiationHistory from './pages/SalaryNegotiation/NegotiationHistory';
 // ✅ ADD THIS COMPONENT DEFINITION
 // This component checks for a token and protects routes.
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token') || localStorage.getItem('token');
   // If a token exists, render the child component (the page).
   // Otherwise, redirect to the home/login page.
   return token ? children : <Navigate to="/" replace />;
 };
 
 const RedirectIfAuth = ({ children }) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
     return token ? <Navigate to="/dashboard" replace /> : children;
 };
 

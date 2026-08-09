@@ -2,6 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { sendOTP } = require("../utils/emailService");
+const { randomInt } = require("crypto");
 
 // Generate JWT Token
 const generateToken = (userId) => {
@@ -39,6 +40,7 @@ const registerUser = async (req, res) => {
         name: user.name,
         email: user.email,
         profileImageUrl: user.profileImageUrl,
+        createdAt: user.createdAt,
         token: generateToken(user.id),
     });
     
@@ -66,7 +68,7 @@ const loginUser = async (req, res) => {
     }
 
     // Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = randomInt(100000, 999999).toString();
     const salt = await bcrypt.genSalt(10);
     const hashedOTP = await bcrypt.hash(otp, salt);
 
@@ -139,6 +141,7 @@ const verifyLoginOtp = async (req, res) => {
       name: user.name,
       email: user.email,
       profileImageUrl: user.profileImageUrl,
+      createdAt: user.createdAt,
       token: generateToken(user._id),
     });
   } catch (error) {

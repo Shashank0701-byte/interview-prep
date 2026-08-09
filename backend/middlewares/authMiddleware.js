@@ -18,7 +18,6 @@ const protect = async (req, res, next) => {
       req.user = user;
       next();
     } else {
-      console.log("No token provided or invalid format:", req.headers.authorization);
       res.status(401).json({ message: "Not authorized, no token" });
     }
   } catch (error) {

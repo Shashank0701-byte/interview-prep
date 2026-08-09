@@ -245,7 +245,15 @@ const StudyBuddyChat = ({ userId }) => {
                   <div className="message-text">
 {msg.sender === "buddy" ? (
                       <div className="markdown-content">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          skipHtml={true}
+                          components={{
+                            a: ({ href, children }) => (
+                              <a href={href} target="_blank" rel="noopener noreferrer">{children}</a>
+                            )
+                          }}
+                        >
                           {msg.message}
                         </ReactMarkdown>
                       </div>

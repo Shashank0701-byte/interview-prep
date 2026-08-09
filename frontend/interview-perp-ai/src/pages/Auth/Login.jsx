@@ -54,7 +54,7 @@ captchaToken
       } else {
         const { token } = response.data;
         if (token) {
-          localStorage.setItem("token", token);
+          sessionStorage.setItem("token", token);
           updateUser(response.data);
           setTimeout(() => {
             navigate("/dashboard");
@@ -89,7 +89,7 @@ captchaToken
 
       const { token } = response.data;
       if (token) {
-        localStorage.setItem("token", token);
+        sessionStorage.setItem("token", token);
         updateUser(response.data);
         setTimeout(() => {
           navigate("/dashboard");

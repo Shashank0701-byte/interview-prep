@@ -39,7 +39,7 @@ const Dashboard = () => {
     // Greeting popup state
     const [showGreeting, setShowGreeting] = useState(() => {
         // Only show if user is logged in and it's not been shown this session
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token') || localStorage.getItem('token');
         const alreadyShown = sessionStorage.getItem('greeting_shown');
         return !!token && !alreadyShown;
     });

@@ -14,7 +14,9 @@ const UserProvider = ({ children }) => {
       return;
     }
 
-    const accessToken = localStorage.getItem("token");
+    // Security mitigation (partial — see Issue #78): sessionStorage limits token lifetime to the tab.
+    // TODO: move to httpOnly cookies once backend supports it.
+    const accessToken = sessionStorage.getItem("token");
     if (!accessToken) {
       setLoading(false);
       return;
@@ -27,7 +29,7 @@ const UserProvider = ({ children }) => {
       } catch (error) {
         console.error("User not authenticated", error);
         // Clear invalid token
-        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
         setUser(null);
       } finally {
         setLoading(false);
@@ -40,12 +42,16 @@ const UserProvider = ({ children }) => {
   // but are used in the provider's value.
   const updateUser = (userData) => {
     setUser(userData);
-    localStorage.setItem("token", userData.token); //Save token
+    sessionStorage.setItem("token", userData.token); //Save token
     setLoading(false);
   };
   const clearUser = () => {
+    // Remove user-specific visit tracking key before clearing user state
+    if (user?._id || user?.id) {
+      localStorage.removeItem(`interview_prep_last_visit_${user._id || user.id}`);
+    }
     setUser(null);
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     sessionStorage.removeItem("greeting_shown");
     // Clear user-specific visit tracking so next login shows proper greeting
     // Remove all keys with the interview_prep_last_visit_ prefix

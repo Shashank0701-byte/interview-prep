@@ -1,5 +1,6 @@
 const StudyRoom = require('../models/StudyRoom');
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
 
 class StudyRoomSocket {
   constructor(io) {
@@ -8,14 +9,29 @@ class StudyRoomSocket {
   }
 
   setupSocketHandlers() {
+    this.io.use(async (socket, next) => {
+      try {
+        const token = socket.handshake.auth?.token || socket.handshake.query?.token;
+        if (!token) return next(new Error('Authentication required'));
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.id).select('name');
+        if (!user) return next(new Error('User not found'));
+        socket.userId = decoded.id;
+        socket.username = user.name;
+        next();
+      } catch (err) {
+        next(new Error('Invalid token'));
+      }
+    });
+
     this.io.on('connection', (socket) => {
       console.log(`User connected: ${socket.id}`);
 
       // Join study room
       socket.on('join-room', async (data) => {
         try {
-          const { roomId, userId, username } = data;
-          
+          const { roomId } = data;
+
           const room = await StudyRoom.findOne({ roomId }).populate('participants.userId', 'username');
           if (!room) {
             socket.emit('error', { message: 'Room not found' });
@@ -23,7 +39,7 @@ class StudyRoomSocket {
           }
 
           // Check if user is already in the room
-          const existingParticipant = room.participants.find(p => p.userId.toString() === userId.toString());
+          const existingParticipant = room.participants.find(p => p.userId.toString() === socket.userId.toString());
           const wasAlreadyActive = existingParticipant && existingParticipant.isActive;
 
           // Check if room is full (but allow existing participants to rejoin)
@@ -31,33 +47,31 @@ class StudyRoomSocket {
             socket.emit('error', { message: 'Room is full' });
             return;
           }
-          
+
           // Add user to room (or reactivate if they were inactive)
-          await room.addParticipant(userId, username);
-          
+          await room.addParticipant(socket.userId, socket.username);
+
           // Reload room to get updated participant count
           const updatedRoom = await StudyRoom.findOne({ roomId }).populate('participants.userId', 'username');
-          
+
           // Join socket room
           socket.join(roomId);
           socket.roomId = roomId;
-          socket.userId = userId;
-          socket.username = username;
 
           // Only notify others if this is a new join (not a refresh/reconnect)
           if (!wasAlreadyActive) {
             socket.to(roomId).emit('user-joined', {
-              userId,
-              username,
+              userId: socket.userId,
+              username: socket.username,
               participantCount: updatedRoom.participantCount
             });
 
             // Add system message only for new joins
-            await updatedRoom.addChatMessage(userId, username, `${username} joined the room`, 'system');
+            await updatedRoom.addChatMessage(socket.userId, socket.username, `${socket.username} joined the room`, 'system');
             socket.to(roomId).emit('chat-message', {
-              userId,
-              username,
-              message: `${username} joined the room`,
+              userId: socket.userId,
+              username: socket.username,
+              message: `${socket.username} joined the room`,
               type: 'system',
               timestamp: new Date()
             });
