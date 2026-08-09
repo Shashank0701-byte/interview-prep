@@ -11,14 +11,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Ping /api/health
+      - name: Ping backend /api/health
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" \
             --max-time 30 \
             "${{ vars.RENDER_SERVICE_URL }}/api/health")
-          echo "Response: $response"
+          echo "Backend response: $response"
           if [ "$response" = "200" ]; then
             echo "Backend is up"
           else
             echo "Warning: backend returned $response — may be cold-starting"
+          fi
+
+      - name: Ping chatbot /health
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            --max-time 30 \
+            "${{ vars.RENDER_CHATBOT_URL }}/health")
+          echo "Chatbot response: $response"
+          if [ "$response" = "200" ]; then
+            echo "Chatbot is up"
+          else
+            echo "Warning: chatbot returned $response — may be cold-starting"
           fi
