@@ -6,11 +6,8 @@ require("dotenv").config();
 // outbound connection to a dual-stack host can pick the unreachable IPv6
 // address and fail with ENETUNREACH before ever trying IPv4. Force
 // IPv4-first resolution app-wide for anything using Node's built-in resolver
-// (Mongo driver, fetch/undici, etc).
-//
-// NOTE: this does NOT cover Nodemailer — it runs its own DNS resolution via
-// dns.Resolver and ignores this setting. See utils/emailService.js for the
-// SMTP-specific fix.
+// (Mongo driver, fetch/undici, etc). OTP email delivery no longer goes over
+// raw SMTP (see utils/emailService.js) so it isn't affected either way.
 require("dns").setDefaultResultOrder("ipv4first");
 
 const express = require("express");
