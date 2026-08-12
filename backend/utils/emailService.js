@@ -1,12 +1,26 @@
 const nodemailer = require("nodemailer");
 const dns = require("dns");
 
-// Custom DNS lookup that forces IPv4-only resolution. This is the proper way
-// to ensure Nodemailer never attempts IPv6 connections (which fail with
-// ENETUNREACH on Render). The top-level `family` option is not honored by
-// Nodemailer's SMTP transport, so we must provide a custom lookup function.
-const ipv4OnlyLookup = (hostname, options, callback) => {
-  dns.lookup(hostname, { family: 4 }, callback);
+// Neither the `family` nor `lookup` transport options are read by
+// Nodemailer's own DNS resolution (verified against nodemailer@9's
+// lib/shared/index.js#resolveHostname): it calls dns.resolve4()/resolve6()
+// itself via a `new dns.Resolver()` instance, concatenates the results, and
+// picks the connecting address AT RANDOM from that combined list. On hosts
+// like Render with no outbound IPv6 route, that random pick fails with
+// ENETUNREACH whenever it lands on one of Gmail's AAAA addresses.
+//
+// The only hook that actually reaches nodemailer's resolver is the
+// Resolver prototype itself, so we make resolve6() report no addresses —
+// nodemailer then only ever has IPv4 addresses to pick from. This affects
+// every dns.Resolver instance process-wide, which is fine here since this
+// backend has no legitimate use for outbound IPv6.
+const originalResolve6 = dns.Resolver.prototype.resolve6;
+dns.Resolver.prototype.resolve6 = function ipv4OnlyResolve6(hostname, ...args) {
+  const callback = args[args.length - 1];
+  if (typeof callback === "function") {
+    return process.nextTick(() => callback(null, []));
+  }
+  return originalResolve6.apply(this, [hostname, ...args]);
 };
 
 const transporter = nodemailer.createTransport({
@@ -18,7 +32,6 @@ const transporter = nodemailer.createTransport({
   connectionTimeout: 10000, // 10s — don't hang forever
   greetingTimeout: 10000,
   socketTimeout: 15000,
-  lookup: ipv4OnlyLookup, // force IPv4 — hosts like Render have no outbound IPv6 route to smtp.gmail.com
 });
 
 const sendOTP = async (email, otp) => {
