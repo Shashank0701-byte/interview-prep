@@ -14,7 +14,7 @@
   "type": "commonjs",
   "dependencies": {
     "@getbrevo/brevo": "^6.0.3",
-    "@google/genai": "^1.12.0",
+    "@google/genai": "^2.16.0",
     "@google/generative-ai": "^0.24.1",
     "axios": "^1.6.0",
     "bcryptjs": "^3.0.2",
