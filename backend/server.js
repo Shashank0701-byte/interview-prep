@@ -1,5 +1,13 @@
 // ./server.js
 require("dotenv").config();
+
+// Render's network has no outbound IPv6 route. Since Node 18, DNS resolution
+// order can return the AAAA (IPv6) record first ("Happy Eyeballs"), so any
+// outbound connection to a dual-stack host (e.g. smtp.gmail.com) can pick the
+// unreachable IPv6 address and fail with ENETUNREACH before ever trying IPv4.
+// Force IPv4-first resolution app-wide to avoid this.
+require("dns").setDefaultResultOrder("ipv4first");
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");

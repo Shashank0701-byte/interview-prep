@@ -9,6 +9,7 @@ const transporter = nodemailer.createTransport({
   connectionTimeout: 10000, // 10s — don't hang forever
   greetingTimeout: 10000,
   socketTimeout: 15000,
+  family: 4, // force IPv4 — hosts like Render have no outbound IPv6 route to smtp.gmail.com
 });
 
 const sendOTP = async (email, otp) => {
