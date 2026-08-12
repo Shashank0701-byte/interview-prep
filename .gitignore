@@ -29,6 +29,10 @@ env/
 *.swo
 *~
 
+# Claude Code local state (worktrees, per-machine settings)
+.claude/worktrees/
+.claude/settings.local.json
+
 # OS files
 .DS_Store
 Thumbs.db
