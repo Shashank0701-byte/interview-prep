@@ -24,26 +24,35 @@ RECAPTCHA_SCORE_THRESHOLD=0.5
 
 ## Email Configuration (OTP delivery)
 
-Sent via [Resend](https://resend.com) over HTTPS. Raw Gmail SMTP was dropped —
-Render's network blocks outbound SMTP ports, which made OTP delivery
-unreliable regardless of DNS/IP settings.
+Sent via [Brevo](https://brevo.com) over HTTPS. Raw Gmail SMTP was dropped —
+Render's network blocks outbound SMTP ports, which made delivery unreliable
+regardless of DNS/IP settings. Resend worked but requires a verified domain
+to send to anyone but the account owner, and this project doesn't own one.
+SendGrid supports domain-free single sender verification, but its
+Twilio-linked signup hit an account-state error before signup could even
+complete. Brevo also supports single sender verification (confirming
+ownership of one plain email address, no domain required) without that
+friction.
 
 ### Required Variables:
 ```env
-# Resend API key
-RESEND_API_KEY=re_your_api_key_here
+# Brevo API key
+BREVO_API_KEY=your_api_key_here
 
-# Optional — defaults to Resend's shared onboarding@resend.dev sender if unset.
-# Once you verify a custom domain in the Resend dashboard, set this instead:
-EMAIL_FROM=Interview Prep AI <noreply@yourdomain.com>
+# Must exactly match the address verified in Brevo (see below).
+# Brevo rejects sends from any address that isn't a verified sender —
+# there's no shared/sandbox fallback, so this is required, not optional.
+EMAIL_FROM=your-verified-address@example.com
 ```
 
-### How to Get a Resend API Key:
-1. Sign up at https://resend.com
-2. Dashboard → API Keys → Create API Key
-3. Add it to `.env` (and to Render's environment variables) as `RESEND_API_KEY`
-4. (Optional, for production) Dashboard → Domains → verify your own domain,
-   then set `EMAIL_FROM` to an address on that domain
+### How to Set Up Brevo:
+1. Sign up at https://brevo.com
+2. Settings → Senders, Domains & Dedicated IPs → **Senders** → Add a Sender
+3. Enter any email address you have access to and confirm the code/link
+   Brevo sends to that inbox
+4. Settings → SMTP & API → API Keys → Generate a new API key
+5. Add both to `.env` (and to Render's environment variables):
+   `BREVO_API_KEY` and `EMAIL_FROM` (the exact address you verified in step 3)
 
 ---
 
@@ -98,9 +107,9 @@ FRONTEND_URL=http://localhost:3000
 RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key_here
 RECAPTCHA_SCORE_THRESHOLD=0.5
 
-# Email Configuration (Resend)
-RESEND_API_KEY=re_your_api_key_here
-EMAIL_FROM=Interview Prep AI <noreply@yourdomain.com>
+# Email Configuration (Brevo)
+BREVO_API_KEY=your_api_key_here
+EMAIL_FROM=your-verified-address@example.com
 
 # OTP Settings
 OTP_EXPIRY_MINUTES=5
