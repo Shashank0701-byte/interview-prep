@@ -24,26 +24,33 @@ RECAPTCHA_SCORE_THRESHOLD=0.5
 
 ## Email Configuration (OTP delivery)
 
-Sent via [Resend](https://resend.com) over HTTPS. Raw Gmail SMTP was dropped —
-Render's network blocks outbound SMTP ports, which made OTP delivery
-unreliable regardless of DNS/IP settings.
+Sent via [SendGrid](https://sendgrid.com) over HTTPS. Raw Gmail SMTP was
+dropped — Render's network blocks outbound SMTP ports, which made delivery
+unreliable regardless of DNS/IP settings. Resend was tried next but its
+sandbox mode only allows sending to your own account email unless you verify
+a domain, and this project doesn't own one (it's on a Netlify subdomain).
+SendGrid supports **Single Sender Verification** — verifying ownership of one
+plain email address, no domain required — so that's what's used.
 
 ### Required Variables:
 ```env
-# Resend API key
-RESEND_API_KEY=re_your_api_key_here
+# SendGrid API key
+SENDGRID_API_KEY=SG.your_api_key_here
 
-# Optional — defaults to Resend's shared onboarding@resend.dev sender if unset.
-# Once you verify a custom domain in the Resend dashboard, set this instead:
-EMAIL_FROM=Interview Prep AI <noreply@yourdomain.com>
+# Must exactly match the address verified in SendGrid (see below).
+# SendGrid rejects sends from any address that isn't a verified sender —
+# there's no shared/sandbox fallback, so this is required, not optional.
+EMAIL_FROM=your-verified-address@example.com
 ```
 
-### How to Get a Resend API Key:
-1. Sign up at https://resend.com
-2. Dashboard → API Keys → Create API Key
-3. Add it to `.env` (and to Render's environment variables) as `RESEND_API_KEY`
-4. (Optional, for production) Dashboard → Domains → verify your own domain,
-   then set `EMAIL_FROM` to an address on that domain
+### How to Set Up SendGrid:
+1. Sign up at https://sendgrid.com
+2. Settings → Sender Authentication → **Verify a Single Sender**
+3. Enter any email address you have access to and confirm the link SendGrid
+   sends to that inbox
+4. Settings → API Keys → Create API Key (needs "Mail Send" permission)
+5. Add both to `.env` (and to Render's environment variables):
+   `SENDGRID_API_KEY` and `EMAIL_FROM` (the exact address you verified in step 3)
 
 ---
 
@@ -98,9 +105,9 @@ FRONTEND_URL=http://localhost:3000
 RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key_here
 RECAPTCHA_SCORE_THRESHOLD=0.5
 
-# Email Configuration (Resend)
-RESEND_API_KEY=re_your_api_key_here
-EMAIL_FROM=Interview Prep AI <noreply@yourdomain.com>
+# Email Configuration (SendGrid)
+SENDGRID_API_KEY=SG.your_api_key_here
+EMAIL_FROM=your-verified-address@example.com
 
 # OTP Settings
 OTP_EXPIRY_MINUTES=5
