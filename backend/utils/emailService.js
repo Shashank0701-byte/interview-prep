@@ -1,4 +1,13 @@
 const nodemailer = require("nodemailer");
+const dns = require("dns");
+
+// Custom DNS lookup that forces IPv4-only resolution. This is the proper way
+// to ensure Nodemailer never attempts IPv6 connections (which fail with
+// ENETUNREACH on Render). The top-level `family` option is not honored by
+// Nodemailer's SMTP transport, so we must provide a custom lookup function.
+const ipv4OnlyLookup = (hostname, options, callback) => {
+  dns.lookup(hostname, { family: 4 }, callback);
+};
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -9,6 +18,7 @@ const transporter = nodemailer.createTransport({
   connectionTimeout: 10000, // 10s — don't hang forever
   greetingTimeout: 10000,
   socketTimeout: 15000,
+  lookup: ipv4OnlyLookup, // force IPv4 — hosts like Render have no outbound IPv6 route to smtp.gmail.com
 });
 
 const sendOTP = async (email, otp) => {
