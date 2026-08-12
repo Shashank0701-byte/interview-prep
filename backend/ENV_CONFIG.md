@@ -22,26 +22,28 @@ RECAPTCHA_SCORE_THRESHOLD=0.5
 
 ---
 
-## Email Configuration (Task 2 - Coming Next)
+## Email Configuration (OTP delivery)
+
+Sent via [Resend](https://resend.com) over HTTPS. Raw Gmail SMTP was dropped —
+Render's network blocks outbound SMTP ports, which made OTP delivery
+unreliable regardless of DNS/IP settings.
 
 ### Required Variables:
 ```env
-# Gmail SMTP Configuration
-EMAIL_SERVICE=gmail
-EMAIL_USER=your-email@gmail.com
-EMAIL_APP_PASSWORD=your_16_char_app_password
+# Resend API key
+RESEND_API_KEY=re_your_api_key_here
 
-# Email Settings
-EMAIL_FROM_NAME=Interview Prep AI
-EMAIL_FROM_ADDRESS=your-email@gmail.com
+# Optional — defaults to Resend's shared onboarding@resend.dev sender if unset.
+# Once you verify a custom domain in the Resend dashboard, set this instead:
+EMAIL_FROM=Interview Prep AI <noreply@yourdomain.com>
 ```
 
-### How to Get Gmail App Password:
-1. Enable 2FA on your Google Account
-2. Visit: https://myaccount.google.com/apppasswords
-3. Select "Mail" and your device
-4. Copy the 16-character password (no spaces)
-5. Add to `.env` as `EMAIL_APP_PASSWORD`
+### How to Get a Resend API Key:
+1. Sign up at https://resend.com
+2. Dashboard → API Keys → Create API Key
+3. Add it to `.env` (and to Render's environment variables) as `RESEND_API_KEY`
+4. (Optional, for production) Dashboard → Domains → verify your own domain,
+   then set `EMAIL_FROM` to an address on that domain
 
 ---
 
@@ -96,12 +98,9 @@ FRONTEND_URL=http://localhost:3000
 RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key_here
 RECAPTCHA_SCORE_THRESHOLD=0.5
 
-# Email Configuration (Gmail SMTP)
-EMAIL_SERVICE=gmail
-EMAIL_USER=your-email@gmail.com
-EMAIL_APP_PASSWORD=your_16_char_app_password
-EMAIL_FROM_NAME=Interview Prep AI
-EMAIL_FROM_ADDRESS=your-email@gmail.com
+# Email Configuration (Resend)
+RESEND_API_KEY=re_your_api_key_here
+EMAIL_FROM=Interview Prep AI <noreply@yourdomain.com>
 
 # OTP Settings
 OTP_EXPIRY_MINUTES=5
