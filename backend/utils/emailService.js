@@ -1,25 +1,33 @@
-const { Resend } = require("resend");
+const { BrevoClient } = require("@getbrevo/brevo");
 
-// Raw SMTP to Gmail was unreliable on Render: connections to smtp.gmail.com
-// either hit ENETUNREACH (no outbound IPv6 route) or, once forced to IPv4,
-// ETIMEDOUT (Render's network blocks outbound SMTP ports outright — a common
-// anti-spam-relay restriction on hosting platforms). Resend delivers over
-// HTTPS (port 443), which sidesteps that whole class of problem.
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Raw SMTP to Gmail was unreliable on Render (ENETUNREACH, then ETIMEDOUT —
+// see git history on this file), so OTP delivery moved to an HTTPS-based
+// transactional email API. Resend worked but its sandbox mode requires a
+// verified domain to send to anyone but the account owner, and this project
+// doesn't own one. SendGrid supports domain-free single sender verification,
+// but its Twilio-linked signup got stuck in an account-state error before
+// signup could even complete. Brevo also supports single sender
+// verification (no domain needed) without that friction.
+const brevo = new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
 
-// Resend's shared onboarding@resend.dev sender works without verifying a
-// custom domain — good enough to ship with. Once a domain is verified in the
-// Resend dashboard, set EMAIL_FROM to something like
-// "Interview Prep AI <noreply@yourdomain.com>" for better deliverability/branding.
-const FROM_ADDRESS = process.env.EMAIL_FROM || "Interview Prep AI <onboarding@resend.dev>";
+// Must match the address verified in Brevo under
+// Settings -> Senders, Domains & Dedicated IPs -> Senders.
+// Brevo rejects sends where `sender` isn't verified — there's no
+// shared/sandbox fallback address, so this is required, not optional.
+const FROM_ADDRESS = process.env.EMAIL_FROM;
 
 const sendOTP = async (email, otp) => {
+  if (!FROM_ADDRESS) {
+    console.error("Error sending OTP email: EMAIL_FROM is not set (must match a Brevo verified sender)");
+    return false;
+  }
+
   try {
-    const { error } = await resend.emails.send({
-      from: FROM_ADDRESS,
-      to: email,
+    await brevo.transactionalEmails.sendTransacEmail({
       subject: "Your Login OTP - Interview Prep AI",
-      html: `
+      sender: { name: "Interview Prep AI", email: FROM_ADDRESS },
+      to: [{ email }],
+      htmlContent: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
           <h2 style="color: #4F46E5; text-align: center;">Login Verification</h2>
           <p style="font-size: 16px; color: #374151;">Hello,</p>
@@ -35,14 +43,9 @@ const sendOTP = async (email, otp) => {
       `,
     });
 
-    if (error) {
-      console.error("Error sending OTP email:", error);
-      return false;
-    }
-
     return true;
   } catch (error) {
-    console.error("Error sending OTP email:", error);
+    console.error("Error sending OTP email:", error?.body || error?.message || error);
     return false;
   }
 };
