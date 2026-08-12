@@ -3,9 +3,14 @@ require("dotenv").config();
 
 // Render's network has no outbound IPv6 route. Since Node 18, DNS resolution
 // order can return the AAAA (IPv6) record first ("Happy Eyeballs"), so any
-// outbound connection to a dual-stack host (e.g. smtp.gmail.com) can pick the
-// unreachable IPv6 address and fail with ENETUNREACH before ever trying IPv4.
-// Force IPv4-first resolution app-wide to avoid this.
+// outbound connection to a dual-stack host can pick the unreachable IPv6
+// address and fail with ENETUNREACH before ever trying IPv4. Force
+// IPv4-first resolution app-wide for anything using Node's built-in resolver
+// (Mongo driver, fetch/undici, etc).
+//
+// NOTE: this does NOT cover Nodemailer — it runs its own DNS resolution via
+// dns.Resolver and ignores this setting. See utils/emailService.js for the
+// SMTP-specific fix.
 require("dns").setDefaultResultOrder("ipv4first");
 
 const express = require("express");
