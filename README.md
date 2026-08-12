@@ -29,6 +29,8 @@ Interview Prep AI is an intelligent learning platform that transforms how tech p
 * **Build Custom Decks in Seconds:** Create hyper-relevant interview decks for any role, or let the AI build one for you by simply pasting a link to a real job description.
 * **Learn with Spaced Repetition:** A smart SRS algorithm schedules your reviews at the optimal time to ensure knowledge moves into your long-term memory.
 * **Practice Aloud, Get Real Feedback:** Use your voice to practice your answers and receive instant, AI-powered critiques on your content, clarity, and delivery.
+* **Simulate a Real Video Interview:** The AI Interview Coach runs a live video-call simulation with real-time scoring on eye contact, confidence, voice clarity, and more.
+* **Sharpen Your Resume:** Get AI-driven feedback on an existing resume, or build one from scratch with the Smart Resume Builder.
 * **Track Your Growth:** A personalized dashboard visualizes your progress, showing you exactly where you're strong and where you need to focus.
 
 ---
@@ -110,27 +112,44 @@ npm run dev
 npm run dev
 ```
 
+### Alternative: Run Everything with Docker
+
+The repo also ships a `docker-compose.yml` that builds and runs all three services — backend, frontend, and the Python AI/RAG service — together:
+
+```bash
+# Set up env files first (each service needs its own)
+cp backend/.env.example backend/.env          # fill in MONGO_URI, GEMINI_API_KEY, etc.
+cp ai-training/.env.example ai-training/.env   # fill in GEMINI_API_KEY, etc.
+
+# Build and start everything
+docker compose up --build
+```
+
+This starts:
+* **backend** — Express API on [http://localhost:8000](http://localhost:8000)
+* **frontend** — the built React app served via Nginx on [http://localhost:80](http://localhost:80)
+* **ai** — the FastAPI RAG service on [http://localhost:8001](http://localhost:8001)
+
+All three have healthchecks configured, and the frontend waits for the backend to report healthy before starting. Stop everything with `docker compose down`.
+
 ---
 
 ## Roadmap (Future Advancements)
 
-* AI-driven behavioral interview scoring
 * Role-based question banks (SDE, Analyst, Designer)
-* Video interview simulation
-* Resume analysis and feedback
-* Leaderboards and community features
+* Leaderboards
 
 ---
 
 ## Contributing
 
-Contributions are welcome!
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for branch conventions, commit style, and how the project is structured before opening a PR.
 
-1. Fork this repository
-2. Create your feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
