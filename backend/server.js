@@ -49,7 +49,9 @@ const allowedOrigins = [
 app.use(
   cors({
     origin(origin, cb) {
-      if (allowedOrigins.includes(origin)) return cb(null, true);
+      // No Origin header = not a browser cross-origin request (direct nav, curl,
+      // health monitors, server-to-server). CORS doesn't apply to these — let them through.
+      if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
       return cb(new Error("CORS policy: origin not allowed"), false);
     },
     credentials: true,
