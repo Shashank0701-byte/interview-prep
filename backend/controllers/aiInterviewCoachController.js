@@ -154,8 +154,6 @@ const generateFallbackFollowUp = (originalQuestion, interviewType, responseQuali
     };
 };
 
-const path = require('path');
-const fs = require('fs').promises;
 const whisperService = require('../utils/whisperService');
 
 // Check if Gemini AI is properly initialized
@@ -166,15 +164,7 @@ if (!process.env.GOOGLE_AI_API_KEY) {
 }
 
 // Configure multer for audio uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/interviews/');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, `interview-${uniqueSuffix}${path.extname(file.originalname)}`);
-    }
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({ 
     storage: storage,
@@ -532,6 +522,7 @@ const generateFollowUpQuestion = async (req, res) => {
 };
 
 // @desc    Process voice response with Whisper API
+// @desc    Process voice response with Whisper API
 // @route   POST /api/ai-interview-coach/:sessionId/voice-response
 // @access  Private
 const processVoiceResponse = async (req, res) => {
@@ -546,24 +537,13 @@ const processVoiceResponse = async (req, res) => {
         }
 
         // Check if audio file was uploaded
-        if (!req.file) {
+        if (!req.file || !req.file.buffer) {
             return res.status(400).json({ message: 'No audio file provided' });
         }
 
-        const audioFilePath = req.file.path;
-        
         try {
-            // Validate audio file
-            const validation = whisperService.validateAudioFile(audioFilePath);
-            if (!validation.valid) {
-                return res.status(400).json({ 
-                    message: 'Invalid audio file', 
-                    errors: validation.errors 
-                });
-            }
-
-            // Transcribe audio using Whisper API
-            const transcriptionResult = await whisperService.transcribeAudio(audioFilePath, {
+            // Transcribe audio using Whisper API with memory buffer
+            const transcriptionResult = await whisperService.transcribeBuffer(req.file.buffer, req.file.originalname, {
                 language: 'en', // Default to English, could be made configurable
                 prompt: 'This is an interview response. Please transcribe accurately including any technical terms.',
                 temperature: 0.2 // Lower temperature for more consistent results
@@ -572,17 +552,30 @@ const processVoiceResponse = async (req, res) => {
             // Analyze speech patterns
             const speechAnalysis = whisperService.analyzeSpeechPatterns(transcriptionResult);
 
-            // Save audio file with a permanent name
-            const permanentFileName = `interview-${sessionId}-${questionId}-${Date.now()}.${req.file.originalname.split('.').pop()}`;
-            const permanentPath = path.join('uploads/interviews', permanentFileName);
-            await fs.rename(audioFilePath, permanentPath);
+            // Upload audio buffer to Cloudinary
+            const streamifier = require('streamifier');
+            const cloudinary = require('../config/cloudinary');
+
+            const uploadPromise = new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    { folder: "interview_prep/interviews", resource_type: "video" }, // Cloudinary uses "video" for audio
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result);
+                    }
+                );
+                streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+            });
+
+            const cloudinaryResult = await uploadPromise;
+            const audioUrl = cloudinaryResult.secure_url;
 
             // Find the question and update response
             const questionIndex = interview.questions.findIndex(q => q.id === questionId);
             if (questionIndex !== -1) {
                 interview.questions[questionIndex].userResponse = {
                     text: transcriptionResult.text,
-                    audioUrl: `/uploads/interviews/${permanentFileName}`,
+                    audioUrl: audioUrl,
                     duration: transcriptionResult.duration,
                     confidence: transcriptionResult.confidence,
                     speechAnalysis: speechAnalysis
@@ -616,21 +609,13 @@ const processVoiceResponse = async (req, res) => {
                 },
                 speechAnalysis: speechAnalysis,
                 followUp: followUp,
-                audioUrl: `/uploads/interviews/${permanentFileName}`
+                audioUrl: audioUrl
             });
 
         } catch (transcriptionError) {
             console.error('Transcription error:', transcriptionError);
-            
-            // Clean up uploaded file on error
-            try {
-                await fs.unlink(audioFilePath);
-            } catch (unlinkError) {
-                console.error('Error cleaning up file:', unlinkError);
-            }
-
             res.status(500).json({ 
-                message: 'Failed to transcribe audio', 
+                message: 'Failed to transcribe or upload audio', 
                 error: transcriptionError.message 
             });
         }

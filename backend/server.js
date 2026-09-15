@@ -1,13 +1,9 @@
 // ./server.js
 require("dotenv").config();
 
-// Render's network has no outbound IPv6 route. Since Node 18, DNS resolution
-// order can return the AAAA (IPv6) record first ("Happy Eyeballs"), so any
-// outbound connection to a dual-stack host can pick the unreachable IPv6
-// address and fail with ENETUNREACH before ever trying IPv4. Force
-// IPv4-first resolution app-wide for anything using Node's built-in resolver
-// (Mongo driver, fetch/undici, etc). OTP email delivery no longer goes over
-// raw SMTP (see utils/emailService.js) so it isn't affected either way.
+// Since Node 18, DNS resolution order can return the AAAA (IPv6) record first, 
+// which might fail in environments without outbound IPv6 routes. Force
+// IPv4-first resolution app-wide for anything using Node's built-in resolver.
 require("dns").setDefaultResultOrder("ipv4first");
 
 const express = require("express");
