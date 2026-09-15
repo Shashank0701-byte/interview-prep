@@ -11,8 +11,7 @@
   # Fix npm peer dependency issues
   NPM_FLAGS = "--legacy-peer-deps"
 
-  # Your production backend
-  VITE_API_BASE_URL = "https://interview-prep-backend.up.railway.app"
+  # Your production backend URL should be set in the Netlify Dashboard Environment Variables
 
   # Ignore PORT as a "secret"
   SECRETS_SCAN_OMIT_KEYS = "PORT"
