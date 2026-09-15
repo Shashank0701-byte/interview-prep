@@ -22,29 +22,21 @@ router.post("/upload-image", upload.single("image"), (req, res) => {
     return res.status(400).json({ message: "No file uploaded" });
   }
 
-  /**
-   * Determine the backend URL.
-   * 
-   * For Render (production):
-   *    - MUST use process.env.BACKEND_URL
-   * 
-   * For Local Development:
-   *    - Fall back to req.protocol://host
-   */
-  let backendUrl = process.env.BACKEND_URL;
+  const streamifier = require('streamifier');
+  const cloudinary = require('../config/cloudinary');
 
-  // If running locally OR missing env var → fallback
-  if (!backendUrl) {
-    backendUrl = `${req.protocol}://${req.get("host")}`;
-  }
+  const uploadStream = cloudinary.uploader.upload_stream(
+    { folder: "interview_prep/profiles" },
+    (error, result) => {
+      if (error) {
+        console.error("Cloudinary upload error:", error);
+        return res.status(500).json({ message: "Upload failed" });
+      }
+      return res.status(200).json({ imageUrl: result.secure_url });
+    }
+  );
 
-  // Ensure no trailing slash in BACKEND_URL
-  backendUrl = backendUrl.replace(/\/$/, "");
-
-  // Build the public image URL
-  const imageUrl = `${backendUrl}/uploads/${req.file.filename}`;
-
-  return res.status(200).json({ imageUrl });
+  streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
 });
 
 module.exports = router;

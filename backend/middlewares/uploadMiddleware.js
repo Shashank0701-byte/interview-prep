@@ -1,16 +1,9 @@
 const multer = require('multer');
 const path = require('path');
 
-// Configure storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    const safeName = path.basename(file.originalname).replace(/[^a-zA-Z0-9._-]/g, '_');
-    cb(null, `${Date.now()}-${safeName}`);
-  },
-});
+// Configure storage to use Memory Storage for Cloudinary
+const storage = multer.memoryStorage();
+
 
 // File filter
 const fileFilter = (req, file, cb) => {

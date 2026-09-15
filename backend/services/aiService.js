@@ -5,7 +5,7 @@ class AIService {
   constructor(options = {}) {
     this.baseURL =
       options.baseURL ||
-      process.env.AI_BOT_URL ||          // <- on Render: https://interview-prep-1-ferg.onrender.com
+      process.env.AI_BOT_URL ||          // <- on Railway: https://interview-prep-bot.up.railway.app
       process.env.AI_SERVICE_URL ||
       "http://localhost:8001";          // local dev fallback
 

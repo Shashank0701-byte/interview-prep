@@ -12,7 +12,7 @@
   NPM_FLAGS = "--legacy-peer-deps"
 
   # Your production backend
-  VITE_API_BASE_URL = "https://interview-prep-2-rfzb.onrender.com"
+  VITE_API_BASE_URL = "https://interview-prep-backend.up.railway.app"
 
   # Ignore PORT as a "secret"
   SECRETS_SCAN_OMIT_KEYS = "PORT"
