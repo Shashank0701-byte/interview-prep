@@ -154,8 +154,6 @@ const generateFallbackFollowUp = (originalQuestion, interviewType, responseQuali
     };
 };
 
-const path = require('path');
-const fs = require('fs').promises;
 const whisperService = require('../utils/whisperService');
 
 // Check if Gemini AI is properly initialized
@@ -166,15 +164,7 @@ if (!process.env.GOOGLE_AI_API_KEY) {
 }
 
 // Configure multer for audio uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/interviews/');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, `interview-${uniqueSuffix}${path.extname(file.originalname)}`);
-    }
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({ 
     storage: storage,
