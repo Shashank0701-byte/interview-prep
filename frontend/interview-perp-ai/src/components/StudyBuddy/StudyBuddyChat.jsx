@@ -24,6 +24,11 @@ const StudyBuddyChat = ({ userId }) => {
   const messagesEndRef = useRef(null);
   const lastMessageRef = useRef(null);
 
+  const getAuthHeaders = () => {
+    const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
+
   // Smart scrolling logic
   useEffect(() => {
     if (messages.length === 0) return;
@@ -68,7 +73,9 @@ const StudyBuddyChat = ({ userId }) => {
 
       try {
         setIsLoadingHistory(true);
-        const res = await fetch(`${BASE_URL}/api/ai/memory/${userId}`);
+        const res = await fetch(`${BASE_URL}/api/ai/memory`, {
+          headers: getAuthHeaders(),
+        });
         const data = await res.json();
 
         if (data.success && data.memory && data.memory.length > 0) {
@@ -114,10 +121,9 @@ const StudyBuddyChat = ({ userId }) => {
 
       const res = await fetch(`${BASE_URL}/api/ai/chat`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...getAuthHeaders() },
         body: JSON.stringify({
           message: userMessage,
-          userId: userId || "anonymous",
           sessionId: Date.now().toString(),
         }),
       });

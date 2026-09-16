@@ -36,7 +36,9 @@ const app = express();
 const server = http.createServer(app);
 
 // Health check — registered before CORS so monitors and cron pings are never blocked
-app.get("/api/health", (req, res) => res.status(200).json({ status: "ok" }));
+app.get("/api/health", (_req, res) =>
+  res.status(200).json({ message: "OK", status: "healthy", ts: Date.now() })
+);
 
 const FRONTEND_URL = process.env.FRONTEND_URL || null;
 console.log("FRONTEND_URL:", FRONTEND_URL);
@@ -120,10 +122,6 @@ app.use("/api/ai", aiRoutes);
 app.get("/", (_req, res) => {
   res.json({ message: "Backend running", healthy: true, ts: Date.now() });
 });
-
-app.get("/api/health", (_req, res) =>
-  res.json({ message: "OK", status: "healthy", ts: Date.now() })
-);
 
 /* -------------------------
    404

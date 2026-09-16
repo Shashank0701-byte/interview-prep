@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from typing import Dict, Any, List, Optional
 import logging
 import json
+import os
 from datetime import datetime
 
 from ..rag.rag_pipeline import RAGPipeline
@@ -56,16 +57,19 @@ class ChatAPI:
         )
 
         # -------------------------------------------------
-        # CORS (UPDATED FOR RENDER DEPLOYMENT)
+        # Credentials require an explicit origin allow-list, never a wildcard.
+        allowed_origins = [
+            origin.strip()
+            for origin in os.getenv(
+                "CORS_ORIGINS",
+                "https://interview-prep-karo.netlify.app,http://localhost:3000,http://localhost:5173",
+            ).split(",")
+            if origin.strip()
+        ]
         # -------------------------------------------------
         self.app.add_middleware(
             CORSMiddleware,
-            allow_origins=[
-                "*",
-                "https://interview-prep-1-ferg.onrender.com",
-                "http://localhost:3000",
-                "http://localhost:5173",
-            ],
+            allow_origins=allowed_origins,
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],

@@ -58,7 +58,7 @@ Same as Railway above.
 
 ## ✅ After Deployment
 
-1. Test your backend URL in browser: `https://your-backend-url.com/api/test`
+1. Test your backend URL in browser: `https://your-backend-url.com/api/health`
 2. Update frontend environment variables
 3. Redeploy frontend
 4. Test the full application

@@ -1,0 +1,5 @@
+# Interview Prep AI
+
+Interview Prep AI is a web application for technical interview preparation. It provides AI-assisted practice questions, mock interviews, learning roadmaps, study rooms, resume tools, and progress analytics.
+
+The public entry point is https://interview-prep-karo.netlify.app/. Most product features require an authenticated account and should not be treated as publicly crawlable content.
