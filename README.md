@@ -92,7 +92,7 @@ cd backend
 npm install
 
 # Install frontend dependencies
-cd ../frontend
+cd ../frontend/interview-perp-ai
 npm install
 ```
 

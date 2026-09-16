@@ -31,7 +31,7 @@ let mongooseAvailable = false;
 let MemoryModel = null;
 
 try {
-  if (process.env.MONGODB_URI) {
+  if (process.env.MONGO_URI) {
     const mongoose = require("mongoose");
     mongooseAvailable = true;
 
@@ -167,11 +167,10 @@ const aiService = new AIService({
 /**
  * POST /api/ai/chat
  */
-router.post("/chat", async (req, res) => {
+router.post("/chat", protect, async (req, res) => {
   try {
     const {
       message,
-      userId = "anonymous",
       sessionId = null,
       persona,
     } = req.body;
@@ -182,6 +181,9 @@ router.post("/chat", async (req, res) => {
         .json({ success: false, error: "Message required" });
     }
 
+    // Identity must only ever come from the verified JWT, never a client-supplied
+    // userId. This keeps a user's conversation memory private.
+    const userId = req.user._id.toString();
     const memory = await MemoryStore.get(userId);
 
     const userContext = {
@@ -244,9 +246,9 @@ router.get("/health", async (_req, res) => {
 /**
  * POST /api/ai/reminder
  */
-router.post("/reminder", async (req, res) => {
+router.post("/reminder", protect, async (req, res) => {
   try {
-    const userId = req.body.userId || "anonymous";
+    const userId = req.user._id.toString();
     const userContext = { userId, timestamp: new Date().toISOString() };
     const out = await aiService.sendReminder(userContext);
     return res.json({ success: true, ...out });
@@ -259,9 +261,10 @@ router.post("/reminder", async (req, res) => {
 /**
  * POST /api/ai/celebrate
  */
-router.post("/celebrate", async (req, res) => {
+router.post("/celebrate", protect, async (req, res) => {
   try {
-    const { achievement, userId = "anonymous" } = req.body;
+    const { achievement } = req.body;
+    const userId = req.user._id.toString();
     if (!achievement) {
       return res
         .status(400)
@@ -284,28 +287,28 @@ router.post("/celebrate", async (req, res) => {
    MEMORY MANAGEMENT ROUTES
 -------------------------- */
 
-router.get("/memory/:userId", async (req, res) => {
+router.get("/memory", protect, async (req, res) => {
   try {
-    const mem = await MemoryStore.get(req.params.userId);
+    const mem = await MemoryStore.get(req.user._id.toString());
     return res.json({ success: true, memory: mem });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
   }
 });
 
-router.post("/memory/:userId", async (req, res) => {
+router.post("/memory", protect, async (req, res) => {
   try {
     const entries = Array.isArray(req.body.entries) ? req.body.entries : [];
-    const saved = await MemoryStore.set(req.params.userId, entries);
+    const saved = await MemoryStore.set(req.user._id.toString(), entries);
     return res.json({ success: true, memory: saved });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
   }
 });
 
-router.delete("/memory/:userId", async (req, res) => {
+router.delete("/memory", protect, async (req, res) => {
   try {
-    await MemoryStore.clear(req.params.userId);
+    await MemoryStore.clear(req.user._id.toString());
     return res.json({ success: true });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });

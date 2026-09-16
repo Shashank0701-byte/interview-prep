@@ -46,8 +46,8 @@ class Config:
     
     # Paths
     BASE_DIR: Path = Path(__file__).parent.parent
-    DATA_DIR: Path = BASE_DIR / "study-buddy" / "data"
-    MODELS_DIR: Path = BASE_DIR / "study-buddy" / "models"
+    DATA_DIR: Path = BASE_DIR / "study_buddy" / "data"
+    MODELS_DIR: Path = BASE_DIR / "study_buddy" / "models"
     LOGS_DIR: Path = BASE_DIR / "logs"
     
     @classmethod
@@ -57,9 +57,6 @@ class Config:
         
         if not cls.GEMINI_API_KEY:
             errors.append("GEMINI_API_KEY is required")
-        
-        if not cls.PINECONE_API_KEY and not Path(cls.CHROMA_PERSIST_DIRECTORY).parent.exists():
-            errors.append("Either PINECONE_API_KEY or valid CHROMA_PERSIST_DIRECTORY is required")
         
         if errors:
             print("❌ Configuration errors:")

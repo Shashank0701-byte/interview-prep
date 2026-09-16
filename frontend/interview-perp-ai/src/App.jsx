@@ -1,4 +1,4 @@
-import React from 'react';
+import { lazy, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -7,40 +7,42 @@ import {
 } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import ScrollToTop from './components/ScrollToTop';
+import Seo from './components/Seo';
 import { ThemeProvider } from './context/ThemeContext';
+import NotFound from './pages/NotFound';
 
 // Import your page components
-import LandingPage from './pages/LandingPage';
-import Dashboard from './pages/Home/Dashboard';
-import InterviewPrep from './pages/InterviewPrep/InterviewPrep';
 import UserProvider from './context/userContext';
-import ReviewPage from './pages/Review/ReviewPage';
-import SignUp from './pages/Auth/SignUp.jsx';
-import Login from './pages/Auth/Login';
-import AnalyticsDashboard from './pages/Analytics/AnalyticsDashboard';
-import PracticePage from './pages/PracticePage';
-import RoadmapPage from './pages/Roadmap/RoadmapPage';
-import PhaseOverviewPage from './pages/Roadmap/PhaseOverviewPage';
-import PhaseQuizPage from './pages/Roadmap/PhaseQuizPage';
-import PhaseSessionLibrary from './pages/Roadmap/PhaseSessionLibrary';
-import CreateSessionPage from './pages/Roadmap/CreateSessionPage';
-import RoadmapSessionPractice from './pages/Roadmap/RoadmapSessionPractice';
-import CodeReviewSimulator from './pages/CodeReview/CodeReviewSimulator';
-import ScenarioSelector from './pages/CodeReview/ScenarioSelector';
-import MultiFilePRReview from './pages/CodeReview/MultiFilePRReview';
-import SmartResumeBuilder from './pages/Resume/SmartResumeBuilder';
-import LiveCodingPage from './pages/LiveCoding/LiveCodingPage';
-import LiveCodingChallenge from './pages/LiveCoding/LiveCodingChallenge';
-import StudyRoomDashboard from './pages/StudyRoom/StudyRoomDashboard';
-import StudyRoomInterface from './pages/StudyRoom/StudyRoomInterface';
-import StudyRoomJoin from './pages/StudyRoom/StudyRoomJoin';
-import AIInterviewCoach from './pages/AIInterviewCoach/AIInterviewCoach';
-import InterviewInterface from './pages/AIInterviewCoach/InterviewInterface';
-import InterviewReport from './pages/AIInterviewCoach/InterviewReport';
-import SalaryNegotiationPage from './pages/SalaryNegotiation/SalaryNegotiationPage';
-import NegotiationSimulator from './pages/SalaryNegotiation/NegotiationSimulator';
-import NegotiationResults from './pages/SalaryNegotiation/NegotiationResults';
-import NegotiationHistory from './pages/SalaryNegotiation/NegotiationHistory';
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const Dashboard = lazy(() => import('./pages/Home/Dashboard'));
+const InterviewPrep = lazy(() => import('./pages/InterviewPrep/InterviewPrep'));
+const ReviewPage = lazy(() => import('./pages/Review/ReviewPage'));
+const SignUp = lazy(() => import('./pages/Auth/SignUp.jsx'));
+const Login = lazy(() => import('./pages/Auth/Login'));
+const AnalyticsDashboard = lazy(() => import('./pages/Analytics/AnalyticsDashboard'));
+const PracticePage = lazy(() => import('./pages/PracticePage'));
+const RoadmapPage = lazy(() => import('./pages/Roadmap/RoadmapPage'));
+const PhaseOverviewPage = lazy(() => import('./pages/Roadmap/PhaseOverviewPage'));
+const PhaseQuizPage = lazy(() => import('./pages/Roadmap/PhaseQuizPage'));
+const PhaseSessionLibrary = lazy(() => import('./pages/Roadmap/PhaseSessionLibrary'));
+const CreateSessionPage = lazy(() => import('./pages/Roadmap/CreateSessionPage'));
+const RoadmapSessionPractice = lazy(() => import('./pages/Roadmap/RoadmapSessionPractice'));
+const CodeReviewSimulator = lazy(() => import('./pages/CodeReview/CodeReviewSimulator'));
+const ScenarioSelector = lazy(() => import('./pages/CodeReview/ScenarioSelector'));
+const MultiFilePRReview = lazy(() => import('./pages/CodeReview/MultiFilePRReview'));
+const SmartResumeBuilder = lazy(() => import('./pages/Resume/SmartResumeBuilder'));
+const LiveCodingPage = lazy(() => import('./pages/LiveCoding/LiveCodingPage'));
+const LiveCodingChallenge = lazy(() => import('./pages/LiveCoding/LiveCodingChallenge'));
+const StudyRoomDashboard = lazy(() => import('./pages/StudyRoom/StudyRoomDashboard'));
+const StudyRoomInterface = lazy(() => import('./pages/StudyRoom/StudyRoomInterface'));
+const StudyRoomJoin = lazy(() => import('./pages/StudyRoom/StudyRoomJoin'));
+const AIInterviewCoach = lazy(() => import('./pages/AIInterviewCoach/AIInterviewCoach'));
+const InterviewInterface = lazy(() => import('./pages/AIInterviewCoach/InterviewInterface'));
+const InterviewReport = lazy(() => import('./pages/AIInterviewCoach/InterviewReport'));
+const SalaryNegotiationPage = lazy(() => import('./pages/SalaryNegotiation/SalaryNegotiationPage'));
+const NegotiationSimulator = lazy(() => import('./pages/SalaryNegotiation/NegotiationSimulator'));
+const NegotiationResults = lazy(() => import('./pages/SalaryNegotiation/NegotiationResults'));
+const NegotiationHistory = lazy(() => import('./pages/SalaryNegotiation/NegotiationHistory'));
 
 
 // ✅ ADD THIS COMPONENT DEFINITION
@@ -64,6 +66,8 @@ const App = () => {
         <div className="min-h-screen transition-colors duration-300" style={{ backgroundColor: 'var(--color-bg)' }}>
           <Router>
           <ScrollToTop />
+          <Seo />
+          <Suspense fallback={<div className="grid min-h-screen place-items-center">Loading…</div>}>
           <Routes>
             <Route path='/' element={<LandingPage />} />
              <Route 
@@ -164,7 +168,9 @@ const App = () => {
               path="/ai-interview/:sessionId/report"
               element={<ProtectedRoute><InterviewReport /></ProtectedRoute>}
             />
+            <Route path="*" element={<NotFound />} />
           </Routes>
+          </Suspense>
         </Router>
         <Toaster
           toastOptions={{

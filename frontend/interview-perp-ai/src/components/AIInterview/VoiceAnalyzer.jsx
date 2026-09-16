@@ -9,6 +9,7 @@ const VoiceAnalyzer = ({ audioRef, isActive, onAnalysisUpdate }) => {
     const [mediaSource, setMediaSource] = useState(null);
     const analysisIntervalRef = useRef(null);
     const dataArrayRef = useRef(null);
+    const analysisCountRef = useRef(0);
 
     useEffect(() => {
         if (isActive) {
@@ -51,6 +52,7 @@ const VoiceAnalyzer = ({ audioRef, isActive, onAnalysisUpdate }) => {
 
     const startAnalysis = () => {
         setIsAnalyzing(true);
+        analysisCountRef.current = 0;
         
         // Analyze every 1 second for voice metrics
         analysisIntervalRef.current = setInterval(() => {
@@ -86,6 +88,7 @@ const VoiceAnalyzer = ({ audioRef, isActive, onAnalysisUpdate }) => {
         const timeData = new Uint8Array(analyser.fftSize);
         analyser.getByteTimeDomainData(timeData);
         
+        analysisCountRef.current += 1;
         const analysis = analyzeAudioData(dataArrayRef.current, timeData);
         
         setCurrentAnalysis(analysis);
