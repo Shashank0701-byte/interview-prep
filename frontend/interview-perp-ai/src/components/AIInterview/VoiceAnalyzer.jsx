@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Mic, Volume2, AlertTriangle, Zap, Clock } from 'lucide-react';
 
+const ANALYSIS_INTERVAL_MS = 1000;
+
 const VoiceAnalyzer = ({ audioRef, isActive, onAnalysisUpdate }) => {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [currentAnalysis, setCurrentAnalysis] = useState(null);
@@ -9,6 +11,7 @@ const VoiceAnalyzer = ({ audioRef, isActive, onAnalysisUpdate }) => {
     const [mediaSource, setMediaSource] = useState(null);
     const analysisIntervalRef = useRef(null);
     const dataArrayRef = useRef(null);
+    const analysisCountRef = useRef(0);
 
     useEffect(() => {
         if (isActive) {
@@ -51,13 +54,14 @@ const VoiceAnalyzer = ({ audioRef, isActive, onAnalysisUpdate }) => {
 
     const startAnalysis = () => {
         setIsAnalyzing(true);
+        analysisCountRef.current = 0;
         
         // Analyze every 1 second for voice metrics
         analysisIntervalRef.current = setInterval(() => {
             if (analyser && dataArrayRef.current) {
                 performVoiceAnalysis();
             }
-        }, 1000);
+        }, ANALYSIS_INTERVAL_MS);
     };
 
     const stopAnalysis = () => {
@@ -87,9 +91,18 @@ const VoiceAnalyzer = ({ audioRef, isActive, onAnalysisUpdate }) => {
         analyser.getByteTimeDomainData(timeData);
         
         const analysis = analyzeAudioData(dataArrayRef.current, timeData);
+
+        if (analysis.isSpeaking) {
+            analysisCountRef.current += 1;
+        }
+
+        const analysisWithDuration = {
+            ...analysis,
+            speakingDuration: analysisCountRef.current * (ANALYSIS_INTERVAL_MS / 1000)
+        };
         
-        setCurrentAnalysis(analysis);
-        onAnalysisUpdate(analysis);
+        setCurrentAnalysis(analysisWithDuration);
+        onAnalysisUpdate(analysisWithDuration);
     };
 
     const analyzeAudioData = (frequencyData, timeData) => {
@@ -142,7 +155,6 @@ const VoiceAnalyzer = ({ audioRef, isActive, onAnalysisUpdate }) => {
                 high: Math.round(highFreq)
             },
             isSpeaking: volume > 0.02,
-            speakingDuration: analysisCountRef.current * 0.1, // seconds
             pauseDetected: averageVolume < 10,
             energyLevel: averageVolume > 50 ? 'high' : averageVolume > 20 ? 'medium' : 'low',
             confidenceIndicators: {
