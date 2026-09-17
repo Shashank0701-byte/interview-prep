@@ -20,6 +20,53 @@ const PUBLIC_PAGES = {
   },
 };
 
+const APP_PAGES = {
+  "/dashboard": "Dashboard",
+  "/progress": "Interview Progress",
+  "/roadmap": "Learning Roadmap",
+  "/practice": "Practice Session",
+  "/review": "Review Queue",
+  "/code-review": "Code Review Simulator",
+  "/resume-builder": "Smart Resume Builder",
+  "/salary-negotiation": "Salary Negotiation",
+  "/salary-negotiation/simulator": "Negotiation Simulator",
+  "/salary-negotiation/results": "Negotiation Results",
+  "/salary-negotiation/history": "Negotiation History",
+  "/live-coding": "Live Coding Challenges",
+  "/study-rooms": "Study Rooms",
+  "/ai-interview-coach": "AI Interview Coach",
+};
+
+const DYNAMIC_PAGE_TITLES = [
+  ["/ai-interview/", "AI Interview"],
+  ["/interview-prep/", "Interview Practice"],
+  ["/phase-quiz/", "Phase Quiz"],
+  ["/phase-sessions/", "Phase Sessions"],
+  ["/create-session/", "Create Practice Session"],
+  ["/roadmap-session/", "Roadmap Practice Session"],
+  ["/phase/", "Roadmap Phase"],
+  ["/multi-file-pr/", "Pull Request Review"],
+  ["/code-review/", "Code Review Simulator"],
+  ["/live-coding/", "Live Coding Challenge"],
+  ["/study-room/", "Study Room"],
+  ["/join/", "Join Study Room"],
+];
+
+function getPageMetadata(pathname) {
+  if (PUBLIC_PAGES[pathname]) return PUBLIC_PAGES[pathname];
+
+  if (APP_PAGES[pathname]) {
+    return { title: `${APP_PAGES[pathname]} | Interview Prep AI`, description: DEFAULT_DESCRIPTION };
+  }
+
+  const dynamicMatch = DYNAMIC_PAGE_TITLES.find(([prefix]) => pathname.startsWith(prefix));
+  if (dynamicMatch) {
+    return { title: `${dynamicMatch[1]} | Interview Prep AI`, description: DEFAULT_DESCRIPTION };
+  }
+
+  return { title: "Page Not Found | Interview Prep AI", description: DEFAULT_DESCRIPTION };
+}
+
 function setMeta(selector, attribute, value) {
   let element = document.head.querySelector(selector);
   if (!element) {
@@ -33,10 +80,7 @@ export default function Seo() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const page = PUBLIC_PAGES[pathname] || {
-      title: "Interview Prep AI",
-      description: DEFAULT_DESCRIPTION,
-    };
+    const page = getPageMetadata(pathname);
     const canonicalUrl = new URL(pathname, `${SITE_URL}/`).toString();
     const ogImage = new URL("/Screenshot%202026-07-22%20160719.png", `${SITE_URL}/`).toString();
     const isPublicPage = Object.hasOwn(PUBLIC_PAGES, pathname);

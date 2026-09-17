@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.7
 FROM python:3.12-slim
 
 WORKDIR /app
@@ -17,8 +18,8 @@ RUN apt-get update && \
 # Copy requirements first for better layer caching
 COPY requirements.txt .
 
-RUN pip install --no-cache-dir -r requirements.txt && \
-    pip cache purge
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --prefer-binary -r requirements.txt
 
 # Copy the rest of the application
 COPY . .
