@@ -46,12 +46,6 @@ const Navbar = () => {
                             Progress
                         </NavLink>
                         <NavLink 
-                            to="/roadmap" 
-                            className={({ isActive }) => `${navLinkClass} ${isActive ? 'font-bold text-charcoal dark:text-cream border-b-4 border-charcoal dark:border-cream !rounded-none' : 'text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream'}`}
-                        >
-                            Roadmap
-                        </NavLink>
-                        <NavLink 
                             to="/code-review" 
                             className={({ isActive }) => `${navLinkClass} ${isActive ? 'font-bold text-charcoal dark:text-cream border-b-4 border-charcoal dark:border-cream !rounded-none' : 'text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream'}`}
                         >
@@ -69,15 +63,10 @@ const Navbar = () => {
                             </span>
                         </NavLink>
                         <NavLink 
-                            to="/ai-interview-coach" 
+                            to="/live-coding" 
                             className={({ isActive }) => `${navLinkClass} ${isActive ? 'font-bold text-charcoal dark:text-cream border-b-4 border-charcoal dark:border-cream !rounded-none' : 'text-charcoal/60 dark:text-cream/60 hover:text-charcoal dark:hover:text-cream'}`}
                         >
-                            <span className="flex items-center gap-1.5">
-                                AI Coach
-                                <span className="bg-charcoal dark:bg-cream text-white dark:text-navy text-[8px] px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wider leading-none">
-                                    AI
-                                </span>
-                            </span>
+                            Coding
                         </NavLink>
                         </nav>
                     </div>
@@ -113,12 +102,10 @@ const Navbar = () => {
                         {[
                             { to: '/dashboard', label: 'Dashboard' },
                             { to: '/progress', label: 'Progress' },
-                            { to: '/roadmap', label: 'Roadmap' },
                             { to: '/code-review', label: 'Code Review' },
                             { to: '/resume-builder', label: 'Resume Builder' },
-                            { to: '/live-coding', label: 'Live Coding' },
+                            { to: '/live-coding', label: 'Coding' },
                             { to: '/study-rooms', label: 'Study Rooms' },
-                            { to: '/ai-interview-coach', label: 'AI Coach' },
                         ].map(link => (
                             <NavLink
                                 key={link.to}

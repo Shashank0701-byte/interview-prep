@@ -45,20 +45,14 @@ const PhaseCompletionModal = ({
     const handleNextRecommendation = () => {
         if (nextRecommendation?.type === 'session') {
             navigate(`/interview-prep/${nextRecommendation.id}`);
-        } else if (nextRecommendation?.type === 'quiz') {
-            navigate(`/phase-quiz/${nextRecommendation.role}/${nextRecommendation.phaseId}`);
-        } else if (nextRecommendation?.type === 'phase') {
-            navigate(`/phase/${nextRecommendation.role}/${nextRecommendation.phaseId}`);
+        } else {
+            navigate('/dashboard');
         }
         onClose();
     };
 
     const handleBackToPhase = () => {
-        if (phaseInfo) {
-            navigate(`/phase/${encodeURIComponent(phaseInfo.role)}/${phaseInfo.phaseId}`);
-        } else {
-            navigate('/roadmap');
-        }
+        navigate('/dashboard');
         onClose();
     };
 
