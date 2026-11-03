@@ -22,7 +22,8 @@ RUN npm run build
 # ============================================================
 # STAGE 2: Serve with Nginx
 # ============================================================
-FROM nginxinc/nginx-unprivileged:1.27-alpine
+# 1.27-alpine is Alpine 3.21, which is out of support and carries fixed OS CVEs.
+FROM nginx/nginx-unprivileged:1.30.6-alpine
 
 # Copy custom nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
