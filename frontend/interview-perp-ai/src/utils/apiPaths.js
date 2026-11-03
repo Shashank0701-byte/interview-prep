@@ -119,6 +119,14 @@ export const API_PATHS = {
         VOICE_RESPONSE: (sessionId) => `/api/ai-interview-coach/${sessionId}/voice-response`,
         HISTORY: "/api/ai-interview-coach/history",
     },
+    CODING: {
+        LIST: "/api/coding-tasks",
+        GET: (id) => `/api/coding-tasks/${id}`,
+        ATTEMPT: (id) => `/api/coding-tasks/${id}/attempt`,
+        GENERATE: (id) => `/api/coding-tasks/${id}/generate`,
+        CHAT: (id) => `/api/coding-tasks/${id}/chat`,
+        RUN: (id) => `/api/coding-tasks/${id}/run`,
+    },
     SALARY_NEGOTIATION: {
         START: "/api/salary-negotiation/start",
         SEND_MESSAGE: (negotiationId) => `/api/salary-negotiation/${negotiationId}/message`,

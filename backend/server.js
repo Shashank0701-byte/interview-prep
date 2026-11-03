@@ -31,6 +31,7 @@ const studyRoomRoutes = require("./routes/studyRoomRoutes");
 const aiInterviewCoachRoutes = require("./routes/aiInterviewCoachRoutes");
 const salaryNegotiationRoutes = require("./routes/salaryNegotiationRoutes");
 const feedbackRoutes = require("./routes/feedbackRoutes");
+const codingTaskRoutes = require("./routes/codingTaskRoutes");
 
 const app = express();
 const server = http.createServer(app);
@@ -49,6 +50,7 @@ console.log("FRONTEND_URL:", FRONTEND_URL);
 const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
+  "http://localhost:5174",
   "http://localhost:3000",
   "https://interview-prep-karo.netlify.app",
   FRONTEND_URL,
@@ -112,6 +114,7 @@ app.use("/api/study-rooms", studyRoomRoutes);
 app.use("/api/ai-interview-coach", aiInterviewCoachRoutes);
 app.use("/api/salary-negotiation", salaryNegotiationRoutes);
 app.use("/api/feedback", feedbackRoutes);
+app.use("/api/coding-tasks", codingTaskRoutes);
 
 // 🧠 RAG + legacy AI endpoints
 app.use("/api/ai", aiRoutes);
