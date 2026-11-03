@@ -6,7 +6,10 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install the lockfile's production dependencies so the image matches CI.
-RUN npm ci --omit=dev && npm cache clean --force
+# Drop the bundled npm CLI afterwards. The process is `node server.js`, and
+# Trivy flags HIGH issues in npm's own dependencies (brace-expansion, pacote, sigstore).
+RUN npm ci --omit=dev && npm cache clean --force \
+    && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 # Copy application source code
 COPY . .

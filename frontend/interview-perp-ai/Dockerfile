@@ -1,7 +1,7 @@
 # ============================================================
 # STAGE 1: Build the Vite React application
 # ============================================================
-# Debian matches the GitHub runner. Alpine's npm rejects this lockfile.
+# Debian matches the GitHub runner that installs this lockfile.
 FROM node:22.23.4-bookworm-slim AS builder
 
 WORKDIR /app
@@ -9,8 +9,9 @@ WORKDIR /app
 # Copy dependency files first (for better layer caching)
 COPY package.json package-lock.json ./
 
-# Install the lockfile, including devDependencies required for the Vite build.
-RUN npm ci
+# legacy-peer-deps matches frontend/.npmrc. Without it, npm ci rejects
+# peer entries (monaco-editor, picomatch, dompurify, marked) that the lockfile omits.
+RUN npm ci --legacy-peer-deps
 
 # Copy the rest of the source code
 COPY . .
