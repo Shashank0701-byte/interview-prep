@@ -1,7 +1,8 @@
 # ============================================================
 # STAGE 1: Build the Vite React application
 # ============================================================
-FROM node:22-alpine AS builder
+# Debian matches the GitHub runner. Alpine's npm rejects this lockfile.
+FROM node:22.23.4-bookworm-slim AS builder
 
 WORKDIR /app
 

@@ -56,7 +56,13 @@ jobs:
         working-directory: ai-training
         run: |
           python -m pip install --upgrade pip pip-audit
-          pip-audit -r requirements.txt
+          # chromadb 1.5.9 is the newest release and is still the last affected
+          # version for these advisories. Remove an ignore when a patched release exists.
+          pip-audit -r requirements.txt \
+            --ignore-vuln PYSEC-2026-311 \
+            --ignore-vuln PYSEC-2026-3813 \
+            --ignore-vuln PYSEC-2026-3814 \
+            --ignore-vuln PYSEC-2026-3815
 
   trivy:
     name: Trivy filesystem scan
@@ -64,13 +70,10 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - uses: aquasecurity/trivy-action@v0.36.0
+      - uses: ./.github/actions/trivy
         with:
           scan-type: fs
-          scan-ref: .
-          severity: HIGH,CRITICAL
-          exit-code: "1"
-          ignore-unfixed: true
+          target: .
           skip-dirs: node_modules,chroma_db
 
   secret-scan:

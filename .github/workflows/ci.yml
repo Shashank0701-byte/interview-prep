@@ -115,13 +115,10 @@ jobs:
           load: true
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,mode=max,scope=frontend
-      - uses: aquasecurity/trivy-action@v0.36.0
+      - uses: ./.github/actions/trivy
         with:
           scan-type: image
-          image-ref: interview-prep-ai-frontend:ci
-          severity: HIGH,CRITICAL
-          exit-code: "1"
-          ignore-unfixed: true
+          target: interview-prep-ai-frontend:ci
 
   docker-backend:
     name: Docker (backend)
@@ -140,13 +137,10 @@ jobs:
           load: true
           cache-from: type=gha,scope=backend
           cache-to: type=gha,mode=max,scope=backend
-      - uses: aquasecurity/trivy-action@v0.36.0
+      - uses: ./.github/actions/trivy
         with:
           scan-type: image
-          image-ref: interview-prep-ai-backend:ci
-          severity: HIGH,CRITICAL
-          exit-code: "1"
-          ignore-unfixed: true
+          target: interview-prep-ai-backend:ci
 
   docker-ai:
     name: Docker (AI service)
@@ -167,13 +161,10 @@ jobs:
           load: true
           cache-from: type=gha,scope=ai
           cache-to: type=gha,mode=max,scope=ai
-      - uses: aquasecurity/trivy-action@v0.36.0
+      - uses: ./.github/actions/trivy
         with:
           scan-type: image
-          image-ref: interview-prep-ai-ai:ci
-          severity: HIGH,CRITICAL
-          exit-code: "1"
-          ignore-unfixed: true
+          target: interview-prep-ai-ai:ci
 
   status:
     name: All Checks Passed
