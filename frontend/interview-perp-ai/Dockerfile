@@ -23,7 +23,7 @@ RUN npm run build
 # STAGE 2: Serve with Nginx
 # ============================================================
 # 1.27-alpine is Alpine 3.21, which is out of support and carries fixed OS CVEs.
-FROM nginx/nginx-unprivileged:1.30.6-alpine
+FROM nginx/nginx-unprivileged:1.31.7-alpine
 
 # The published image lags Alpine's security repo (libexpat 2.9.0 vs 2.10.0).
 USER root
