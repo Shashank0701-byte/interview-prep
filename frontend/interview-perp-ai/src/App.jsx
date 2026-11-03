@@ -21,24 +21,15 @@ const SignUp = lazy(() => import('./pages/Auth/SignUp.jsx'));
 const Login = lazy(() => import('./pages/Auth/Login'));
 const AnalyticsDashboard = lazy(() => import('./pages/Analytics/AnalyticsDashboard'));
 const PracticePage = lazy(() => import('./pages/PracticePage'));
-const RoadmapPage = lazy(() => import('./pages/Roadmap/RoadmapPage'));
-const PhaseOverviewPage = lazy(() => import('./pages/Roadmap/PhaseOverviewPage'));
-const PhaseQuizPage = lazy(() => import('./pages/Roadmap/PhaseQuizPage'));
-const PhaseSessionLibrary = lazy(() => import('./pages/Roadmap/PhaseSessionLibrary'));
-const CreateSessionPage = lazy(() => import('./pages/Roadmap/CreateSessionPage'));
-const RoadmapSessionPractice = lazy(() => import('./pages/Roadmap/RoadmapSessionPractice'));
 const CodeReviewSimulator = lazy(() => import('./pages/CodeReview/CodeReviewSimulator'));
 const ScenarioSelector = lazy(() => import('./pages/CodeReview/ScenarioSelector'));
 const MultiFilePRReview = lazy(() => import('./pages/CodeReview/MultiFilePRReview'));
 const SmartResumeBuilder = lazy(() => import('./pages/Resume/SmartResumeBuilder'));
-const LiveCodingPage = lazy(() => import('./pages/LiveCoding/LiveCodingPage'));
-const LiveCodingChallenge = lazy(() => import('./pages/LiveCoding/LiveCodingChallenge'));
+const CodingCatalog = lazy(() => import('./pages/LiveCoding/CodingCatalog'));
+const CodingWorkspace = lazy(() => import('./pages/LiveCoding/CodingWorkspace'));
 const StudyRoomDashboard = lazy(() => import('./pages/StudyRoom/StudyRoomDashboard'));
 const StudyRoomInterface = lazy(() => import('./pages/StudyRoom/StudyRoomInterface'));
 const StudyRoomJoin = lazy(() => import('./pages/StudyRoom/StudyRoomJoin'));
-const AIInterviewCoach = lazy(() => import('./pages/AIInterviewCoach/AIInterviewCoach'));
-const InterviewInterface = lazy(() => import('./pages/AIInterviewCoach/InterviewInterface'));
-const InterviewReport = lazy(() => import('./pages/AIInterviewCoach/InterviewReport'));
 const SalaryNegotiationPage = lazy(() => import('./pages/SalaryNegotiation/SalaryNegotiationPage'));
 const NegotiationSimulator = lazy(() => import('./pages/SalaryNegotiation/NegotiationSimulator'));
 const NegotiationResults = lazy(() => import('./pages/SalaryNegotiation/NegotiationResults'));
@@ -79,12 +70,6 @@ const App = () => {
             element={<RedirectIfAuth><Login /></RedirectIfAuth>} 
           /> 
             <Route path="/progress" element={<ProtectedRoute><AnalyticsDashboard key="analytics" /></ProtectedRoute>} />
-            <Route path="/roadmap" element={<ProtectedRoute><RoadmapPage key="roadmap" /></ProtectedRoute>} />
-            <Route path="/phase/:role/:phaseId" element={<ProtectedRoute><PhaseOverviewPage key="phase-overview" /></ProtectedRoute>} />
-            <Route path="/phase-quiz/:role/:phaseId" element={<ProtectedRoute><PhaseQuizPage key="phase-quiz" /></ProtectedRoute>} />
-            <Route path="/phase-sessions/:role/:phaseId" element={<ProtectedRoute><PhaseSessionLibrary key="phase-sessions" /></ProtectedRoute>} />
-            <Route path="/create-session/:role/:phaseId" element={<ProtectedRoute><CreateSessionPage key="create-session" /></ProtectedRoute>} />
-            <Route path="/roadmap-session/:sessionId" element={<ProtectedRoute><RoadmapSessionPractice key="roadmap-session" /></ProtectedRoute>} />
             {/* These routes should also be protected */}
             <Route
               path='/dashboard'
@@ -138,11 +123,11 @@ const App = () => {
             />
             <Route
               path="/live-coding"
-              element={<ProtectedRoute><LiveCodingPage /></ProtectedRoute>}
+              element={<ProtectedRoute><CodingCatalog /></ProtectedRoute>}
             />
             <Route
               path="/live-coding/:challengeId"
-              element={<ProtectedRoute><LiveCodingChallenge /></ProtectedRoute>}
+              element={<ProtectedRoute><CodingWorkspace /></ProtectedRoute>}
             />
             <Route
               path="/study-rooms"
@@ -155,18 +140,6 @@ const App = () => {
             <Route
               path="/join/:roomId"
               element={<ProtectedRoute><StudyRoomJoin /></ProtectedRoute>}
-            />
-            <Route
-              path="/ai-interview-coach"
-              element={<ProtectedRoute><AIInterviewCoach /></ProtectedRoute>}
-            />
-            <Route
-              path="/ai-interview/:sessionId"
-              element={<ProtectedRoute><InterviewInterface /></ProtectedRoute>}
-            />
-            <Route
-              path="/ai-interview/:sessionId/report"
-              element={<ProtectedRoute><InterviewReport /></ProtectedRoute>}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

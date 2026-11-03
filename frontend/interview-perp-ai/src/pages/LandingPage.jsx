@@ -872,7 +872,6 @@ const LandingPage = () => {
               <ul className="space-y-4 text-sm text-cream/80">
                 <li><a href="#" className="hover:text-cream transition-colors">Features</a></li>
                 <li><a href="#" className="hover:text-cream transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-cream transition-colors">Roadmap</a></li>
               </ul>
             </div>
             <div>
