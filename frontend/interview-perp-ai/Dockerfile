@@ -1,18 +1,17 @@
 # ============================================================
 # STAGE 1: Build the Vite React application
 # ============================================================
-FROM node:22-alpine AS builder
+# Debian matches the GitHub runner that installs this lockfile.
+FROM node:22.23.4-bookworm-slim AS builder
 
 WORKDIR /app
 
 # Copy dependency files first (for better layer caching)
 COPY package.json package-lock.json ./
 
-# Install ALL dependencies (including devDependencies needed for build)
-# Note: Using `npm install` instead of `npm ci` because the lockfile
-# may be out of sync with package.json after dependency updates.
-# This ensures a clean install in the container environment.
-RUN npm install
+# legacy-peer-deps matches frontend/.npmrc. Without it, npm ci rejects
+# peer entries (monaco-editor, picomatch, dompurify, marked) that the lockfile omits.
+RUN npm ci --legacy-peer-deps
 
 # Copy the rest of the source code
 COPY . .
@@ -23,7 +22,13 @@ RUN npm run build
 # ============================================================
 # STAGE 2: Serve with Nginx
 # ============================================================
-FROM nginxinc/nginx-unprivileged:1.27-alpine
+# 1.27-alpine is Alpine 3.21, which is out of support and carries fixed OS CVEs.
+FROM nginx/nginx-unprivileged:1.30.6-alpine
+
+# The published image lags Alpine's security repo (libexpat 2.9.0 vs 2.10.0).
+USER root
+RUN apk upgrade --no-cache
+USER 101
 
 # Copy custom nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf

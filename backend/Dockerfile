@@ -1,14 +1,15 @@
-FROM node:22-alpine
+FROM node:22.23.4-alpine
 
 WORKDIR /app
 
 # Copy dependency files first for better layer caching
 COPY package*.json ./
 
-# Install production dependencies only (smaller image)
-# Using `npm install` instead of `npm ci` to handle potential
-# lockfile inconsistencies gracefully in the container build.
-RUN npm install --omit=dev && npm cache clean --force
+# Install the lockfile's production dependencies so the image matches CI.
+# Drop the bundled npm CLI afterwards. The process is `node server.js`, and
+# Trivy flags HIGH issues in npm's own dependencies (brace-expansion, pacote, sigstore).
+RUN npm ci --omit=dev && npm cache clean --force \
+    && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 # Copy application source code
 COPY . .
