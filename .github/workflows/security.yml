@@ -6,61 +6,105 @@ on:
   pull_request:
     branches: [main, dev]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  # ── npm audit ──────────────────────────────────────────────
   audit:
     name: npm audit
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/interview-perp-ai/package-lock.json
 
       - name: Audit backend
         working-directory: backend
         run: |
-          npm install --ignore-scripts
+          npm ci --ignore-scripts
           npm audit --audit-level=high
 
       - name: Audit frontend
         working-directory: frontend/interview-perp-ai
         run: |
-          npm install --ignore-scripts
+          npm ci --ignore-scripts
           npm audit --audit-level=high
 
-  # ── Secret / credential leak scan ─────────────────────────
+  pip-audit:
+    name: pip audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: ai-training/requirements.txt
+      - name: Audit Python dependencies
+        working-directory: ai-training
+        run: |
+          python -m pip install --upgrade pip pip-audit
+          pip-audit -r requirements.txt
+
+  trivy:
+    name: Trivy filesystem scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
+          skip-dirs: node_modules,chroma_db
+
   secret-scan:
     name: Secret scan (trufflehog)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # full history needed for diff scanning
+          fetch-depth: 0
 
       - name: Run TruffleHog on git diff
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@v3.99.8
         with:
           path: ./
           base: ${{ github.event.repository.default_branch }}
           head: HEAD
           extra_args: --only-verified
 
-  # ── Block accidental .env commits ─────────────────────────
   env-file-check:
     name: Check for committed .env files
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Fail if .env files are tracked
+      - name: Fail if secret env files are tracked
         run: |
-          if git ls-files | grep -E '(^|/)\.env$'; then
-            echo "ERROR: .env file(s) are tracked by git. Remove them and add to .gitignore."
+          tracked=$(git ls-files | grep -E '(^|/)\.env(\.|$)' | grep -vE '(^|/)\.env\.example$' || true)
+          if [ -n "$tracked" ]; then
+            echo "ERROR: secret env file(s) are tracked by git:"
+            echo "$tracked"
             exit 1
           fi
-          echo "No .env files tracked. Safe to proceed."
+          echo "No secret env files tracked."

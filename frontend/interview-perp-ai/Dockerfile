@@ -8,11 +8,8 @@ WORKDIR /app
 # Copy dependency files first (for better layer caching)
 COPY package.json package-lock.json ./
 
-# Install ALL dependencies (including devDependencies needed for build)
-# Note: Using `npm install` instead of `npm ci` because the lockfile
-# may be out of sync with package.json after dependency updates.
-# This ensures a clean install in the container environment.
-RUN npm install
+# Install the lockfile, including devDependencies required for the Vite build.
+RUN npm ci
 
 # Copy the rest of the source code
 COPY . .

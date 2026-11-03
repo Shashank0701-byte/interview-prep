@@ -1,8 +1,8 @@
 [phases.setup]
-nixPkgs = ['nodejs_20']
+nixPkgs = ['nodejs_22']
 
 [phases.install]
-cmds = ['npm install --production=false']
+cmds = ['npm ci --omit=dev']
 
 [phases.build]
 cmds = ['echo "Build complete"']

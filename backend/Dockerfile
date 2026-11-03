@@ -5,10 +5,8 @@ WORKDIR /app
 # Copy dependency files first for better layer caching
 COPY package*.json ./
 
-# Install production dependencies only (smaller image)
-# Using `npm install` instead of `npm ci` to handle potential
-# lockfile inconsistencies gracefully in the container build.
-RUN npm install --omit=dev && npm cache clean --force
+# Install the lockfile's production dependencies so the image matches CI.
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Copy application source code
 COPY . .

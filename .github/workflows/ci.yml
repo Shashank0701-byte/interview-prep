@@ -40,10 +40,11 @@ jobs:
               - '.github/workflows/ci.yml'
 
   frontend:
-    name: Frontend (Lint + Build)
+    name: Frontend (Lint)
     needs: changes
     if: needs.changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: frontend/interview-perp-ai
@@ -56,13 +57,13 @@ jobs:
           cache-dependency-path: frontend/interview-perp-ai/package-lock.json
       - run: npm ci
       - run: npm run lint
-      - run: npm run build
 
   backend:
-    name: Backend (Install + Validate)
+    name: Backend (Install + Test)
     needs: changes
     if: needs.changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: backend
@@ -77,12 +78,15 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           find . -name '*.js' -not -path './node_modules/*' -not -path './uploads/*' -print0 | xargs -0 -n1 node --check
+      - name: Test
+        run: npm test
 
   ai-service:
     name: AI Service (Syntax Check)
     needs: changes
     if: needs.changes.outputs.ai == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: ai-training
@@ -91,8 +95,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      # Docker validates dependency installation. Avoid downloading the heavy
-      # ML stack a second time on every AI-only pull request.
+      # Pull requests compile the service. The image build runs on push to dev and main.
       - run: python -m compileall -q start_rag_service.py study_buddy
 
   docker-frontend:
@@ -100,6 +103,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
@@ -108,14 +112,23 @@ jobs:
           context: ./frontend/interview-perp-ai
           push: false
           tags: interview-prep-ai-frontend:ci
+          load: true
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,mode=max,scope=frontend
+      - uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: image
+          image-ref: interview-prep-ai-frontend:ci
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
 
   docker-backend:
     name: Docker (backend)
     needs: changes
     if: needs.changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
@@ -124,14 +137,25 @@ jobs:
           context: ./backend
           push: false
           tags: interview-prep-ai-backend:ci
+          load: true
           cache-from: type=gha,scope=backend
           cache-to: type=gha,mode=max,scope=backend
+      - uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: image
+          image-ref: interview-prep-ai-backend:ci
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
 
   docker-ai:
     name: Docker (AI service)
     needs: changes
-    if: needs.changes.outputs.ai == 'true'
+    # The ML image is the slow build. Pull requests get the syntax check;
+    # the image is built when the change lands on dev or main.
+    if: needs.changes.outputs.ai == 'true' && github.event_name == 'push'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
@@ -140,8 +164,16 @@ jobs:
           context: ./ai-training
           push: false
           tags: interview-prep-ai-ai:ci
+          load: true
           cache-from: type=gha,scope=ai
           cache-to: type=gha,mode=max,scope=ai
+      - uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: image
+          image-ref: interview-prep-ai-ai:ci
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
 
   status:
     name: All Checks Passed
@@ -151,6 +183,7 @@ jobs:
     steps:
       - name: Require executed checks to pass
         env:
+          CHANGES: ${{ needs.changes.result }}
           FRONTEND: ${{ needs.frontend.result }}
           BACKEND: ${{ needs.backend.result }}
           AI: ${{ needs.ai-service.result }}
@@ -158,6 +191,10 @@ jobs:
           DOCKER_BACKEND: ${{ needs.docker-backend.result }}
           DOCKER_AI: ${{ needs.docker-ai.result }}
         run: |
+          if [ "$CHANGES" != "success" ]; then
+            echo "Change detection did not succeed: $CHANGES"
+            exit 1
+          fi
           for result in "$FRONTEND" "$BACKEND" "$AI" "$DOCKER_FRONTEND" "$DOCKER_BACKEND" "$DOCKER_AI"; do
             if [ "$result" != "success" ] && [ "$result" != "skipped" ]; then
               echo "A required check failed or was cancelled: $result"

@@ -32,7 +32,7 @@ Environment variables for the backend are documented in [`backend/ENV_CONFIG.md`
 ## Before Opening a PR
 
 - Run the relevant service locally and confirm your change works (`npm run dev` for backend/frontend, or via Docker).
-- If you touched backend routes/controllers, sanity-check the affected endpoints manually — there's no automated test suite yet, so manual verification is the current bar.
+- CI runs the backend unit tests and the coding-task checker. If you touched backend routes or controllers, still sanity-check the affected endpoints manually.
 - Keep documentation in sync: if you add or remove an env var, update `backend/ENV_CONFIG.md` and the relevant `.env.example`.
 
 ## Reporting Issues
