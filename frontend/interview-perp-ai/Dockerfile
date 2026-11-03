@@ -25,6 +25,11 @@ RUN npm run build
 # 1.27-alpine is Alpine 3.21, which is out of support and carries fixed OS CVEs.
 FROM nginx/nginx-unprivileged:1.30.6-alpine
 
+# The published image lags Alpine's security repo (libexpat 2.9.0 vs 2.10.0).
+USER root
+RUN apk upgrade --no-cache
+USER 101
+
 # Copy custom nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
