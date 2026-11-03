@@ -1,0 +1,43 @@
+name: Scan with Trivy
+description: Download Trivy from GitHub releases and scan a filesystem or image.
+
+inputs:
+  scan-type:
+    description: fs or image
+    required: true
+  target:
+    description: Filesystem path or image reference
+    required: true
+  skip-dirs:
+    description: Comma-separated directories to skip during a filesystem scan
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Install Trivy
+      shell: bash
+      run: |
+        version=0.76.1
+        archive="trivy_${version}_Linux-64bit.tar.gz"
+        curl -fsSL -o "$RUNNER_TEMP/$archive" \
+          "https://github.com/aquasecurity/trivy/releases/download/v${version}/${archive}"
+        tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP" trivy
+        echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+
+    - name: Scan
+      shell: bash
+      env:
+        SCAN_TYPE: ${{ inputs.scan-type }}
+        TARGET: ${{ inputs.target }}
+        SKIP_DIRS: ${{ inputs.skip-dirs }}
+      run: |
+        args=(--severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed)
+        if [ -n "$SKIP_DIRS" ]; then
+          IFS=',' read -ra dirs <<< "$SKIP_DIRS"
+          for dir in "${dirs[@]}"; do
+            args+=(--skip-dirs "$dir")
+          done
+        fi
+        trivy "$SCAN_TYPE" "${args[@]}" "$TARGET"

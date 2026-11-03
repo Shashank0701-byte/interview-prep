@@ -46,7 +46,7 @@ This project is a full-stack MERN application, architected for a modern, scalabl
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
 ![Google Gemini](https://img.shields.io/badge/Google_Gemini-8E77D8?style=for-the-badge&logo=google-gemini&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
-![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
+![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)
 
 ---
 
