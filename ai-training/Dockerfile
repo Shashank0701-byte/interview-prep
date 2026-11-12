@@ -18,6 +18,9 @@ RUN apt-get update && \
 # Copy requirements first for better layer caching
 COPY requirements.txt .
 
+# Force CPU-only PyTorch to bypass the 2.5GB CUDA download
+RUN pip install torch --index-url https://download.pytorch.org/whl/cpu
+
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --prefer-binary -r requirements.txt
 

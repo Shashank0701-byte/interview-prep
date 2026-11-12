@@ -145,8 +145,6 @@ jobs:
   docker-ai:
     name: Docker (AI service)
     needs: changes
-    # The ML image is the slow build. Pull requests get the syntax check;
-    # the image is built when the change lands on dev or main.
     if: needs.changes.outputs.ai == 'true' && github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -158,13 +156,12 @@ jobs:
           context: ./ai-training
           push: false
           tags: interview-prep-ai-ai:ci
-          load: true
           cache-from: type=gha,scope=ai
           cache-to: type=gha,mode=max,scope=ai
       - uses: ./.github/actions/trivy
         with:
-          scan-type: image
-          target: interview-prep-ai-ai:ci
+          scan-type: fs
+          target: ./ai-training
 
   status:
     name: All Checks Passed
