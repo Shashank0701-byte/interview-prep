@@ -2,4 +2,4 @@
 
 # Development and Testing
 pytest>=7.4.0
-pytest-asyncio>=0.21.0
+pytest-asyncio>=1.4.1.post1
