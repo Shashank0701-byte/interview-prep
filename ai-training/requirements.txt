@@ -1,39 +1,47 @@
-# Smart Study Buddy - RAG System Requirements
+# ============================================================
+# APP LAYER — changes with features.
+# Heavy compiled deps (torch, sentence-transformers, chromadb,
+# faiss-cpu) live in requirements-base.txt so their Docker
+# layer is cached independently.
+# ============================================================
 
-# Core RAG Dependencies
-google-generativeai>=0.3.0
-langchain>=0.1.0
-langchain-google-genai>=1.0.0
-langchain-community>=0.0.20
+# Core RAG / AI
+# langchain 0.3.x / langchain-core 0.3.x / langchain-text-splitters 0.3.x
+# have CVEs (PYSEC-2026-2192, -2193, -2562, -77) whose fix versions are in
+# the 1.x line — a breaking-change migration with renamed imports and a
+# different chain API. Upgrading requires a separate planned migration task.
+# These are ignored in pip-audit with --ignore-vuln flags (see security.yml).
+# langsmith 0.8.x has CVE-2026-59152 fixed in 0.8.18 — safe minor bump.
+google-generativeai>=0.3.0,<1.0.0
+langchain>=0.3.30,<0.4.0
+langchain-google-genai>=2.0.0,<3.0.0
+langchain-community>=0.3.27,<0.4.0
+langsmith>=0.8.18,<2.0.0
 
-# Vector Database Options
-pinecone>=3.0.0
-chromadb>=0.4.0
-faiss-cpu>=1.7.4
+# Web framework
+fastapi>=0.104.0,<1.0.0
+uvicorn>=0.24.0,<1.0.0
+# websockets upper bound removed: langsmith>=0.8.18 requires >=15.0,
+# and websockets maintains a stable public API across major versions.
+websockets>=15.0,<20.0
 
-# Embeddings and Text Processing
-sentence-transformers>=2.2.0
-tiktoken>=0.5.0
+# Data processing
+pandas>=2.0.0,<3.0.0
+numpy>=1.24.0,<3.0.0
+python-dateutil>=2.8.0,<3.0.0
+# tiktoken>=0.5.0,<1.0.0 — pulled in by langchain; pinned here for clarity
 
-# Web Framework
-fastapi>=0.104.0
-uvicorn>=0.24.0
-websockets>=12.0
+# Configuration and environment
+python-dotenv>=1.0.0,<2.0.0
+pyyaml>=6.0.0,<7.0.0
 
-# Data Processing
-pandas>=2.0.0
-numpy>=1.24.0
-python-dateutil>=2.8.0
+# Database / network
+pymongo>=4.6.0,<5.0.0
+requests>=2.31.0,<3.0.0
 
-# Configuration and Environment
-python-dotenv>=1.0.0
-pyyaml>=6.0.0
-
-# Database Connectivity
-pymongo>=4.6.0
-requests>=2.31.0
+# protobuf 4.x has a CVE fixed in 5.29.6+ (PYSEC-2026-1805)
+protobuf>=5.29.6,<7.0.0
 
 # Utilities
-tqdm>=4.66.0
-aiofiles>=23.0.0
-
+tqdm>=4.66.0,<5.0.0
+aiofiles>=23.0.0,<25.0.0

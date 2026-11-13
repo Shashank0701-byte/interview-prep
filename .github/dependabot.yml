@@ -1,7 +1,7 @@
 version: 2
 
 updates:
-  # Backend npm dependencies
+  # ── Backend npm ───────────────────────────────────────────────
   - package-ecosystem: "npm"
     directory: "/backend"
     schedule:
@@ -13,8 +13,15 @@ updates:
       - "backend"
     commit-message:
       prefix: "chore(deps)"
+    # Group minor and patch bumps into a single PR per week.
+    # Major version bumps always get their own PR for deliberate review.
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
 
-  # Frontend npm dependencies
+  # ── Frontend npm ──────────────────────────────────────────────
   - package-ecosystem: "npm"
     directory: "/frontend/interview-perp-ai"
     schedule:
@@ -26,8 +33,13 @@ updates:
       - "frontend"
     commit-message:
       prefix: "chore(deps)"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
 
-  # AI service pip dependencies
+  # ── AI service pip ────────────────────────────────────────────
   - package-ecosystem: "pip"
     directory: "/ai-training"
     schedule:
@@ -39,8 +51,13 @@ updates:
       - "ai-service"
     commit-message:
       prefix: "chore(deps)"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
 
-  # Container base images
+  # ── Docker base images ────────────────────────────────────────
   - package-ecosystem: "docker"
     directory: "/backend"
     schedule:
@@ -74,7 +91,7 @@ updates:
     commit-message:
       prefix: "chore(docker)"
 
-  # GitHub Actions versions
+  # ── GitHub Actions ────────────────────────────────────────────
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

@@ -1,8 +1,15 @@
 name: Keep-Alive — Ping Backend
 
+# Runs every 15 minutes (was 10 min = ~2,160 runner-min/month, over the
+# 2,000 min free tier). At 15 min = ~1,440 runner-min/month.
+#
+# Better alternative: replace this workflow entirely with a free external
+# uptime monitor (UptimeRobot, BetterStack free tier) that pings
+# RAILWAY_SERVICE_URL/api/health. External monitors work even when
+# GitHub Actions itself is degraded, and consume zero runner minutes.
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "*/15 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -13,13 +20,14 @@ jobs:
     name: Ping backend health
     runs-on: ubuntu-latest
     timeout-minutes: 3
+    permissions: {}   # no repo access needed
     steps:
       - name: Ping backend /api/health
         env:
           SERVICE_URL: ${{ vars.RAILWAY_SERVICE_URL }}
         run: |
           if [ -z "$SERVICE_URL" ]; then
-            echo "RAILWAY_SERVICE_URL is not set"
+            echo "RAILWAY_SERVICE_URL is not set — skipping ping"
             exit 1
           fi
           response=$(curl -s -o /dev/null -w "%{http_code}" \
@@ -27,7 +35,7 @@ jobs:
             "$SERVICE_URL/api/health")
           echo "Backend response: $response"
           if [ "$response" != "200" ]; then
-            echo "Backend health check failed with $response"
+            echo "Backend health check failed with HTTP $response"
             exit 1
           fi
-          echo "Backend is up"
+          echo "✅ Backend is up"
