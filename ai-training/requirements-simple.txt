@@ -1,15 +1,15 @@
 # Simplified Smart Study Buddy Requirements (Windows Compatible)
 
 # Core ML Libraries (latest stable versions with pre-compiled wheels)
-scikit-learn>=1.2.0
+scikit-learn>=1.9.1
 pandas>=1.5.0
-numpy>=1.21.0
+numpy>=2.5.4
 
 # Data Processing
 joblib>=1.2.0
 
 # Visualization
-matplotlib>=3.6.0
+matplotlib>=3.11.2
 seaborn>=0.11.0
 
 # Utilities
