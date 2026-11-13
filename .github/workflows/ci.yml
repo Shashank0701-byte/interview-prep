@@ -14,14 +14,20 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+# ── Shared env ────────────────────────────────────────────────
+env:
+  NODE_VERSION: "22"
+  PYTHON_VERSION: "3.12"
+
 jobs:
+  # ── 1. Detect which services changed ────────────────────────
   changes:
     name: Detect changed services
     runs-on: ubuntu-latest
     outputs:
       frontend: ${{ steps.filter.outputs.frontend }}
-      backend: ${{ steps.filter.outputs.backend }}
-      ai: ${{ steps.filter.outputs.ai }}
+      backend:  ${{ steps.filter.outputs.backend }}
+      ai:       ${{ steps.filter.outputs.ai }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -39,8 +45,12 @@ jobs:
               - 'docker-compose.yml'
               - '.github/workflows/ci.yml'
 
+  # ── 2. Frontend — Lint + Build ───────────────────────────────
+  # Previously only linted. A broken Vite build would only be
+  # caught in the Docker job (push-only). Now every PR validates
+  # the full build output before merge.
   frontend:
-    name: Frontend (Lint)
+    name: Frontend (Lint + Build)
     needs: changes
     if: needs.changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
@@ -50,14 +60,35 @@ jobs:
         working-directory: frontend/interview-perp-ai
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: frontend/interview-perp-ai/package-lock.json
-      - run: npm ci
-      - run: npm run lint
 
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      # --max-warnings 120 caps warnings at the current baseline (120 at the
+      # time this was introduced). Any new warning added by a PR will push
+      # the count over 120 and fail CI. Ratchet this number down as the
+      # backlog of existing warnings is cleaned up. The goal is 0.
+      # Previous state: no enforcement at all (warnings never failed CI).
+      - name: Lint (ratcheted warnings policy)
+        run: npm run lint -- --max-warnings 120
+
+      # Catch broken imports, Vite config errors, and missing env stubs
+      # on every PR — not only after merging.
+      - name: Build
+        run: npm run build
+        env:
+          # Vite replaces these at build time; provide CI stubs so the
+          # build doesn't fail on missing VITE_* vars.
+          VITE_API_URL: http://localhost:8000
+          VITE_AI_SERVICE_URL: http://localhost:8001
+
+  # ── 3. Backend — Install + Test ─────────────────────────────
   backend:
     name: Backend (Install + Test)
     needs: changes
@@ -69,20 +100,38 @@ jobs:
         working-directory: backend
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
           cache-dependency-path: backend/package-lock.json
-      - run: npm ci
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Check JavaScript syntax
         run: |
-          find . -name '*.js' -not -path './node_modules/*' -not -path './uploads/*' -print0 | xargs -0 -n1 node --check
+          find . -name '*.js' \
+            -not -path './node_modules/*' \
+            -not -path './uploads/*' \
+            -print0 | xargs -0 -n1 node --check
+
       - name: Test
         run: npm test
 
+  # ── 4. AI Service — Syntax + Import check ───────────────────
+  # compileall catches syntax errors; the import check catches
+  # broken relative imports and missing __init__.py that compileall
+  # misses entirely.
+  #
+  # Strategy: install only the lightweight deps that are actually
+  # imported at module-load time (not inside functions). This avoids
+  # the stub-fragility problem while keeping the job fast — we
+  # deliberately do NOT install torch/chromadb/sentence-transformers
+  # (the multi-GB packages); those are validated by the Docker build.
   ai-service:
-    name: AI Service (Syntax Check)
+    name: AI Service (Syntax + Import check)
     needs: changes
     if: needs.changes.outputs.ai == 'true'
     runs-on: ubuntu-latest
@@ -92,12 +141,77 @@ jobs:
         working-directory: ai-training
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-      # Pull requests compile the service. The image build runs on push to dev and main.
-      - run: python -m compileall -q start_rag_service.py study_buddy
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: ai-training/requirements.txt
 
+      # Install only the packages that are imported at module-level in the
+      # three entry-point files (config.py, rag_pipeline.py, chat_api.py).
+      # Heavy deps (torch, chromadb, sentence-transformers) are intentionally
+      # skipped — they're stubbed out in the check script below.
+      - name: Install lightweight deps for import check
+        run: |
+          pip install --quiet \
+            python-dotenv \
+            numpy \
+            fastapi \
+            pydantic \
+            google-generativeai
+
+      - name: Compile check
+        run: python -m compileall -q start_rag_service.py study_buddy
+
+      # Validate that every module resolves its relative imports.
+      # Heavy packages not installed above are stubbed with no-op modules.
+      - name: Import structure check
+        run: |
+          python - <<'EOF'
+          import sys, types
+
+          def _stub(name):
+              """Stub module: any attribute access returns a no-op callable."""
+              mod = types.ModuleType(name)
+              mod.__path__ = []
+              mod.__spec__ = None
+              class _Noop:
+                  def __call__(self, *a, **kw): return None
+                  def __getattr__(self, n): return _Noop()
+                  def __iter__(self): return iter([])
+              mod.__getattr__ = lambda n: _Noop()
+              return mod
+
+          for mod_name in [
+            "google", "google.generativeai",
+            "langchain", "langchain.text_splitter",
+            "langchain_core", "langchain_core.messages",
+            "langchain_google_genai", "langchain_community",
+            "chromadb",
+            "sentence_transformers",
+            "uvicorn",
+            "pymongo",
+          ]:
+            sys.modules.setdefault(mod_name, _stub(mod_name))
+
+          from study_buddy.config import Config      # noqa: F401
+          from study_buddy.rag import rag_pipeline   # noqa: F401
+          from study_buddy.api import chat_api       # noqa: F401
+          print("✅ Import structure check passed")
+          EOF
+
+      # Validate docker-compose.yml schema whenever it or the AI
+      # service changes (catches typos in service names, bad volumes, etc.)
+      - name: Validate docker-compose config
+        working-directory: ${{ github.workspace }}
+        run: |
+          # CI clone does not include local untracked env files referenced by compose.
+          # Create minimal stubs only for schema validation.
+          touch backend/.env ai-training/.env
+          docker compose config --quiet
+
+  # ── 5. Docker — Frontend ─────────────────────────────────────
   docker-frontend:
     name: Docker (frontend)
     needs: changes
@@ -106,7 +220,9 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+
       - uses: docker/setup-buildx-action@v3
+
       - uses: docker/build-push-action@v5
         with:
           context: ./frontend/interview-perp-ai
@@ -115,11 +231,13 @@ jobs:
           load: true
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,mode=max,scope=frontend
+
       - uses: ./.github/actions/trivy
         with:
           scan-type: image
           target: interview-prep-ai-frontend:ci
 
+  # ── 6. Docker — Backend ──────────────────────────────────────
   docker-backend:
     name: Docker (backend)
     needs: changes
@@ -128,7 +246,9 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+
       - uses: docker/setup-buildx-action@v3
+
       - uses: docker/build-push-action@v5
         with:
           context: ./backend
@@ -137,11 +257,15 @@ jobs:
           load: true
           cache-from: type=gha,scope=backend
           cache-to: type=gha,mode=max,scope=backend
+
       - uses: ./.github/actions/trivy
         with:
           scan-type: image
           target: interview-prep-ai-backend:ci
 
+  # ── 7. Docker — AI service (push-only: image is very large) ──
+  # Build is skipped on PRs to keep PR feedback fast.
+  # The compile + import check above still runs on PRs.
   docker-ai:
     name: Docker (AI service)
     needs: changes
@@ -150,34 +274,53 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+
       - uses: docker/setup-buildx-action@v3
+
+      # Two cache scopes mirror the two Dockerfile stages.
+      # base-deps scope is keyed on requirements-base.txt (rarely busts).
+      # app scope is keyed on requirements.txt + source (busts on feature work).
       - uses: docker/build-push-action@v5
         with:
           context: ./ai-training
           push: false
           tags: interview-prep-ai-ai:ci
-          cache-from: type=gha,scope=ai
-          cache-to: type=gha,mode=max,scope=ai
+          cache-from: |
+            type=gha,scope=ai-base-deps
+            type=gha,scope=ai-app
+          cache-to: |
+            type=gha,mode=max,scope=ai-base-deps
+            type=gha,mode=max,scope=ai-app
+
       - uses: ./.github/actions/trivy
         with:
           scan-type: fs
           target: ./ai-training
 
+  # ── 8. Gate — all executed checks must pass ──────────────────
   status:
     name: All Checks Passed
     runs-on: ubuntu-latest
-    needs: [changes, frontend, backend, ai-service, docker-frontend, docker-backend, docker-ai]
+    permissions: {}   # this job needs no repo access
+    needs:
+      - changes
+      - frontend
+      - backend
+      - ai-service
+      - docker-frontend
+      - docker-backend
+      - docker-ai
     if: always()
     steps:
       - name: Require executed checks to pass
         env:
-          CHANGES: ${{ needs.changes.result }}
-          FRONTEND: ${{ needs.frontend.result }}
-          BACKEND: ${{ needs.backend.result }}
-          AI: ${{ needs.ai-service.result }}
+          CHANGES:         ${{ needs.changes.result }}
+          FRONTEND:        ${{ needs.frontend.result }}
+          BACKEND:         ${{ needs.backend.result }}
+          AI:              ${{ needs.ai-service.result }}
           DOCKER_FRONTEND: ${{ needs.docker-frontend.result }}
-          DOCKER_BACKEND: ${{ needs.docker-backend.result }}
-          DOCKER_AI: ${{ needs.docker-ai.result }}
+          DOCKER_BACKEND:  ${{ needs.docker-backend.result }}
+          DOCKER_AI:       ${{ needs.docker-ai.result }}
         run: |
           if [ "$CHANGES" != "success" ]; then
             echo "Change detection did not succeed: $CHANGES"
@@ -189,4 +332,4 @@ jobs:
               exit 1
             fi
           done
-          echo "All executed checks passed."
+          echo "✅ All executed checks passed."

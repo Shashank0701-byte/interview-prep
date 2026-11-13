@@ -1,4 +1,7 @@
-version: "3.9"
+# docker-compose.yml
+# No `version:` key — Compose v2 auto-detects the format and the
+# key has been deprecated since Compose v2.0 (emits a warning on
+# every `docker compose` invocation when present).
 
 name: interview-prep-ai
 
@@ -16,14 +19,16 @@ services:
     env_file:
       - ./backend/.env
     volumes:
-      # Persist uploaded files across restarts
       - ./backend/uploads:/app/uploads
     networks:
       app-network:
         aliases:
           - backend
     healthcheck:
-      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:8000/api/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""]
+      test:
+        - "CMD-SHELL"
+        - |
+          node -e "require('http').get('http://localhost:8000/api/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
       interval: 30s
       timeout: 5s
       start_period: 15s
@@ -32,6 +37,12 @@ services:
 
   # ============================================================
   # Frontend — Nginx serving Vite-built React SPA
+  #
+  # depends_on backend removed: Nginx serves static files and
+  # doesn't need the backend to be healthy to start. The browser
+  # handles API errors if the backend is temporarily down.
+  # Removing this unblocks parallel startup and prevents the
+  # frontend container from being held until backend is healthy.
   # ============================================================
   frontend:
     build:
@@ -41,9 +52,6 @@ services:
       - "80:8080"
     networks:
       - app-network
-    depends_on:
-      backend:
-        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080/ > /dev/null 2>&1 || exit 1"]
       interval: 30s
@@ -64,9 +72,11 @@ services:
     env_file:
       - ./ai-training/.env
     volumes:
-      # Persist ChromaDB vector store and logs
-      - ./ai-training/chroma_db:/app/chroma_db
-      - ./ai-training/logs:/app/logs
+      # Named volumes let Docker manage ownership, avoiding the
+      # host-uid vs container-uid (1000) permission mismatch that
+      # causes silent ChromaDB write failures with bind mounts.
+      - chroma_data:/app/chroma_db
+      - ai_logs:/app/logs
     networks:
       app-network:
         aliases:
@@ -75,14 +85,23 @@ services:
       test: ["CMD", "curl", "--fail", "http://localhost:8001/health"]
       interval: 30s
       timeout: 10s
-      start_period: 45s  # RAG pipeline + model loading takes time
+      start_period: 45s
       retries: 5
     restart: unless-stopped
 
 # ============================================================
-# Shared network for inter-service communication
+# Named volumes
+# ============================================================
+volumes:
+  chroma_data:
+    # Persists ChromaDB vector store across container restarts.
+    # Using a named volume (instead of a bind mount) ensures the
+    # container's uid 1000 always owns the directory.
+  ai_logs:
+
+# ============================================================
+# Shared network
 # ============================================================
 networks:
   app-network:
     driver: bridge
-

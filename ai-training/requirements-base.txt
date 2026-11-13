@@ -1,0 +1,28 @@
+# ============================================================
+# BASE LAYER — heavy deps that rarely change.
+# These are installed in a dedicated Docker layer so that
+# normal feature work (which only touches requirements.txt)
+# gets a full cache hit and skips the ~2 GB torch download.
+#
+# Rule: only add a package here if it takes >30 s to install
+# and changes less than once a month.
+# ============================================================
+
+# CPU-only PyTorch (the wheel is ~750 MB; installing from the
+# CPU index avoids the full 2.5 GB CUDA bundle)
+# Installed separately in the Dockerfile via --index-url
+# torch==2.4.0  ← handled by Dockerfile RUN line, not listed here
+
+# Embedding model runtime (pulls torch and transformers transitively).
+# sentence-transformers 2.x has PYSEC-2026-4164; patched in 5.6.0.
+# transformers (transitive) has CVEs fixed in 5.5.0 / 5.10.0 —
+# sentence-transformers>=5.6.0 pulls transformers>=5.x automatically,
+# but we pin explicitly here to guarantee the floor.
+sentence-transformers>=5.6.0,<7.0.0
+transformers>=5.10.0,<6.0.0
+
+# Vector database — native C++ extensions, slow to build from source
+chromadb>=0.4.0,<1.0.0
+
+# FAISS CPU — also compiled, pairs with chromadb fallback
+faiss-cpu>=1.7.4,<2.0.0
