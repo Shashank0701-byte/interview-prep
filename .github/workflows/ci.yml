@@ -205,7 +205,11 @@ jobs:
       # service changes (catches typos in service names, bad volumes, etc.)
       - name: Validate docker-compose config
         working-directory: ${{ github.workspace }}
-        run: docker compose config --quiet
+        run: |
+          # CI clone does not include local untracked env files referenced by compose.
+          # Create minimal stubs only for schema validation.
+          touch backend/.env ai-training/.env
+          docker compose config --quiet
 
   # ── 5. Docker — Frontend ─────────────────────────────────────
   docker-frontend:
