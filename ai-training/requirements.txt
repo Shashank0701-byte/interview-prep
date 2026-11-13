@@ -21,7 +21,9 @@ langsmith>=0.8.18,<2.0.0
 # Web framework
 fastapi>=0.104.0,<1.0.0
 uvicorn>=0.24.0,<1.0.0
-websockets>=12.0,<14.0
+# websockets upper bound removed: langsmith>=0.8.18 requires >=15.0,
+# and websockets maintains a stable public API across major versions.
+websockets>=15.0,<20.0
 
 # Data processing
 pandas>=2.0.0,<3.0.0
