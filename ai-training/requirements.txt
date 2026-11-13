@@ -1,39 +1,35 @@
-# Smart Study Buddy - RAG System Requirements
+# ============================================================
+# APP LAYER — changes with features.
+# Heavy compiled deps (torch, sentence-transformers, chromadb,
+# faiss-cpu) live in requirements-base.txt so their Docker
+# layer is cached independently.
+# ============================================================
 
-# Core RAG Dependencies
-google-generativeai>=0.3.0
-langchain>=0.1.0
-langchain-google-genai>=1.0.0
-langchain-community>=0.0.20
+# Core RAG / AI
+google-generativeai>=0.3.0,<1.0.0
+langchain>=0.1.0,<0.4.0
+langchain-google-genai>=1.0.0,<2.0.0
+langchain-community>=0.0.20,<0.4.0
 
-# Vector Database Options
-pinecone>=3.0.0
-chromadb>=0.4.0
-faiss-cpu>=1.7.4
+# Web framework
+fastapi>=0.104.0,<1.0.0
+uvicorn>=0.24.0,<1.0.0
+websockets>=12.0,<14.0
 
-# Embeddings and Text Processing
-sentence-transformers>=2.2.0
-tiktoken>=0.5.0
+# Data processing
+pandas>=2.0.0,<3.0.0
+numpy>=1.24.0,<3.0.0
+python-dateutil>=2.8.0,<3.0.0
+tiktoken>=0.5.0,<1.0.0
 
-# Web Framework
-fastapi>=0.104.0
-uvicorn>=0.24.0
-websockets>=12.0
+# Configuration and environment
+python-dotenv>=1.0.0,<2.0.0
+pyyaml>=6.0.0,<7.0.0
 
-# Data Processing
-pandas>=2.0.0
-numpy>=1.24.0
-python-dateutil>=2.8.0
-
-# Configuration and Environment
-python-dotenv>=1.0.0
-pyyaml>=6.0.0
-
-# Database Connectivity
-pymongo>=4.6.0
-requests>=2.31.0
+# Database / network
+pymongo>=4.6.0,<5.0.0
+requests>=2.31.0,<3.0.0
 
 # Utilities
-tqdm>=4.66.0
-aiofiles>=23.0.0
-
+tqdm>=4.66.0,<5.0.0
+aiofiles>=23.0.0,<25.0.0
