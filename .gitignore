@@ -33,6 +33,9 @@ env/
 .claude/worktrees/
 .claude/settings.local.json
 
+# Temporary local files (gh CLI cache, run logs, OS scratch files)
+.tmp/
+
 # OS files
 .DS_Store
 Thumbs.db
