@@ -7,19 +7,32 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 5
+    # Cap at 3 open PRs: 1 grouped minor/patch + 2 majors max.
+    # Previously unlimited → 25 open PRs at once.
+    open-pull-requests-limit: 3
     labels:
       - "dependencies"
       - "backend"
     commit-message:
       prefix: "chore(deps)"
-    # Group minor and patch bumps into a single PR per week.
-    # Major version bumps always get their own PR for deliberate review.
+    # Rebase on conflict instead of creating a new PR.
+    rebase-strategy: "auto"
     groups:
+      # All minor and patch bumps ship in one weekly PR.
       minor-and-patch:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      # mongoose 9.x — breaking query API changes. Needs manual migration.
+      - dependency-name: "mongoose"
+        update-types: ["version-update:semver-major"]
+      # @google/genai 2→3 — breaking SDK changes. Needs manual review.
+      - dependency-name: "@google/genai"
+        update-types: ["version-update:semver-major"]
+      # @google/generative-ai major bumps — same reason.
+      - dependency-name: "@google/generative-ai"
+        update-types: ["version-update:semver-major"]
 
   # ── Frontend npm ──────────────────────────────────────────────
   - package-ecosystem: "npm"
@@ -27,17 +40,27 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     labels:
       - "dependencies"
       - "frontend"
     commit-message:
       prefix: "chore(deps)"
+    rebase-strategy: "auto"
     groups:
       minor-and-patch:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      # tailwindcss 4.x — full rewrite, different config format, breaking CSS.
+      # Requires a dedicated migration, not an auto-bump.
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
+      # eslint 10.x — potential flat-config breaking changes.
+      # Review manually before bumping.
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
 
   # ── AI service pip ────────────────────────────────────────────
   - package-ecosystem: "pip"
@@ -45,17 +68,31 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     labels:
       - "dependencies"
       - "ai-service"
     commit-message:
       prefix: "chore(deps)"
+    rebase-strategy: "auto"
     groups:
       minor-and-patch:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      # langchain 1.x — breaking-change migration (renamed imports, new chain
+      # API). Tracked in decisions.md D-021. Ignore until planned migration.
+      - dependency-name: "langchain"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "langchain-core"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "langchain-community"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "langchain-google-genai"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "langchain-text-splitters"
+        update-types: ["version-update:semver-major"]
 
   # ── Docker base images ────────────────────────────────────────
   - package-ecosystem: "docker"
@@ -63,33 +100,54 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+    # 1 PR per Docker context — a node major bump needs manual testing.
+    open-pull-requests-limit: 1
     labels:
       - "dependencies"
       - "docker"
     commit-message:
       prefix: "chore(docker)"
+    rebase-strategy: "auto"
+    ignore:
+      # node 26 — LTS not yet; needs runtime testing before upgrade.
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "docker"
     directory: "/frontend/interview-perp-ai"
     schedule:
       interval: "weekly"
       day: "monday"
+    open-pull-requests-limit: 1
     labels:
       - "dependencies"
       - "docker"
     commit-message:
       prefix: "chore(docker)"
+    rebase-strategy: "auto"
+    ignore:
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
+      # nginx — only bump within same major; major nginx bumps need config review.
+      - dependency-name: "nginx/nginx-unprivileged"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "docker"
     directory: "/ai-training"
     schedule:
       interval: "weekly"
       day: "monday"
+    open-pull-requests-limit: 1
     labels:
       - "dependencies"
       - "docker"
     commit-message:
       prefix: "chore(docker)"
+    rebase-strategy: "auto"
+    ignore:
+      # python 3.15 — not yet stable. Upgrade only when tested.
+      - dependency-name: "python"
+        update-types: ["version-update:semver-major"]
 
   # ── GitHub Actions ────────────────────────────────────────────
   - package-ecosystem: "github-actions"
@@ -97,8 +155,20 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
+    # Group all action version bumps into a single weekly PR.
+    # Previously each action got its own PR → 5+ PRs/week for actions alone.
+    open-pull-requests-limit: 2
     labels:
       - "dependencies"
       - "github-actions"
     commit-message:
       prefix: "chore(actions)"
+    rebase-strategy: "auto"
+    groups:
+      all-actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+          - "major"
