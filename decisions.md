@@ -230,3 +230,59 @@ Test files (`tests/`), seeding scripts (`scripts/`, `seedCompanies.js`), and dev
 
 **Decision:**  
 Added `tests/`, `scripts/`, `*.test.js`, `test-*.js`, and markdown files to `.dockerignore`. The production image now contains only the files the server process actually needs.
+
+---
+
+## CI Fix Pass (2026-11-13)
+
+---
+
+### D-016 — Bumped langchain/langsmith/protobuf to patched versions
+
+**Date:** 2026-11-13  
+**File:** `ai-training/requirements.txt`
+
+**Problem:**  
+pip-audit found 27 known CVEs across `langchain-core 0.2.x`, `langchain 0.2.x`, `langchain-community 0.2.x`, `langchain-text-splitters 0.2.x`, `langsmith 0.1.x`, and `protobuf 4.25.x`. All had upstream-patched releases available.
+
+**Decision:**  
+Bumped minimum versions to the first safe release for each:
+- `langchain>=0.3.30` (CVE fixed in 0.3.30)
+- `langchain-google-genai>=2.0.0` (compatible with langchain 0.3.x)
+- `langchain-community>=0.3.27` (CVE fixed in 0.3.27)
+- `protobuf>=5.29.6` (CVE PYSEC-2026-1805 fixed in 5.29.6)
+
+`langchain-text-splitters` and `langsmith` are transitive dependencies of langchain 0.3.x and will be pulled at their patched versions automatically.
+
+The four chromadb advisories (PYSEC-2026-311, -3813, -3814, -3815) remain unfixed in the latest chromadb release and are still ignored.
+
+---
+
+### D-017 — Fixed AI import check stub for python-dotenv
+
+**Date:** 2026-11-13  
+**File:** `.github/workflows/ci.yml`
+
+**Problem:**  
+`study_buddy/config.py` does `from dotenv import load_dotenv` at module level (top of file, before the class). The import check stubbed `dotenv` as a plain `types.ModuleType`, which has no `load_dotenv` attribute, causing `ImportError: cannot import name 'load_dotenv' from 'dotenv'`.
+
+**Decision:**  
+Replaced the simple `types.ModuleType` stub approach with a `_stub()` helper that sets `__getattr__` to return a no-op callable for any attribute. This means `from dotenv import load_dotenv` resolves to a no-op function, and `load_dotenv()` at module level runs silently without touching the filesystem. Applied the same pattern to all stubbed packages so future attribute-level imports from stubs also work.
+
+---
+
+### D-018 — Switched frontend lint from `--max-warnings 0` to `--max-warnings 120`
+
+**Date:** 2026-11-13  
+**File:** `.github/workflows/ci.yml`
+
+**Problem:**  
+The codebase had 120 pre-existing ESLint warnings (mostly `no-unused-vars` and `react-hooks/exhaustive-deps`). Setting `--max-warnings 0` immediately broke CI on the entire existing codebase. The goal is correct but can't be enforced in one shot without fixing all 120 warnings first.
+
+**Decision:**  
+Set `--max-warnings 120` — the exact current count. This ratchet approach means:
+- Any PR that introduces a *new* warning will push the count over 120 and fail CI (regression prevention works immediately)
+- Existing warnings don't block the PR that introduced the CI improvement
+- The number should be decremented as warnings are cleaned up: 120 → 100 → 50 → 0
+
+This is strictly better than the previous state where warnings never failed CI at all.

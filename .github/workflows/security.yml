@@ -80,9 +80,10 @@ jobs:
         working-directory: ai-training
         run: |
           python -m pip install --upgrade pip pip-audit
-          # chromadb 1.5.9 is the newest release and is still the last affected
-          # version for these advisories. Remove an ignore when a patched release exists.
-          pip-audit -r requirements.txt \
+          # Audit both layers: base deps (torch/chromadb/etc.) and app deps.
+          # chromadb advisories: still unfixed in latest release — remove ignores
+          # when a patched chromadb version ships.
+          pip-audit -r requirements-base.txt -r requirements.txt \
             --ignore-vuln PYSEC-2026-311 \
             --ignore-vuln PYSEC-2026-3813 \
             --ignore-vuln PYSEC-2026-3814 \
