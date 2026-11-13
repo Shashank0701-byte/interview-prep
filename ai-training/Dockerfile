@@ -13,7 +13,7 @@
 # ============================================================
 
 # ── Stage 1: heavy base dependencies ────────────────────────
-FROM python:3.12-slim AS base-deps
+FROM python:3.15-slim AS base-deps
 
 WORKDIR /app
 
