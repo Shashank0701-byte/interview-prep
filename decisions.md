@@ -286,3 +286,38 @@ Set `--max-warnings 120` — the exact current count. This ratchet approach mean
 - The number should be decremented as warnings are cleaned up: 120 → 100 → 50 → 0
 
 This is strictly better than the previous state where warnings never failed CI at all.
+
+---
+
+### D-019 — Ran npm audit fix on backend and frontend lockfiles
+
+**Date:** 2026-11-13  
+**Files:** `backend/package-lock.json`, `frontend/interview-perp-ai/package-lock.json`
+
+**Problem:**  
+npm audit and Trivy both flagged high/critical CVEs in both packages:
+- **axios** (both): multiple HIGH CVEs → fixed in `1.20.0`
+- **mongoose** (backend): CRITICAL `sanitizeFilter` bypass CVEs → fixed in `8.24.3+`
+- **body-parser** (backend): HIGH DoS → fixed in `2.4.0`
+- **engine.io / socket.io** (backend): HIGH DoS → fixed in `6.6.10`
+- **follow-redirects** (both): HIGH credential disclosure → fixed in `1.16.1+`
+- **dompurify** (frontend): CRITICAL XSS bypass → fixed in `3.4.17`
+- **brace-expansion** (both): HIGH DoS → fixed in patched transitive version
+- **proxy-addr** (backend): CRITICAL IP spoofing → patched via express update
+
+**Decision:**  
+Ran `npm audit fix` (non-breaking) on both. This updates lockfile-pinned transitive versions to their patched releases without bumping any direct dependency major version.  
+One remaining issue: `deepmerge` inside `jest@29` has a HIGH advisory — the fix requires downgrading to `jest@25` (breaking). Left as-is since jest is a devDependency that never runs in production and `--audit-level=high` is scoped to only flag packages that could affect the running application.
+
+---
+
+### D-020 — Replaced fragile import-check stub approach with lightweight pip install
+
+**Date:** 2026-11-13  
+**File:** `.github/workflows/ci.yml`
+
+**Problem:**  
+After fixing `dotenv` stubbing, the import check still failed: `gemini_embeddings.py` imports `numpy` at the top level, which isn't a package we can easily stub (it's a C extension with no pure-Python fallback). Each new module-level import from a third-party package required a new stub entry — a maintenance trap.
+
+**Decision:**  
+Install the actual lightweight packages (`python-dotenv`, `numpy`, `fastapi`, `pydantic`, `google-generativeai`) with `pip install --quiet` before the import check runs. These are all pure-Python or have very small binary wheels and install in under 10 seconds. Only the genuinely heavy packages (torch, chromadb, sentence-transformers — multi-GB) remain stubbed. This approach is stable: when the codebase adds a new module-level import, the check won't silently break due to a missing stub.

@@ -124,6 +124,12 @@ jobs:
   # compileall catches syntax errors; the import check catches
   # broken relative imports and missing __init__.py that compileall
   # misses entirely.
+  #
+  # Strategy: install only the lightweight deps that are actually
+  # imported at module-load time (not inside functions). This avoids
+  # the stub-fragility problem while keeping the job fast — we
+  # deliberately do NOT install torch/chromadb/sentence-transformers
+  # (the multi-GB packages); those are validated by the Docker build.
   ai-service:
     name: AI Service (Syntax + Import check)
     needs: changes
@@ -139,47 +145,56 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: ai-training/requirements.txt
+
+      # Install only the packages that are imported at module-level in the
+      # three entry-point files (config.py, rag_pipeline.py, chat_api.py).
+      # Heavy deps (torch, chromadb, sentence-transformers) are intentionally
+      # skipped — they're stubbed out in the check script below.
+      - name: Install lightweight deps for import check
+        run: |
+          pip install --quiet \
+            python-dotenv \
+            numpy \
+            fastapi \
+            pydantic \
+            google-generativeai
 
       - name: Compile check
         run: python -m compileall -q start_rag_service.py study_buddy
 
-      # Validate that every module resolves its relative imports
-      # without actually loading heavy deps (torch, chromadb, etc.)
+      # Validate that every module resolves its relative imports.
+      # Heavy packages not installed above are stubbed with no-op modules.
       - name: Import structure check
         run: |
           python - <<'EOF'
           import sys, types
 
           def _stub(name):
-              """Create a stub module with permissive attribute access."""
+              """Stub module: any attribute access returns a no-op callable."""
               mod = types.ModuleType(name)
-              mod.__path__ = []          # mark as package
+              mod.__path__ = []
               mod.__spec__ = None
-              # Return a no-op callable for any attribute access so code like
-              # `from dotenv import load_dotenv; load_dotenv()` works silently.
               class _Noop:
                   def __call__(self, *a, **kw): return None
                   def __getattr__(self, n): return _Noop()
+                  def __iter__(self): return iter([])
               mod.__getattr__ = lambda n: _Noop()
               return mod
 
-          # Stub all heavy/external packages before our modules are imported
           for mod_name in [
             "google", "google.generativeai",
             "langchain", "langchain.text_splitter",
             "langchain_core", "langchain_core.messages",
             "langchain_google_genai", "langchain_community",
-            "chromadb", "sentence_transformers",
-            "fastapi", "fastapi.middleware", "fastapi.middleware.cors",
-            "uvicorn", "pydantic",
+            "chromadb",
+            "sentence_transformers",
+            "uvicorn",
             "pymongo",
-            # python-dotenv exposes `dotenv` as the package name and
-            # `python_dotenv` as the dist name; stub both module paths.
-            "dotenv",
           ]:
             sys.modules.setdefault(mod_name, _stub(mod_name))
 
-          # Now validate that our own module tree imports cleanly
           from study_buddy.config import Config      # noqa: F401
           from study_buddy.rag import rag_pipeline   # noqa: F401
           from study_buddy.api import chat_api       # noqa: F401
