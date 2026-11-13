@@ -3,6 +3,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
+const mongoose = require("mongoose");
 
 const {
   getPracticeFeedback,
@@ -27,30 +28,25 @@ const DATA_DIR = path.join(__dirname, "../data");
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(MEMORY_FILE)) fs.writeFileSync(MEMORY_FILE, JSON.stringify({}), "utf8");
 
-let mongooseAvailable = false;
 let MemoryModel = null;
 
 try {
-  if (process.env.MONGO_URI) {
-    const mongoose = require("mongoose");
-    mongooseAvailable = true;
+  const memSchema = new mongoose.Schema(
+    {
+      userId: { type: String, required: true, index: true },
+      entries: { type: Array, default: [] },
+      updatedAt: { type: Date, default: Date.now },
+    },
+    { collection: "ai_memory", timestamps: true }
+  );
 
-    const memSchema = new mongoose.Schema(
-      {
-        userId: { type: String, required: true, index: true },
-        entries: { type: Array, default: [] },
-        updatedAt: { type: Date, default: Date.now },
-      },
-      { collection: "ai_memory", timestamps: true }
-    );
-
-    MemoryModel =
-      mongoose.models.AIMemory || mongoose.model("AIMemory", memSchema);
-  }
+  MemoryModel =
+    mongoose.models.AIMemory || mongoose.model("AIMemory", memSchema);
 } catch {
-  mongooseAvailable = false;
   MemoryModel = null;
 }
+
+const mongooseAvailable = () => mongoose.connection.readyState === 1;
 
 // Simple file-based store
 const fileStore = {
@@ -86,7 +82,7 @@ const fileStore = {
 const MemoryStore = {
   async get(userId) {
     if (!userId) return [];
-    if (mongooseAvailable && MemoryModel) {
+    if (mongooseAvailable() && MemoryModel) {
       const doc = await MemoryModel.findOne({ userId }).lean().exec();
       return doc ? doc.entries : [];
     }
@@ -98,7 +94,7 @@ const MemoryStore = {
 
     const stamped = { ...item, ts: new Date().toISOString() };
 
-    if (mongooseAvailable && MemoryModel) {
+    if (mongooseAvailable() && MemoryModel) {
       const doc = await MemoryModel.findOne({ userId }).exec();
       if (doc) {
         doc.entries = doc.entries || [];
@@ -127,7 +123,7 @@ const MemoryStore = {
 
   async set(userId, items = []) {
     if (!userId) return;
-    if (mongooseAvailable && MemoryModel) {
+    if (mongooseAvailable() && MemoryModel) {
       const doc = await MemoryModel.findOneAndUpdate(
         { userId },
         { entries: items, updatedAt: new Date() },
@@ -141,7 +137,7 @@ const MemoryStore = {
 
   async clear(userId) {
     if (!userId) return;
-    if (mongooseAvailable && MemoryModel) {
+    if (mongooseAvailable() && MemoryModel) {
       await MemoryModel.deleteOne({ userId }).exec();
       return true;
     }
