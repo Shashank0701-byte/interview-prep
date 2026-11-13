@@ -6,15 +6,17 @@
 # ============================================================
 
 # Core RAG / AI
-# langchain-core 0.2.x has multiple CVEs fixed in 0.3.80+/1.0.7+
-# langchain 0.2.x has CVEs fixed in 0.3.30+
-# langchain-community 0.2.x has CVEs fixed in 0.3.27+
-# langchain-text-splitters 0.2.x has CVEs fixed in 0.3.9+
-# langsmith 0.1.x has CVEs fixed in 0.7.31+/0.8.0+
+# langchain 0.3.x / langchain-core 0.3.x / langchain-text-splitters 0.3.x
+# have CVEs (PYSEC-2026-2192, -2193, -2562, -77) whose fix versions are in
+# the 1.x line — a breaking-change migration with renamed imports and a
+# different chain API. Upgrading requires a separate planned migration task.
+# These are ignored in pip-audit with --ignore-vuln flags (see security.yml).
+# langsmith 0.8.x has CVE-2026-59152 fixed in 0.8.18 — safe minor bump.
 google-generativeai>=0.3.0,<1.0.0
 langchain>=0.3.30,<0.4.0
 langchain-google-genai>=2.0.0,<3.0.0
 langchain-community>=0.3.27,<0.4.0
+langsmith>=0.8.18,<2.0.0
 
 # Web framework
 fastapi>=0.104.0,<1.0.0

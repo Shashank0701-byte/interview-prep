@@ -80,14 +80,35 @@ jobs:
         working-directory: ai-training
         run: |
           python -m pip install --upgrade pip pip-audit
-          # Audit both layers: base deps (torch/chromadb/etc.) and app deps.
-          # chromadb advisories: still unfixed in latest release — remove ignores
-          # when a patched chromadb version ships.
+          # ── Ignored advisories ──────────────────────────────────────────────
+          #
+          # chromadb (PYSEC-2026-311, -3813, -3814, -3815):
+          #   Unfixed in the latest chromadb release. Remove when upstream ships
+          #   a patched version.
+          #
+          # langchain 0.3.x / langchain-core 0.3.x / langchain-text-splitters 0.3.x
+          # (PYSEC-2026-2192, -2193, -2562, -77):
+          #   Fix versions are in the 1.x line — a breaking-change migration
+          #   (renamed imports, new chain API). Upgrading is a planned separate
+          #   task tracked in decisions.md D-021. These are NOT exploitable in
+          #   this service's current usage pattern (no user-controlled chain
+          #   serialization). Remove these ignores after the 1.x migration.
+          #
+          # transformers (PYSEC-2026-2290, PYSEC-2026-4174):
+          #   No fix version published at time of writing. Remove when upstream
+          #   ships a patched release.
+          # ───────────────────────────────────────────────────────────────────
           pip-audit -r requirements-base.txt -r requirements.txt \
             --ignore-vuln PYSEC-2026-311 \
             --ignore-vuln PYSEC-2026-3813 \
             --ignore-vuln PYSEC-2026-3814 \
-            --ignore-vuln PYSEC-2026-3815
+            --ignore-vuln PYSEC-2026-3815 \
+            --ignore-vuln PYSEC-2026-2192 \
+            --ignore-vuln PYSEC-2026-2193 \
+            --ignore-vuln PYSEC-2026-2562 \
+            --ignore-vuln PYSEC-2026-77 \
+            --ignore-vuln PYSEC-2026-2290 \
+            --ignore-vuln PYSEC-2026-4174
 
   # ── Trivy filesystem scan ────────────────────────────────────
   trivy:

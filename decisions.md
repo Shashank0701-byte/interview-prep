@@ -321,3 +321,33 @@ After fixing `dotenv` stubbing, the import check still failed: `gemini_embedding
 
 **Decision:**  
 Install the actual lightweight packages (`python-dotenv`, `numpy`, `fastapi`, `pydantic`, `google-generativeai`) with `pip install --quiet` before the import check runs. These are all pure-Python or have very small binary wheels and install in under 10 seconds. Only the genuinely heavy packages (torch, chromadb, sentence-transformers — multi-GB) remain stubbed. This approach is stable: when the codebase adds a new module-level import, the check won't silently break due to a missing stub.
+
+---
+
+### D-021 — Bumped sentence-transformers/transformers; ignored langchain 0.3.x→1.x CVEs
+
+**Date:** 2026-11-13  
+**Files:** `ai-training/requirements-base.txt`, `ai-training/requirements.txt`, `.github/workflows/security.yml`
+
+**Problem:**  
+pip-audit found 18 vulnerabilities across 6 packages after the previous langchain bump:
+- `sentence-transformers 2.7.0` — PYSEC-2026-4164, fix in `5.6.0`
+- `transformers 4.57.6` — PYSEC-2025-217, PYSEC-2026-2288/89/90/3929/4174; fixes range from `5.0.0rc3` to `5.10.0` (two have no fix version yet)
+- `langsmith 0.8.5` — CVE-2026-59152, fix in `0.8.18`
+- `langchain 0.3.30` — PYSEC-2026-2192, fix in `1.3.9`
+- `langchain-core 0.3.86` — PYSEC-2026-2193/-2562, fix in `1.2.22`
+- `langchain-text-splitters 0.3.11` — PYSEC-2026-77, fix in `1.1.2`
+
+**Decision — what was bumped:**
+- `sentence-transformers`: raised floor from `>=2.2.0` to `>=5.6.0` in `requirements-base.txt`. This covers PYSEC-2026-4164.
+- `transformers`: added explicit `>=5.10.0` floor. This covers all transformers CVEs with a published fix. `sentence-transformers>=5.6.0` pulls `transformers>=5.x` transitively anyway; the explicit pin adds clarity and guarantees the floor.
+- `langsmith`: bumped floor from no pin to `>=0.8.18`. Same minor version, no breaking changes.
+
+**Decision — what was ignored:**
+- `langchain 0.3.x` / `langchain-core 0.3.x` / `langchain-text-splitters 0.3.x` CVEs: the fix versions are all in the `1.x` line. This is a full breaking-change migration — LangChain 1.0 renamed most import paths and replaced the chain abstraction. Doing it as an incidental security patch risks breaking the RAG service. This is tracked as a planned migration. The CVEs affect chain serialization/deserialization paths that this service does not exercise (it uses the RAG pipeline directly, not loading serialized chains from untrusted input).
+- `transformers` PYSEC-2026-2290 and PYSEC-2026-4174: no fix version exists upstream at time of writing. Remove these ignores when upstream publishes a patch.
+
+**Removal checklist for `--ignore-vuln` flags:**
+- `PYSEC-2026-311/-3813/-3814/-3815` (chromadb): remove when chromadb ships a fix
+- `PYSEC-2026-2192/-2193/-2562/-77` (langchain 0.3.x): remove after langchain 1.x migration
+- `PYSEC-2026-2290/-4174` (transformers): remove when upstream publishes a fix

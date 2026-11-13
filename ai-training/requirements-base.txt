@@ -13,8 +13,13 @@
 # Installed separately in the Dockerfile via --index-url
 # torch==2.4.0  ← handled by Dockerfile RUN line, not listed here
 
-# Embedding model runtime (pulls torch transitively)
-sentence-transformers>=2.2.0,<3.0.0
+# Embedding model runtime (pulls torch and transformers transitively).
+# sentence-transformers 2.x has PYSEC-2026-4164; patched in 5.6.0.
+# transformers (transitive) has CVEs fixed in 5.5.0 / 5.10.0 —
+# sentence-transformers>=5.6.0 pulls transformers>=5.x automatically,
+# but we pin explicitly here to guarantee the floor.
+sentence-transformers>=5.6.0,<7.0.0
+transformers>=5.10.0,<6.0.0
 
 # Vector database — native C++ extensions, slow to build from source
 chromadb>=0.4.0,<1.0.0
