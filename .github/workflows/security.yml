@@ -139,7 +139,7 @@ jobs:
       # Previously used github.event.repository.default_branch which is
       # wrong on force-pushes and the first commit on a new branch.
       - name: Run TruffleHog on git diff
-        uses: trufflesecurity/trufflehog@v3.99.8
+        uses: trufflesecurity/trufflehog@v3.99.9
         with:
           path: ./
           base: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
