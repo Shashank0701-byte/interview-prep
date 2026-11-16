@@ -12,7 +12,7 @@
 # different chain API. Upgrading requires a separate planned migration task.
 # These are ignored in pip-audit with --ignore-vuln flags (see security.yml).
 # langsmith 0.8.x has CVE-2026-59152 fixed in 0.8.18 — safe minor bump.
-google-generativeai>=0.3.0,<1.0.0
+google-generativeai>=0.8.6,<1.0.0
 langchain>=0.3.30,<0.4.0
 langchain-google-genai>=2.0.0,<3.0.0
 langchain-community>=0.3.27,<0.4.0
