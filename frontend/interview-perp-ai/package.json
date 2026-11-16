@@ -14,7 +14,7 @@
     "@monaco-editor/react": "^4.7.0",
     "axios": "^1.21.1",
     "chart.js": "^4.6.1",
-    "framer-motion": "^12.23.12",
+    "framer-motion": "^14.14.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
     "lucide-react": "^0.544.0",
